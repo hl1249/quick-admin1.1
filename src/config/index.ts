@@ -11,6 +11,9 @@ export const DB_URL = 'mongodb://127.0.0.1:27017';
  // 数据库名称
 export const DB_NAME = 'quickAdmin';
 
+// TOKEN请求头验证字段
+export const AUTHORIZATION = 'authorization'
+
 // JWT 加密密钥
 export const JWT_SECRET = 'your_jwt_secret_key';
 
