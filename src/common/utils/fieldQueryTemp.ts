@@ -31,6 +31,14 @@ export class FieldQueryTemp {
   nin(values: any[]) {
     return new FieldQueryTemp('$nin', values);
   }
+  expr(value: any) {
+    return new FieldQueryTemp('$expr', value);
+  }
+  exists(value: boolean) {
+    return new FieldQueryTemp('$exists', value);
+  }
+
+  // dataJson 中的 _.remove() 操作
   remove() {
     return new FieldQueryTemp('$unset', '');
   }
@@ -65,6 +73,9 @@ export class FieldQueryTemp {
     if ('$unset' in this.ops) {
       return { $unset: { [field]: this.ops['$unset'] } };
     }
+    if ('$expr' in this.ops) {
+    return { $expr: this.ops['$expr'] };
+  }
     return { [field]: this.ops };
   }
 }
@@ -136,6 +147,11 @@ export const _ = {
   lte: (val: any) => new FieldQueryTemp('$lte', val),
   in: (vals: any[]) => new FieldQueryTemp('$in', vals),
   nin: (vals: any[]) => new FieldQueryTemp('$nin', vals),
+  // 用于查出表中字段a等于字段b的数据
+  expr: (val: any) => new FieldQueryTemp('$expr', val),
+  // 用于判断字段是否存在
+  exists: (val: boolean) => new FieldQueryTemp('$exists', val),
+  // dataJson 中的 _.remove() 操作
   remove: () => ({ $unset: '' }), // 直接返回 $unset 操作
   // 这里用 rest 参数转发，支持两种写法
   and: (...args: any[]) => LogicQuery.and(...args),

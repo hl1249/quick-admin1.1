@@ -1,12 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import type { AddParams, AddsParams, DelParams, FindByWhereJsonParams, UpdateParams } from './db.types';
+import type {
+  AddParams, AddsParams, DelParams, DelByIdParams, FindById, FindByWhereJsonParams, SelectsParams,
+  SelectParams, SelectResult, CountParams, UpdateParams, UpdateByIdParams, UpdateAndReturnParams, SetByIdParams
+} from './db.types';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { DEBUG } from '@/config';
 import { UtilsService } from './utils.service';
-import { WhereJsonDecorator } from './db.decorator';
+import { TransformDbParams } from './db.decorator';
 
 @Injectable()
 export class DbService {
@@ -77,7 +80,8 @@ export class DbService {
     }
   }
 
-  @WhereJsonDecorator
+  // 批量删除
+  @TransformDbParams
   async del(params: DelParams): Promise<DeleteResult> {
     const {
       dbName,
@@ -92,38 +96,62 @@ export class DbService {
     }
   }
 
-  @WhereJsonDecorator
-  async findByWhereJson(params: FindByWhereJsonParams): Promise<Document[]> {
+  // 根据ID删除
+  @TransformDbParams
+  async deleteById(params: DelByIdParams): Promise<DeleteResult> {
+    const {
+      dbName,
+      id,
+      db
+    } = params;
+
+    if (db) {
+      return await db.collection(dbName).deleteMany({ _id: new ObjectId(id) });
+    } else {
+      return await this.connection.collection(dbName).deleteMany({ _id: new ObjectId(id) });
+    }
+  }
+
+  @TransformDbParams
+  async findById(params: FindById): Promise<Document | null> {
+
+    const {
+      dbName,
+      id,
+      fieldJson = {},
+      db
+    } = params;
+
+    if (db) {
+      return await db.collection(dbName).findOne({ _id: new ObjectId(id) }, { projection: fieldJson })
+    } else {
+      return await this.connection.collection(dbName).findOne({ _id: new ObjectId(id) }, { projection: fieldJson })
+    }
+  }
+
+
+  @TransformDbParams
+  async findByWhereJson(params: FindByWhereJsonParams): Promise<Document | null> {
 
     const {
       dbName,
       whereJson,
       fieldJson = {},
-      sortArr = [],
       db
     } = params;
 
-
-    for(const itme in whereJson){
-      console.log('or转换的',itme,whereJson[itme]);
-    }    
-    let cursor;
+    console.log('fieldJson', fieldJson);
+    for (const itme in whereJson) {
+      console.log('最终转换的', itme, whereJson[itme]);
+    }
     if (db) {
-      cursor = db.collection(dbName).find({whereJson}, { projection: fieldJson });
+      return await db.collection(dbName).findOne({ whereJson }, { projection: fieldJson })
     } else {
-      cursor = this.connection.collection(dbName).find(whereJson, { projection: fieldJson });
+      return await this.connection.collection(dbName).findOne(whereJson, { projection: fieldJson })
     }
-
-    // 处理排序
-    if (sortArr.length > 0) {
-      const sortObj = sortArr.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-      cursor = cursor.sort(sortObj);
-    }
-
-    return await cursor.toArray();
   }
 
-  @WhereJsonDecorator
+  @TransformDbParams
   async update(params: UpdateParams): Promise<UpdateResult> {
     const {
       dbName,
@@ -144,6 +172,218 @@ export class DbService {
       return await this.connection.collection(dbName).updateMany(whereJson, dataJson);
     }
 
+  }
+
+  @TransformDbParams
+  async updateById(params: UpdateByIdParams): Promise<UpdateResult> {
+    const {
+      dbName,
+      id,
+      dataJson = {},
+      db
+    } = params;
+
+    // 如果没有传入数据，则不进行更新
+    if (Object.keys(dataJson).length === 0) {
+      throw new Error('没有传入更新数据');
+    }
+
+    // 判断是否有传入数据库实例
+    if (db) {
+      return await db.collection(dbName).updateMany({ _id: new ObjectId(id) }, dataJson);
+    } else {
+      return await this.connection.collection(dbName).updateMany({ _id: new ObjectId(id) }, dataJson);
+    }
+
+  }
+
+  @TransformDbParams
+  async updateAndReturn(params: UpdateAndReturnParams): Promise<Document | null> {
+    const {
+      dbName,
+      whereJson,
+      dataJson = {},
+      db
+    } = params;
+
+    // 如果没有传入数据，则不进行更新
+    if (Object.keys(dataJson).length === 0) {
+      throw new Error('没有传入更新数据');
+    }
+
+    // 判断是否有传入数据库实例
+    if (db) {
+      return await db.collection(dbName).findOneAndUpdate(whereJson, dataJson, {
+        returnDocument: 'after', // 返回更新后的文档
+      });
+    } else {
+      return await this.connection.collection(dbName).findOneAndUpdate(whereJson, dataJson, {
+        returnDocument: 'after', // 返回更新后的文档
+      });
+    }
+
+  }
+
+  @TransformDbParams
+  async setById(params: SetByIdParams): Promise<UpdateResult> {
+    const {
+      dbName,
+      id,
+      dataJson = {},
+      db
+    } = params;
+
+    // 如果没有传入数据，则不进行更新
+    if (Object.keys(dataJson).length === 0) {
+      throw new Error('没有传入更新数据');
+    }
+
+    // 判断是否有传入数据库实例
+    if (db) {
+      return await db.collection(dbName).updateOne({ _id: new ObjectId(id) }, dataJson, {
+        upsert: true, // 找不到时插入新文档
+      });
+    } else {
+      return await this.connection.collection(dbName).updateOne({ _id: new ObjectId(id) }, dataJson, {
+        upsert: true, // 找不到时插入新文档
+      });
+    }
+  }
+
+  @TransformDbParams
+  async selects(params: SelectsParams): Promise<Document[]> {
+    const {
+      dbName,
+      whereJson = {},
+      foreignDB = [],
+      groupJson = {},
+      sortArr = {},
+      lastWhereJson = {},
+      db
+    } = params;
+
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    console.log('foreignDB', foreignDB)
+    // 执行查询
+    const result = await collection.aggregate([
+      ...foreignDB,
+      { $match: whereJson },
+      // { $group: groupJson },
+      { $match: lastWhereJson },
+    ]).toArray();
+
+    return result;
+  }
+
+  @TransformDbParams
+  async select(params: SelectParams): Promise<SelectResult | Document[]> {
+    const {
+      dbName,
+      getCount = false,
+      hasMore = false,
+      getMain = false,
+      getOne = false,
+      pageIndex = 1,
+      pageSize = 10,
+      whereJson = {},
+      fieldJson = {},
+      sortArr = {},
+      db
+    } = params;
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    // 执行查询
+    const cursor = collection.find(whereJson, { projection: fieldJson })
+      .sort(sortArr)
+      .skip((pageIndex - 1) * pageSize)
+      .limit(pageSize);
+
+    const result = await cursor.toArray();
+
+    // 如果只需要返回主数据，提前返回
+    if (getMain) {
+      return result;
+    }
+
+    // 处理单条结果
+    if (getOne) {
+      return {
+        rows: result[0],
+        hasMore: false,
+        total: 1,
+        getCount,
+        pagination: { pageIndex, pageSize },
+        msg: '查询成功',
+        code: 0
+      };
+    }
+
+    // 计算总数和是否有更多数据
+    let total = result.length;
+    let calculatedHasMore = result.length >= pageSize;
+
+    if (getCount || hasMore) {
+      total = await collection.countDocuments(whereJson);
+      calculatedHasMore = (pageIndex * pageSize) < total;
+    }
+
+    return {
+      rows: result,
+      hasMore: calculatedHasMore,
+      total,
+      getCount,
+      pagination: { pageIndex, pageSize },
+      msg: '查询成功',
+      code: 0
+    };
+  }
+
+  @TransformDbParams
+  async count(params: CountParams): Promise<number> {
+    const {
+      dbName,
+      whereJson = {},
+      foreignDB = [],
+      groupJson = {},
+      lastWhereJson = {},
+      db
+    } = params;
+
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    console.log('foreignDB', foreignDB)
+    // 执行查询
+    const result = await collection.aggregate([
+      //     {
+      //   $lookup: {
+      //     from: "qa-users",          // 关联集合
+      //     localField: "user_id",     // qa-roles 里的字段
+      //     foreignField: "_id",       // qa-users 里的字段
+      //     as: "userInfo"
+      //   }
+      // },
+      ...foreignDB,
+      { $match: whereJson },
+      // { $group: groupJson },
+      { $match: lastWhereJson },
+      { $count: 'total' }
+    ]).toArray();
+    console.log('count result', result);
+    const total = result.length > 0 ? result[0].total : 0;
+    return total;
   }
 
 }
