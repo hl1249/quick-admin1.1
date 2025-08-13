@@ -139,13 +139,8 @@ export class DbService {
       fieldJson = {},
       db
     } = params;
-
-    console.log('fieldJson', fieldJson);
-    for (const itme in whereJson) {
-      console.log('最终转换的', itme, whereJson[itme]);
-    }
     if (db) {
-      return await db.collection(dbName).findOne({ whereJson }, { projection: fieldJson })
+      return await db.collection(dbName).findOne(whereJson , { projection: fieldJson })
     } else {
       return await this.connection.collection(dbName).findOne(whereJson, { projection: fieldJson })
     }
@@ -367,15 +362,20 @@ export class DbService {
     console.log('foreignDB', foreignDB)
     // 执行查询
     const result = await collection.aggregate([
-      //     {
-      //   $lookup: {
-      //     from: "qa-users",          // 关联集合
-      //     localField: "user_id",     // qa-roles 里的字段
-      //     foreignField: "_id",       // qa-users 里的字段
-      //     as: "userInfo"
-      //   }
-      // },
-      ...foreignDB,
+      {
+        $addFields: {
+          user_id_obj: { $toObjectId: "$user_id" }
+        }
+      },
+      {
+        $lookup: {
+          from: "qa-users",          // 关联集合
+          localField: "user_id",     // qa-roles 里的字段
+          foreignField: "_id",       // qa-users 里的字段
+          as: "userInfo"
+        }
+      },
+      // ...foreignDB,
       { $match: whereJson },
       // { $group: groupJson },
       { $match: lastWhereJson },

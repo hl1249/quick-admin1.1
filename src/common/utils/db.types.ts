@@ -1,11 +1,11 @@
 // 排序规则
-interface SortRule {
+export interface SortRule {
   name: string; // 排序字段名
   type: 'desc' | 'asc'; // 排序方向：1 升序，-1 降序
 }
 
 // 聚合查询的外联配置
-interface ForeignDB {
+export interface ForeignDB {
   dbName: string;
   localKey: string;
   foreignKey: string;

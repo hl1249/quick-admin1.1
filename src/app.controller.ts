@@ -75,8 +75,9 @@ export class AppController {
     return this.dbService.findByWhereJson({
       dbName: 'qa-users',
       whereJson: {
-        // _id:"689af6612b0d15a48606da2c",
-        // age: _.and([_.lt(30), _.gte(20)]),
+        _id:"689beb65a0556c810061751f",
+
+        age: _.and(_.gte(10085), _.lte(10086)),
         // "arr.0": 1,
         // "arr.1": 2,
         // "arr.2": 3,
@@ -87,14 +88,7 @@ export class AppController {
         //   ]
         // })
       },
-      fieldJson: {
-        // age:true,
-        // _id:false
-      },
-      // sortArr: [
-      //   { "name":"age", "type":"asc" },
-      //   // { "name":"age", "type":"desc" }
-      // ]
+      
     });
 
   }
@@ -102,12 +96,20 @@ export class AppController {
   @Get('/selects')
   selects(): Promise<Document[]> {
     return this.dbService.selects({
-      dbName: 'qa-users',
+      dbName: 'qa-roles',
       getCount: true, // 是否需要同时查询满足条件的记录总数量，默认false
       getMain: false, // 是否只返回rows数据，默认false
       pageIndex: 1, // 当前第几页
       pageSize: 2, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
+      foreignDB: [
+        {
+          dbName: "qa-roles",
+          localKey: "user_id",
+          foreignKey: "_id",
+          as: "wuhu",
+        }
+      ],
       whereJson: { // 条件
         age: _.gte(0)  // 金额大于0
       },
@@ -128,9 +130,22 @@ export class AppController {
       dbName: 'qa-users',
       getCount: true, // 是否需要同时查询满足条件的记录总数量，默认false
       getMain: false, // 是否只返回rows数据，默认false
-      pageIndex: 3, // 当前第几页
+      pageIndex: 1, // 当前第几页
       pageSize: 2, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
+      whereJson: _.and([
+        {
+          age: _.gte(50)
+        },
+        _.or([
+          {
+            _add_time: _.gte(0)
+          },
+          {
+            arr:_.exists(true)  
+          }
+        ])
+      ])
       // whereJson: { // 条件
       //   age: _.gte(0)  // 金额大于0
       // },
@@ -151,8 +166,8 @@ export class AppController {
   count(): Promise<number> {
     return this.dbService.count({
       dbName: "qa-roles",// 表名
-      foreignDB:[
-         {
+      foreignDB: [
+        {
           dbName: "qa-roles",
           localKey: "user_id",
           foreignKey: "_id",
