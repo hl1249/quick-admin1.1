@@ -74,9 +74,95 @@ export class FieldQueryTemp {
       return { $unset: { [field]: this.ops['$unset'] } };
     }
     if ('$expr' in this.ops) {
-    return { $expr: this.ops['$expr'] };
-  }
+      return { $expr: this.ops['$expr'] };
+    }
     return { [field]: this.ops };
+  }
+
+  // 对于selects第一层里面AddFields转换
+  buildAddFieldsWithField(field: string) {
+    // 特殊处理 $unset 和 $expr
+    if ('$unset' in this.ops) {
+      return { $unset: { [field]: this.ops['$unset'] } };
+    }
+    if ('$expr' in this.ops) {
+      return { $expr: this.ops['$expr'] };
+    }
+
+    // 获取操作符和值
+    const operator = Object.keys(this.ops)[0];
+    const value = this.ops[operator];
+
+    // 处理带点号的路径（如 'roles.sex'）
+    if (field.includes('.')) {
+      const [arrayField, nestedField] = field.split('.');
+      return {
+        $anyElementTrue: {
+          $map: {
+            input: `$${arrayField}`,  // 输入数组字段
+            as: "r",                 // 别名
+            in: {
+              [operator]: [`$$r.${nestedField}`, value]  // 应用操作符到嵌套字段
+            }
+          }
+        }
+      };
+    }
+
+    // 默认处理简单字段
+    return {
+      $anyElementTrue: {
+        $map: {
+          input: `$${field}`,
+          as: "item",
+          in: { [operator]: ["$$item", value] }
+        }
+      }
+    };
+  }
+
+  // 对于selects里Foreign层里面AddFields转换
+  buildForeignAddFieldsWithField(field: string) {
+    // Special handling for $expr - keep as is
+    if ('$expr' in this.ops) {
+      return { $expr: this.ops['$expr'] };
+    }
+
+    // Special handling for $unset
+    if ('$unset' in this.ops) {
+      return { $unset: { [field]: this.ops['$unset'] } };
+    }
+
+    // For comparison operators, transform to array format with field reference
+    const operator = Object.keys(this.ops)[0];
+    const value = this.ops[operator];
+
+    // 关键修改：直接返回操作符表达式
+    return {
+      [operator]: [`$${field}`, value]
+    };
+  }
+
+  // 对于selects里Foreign层里面WhereJson转换
+  buildForeignWhereJsonWithField(field: string) {
+    // Special handling for $expr - keep as is
+    if ('$expr' in this.ops) {
+      return { $expr: this.ops['$expr'] };
+    }
+
+    // Special handling for $unset
+    if ('$unset' in this.ops) {
+      return { $unset: { [field]: this.ops['$unset'] } };
+    }
+
+    // For comparison operators, transform to array format with field reference
+    const operator = Object.keys(this.ops)[0];
+    const value = this.ops[operator];
+
+    // 关键修改：直接返回操作符表达式
+    return {
+      [operator]: [`$${field}`, value]
+    };
   }
 }
 

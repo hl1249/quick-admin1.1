@@ -75,7 +75,7 @@ export class AppController {
     return this.dbService.findByWhereJson({
       dbName: 'qa-users',
       whereJson: {
-        _id:"689beb65a0556c810061751f",
+        _id: "689beb65a0556c810061751f",
         age: _.and(_.gte(10085), _.lte(10086)),
         // "arr.0": 1,
         // "arr.1": 2,
@@ -87,13 +87,13 @@ export class AppController {
         //   ]
         // })
       },
-      
+
     });
 
   }
 
   @Get('/selects')
-  selects(): Promise<Document[] |　SelectResult> {
+  selects(): Promise<Document[] | SelectResult> {
     return this.dbService.selects({
       dbName: 'qa-users',
       getCount: true, // 是否需要同时查询满足条件的记录总数量，默认false
@@ -101,9 +101,22 @@ export class AppController {
       pageIndex: 1, // 当前第几页
       pageSize: 10, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
-      addFields:{
-        roleSex: "$roles.sex", // 以$为前缀，将副表字段的a字段赋值给主表的a字段（不会改变数据库实际数据，只是改变本次显示，如果主表已有a字段，则会被副表的覆盖）
-        roleTxt: "$users.age", // 以$为前缀，将副表字段的b字段赋值给主表的b字段（不会改变数据库实际数据，只是改变本次显示，如果主表已有b字段，则会被副表的覆盖）
+      groupJson:{
+
+      },//数据
+      addFields: {
+        roleSex: "$roles.sex",
+        roleTxt: "$roles.txt",
+       
+        // andSex: {
+        //   $anyElementTrue: {
+        //     $map: {
+        //       input: "$roles",
+        //       as: "r",
+        //       in: { $gte: ["$$r.sex", 0] } // 判断每个 sex 是否 > 0
+        //     }
+        //   }
+        // }
       },
       foreignDB: [
         {
@@ -114,19 +127,53 @@ export class AppController {
           fieldJson: {
             // sex: true,
           },
-          addFields:{
-              roleSex: "$roles.sex",
-              roleAge: "$roles.age"
+          whereJson: {
+            txt: _.eq('我是roles表数据1')
           },
-          sortArr:[
+          addFields: {
+            roleSex: "$sex",
+            roleAge: "$age",
+            bigAge: {
+              // "age":_.gt(100)
+              '$gt': ['$age', '$roles.age']
+            }, // 计算字段
+          },
+          sortArr: [
             { name: "age", type: "asc" }
-          ]
+          ],
+          foreignDB: [
+            {
+              dbName: "qa-menus",
+              localKey: "txt", //嵌套foreignDB 拿到上级表字段 直接写就行
+              foreignKey: "roles_txt",
+              as: "menus",
+              sortArr: [
+                { name: "age", type: "asc" }
+              ],
+
+              limit: 10 // limit>1则以数组形式返回
+            }
+
+          ],
+          limit: 1 // limit=1则以对象形式返回 后续的$lookup中可以使用 roles.字段
+        },
+        {
+          dbName: "qa-menus",
+          localKey: "roles.txt", //同级别foreignDB 拿到上级表对象用上级表的as
+          foreignKey: "roles_txt",
+          as: "menus",
+          sortArr: [
+            { name: "age", type: "asc" }
+          ],
+
+          limit: 10 // limit>1则以数组形式返回
         }
+
       ],
       whereJson: { // 条件
-        _id:"689beb65a0556c810061751f"
+        // _id: "689beb65a0556c810061751f"
       },
-      fieldJson: { // 代表只显示_id和money字段
+      fieldJson: { // 代表只显示_id和money字段 会影响副表的查询
         // _id: true,
         // age: false,
         // _id: true
@@ -156,7 +203,7 @@ export class AppController {
             _add_time: _.gte(0)
           },
           {
-            arr:_.exists(true)  
+            arr: _.exists(true)
           }
         ])
       ])

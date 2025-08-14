@@ -270,9 +270,9 @@ export class DbService {
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    // console.log('foreignDB', foreignDB[0]['$lookup'])
-    // console.log('fieldJson',fieldJson)
-    console.log('addFields',addFields)
+    console.log('foreignDB',JSON.stringify(foreignDB, null, 2))
+    console.log(JSON.stringify(addFields,null,2))
+   
     // 执行查询
     const result = await collection.aggregate([
       ...foreignDB,
@@ -282,7 +282,6 @@ export class DbService {
       ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),
       ...(sortArr && Object.keys(sortArr).length > 0 ? [{ $sort: sortArr }] : []),
       ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
-    
       { $skip: pageSize * (pageIndex - 1) },
       { $limit: pageSize }
     ]).toArray();
