@@ -3,15 +3,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UtilsService {
-  createOperators() {
-    return {
-      gt: (val: any) => ({ __op: '$gt', value: val }),
-      lt: (val: any) => ({ __op: '$lt', value: val }),
-      eq: (val: any) => ({ __op: '$eq', value: val }),
-      ne: (val: any) => ({ __op: '$ne', value: val }),
-    };
-  }
-
   treeToList(tree: any[], list: any[] = []): any[] {
     tree.forEach((node) => {
       list.push(node);

@@ -76,7 +76,6 @@ export class AppController {
       dbName: 'qa-users',
       whereJson: {
         _id:"689beb65a0556c810061751f",
-
         age: _.and(_.gte(10085), _.lte(10086)),
         // "arr.0": 1,
         // "arr.1": 2,
@@ -96,26 +95,30 @@ export class AppController {
   @Get('/selects')
   selects(): Promise<Document[]> {
     return this.dbService.selects({
-      dbName: 'qa-roles',
+      dbName: 'qa-users',
       getCount: true, // 是否需要同时查询满足条件的记录总数量，默认false
       getMain: false, // 是否只返回rows数据，默认false
       pageIndex: 1, // 当前第几页
-      pageSize: 2, // 每页条数
+      pageSize: 10, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
       foreignDB: [
         {
           dbName: "qa-roles",
-          localKey: "user_id",
-          foreignKey: "_id",
-          as: "wuhu",
+          localKey: "_id",
+          foreignKey: "user_id",
+          as: "roles",
+          fieldJson: {
+            sex: true,
+          }
         }
       ],
       whereJson: { // 条件
-        age: _.gte(0)  // 金额大于0
+        _id:"689beb65a0556c810061751f"
       },
       fieldJson: { // 代表只显示_id和money字段
-        _id: true,
-        money: true,
+        // _id: true,
+        // age: false,
+        // _id: true
       },
       sortArr: [ // 按_id降序 asc 升序 desc 降序 
         { name: "_id", type: "desc" }

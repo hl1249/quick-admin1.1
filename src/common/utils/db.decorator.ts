@@ -159,21 +159,27 @@ function transformSortArr(sortArr: any[]): any {
   return result;
 }
 
-interface ForeignDBConfig {
-  dbName: string;
-  localKey: string;
-  foreignKey: string;
-  as: string;
-  limit?: number;
-  foreignDB?: ForeignDBConfig[];
+interface LookupStage {
+  $lookup: {
+    from: string;
+    localField?: string;
+    foreignField?: string;
+    as: string;
+    let?: Record<string, any>;
+    pipeline?: Exclude<PipelineStage, { $lookup: any }>[];
+  };
 }
 
-type PipelineStage = 
-  | { $lookup: { from: string; localField: string; foreignField: string; as: string } }
-  | { $unwind: string };
+interface UnwindStage {
+  $unwind: string | {
+    path: string;
+    preserveNullAndEmptyArrays?: boolean;
+  };
+}
 
-function transformForeignDB(foreignDB: ForeignDBConfig[], currentDepth = 0): PipelineStage[] {
-  // 防止递归过深（云数据库通常限制最多15层）
+type PipelineStage = LookupStage | UnwindStage | { [key: string]: any };
+
+function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineStage[] {
   const MAX_DEPTH = 15;
   if (currentDepth > MAX_DEPTH) {
     throw new Error(`关联查询嵌套层级超过最大限制 ${MAX_DEPTH}`);
@@ -182,12 +188,33 @@ function transformForeignDB(foreignDB: ForeignDBConfig[], currentDepth = 0): Pip
   return foreignDB.map(config => {
     const stages: PipelineStage[] = [];
     
-    // 处理当前层级的lookup
+    // 判断是否有_id字段
+    const hasIdField = config.localKey === '_id' || config.foreignKey === '_id';
+    
+    // 创建lookup阶段
     const lookupStage: PipelineStage = {
       $lookup: {
         from: config.dbName,
-        localField: config.localKey,
-        foreignField: config.foreignKey,
+        let: { 
+          localVar: hasIdField 
+            ? { $toString: `$${config.localKey}` }  // _id字段转为字符串
+            : `$${config.localKey}` 
+        },
+        pipeline: [
+          { 
+            $match: { 
+              $expr: { 
+                $eq: [
+                  hasIdField 
+                    ? { $toString: `$${config.foreignKey}` }  // _id字段转为字符串
+                    : `$${config.foreignKey}`,
+                  "$$localVar"
+                ] 
+              } 
+            } 
+          },
+          ...(config.fieldJson ? [{ $project: config.fieldJson }] : [])
+        ],
         as: config.as
       }
     };
@@ -195,29 +222,37 @@ function transformForeignDB(foreignDB: ForeignDBConfig[], currentDepth = 0): Pip
 
     // 如果指定了limit为1，则添加$unwind
     if (config.limit === 1) {
-      stages.push({ $unwind: `$${config.as}` });
+      stages.push({ 
+        $unwind: { 
+          path: `$${config.as}`,
+          preserveNullAndEmptyArrays: true 
+        } 
+      });
     }
 
-    // 如果有嵌套的foreignDB，递归处理
-    if (config.foreignDB && config.foreignDB.length > 0) {
-      // 嵌套的lookup需要在当前lookup之后执行
+    // 递归处理嵌套foreignDB
+    if (config.foreignDB?.length) {
       const nestedStages = transformForeignDB(config.foreignDB, currentDepth + 1);
       
-      // 我们需要修改嵌套的lookup，使其在子文档上操作
       const modifiedNestedStages = nestedStages.map(stage => {
         if ('$lookup' in stage) {
-          // 修改localField路径，加上父级的as前缀
           return {
             $lookup: {
               ...stage.$lookup,
-              localField: `${config.as}.${stage.$lookup.localField}`,
+              let: { 
+                localVar: `$${config.as}.${stage.$lookup.let?.localVar.substring(2) || ''}`
+              },
               as: `${config.as}.${stage.$lookup.as}`
             }
           };
         } else if ('$unwind' in stage) {
-          // 修改unwind路径，加上父级的as前缀
           return {
-            $unwind: `$${config.as}.${stage.$unwind.substring(1)}`
+            $unwind: {
+              path: `$${config.as}.${typeof stage.$unwind === 'string' 
+                ? stage.$unwind.substring(1) 
+                : stage.$unwind.path.substring(2)}`,
+              preserveNullAndEmptyArrays: true
+            }
           };
         }
         return stage;

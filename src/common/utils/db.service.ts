@@ -254,6 +254,7 @@ export class DbService {
       groupJson = {},
       sortArr = {},
       lastWhereJson = {},
+      fieldJson = {},
       db
     } = params;
 
@@ -263,13 +264,15 @@ export class DbService {
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    console.log('foreignDB', foreignDB)
+    console.log('foreignDB', foreignDB[0]['$lookup'])
+    console.log('fieldJson',fieldJson)
     // 执行查询
     const result = await collection.aggregate([
       ...foreignDB,
       { $match: whereJson },
       // { $group: groupJson },
       { $match: lastWhereJson },
+      ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),
     ]).toArray();
 
     return result;
