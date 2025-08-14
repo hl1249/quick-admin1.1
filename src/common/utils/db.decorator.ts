@@ -26,6 +26,10 @@ export const TransformDbParams = (target, key, descriptor) => {
         if(params?.foreignDB) {
             params.foreignDB = transformForeignDB(params.foreignDB);
         }
+
+        if(params?.addFields) {
+            params.addFields = transFormAddFields(params.addFields);
+        }
         console.log('装饰器转换后的foreignDB', params.foreignDB);
         return await originalMethod.call(this, params);
     }
@@ -191,6 +195,35 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
     // 判断是否有_id字段
     const hasIdField = config.localKey === '_id' || config.foreignKey === '_id';
     
+    // 创建lookup阶段的pipeline
+    const lookupPipeline: PipelineStage[] = [
+      { 
+        $match: { 
+          $expr: { 
+            $eq: [
+              hasIdField 
+                ? { $toString: `$${config.foreignKey}` }  // _id字段转为字符串
+                : `$${config.foreignKey}`,
+              "$$localVar"
+            ] 
+          } 
+        } 
+      }
+    ];
+
+    // 添加fieldJson投影（仅当fieldJson有至少一个字段时）
+    if (config.fieldJson && Object.keys(config.fieldJson).length > 0) {
+      lookupPipeline.push({ $project: config.fieldJson });
+    }
+
+    // 添加sort排序（仅当sortArr有有效数据时）
+    if (config.sortArr?.length) {
+      const sortObj = transformSortArr(config.sortArr);
+      if (Object.keys(sortObj).length > 0) {
+        lookupPipeline.push({ $sort: sortObj });
+      }
+    }
+
     // 创建lookup阶段
     const lookupStage: PipelineStage = {
       $lookup: {
@@ -200,21 +233,7 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
             ? { $toString: `$${config.localKey}` }  // _id字段转为字符串
             : `$${config.localKey}` 
         },
-        pipeline: [
-          { 
-            $match: { 
-              $expr: { 
-                $eq: [
-                  hasIdField 
-                    ? { $toString: `$${config.foreignKey}` }  // _id字段转为字符串
-                    : `$${config.foreignKey}`,
-                  "$$localVar"
-                ] 
-              } 
-            } 
-          },
-          ...(config.fieldJson ? [{ $project: config.fieldJson }] : [])
-        ],
+        pipeline: lookupPipeline,
         as: config.as
       }
     };
@@ -263,4 +282,21 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
 
     return stages;
   }).flat();
+}
+
+
+function transFormAddFields(addFields: Record<string, string>): Record<string, any> {
+  const result: Record<string, any> = {};
+  
+  for (const [key, value] of Object.entries(addFields)) {
+    // Only transform paths that start with $
+    if (value.startsWith('$')) {
+      result[key] = { $first: value };
+    } else {
+      // Leave non-path values as-is
+      result[key] = value;
+    }
+  }
+  
+  return result;
 }

@@ -93,7 +93,7 @@ export class AppController {
   }
 
   @Get('/selects')
-  selects(): Promise<Document[]> {
+  selects(): Promise<Document[] |　SelectResult> {
     return this.dbService.selects({
       dbName: 'qa-users',
       getCount: true, // 是否需要同时查询满足条件的记录总数量，默认false
@@ -101,6 +101,10 @@ export class AppController {
       pageIndex: 1, // 当前第几页
       pageSize: 10, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
+      addFields:{
+        roleSex: "$roles.sex", // 以$为前缀，将副表字段的a字段赋值给主表的a字段（不会改变数据库实际数据，只是改变本次显示，如果主表已有a字段，则会被副表的覆盖）
+        roleTxt: "$users.age", // 以$为前缀，将副表字段的b字段赋值给主表的b字段（不会改变数据库实际数据，只是改变本次显示，如果主表已有b字段，则会被副表的覆盖）
+      },
       foreignDB: [
         {
           dbName: "qa-roles",
@@ -108,8 +112,15 @@ export class AppController {
           foreignKey: "user_id",
           as: "roles",
           fieldJson: {
-            sex: true,
-          }
+            // sex: true,
+          },
+          addFields:{
+              roleSex: "$roles.sex",
+              roleAge: "$roles.age"
+          },
+          sortArr:[
+            { name: "age", type: "asc" }
+          ]
         }
       ],
       whereJson: { // 条件

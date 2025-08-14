@@ -246,12 +246,18 @@ export class DbService {
   }
 
   @TransformDbParams
-  async selects(params: SelectsParams): Promise<Document[]> {
+  async selects(params: SelectsParams): Promise<SelectResult | Document[]> {
     const {
       dbName,
       whereJson = {},
       foreignDB = [],
       groupJson = {},
+      addFields = {},
+      getMain = false,
+      getOne = false,
+      getCount = false,
+      pageIndex = 1,
+      pageSize = 10,
       sortArr = {},
       lastWhereJson = {},
       fieldJson = {},
@@ -264,8 +270,9 @@ export class DbService {
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    console.log('foreignDB', foreignDB[0]['$lookup'])
-    console.log('fieldJson',fieldJson)
+    // console.log('foreignDB', foreignDB[0]['$lookup'])
+    // console.log('fieldJson',fieldJson)
+    console.log('addFields',addFields)
     // 执行查询
     const result = await collection.aggregate([
       ...foreignDB,
@@ -273,7 +280,31 @@ export class DbService {
       // { $group: groupJson },
       { $match: lastWhereJson },
       ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),
+      ...(sortArr && Object.keys(sortArr).length > 0 ? [{ $sort: sortArr }] : []),
+      ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
+    
+      { $skip: pageSize * (pageIndex - 1) },
+      { $limit: pageSize }
     ]).toArray();
+
+
+    // 如果只需要返回主数据，提前返回
+    if (getMain) {
+      return result;
+    }
+
+    // 处理单条结果
+    if (getOne) {
+      return {
+        rows: result[0],
+        hasMore: false,
+        total: 1,
+        getCount,
+        pagination: { pageIndex, pageSize },
+        msg: '查询成功',
+        code: 0
+      };
+    }
 
     return result;
   }
