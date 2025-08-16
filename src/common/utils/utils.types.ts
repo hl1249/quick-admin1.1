@@ -7,7 +7,7 @@ export interface SortRule {
 // 聚合查询的外联配置
 export interface ForeignDB {
   dbName: string;
-  localKey: string;
+  localKey: string | MongoOperator;
   foreignKey: string;
   as: string;
   whereJson?: Record<string, any>;
@@ -151,4 +151,46 @@ export interface SetByIdParams {
   id: string;                  // 必填，查询条件
   dataJson?: Record<string, any>; // 可选，投影字段
   db?: any;                    // 可选，指定数据库实例
+}
+
+
+export type CondExpr = {
+  if: unknown;
+  then: unknown;
+  else: unknown;
+};
+
+export type MongoOperator = {
+  [key: string]: unknown;
+};
+
+export interface MongoAggBuilder {
+  // 累加器操作符
+  first(expr: unknown): MongoOperator;
+  last(expr: unknown): MongoOperator;
+  sum(expr: unknown): MongoOperator;
+  avg(expr: unknown): MongoOperator;
+  max(expr: unknown): MongoOperator;
+  min(expr: unknown): MongoOperator;
+  push(expr: unknown): MongoOperator;
+  addToSet(expr: unknown): MongoOperator;
+
+  // 比较操作符
+  gte(expr: unknown | unknown[]): MongoOperator;
+  lte(expr: unknown | unknown[]): MongoOperator;
+  gt(expr: unknown | unknown[]): MongoOperator;
+  lt(expr: unknown | unknown[]): MongoOperator;
+  eq(expr: unknown | unknown[]): MongoOperator;
+  ne(expr: unknown | unknown[]): MongoOperator;
+
+  // 逻辑操作符
+  and(expr: unknown[]): MongoOperator;
+  or(expr: unknown[]): MongoOperator;
+  not(expr: unknown): MongoOperator;
+
+  // 条件操作符
+  cond(expr: CondExpr): MongoOperator;
+  // 数组操作符
+  arrayElemAt(arr: unknown[], index: number): MongoOperator;
+  arrayElemAt(args: [unknown, number]): MongoOperator;
 }

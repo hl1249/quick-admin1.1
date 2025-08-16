@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import type {
   AddParams, AddsParams, DelParams, DelByIdParams, FindById, FindByWhereJsonParams, SelectsParams,
   SelectParams, SelectResult, CountParams, UpdateParams, UpdateByIdParams, UpdateAndReturnParams, SetByIdParams
-} from './db.types';
+} from './utils.types';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
@@ -270,23 +270,12 @@ export class DbService {
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    console.log('foreignDB', JSON.stringify(foreignDB, null, 2))
-    console.log(JSON.stringify(addFields, null, 2))
-
-    console.log("groupJson", JSON.stringify(groupJson, null, 2))
+    console.log('foreignDB[0]', JSON.stringify(foreignDB, null, 2))
     // 执行查询
     const result = await collection.aggregate([
       { $match: whereJson },
-      // {
-      //   $group: {
-      //     _id: "$age",
-      //     userCount: { $sum: 1 },
-      //     allRoles: { $push: "$roles" }
-      //   }
-      // },
       ...(groupJson && Object.keys(groupJson).length > 0 ? [{ $group: groupJson }] : []),
       ...foreignDB,
-      // { $group: groupJson },
       { $match: lastWhereJson },
       ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
       ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),

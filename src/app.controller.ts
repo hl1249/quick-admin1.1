@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { UtilsService } from '@/common/utils/utils.service';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
-import { SelectResult } from '@/common/utils/db.types';
+import { SelectResult } from '@/common/utils/utils.types';
 import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
@@ -101,15 +101,15 @@ export class AppController {
       pageIndex: 1, // 当前第几页
       pageSize: 10, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
-      groupJson: {
-        _id: "$age",
-        yuan_age: $.first('$age'),
-        sum: $.sum($.cond({
-          if: $.gte(['$age',20]),
-          then: 10,
-          else: 0
-        }))
-      },//数据
+      // groupJson: {
+      //   _id: "$age",
+      //   yuan_age: $.first('$age'),
+      //   sum: $.sum($.cond({
+      //     if: $.gte(['$age',20]),
+      //     then: 10,
+      //     else: 0
+      //   }))
+      // },//数据
       addFields: {
         roleSex: "$roles.sex",
         roleTxt: "$roles.txt",
@@ -126,60 +126,62 @@ export class AppController {
       foreignDB: [
         {
           dbName: "qa-roles",
-          localKey: "_id",
-          foreignKey: "user_id",
+          // localKey: "_id",
+          localKey: $.arrayElemAt(['$arr',3]),
+          foreignKey: "_id",
           as: "roles",
           fieldJson: {
             // sex: true,
-          },
-          whereJson: {
-            txt: _.eq('我是roles表数据1')
-          },
-          addFields: {
-            roleSex: "$sex",
-            roleAge: "$age",
-            bigAge: {
-              // "age":_.gt(100)
-              '$gt': ['$age', '$roles.age']
-            }, // 计算字段
-          },
-          sortArr: [
-            { name: "age", type: "asc" }
-          ],
-          foreignDB: [
-            {
-              dbName: "qa-menus",
-              localKey: "txt", //嵌套foreignDB 拿到上级表字段 直接写就行
-              foreignKey: "roles_txt",
-              as: "menus",
-              sortArr: [
-                { name: "age", type: "asc" }
-              ],
+          },}
+        //   whereJson: {
+        //     txt: _.eq('我是roles表数据1')
+        //   },
+        //   addFields: {
+        //     roleSex: "$sex",
+        //     roleAge: "$age",
+        //     bigAge: {
+        //       // "age":_.gt(100)
+        //       '$gt': ['$age', '$roles.age']
+        //     }, // 计算字段
+        //   },
+        //   sortArr: [
+        //     { name: "age", type: "asc" }
+        //   ],
+        //   foreignDB: [
+        //     {
+        //       dbName: "qa-menus",
+        //       localKey: "txt", //嵌套foreignDB 拿到上级表字段 直接写就行
+        //       foreignKey: "roles_txt",
+        //       as: "menus",
+        //       sortArr: [
+        //         { name: "age", type: "asc" }
+        //       ],
 
-              limit: 10 // limit>1则以数组形式返回
-            }
+        //       limit: 10 // limit>1则以数组形式返回
+        //     }
 
-          ],
-          limit: 1 // limit=1则以对象形式返回 后续的$lookup中可以使用 roles.字段
-        },
-        {
-          dbName: "qa-menus",
-          localKey: "roles.txt", //同级别foreignDB 拿到上级表对象用上级表的as
-          foreignKey: "roles_txt",
-          as: "menus",
-          sortArr: [
-            { name: "age", type: "asc" }
-          ],
+        //   ],
+        //   limit: 1 // limit=1则以对象形式返回 后续的$lookup中可以使用 roles.字段
+        // },
+        // {
+        //   dbName: "qa-menus",
+        //   localKey: "roles.txt", //同级别foreignDB 拿到上级表对象用上级表的as
+        //   foreignKey: "roles_txt",
+        //   as: "menus",
+        //   sortArr: [
+        //     { name: "age", type: "asc" }
+        //   ],
 
-          limit: 10 // limit>1则以数组形式返回
-        }
+        //   limit: 10 // limit>1则以数组形式返回
+        // }
 
       ],
       whereJson: { // 条件
         // _id: "689beb65a0556c810061751f"
+        _id:"689beb65a0556c810061751f"
       },
       lastWhereJson: {
-        _id: _.lte(20)
+        // _id: _.lte(20)
       },
       fieldJson: { // 代表只显示_id和money字段 会影响副表的查询
         // _id: true,

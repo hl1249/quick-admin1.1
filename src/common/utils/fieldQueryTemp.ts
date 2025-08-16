@@ -1,3 +1,4 @@
+import { MongoAggBuilder , CondExpr} from './utils.types'
 export class FieldQueryTemp {
   private ops: Record<string, any> = {};
 
@@ -245,43 +246,6 @@ export const _ = {
 };
 
 
-type CondExpr = {
-  if: unknown;
-  then: unknown;
-  else: unknown;
-};
-
-type MongoOperator = {
-  [key: string]: unknown;
-};
-
-interface MongoAggBuilder {
-  // 累加器操作符
-  first(expr: unknown): MongoOperator;
-  last(expr: unknown): MongoOperator;
-  sum(expr: unknown): MongoOperator;
-  avg(expr: unknown): MongoOperator;
-  max(expr: unknown): MongoOperator;
-  min(expr: unknown): MongoOperator;
-  push(expr: unknown): MongoOperator;
-  addToSet(expr: unknown): MongoOperator;
-
-  // 比较操作符
-  gte(expr: unknown | unknown[]): MongoOperator;
-  lte(expr: unknown | unknown[]): MongoOperator;
-  gt(expr: unknown | unknown[]): MongoOperator;
-  lt(expr: unknown | unknown[]): MongoOperator;
-  eq(expr: unknown | unknown[]): MongoOperator;
-  ne(expr: unknown | unknown[]): MongoOperator;
-
-  // 逻辑操作符
-  and(expr: unknown[]): MongoOperator;
-  or(expr: unknown[]): MongoOperator;
-  not(expr: unknown): MongoOperator;
-
-  // 条件操作符
-  cond(expr: CondExpr): MongoOperator;
-}
 
 export const $: MongoAggBuilder = new Proxy({} as MongoAggBuilder, {
   get(target, prop: string) {
@@ -291,6 +255,21 @@ export const $: MongoAggBuilder = new Proxy({} as MongoAggBuilder, {
         $cond: { if: condition, then: thenExpr, else: elseExpr }
       });
     }
+
+    // 处理 arrayElemAt 操作符
+    if (prop === 'arrayElemAt') {
+      return (arrOrFirstArg: unknown[] | unknown, index?: number) => {
+        // 处理两种调用方式：
+        // 1. $.arrayElemAt(['$arr', 0])
+        // 2. $.arrayElemAt('$arr', 0)
+        const args = index !== undefined
+          ? [arrOrFirstArg, index]
+          : arrOrFirstArg;
+          console.log("我只想了", { $arrayElemAt: args })
+        return { $arrayElemAt: args };
+      };
+    }
+
 
     // 处理比较操作符（如 gte, lte 等）
     const comparisonOperators = ['gte', 'lte', 'gt', 'lt', 'eq', 'ne'];

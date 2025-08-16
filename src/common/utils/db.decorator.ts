@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { FieldQueryTemp } from '@/common/utils/fieldQueryTemp';
-import { ForeignDB } from './db.types';
+import { ForeignDB } from './utils.types';
 // DB参数装饰器处理 whereJson,dataJson,fieldJson,sortArr
 export const TransformDbParams = (target, key, descriptor) => {
   const originalMethod = descriptor.value;
@@ -197,6 +197,8 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
 
     // 判断是否有_id字段
     const hasIdField = config.localKey === '_id' || config.foreignKey === '_id';
+    // 判断LocalKey是否是对象
+    const isLocalKeyObject = typeof config.localKey === 'object';
 
     // 创建lookup阶段的pipeline
     const lookupPipeline: PipelineStage[] = [
@@ -208,7 +210,9 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
                 $eq: [
                   hasIdField
                     ? { $toString: `$${config.foreignKey}` }  // _id字段转为字符串
-                    : `$${config.foreignKey}`,
+                    : isLocalKeyObject
+                      ? config.localKey  // 如果是对象，直接使用
+                      : `$${config.foreignKey}`,
                   "$$localVar"
                 ]
               }
@@ -282,7 +286,7 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
     // 递归处理嵌套foreignDB
     if (config.foreignDB?.length) {
       const nestedStages = transformForeignDB(config.foreignDB, currentDepth + 1);
-      
+
       // 将嵌套的stages添加到当前pipeline中
       nestedStages.forEach(stage => {
         if ('$lookup' in stage) {
@@ -298,7 +302,7 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
               as: lookupStage.as
             }
           });
-          
+
           // 如果嵌套的lookup有unwind，也添加到pipeline
           const nextStage = nestedStages[nestedStages.indexOf(stage) + 1];
           if (nextStage && '$unwind' in nextStage) {
@@ -314,13 +318,15 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
     }
 
     // 创建主lookup阶段
-   const lookupStage: PipelineStage = {
+    const lookupStage: PipelineStage = {
       $lookup: {
         from: config.dbName,
         let: {
-          localVar: hasIdField
-            ? { $toString: [`$${config.localKey}`] }   // 确保这里使用 config.localKey
-            : `$${config.localKey}`
+          localVar: isLocalKeyObject
+            ? config.localKey  // 如果是对象，直接使用
+            : hasIdField
+              ? { $toString: `$${config.localKey}` }
+              : `$${config.localKey}`
         },
         pipeline: lookupPipeline,
         as: config.as
@@ -328,7 +334,7 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
     };
     stages.push(lookupStage);
 
-  // 只有当limit=1时才添加unwind
+    // 只有当limit=1时才添加unwind
     if (config.limit === 1) {
       stages.push({
         $unwind: {
