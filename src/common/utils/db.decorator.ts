@@ -10,6 +10,9 @@ export const TransformDbParams = (target, key, descriptor) => {
     if (params?.whereJson) {
       params.whereJson = transformWhereJson(params.whereJson);
     }
+    if (params?.lastWhereJson) {
+      params.lastWhereJson = transformWhereJson(params.lastWhereJson);
+    }
 
     if (params?.dataJson) {
       params.dataJson = transformDataJson(params.dataJson);

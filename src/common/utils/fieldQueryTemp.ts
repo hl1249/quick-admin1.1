@@ -243,3 +243,72 @@ export const _ = {
   and: (...args: any[]) => LogicQuery.and(...args),
   or: (...args: any[]) => LogicQuery.or(...args),
 };
+
+
+type CondExpr = {
+  if: unknown;
+  then: unknown;
+  else: unknown;
+};
+
+type MongoOperator = {
+  [key: string]: unknown;
+};
+
+interface MongoAggBuilder {
+  // 累加器操作符
+  first(expr: unknown): MongoOperator;
+  last(expr: unknown): MongoOperator;
+  sum(expr: unknown): MongoOperator;
+  avg(expr: unknown): MongoOperator;
+  max(expr: unknown): MongoOperator;
+  min(expr: unknown): MongoOperator;
+  push(expr: unknown): MongoOperator;
+  addToSet(expr: unknown): MongoOperator;
+
+  // 比较操作符
+  gte(expr: unknown | unknown[]): MongoOperator;
+  lte(expr: unknown | unknown[]): MongoOperator;
+  gt(expr: unknown | unknown[]): MongoOperator;
+  lt(expr: unknown | unknown[]): MongoOperator;
+  eq(expr: unknown | unknown[]): MongoOperator;
+  ne(expr: unknown | unknown[]): MongoOperator;
+
+  // 逻辑操作符
+  and(expr: unknown[]): MongoOperator;
+  or(expr: unknown[]): MongoOperator;
+  not(expr: unknown): MongoOperator;
+
+  // 条件操作符
+  cond(expr: CondExpr): MongoOperator;
+}
+
+export const $: MongoAggBuilder = new Proxy({} as MongoAggBuilder, {
+  get(target, prop: string) {
+    // 处理特殊操作符（如 cond 需要特殊结构）
+    if (prop === 'cond') {
+      return ({ if: condition, then: thenExpr, else: elseExpr }: CondExpr) => ({
+        $cond: { if: condition, then: thenExpr, else: elseExpr }
+      });
+    }
+
+    // 处理比较操作符（如 gte, lte 等）
+    const comparisonOperators = ['gte', 'lte', 'gt', 'lt', 'eq', 'ne'];
+    if (comparisonOperators.includes(prop)) {
+      return (expr: unknown | unknown[]) => {
+        // 如果传入的是数组，直接使用；否则包装成数组
+        const args = Array.isArray(expr) ? expr : [expr];
+        return { [`$${prop}`]: args };
+      };
+    }
+
+    // 处理逻辑操作符（如 and, or, not）
+    const logicalOperators = ['and', 'or', 'not'];
+    if (logicalOperators.includes(prop)) {
+      return (expr: unknown) => ({ [`$${prop}`]: expr });
+    }
+
+    // 默认处理：累加器操作符（如 sum, avg, first 等）
+    return (expr: unknown) => ({ [`$${prop}`]: expr });
+  }
+});

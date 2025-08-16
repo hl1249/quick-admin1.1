@@ -18,6 +18,12 @@ export interface ForeignDB {
   fieldJson?: Record<string, any>;
 }
 
+// 聚合查询分组配置
+export interface GroupJson {
+  _id: string;
+  [key: string]: any;    
+}
+
 
 export interface AddParams {
   dbName: string;              // 必填，表名
@@ -60,6 +66,8 @@ export interface FindByWhereJsonParams {
   db?: any;                    // 可选，指定数据库实例
 }
 
+
+
 export interface SelectsParams {
   dbName: string;              // 必填，表名
   whereJson?: Record<string, any>; // 可选，查询条件
@@ -69,7 +77,7 @@ export interface SelectsParams {
   getMain?: boolean; // 可选，是否只返回 rows 数据
   getCount?: boolean; // 必填，查询条件
   hasMore?: boolean; // 可选，是否有更多数据
-  groupJson?: Record<string, any>; // 可选，分组字段
+  groupJson?: GroupJson; // 可选，分组字段
   sortArr?: SortRule[]; // 可选，排序
   foreignDB?: ForeignDB[]; // 可选，是否是外部数据库
   lastWhereJson?: Record<string, any>; // 可选，最后的查询条件

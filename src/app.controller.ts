@@ -4,7 +4,7 @@ import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, Insert
 import { SelectResult } from '@/common/utils/db.types';
 import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
-import { _ } from '@/common/utils/fieldQueryTemp';
+import { _, $ } from '@/common/utils/fieldQueryTemp';
 
 @Controller()
 export class AppController {
@@ -101,13 +101,18 @@ export class AppController {
       pageIndex: 1, // 当前第几页
       pageSize: 10, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
-      groupJson:{
-
+      groupJson: {
+        _id: "$age",
+        yuan_age: $.first('$age'),
+        sum: $.sum($.cond({
+          if: $.gte(['$age',20]),
+          then: 10,
+          else: 0
+        }))
       },//数据
       addFields: {
         roleSex: "$roles.sex",
         roleTxt: "$roles.txt",
-       
         // andSex: {
         //   $anyElementTrue: {
         //     $map: {
@@ -173,13 +178,16 @@ export class AppController {
       whereJson: { // 条件
         // _id: "689beb65a0556c810061751f"
       },
+      lastWhereJson: {
+        _id: _.lte(20)
+      },
       fieldJson: { // 代表只显示_id和money字段 会影响副表的查询
         // _id: true,
         // age: false,
         // _id: true
       },
       sortArr: [ // 按_id降序 asc 升序 desc 降序 
-        { name: "_id", type: "desc" }
+        { name: "_id", type: "asc" }
       ],
     });
 

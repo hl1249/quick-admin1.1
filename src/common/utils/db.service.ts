@@ -140,7 +140,7 @@ export class DbService {
       db
     } = params;
     if (db) {
-      return await db.collection(dbName).findOne(whereJson , { projection: fieldJson })
+      return await db.collection(dbName).findOne(whereJson, { projection: fieldJson })
     } else {
       return await this.connection.collection(dbName).findOne(whereJson, { projection: fieldJson })
     }
@@ -270,18 +270,27 @@ export class DbService {
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    console.log('foreignDB',JSON.stringify(foreignDB, null, 2))
-    console.log(JSON.stringify(addFields,null,2))
-   
+    console.log('foreignDB', JSON.stringify(foreignDB, null, 2))
+    console.log(JSON.stringify(addFields, null, 2))
+
+    console.log("groupJson", JSON.stringify(groupJson, null, 2))
     // 执行查询
     const result = await collection.aggregate([
-      ...foreignDB,
       { $match: whereJson },
+      // {
+      //   $group: {
+      //     _id: "$age",
+      //     userCount: { $sum: 1 },
+      //     allRoles: { $push: "$roles" }
+      //   }
+      // },
+      ...(groupJson && Object.keys(groupJson).length > 0 ? [{ $group: groupJson }] : []),
+      ...foreignDB,
       // { $group: groupJson },
       { $match: lastWhereJson },
+      ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
       ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),
       ...(sortArr && Object.keys(sortArr).length > 0 ? [{ $sort: sortArr }] : []),
-      ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
       { $skip: pageSize * (pageIndex - 1) },
       { $limit: pageSize }
     ]).toArray();
