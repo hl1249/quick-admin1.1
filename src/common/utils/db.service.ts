@@ -2,7 +2,12 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import type {
   AddParams, AddsParams, DelParams, DelByIdParams, FindById, FindByWhereJsonParams, SelectsParams,
-  SelectParams, SelectResult, CountParams, UpdateParams, UpdateByIdParams, UpdateAndReturnParams, SetByIdParams
+  SelectParams, SelectResult, CountParams, UpdateParams, UpdateByIdParams, UpdateAndReturnParams, SetByIdParams,
+  SumParams,
+  MaxParams,
+  MinParams,
+  AvgParams,
+  SampleParams
 } from './utils.types';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
@@ -379,7 +384,6 @@ export class DbService {
       dbName,
       whereJson = {},
       foreignDB = [],
-      groupJson = {},
       lastWhereJson = {},
       db
     } = params;
@@ -390,31 +394,158 @@ export class DbService {
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    console.log('foreignDB', foreignDB)
     // 执行查询
     const result = await collection.aggregate([
-      {
-        $addFields: {
-          user_id_obj: { $toObjectId: "$user_id" }
-        }
-      },
-      {
-        $lookup: {
-          from: "qa-users",          // 关联集合
-          localField: "user_id",     // qa-roles 里的字段
-          foreignField: "_id",       // qa-users 里的字段
-          as: "userInfo"
-        }
-      },
-      // ...foreignDB,
       { $match: whereJson },
-      // { $group: groupJson },
+      ...foreignDB,
       { $match: lastWhereJson },
       { $count: 'total' }
     ]).toArray();
-    console.log('count result', result);
     const total = result.length > 0 ? result[0].total : 0;
     return total;
   }
+
+  @TransformDbParams
+  async sum(params: SumParams): Promise<number> {
+    const {
+      dbName,
+      whereJson = {},
+      fieldName = '',
+      db
+    } = params;
+
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    // 执行查询
+    const result = await collection.aggregate([
+      { $match: whereJson },
+      {
+        $group: {
+          _id: null,                  // 不分组，全部聚合
+          totalAmount: { $sum: `$${fieldName}` }
+        }
+      }
+    ]).toArray();
+    const totalAmount = result.length > 0 ? result[0].totalAmount : 0;
+    return totalAmount;
+  }
+
+  @TransformDbParams
+  async max(params: MaxParams): Promise<number> {
+    const {
+      dbName,
+      whereJson = {},
+      fieldName = '',
+      db
+    } = params;
+
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    // 执行查询
+    const result = await collection.aggregate([
+      { $match: whereJson },
+      {
+        $group: {
+          _id: null,                  // 不分组，全部聚合
+          totalAmount: { $max: `$${fieldName}` }
+        }
+      }
+    ]).toArray();
+    const totalAmount = result.length > 0 ? result[0].totalAmount : 0;
+    return totalAmount;
+  }
+
+  @TransformDbParams
+  async min(params: MinParams): Promise<number> {
+    const {
+      dbName,
+      whereJson = {},
+      fieldName = '',
+      db
+    } = params;
+
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    // 执行查询
+    const result = await collection.aggregate([
+      { $match: whereJson },
+      {
+        $group: {
+          _id: null,                  // 不分组，全部聚合
+          totalAmount: { $min: `$${fieldName}` }
+        }
+      }
+    ]).toArray();
+    const totalAmount = result.length > 0 ? result[0].totalAmount : 0;
+    return totalAmount;
+  }
+
+  @TransformDbParams
+  async avg(params: AvgParams): Promise<number> {
+    const {
+      dbName,
+      whereJson = {},
+      fieldName = '',
+      db
+    } = params;
+
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    // 执行查询
+    const result = await collection.aggregate([
+      { $match: whereJson },
+      {
+        $group: {
+          _id: null,                  // 不分组，全部聚合
+          totalAmount: { $avg: `$${fieldName}` }
+        }
+      }
+    ]).toArray();
+    const totalAmount = result.length > 0 ? result[0].totalAmount : 0;
+    return totalAmount;
+  }
+
+  @TransformDbParams
+  async sample(params: SampleParams): Promise<number> {
+    const {
+      dbName,
+      whereJson = {},
+      size = 1,
+      fieldJson = {},
+      db
+    } = params;
+
+
+    // 统一获取集合引用
+    const collection = db
+      ? db.collection(dbName)
+      : this.connection.collection(dbName);
+
+    // 执行查询
+    const result = await collection.aggregate([
+      { $match: whereJson },
+      { $sample: { size } },
+      { projection: fieldJson }
+    ]).toArray();
+    const totalAmount = result.length > 0 ? result[0].totalAmount : 0;
+    return totalAmount;
+  }
+
 
 }

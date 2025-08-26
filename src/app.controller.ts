@@ -127,12 +127,13 @@ export class AppController {
         {
           dbName: "qa-roles",
           // localKey: "_id",
-          localKey: $.arrayElemAt(['$arr',3]),
+          localKey: $.arrayElemAt(['$arr', 3]),
           foreignKey: "_id",
           as: "roles",
           fieldJson: {
             // sex: true,
-          },}
+          },
+        }
         //   whereJson: {
         //     txt: _.eq('我是roles表数据1')
         //   },
@@ -178,7 +179,7 @@ export class AppController {
       ],
       whereJson: { // 条件
         // _id: "689beb65a0556c810061751f"
-        _id:"689beb65a0556c810061751f"
+        _id: "689beb65a0556c810061751f"
       },
       lastWhereJson: {
         // _id: _.lte(20)
@@ -236,17 +237,21 @@ export class AppController {
   @Get('/count')
   count(): Promise<number> {
     return this.dbService.count({
-      dbName: "qa-roles",// 表名
-      foreignDB: [
-        {
-          dbName: "qa-roles",
-          localKey: "user_id",
-          foreignKey: "_id",
-          as: "wuhu",
-        }
-      ]
+      dbName: "qa-users",// 表名
+      whereJson:{
+        age: _.gte(30),
+      }
     });
   }
+
+  @Get('/sum')
+  sum(): Promise<number> {
+    return this.dbService.sum({
+      dbName: "qa-users",// 表名
+      fieldName: "age",// 求和字段
+    });
+  }
+
 
   @Get('/update')
   update(): Promise<UpdateResult> {

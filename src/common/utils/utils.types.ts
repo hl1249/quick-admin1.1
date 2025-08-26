@@ -1,7 +1,7 @@
 // 排序规则
 export interface SortRule {
   name: string; // 排序字段名
-  type: 'desc' | 'asc'; // 排序方向：1 升序，-1 降序
+  type: 'desc' | 'asc'; // 排序方式：'asc' 表示升序，'desc' 表示降序
 }
 
 // 聚合查询的外联配置
@@ -21,7 +21,7 @@ export interface ForeignDB {
 // 聚合查询分组配置
 export interface GroupJson {
   _id: string;
-  [key: string]: any;    
+  [key: string]: any;
 }
 
 
@@ -106,10 +106,46 @@ export interface CountParams {
   dbName: string;              // 必填，表名
   whereJson?: Record<string, any>; // 可选，查询条件
   foreignDB?: ForeignDB[]; // 可选，是否是外部数据库
-  groupJson?: Record<string, any>; // 可选，分组字段
   lastWhereJson?: Record<string, any>; // 可选，最后的查询条件
   db?: any;                    // 可选，指定数据库实例
 }
+
+export interface SumParams {
+  dbName: string;              // 必填，表名
+  whereJson?: Record<string, any>; // 可选，查询条件
+  fieldName: string // 必填求和字段名，
+  db?: any;                    // 可选，指定数据库实例
+}
+
+export interface MaxParams {
+  dbName: string;              // 必填，表名
+  whereJson?: Record<string, any>; // 可选，查询条件
+  fieldName: string // 必填求和字段名，
+  db?: any;                    // 可选，指定数据库实例
+}
+
+export interface MinParams {
+  dbName: string;              // 必填，表名
+  whereJson?: Record<string, any>; // 可选，查询条件
+  fieldName: string // 必填求和字段名，
+  db?: any;                    // 可选，指定数据库实例
+}
+
+export interface AvgParams {
+  dbName: string;              // 必填，表名
+  whereJson?: Record<string, any>; // 可选，查询条件
+  fieldName: string // 必填求和字段名，
+  db?: any;                    // 可选，指定数据库实例
+}
+
+export interface SampleParams {
+  dbName: string;              // 必填，表名
+  size: number; // 必填，采样数量
+  whereJson?: Record<string, any>; // 可选，查询条件
+  fieldJson?: Record<string, any> // 必填求和字段名，
+  db?: any;                    // 可选，指定数据库实例
+}
+
 
 export interface SelectResult {
   rows: Document[]; // 查询结果数据
@@ -152,7 +188,6 @@ export interface SetByIdParams {
   dataJson?: Record<string, any>; // 可选，投影字段
   db?: any;                    // 可选，指定数据库实例
 }
-
 
 export type CondExpr = {
   if: unknown;

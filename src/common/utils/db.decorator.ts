@@ -33,7 +33,10 @@ export const TransformDbParams = (target, key, descriptor) => {
     if (params?.addFields) {
       params.addFields = transFormAddFields(params.addFields);
     }
-    console.log('装饰器转换后的foreignDB', params.foreignDB);
+    console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
+    console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
+    
+
     return await originalMethod.call(this, params);
   }
 
