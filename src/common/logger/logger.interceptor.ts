@@ -2,14 +2,16 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable, from } from 'rxjs';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { AsyncStorageService } from './asyncStorage.service';
-
-import { _, $ } from '@/common/utils/fieldQueryTemp';
+import { LOG_DB_NAME } from '@/config';
+import { _ } from '@/common/utils/fieldQueryTemp';
 import { DbService } from '@/common/utils/db.service';
 
 @Injectable()
 export class LogInterceptor implements NestInterceptor {
-    constructor(private readonly asyncStorageService: AsyncStorageService,
-        private readonly dbService: DbService,) { }
+    constructor(
+        private readonly asyncStorageService: AsyncStorageService,
+        private readonly dbService: DbService,
+    ) { }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         const req = context.switchToHttp().getRequest();
@@ -22,12 +24,14 @@ export class LogInterceptor implements NestInterceptor {
 
         // 在 AsyncLocalStorage 里创建上下文
         return new Observable(observer => {
-            this.asyncStorageService.run(async() => {
+            this.asyncStorageService.run(async () => {
                 const requestId = this.asyncStorageService.getRequestId();
+                req.requestId = requestId;
+                req.fuck = '我是谁';
                 console.log(`[${requestId}] Incoming Request: ${method} ${url}`);
 
                 await this.dbService.add({
-                    dbName: 'qa-logs',
+                    dbName: LOG_DB_NAME,
                     dataJson: {
                         method,
                         statusCode: 0,
@@ -41,7 +45,7 @@ export class LogInterceptor implements NestInterceptor {
                 res.on('finish', async () => {
                     const statusCode = res.statusCode;
                     await this.dbService.update({
-                        dbName: 'qa-logs',
+                        dbName: LOG_DB_NAME,
                         whereJson: {
                             requestId
                         },
@@ -80,9 +84,9 @@ export class LogInterceptor implements NestInterceptor {
 
                 const saveDb = (requestId, data) => {
                     return this.dbService.update({
-                        dbName: 'qa-logs',
+                        dbName: LOG_DB_NAME,
                         whereJson: {
-                            requestId:requestId
+                            requestId: requestId
                         },
                         dataJson: {
                             response: data,

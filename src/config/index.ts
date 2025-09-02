@@ -19,3 +19,6 @@ export const JWT_SECRET = 'your_jwt_secret_key';
 
 // JWT 过期时间
 export const JWT_EXPIRES_IN = '7d';
+
+// 日志表名称
+export const LOG_DB_NAME = 'qa-logs';

@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Request  } from '@nestjs/common';
 import { UtilsService } from '@/common/utils/utils.service';
 import { DeleteResult, UpdateResult, Document, InsertManyResult } from 'mongodb'
 import { SelectResult } from '@/common/utils/utils.types';
@@ -72,7 +72,7 @@ export class AppController {
 
   @Log()
   @Get('/findByWhereJson')
-  findByWhereJson(): Promise<Document | null> {
+  findByWhereJson(@Request() req): Promise<Document | null> {
     return this.dbService.findByWhereJson({
       dbName: 'qa-users',
       whereJson: {
@@ -127,7 +127,7 @@ export class AppController {
       },
       foreignDB: [
         {
-          limit:1,
+          // limit:1,
           dbName: "qa-roles",
           // localKey: "_id",
           localKey: $.arrayElemAt(['$arr', 3]),

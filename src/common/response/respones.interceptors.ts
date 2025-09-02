@@ -1,16 +1,19 @@
-// 全局响应封装
-import { Injectable } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class ResponseInterceptor {
-  intercept(context: any, next: any) {
+export class ResponseInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const httpContext = context.switchToHttp();
+    const request = httpContext.getRequest<Request>();
     return next.handle().pipe(
       map(data => {
         return {
           code: 0,
           message: '成功!',
-          data: data,
+          data,
+          requestId: (request as any).requestId || null,
         };
       }),
     );

@@ -1,11 +1,13 @@
 import { Module, OnModuleInit, OnModuleDestroy,Logger } from '@nestjs/common';
 import { JwtModule } from '@/common/jwt/jwt.module';
+import { APP_PIPE, APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { UtilsModule } from '@/common/utils/utils.module';
 
 // 公共的守卫、响应拦截器、异常过滤器
 import { AuthGuard } from '@/common/auth/auth.guard';
 import { ResponseInterceptor } from '@/common/response/respones.interceptors';
 import { ExceptionsFilter } from '@/common/exception/exception.filters';
+import { ValidationPipe } from '@/common/validation/validation.pipe';
 // 数据库配置
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
@@ -13,7 +15,19 @@ import { DB_NAME, DB_URL, DEBUG} from './config';
 // 日志服务
 import {LogModule } from '@/common/logger/logger.module';
 @Module({
-  providers: [AuthGuard,ResponseInterceptor,ExceptionsFilter],
+  providers: [{
+    provide: APP_GUARD,
+    useClass: AuthGuard,
+  }, {
+    provide: APP_INTERCEPTOR,
+    useClass: ResponseInterceptor,
+  }, {
+    provide: APP_FILTER,
+    useClass: ExceptionsFilter,
+  },{
+    provide: APP_PIPE,
+    useClass: ValidationPipe,
+  }],
   imports: [JwtModule, UtilsModule,LogModule,
     MongooseModule.forRoot(`${DB_URL}/${DB_NAME}`), // 默认数据库实例
   ],
