@@ -4,6 +4,16 @@ export interface SortRule {
   type: 'desc' | 'asc'; // 排序方式：'asc' 表示升序，'desc' 表示降序
 }
 
+interface TableData {
+  pageIndex?: number;
+  pageSize?: number;
+  formData?: Record<string, any>;
+  columns?: any[];
+  sortRule?: SortRule[];
+  match?: Record<string, any>;
+}
+
+
 // 聚合查询的外联配置
 export interface ForeignDB {
   dbName: string;
@@ -70,6 +80,7 @@ export interface FindByWhereJsonParams {
 
 export interface SelectsParams {
   dbName: string;              // 必填，表名
+  data?: TableData; // 必填，表单数据
   whereJson?: Record<string, any>; // 可选，查询条件
   pageIndex?: number; // 可选，分页索引
   pageSize?: number; // 可选，分页大小
@@ -101,6 +112,9 @@ export interface SelectParams {
   sortArr?: SortRule[]; // 可选，排序
   db?: any;                    // 可选，指定数据库实例
 }
+
+
+
 
 export interface CountParams {
   dbName: string;              // 必填，表名

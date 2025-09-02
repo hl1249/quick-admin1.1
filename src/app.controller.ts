@@ -196,6 +196,31 @@ export class AppController {
 
   }
 
+  @Get('/getTableData')
+  getTableData(): Promise<Document[] | SelectResult> {
+    return this.dbService.getTableData({
+      data: {
+        pageIndex: 1,
+        pageSize: 2,
+        formData: {
+          name: '批量',
+          _add_time: [0, Date.now()] // datetimerange 对应 mode []
+        },
+        columns: [
+          { key: "name", title: "昵称", type: "text", width: 160, mode: "%%" },
+          { key: "_add_time", title: "添加时间", type: "datetimerange", width: 400, mode: "[]" },
+        ],
+        sortRule: [
+          { name: "age", type: "desc" }
+        ]
+      },
+      dbName: 'qa-users',
+      pageIndex: 1, // 当前第几页
+      pageSize: 2, // 每页条数
+    });
+
+  }
+
   @Get('/select')
   select(): Promise<Document[] | SelectResult> {
     return this.dbService.select({
@@ -205,19 +230,22 @@ export class AppController {
       pageIndex: 1, // 当前第几页
       pageSize: 2, // 每页条数
       hasMore: false, // 严格判断是否还有更多数据，默认false
-      whereJson: _.and([
-        {
-          age: _.gte(50)
-        },
-        _.or([
-          {
-            _add_time: _.gte(0)
-          },
-          {
-            arr: _.exists(true)
-          }
-        ])
-      ])
+      whereJson: {
+        name: new RegExp('3$'),
+      },
+      // whereJson: _.and([
+      //   {
+      //     age: _.gte(50)
+      //   },
+      //   _.or([
+      //     {
+      //       _add_time: _.gte(0)
+      //     },
+      //     {
+      //       arr: _.exists(true)
+      //     }
+      //   ])
+      // ])
       // whereJson: { // 条件
       //   age: _.gte(0)  // 金额大于0
       // },
@@ -238,7 +266,7 @@ export class AppController {
   count(): Promise<number> {
     return this.dbService.count({
       dbName: "qa-users",// 表名
-      whereJson:{
+      whereJson: {
         age: _.gte(30),
       }
     });

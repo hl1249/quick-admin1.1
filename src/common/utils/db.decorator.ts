@@ -33,9 +33,15 @@ export const TransformDbParams = (target, key, descriptor) => {
     if (params?.addFields) {
       params.addFields = transFormAddFields(params.addFields);
     }
-    console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
-    console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
-    
+
+    if (params?.data) {
+      console.log('装饰器转换前data', JSON.stringify(params.data, null, 2));
+      params.data = transTableData(params.data);
+      console.log('装饰器转换后data', JSON.stringify(params.data, null, 2));
+    }
+    // console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
+    // console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
+
 
     return await originalMethod.call(this, params);
   }
@@ -401,4 +407,38 @@ function isRolesSexCondition(obj: any): boolean {
     'roles.sex' in obj &&
     obj['roles.sex'] instanceof FieldQueryTemp
   );
+}
+
+
+function transTableData(data: any) {
+  if (data.sortRule) {
+    data.sortRule = transformSortArr(data.sortRule);
+  }
+
+  const match: any = {};
+
+  data.columns.forEach(col => {
+    const value = data.formData[col.key];
+    if (value === undefined || col.mode === "custom") return;
+
+    switch (col.mode) {
+      case "=": match[col.key] = value; break;
+      case "!=": match[col.key] = { $ne: value }; break;
+      case "%%": match[col.key] = { $regex: value, $options: "i" }; break;
+      case "%*": match[col.key] = { $regex: `^${value}`, $options: "i" }; break;
+      case "*%": match[col.key] = { $regex: `${value}$`, $options: "i" }; break;
+      case ">": match[col.key] = { $gt: value }; break;
+      case ">=": match[col.key] = { $gte: value }; break;
+      case "<": match[col.key] = { $lt: value }; break;
+      case "<=": match[col.key] = { $lte: value }; break;
+      case "in": match[col.key] = { $in: value }; break;
+      case "nin": match[col.key] = { $nin: value }; break;
+      case "[]": match[col.key] = { $gte: value[0], $lte: value[1] }; break;
+      case "[)": match[col.key] = { $gte: value[0], $lt: value[1] }; break;
+      case "(]": match[col.key] = { $gt: value[0], $lte: value[1] }; break;
+      case "()": match[col.key] = { $gt: value[0], $lt: value[1] }; break;
+    }
+  });
+  data.match = match;
+  return data;
 }

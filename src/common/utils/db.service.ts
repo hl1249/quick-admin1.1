@@ -7,7 +7,7 @@ import type {
   MaxParams,
   MinParams,
   AvgParams,
-  SampleParams
+  SampleParams,
 } from './utils.types';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
@@ -252,8 +252,9 @@ export class DbService {
 
   @TransformDbParams
   async selects(params: SelectsParams): Promise<SelectResult | Document[]> {
-    const {
+    let {
       dbName,
+      data = {},
       whereJson = {},
       foreignDB = [],
       groupJson = {},
@@ -261,6 +262,7 @@ export class DbService {
       getMain = false,
       getOne = false,
       getCount = false,
+      hasMore = false,
       pageIndex = 1,
       pageSize = 10,
       sortArr = {},
@@ -269,15 +271,20 @@ export class DbService {
       db
     } = params;
 
+    if(data.pageIndex) pageIndex = Number(data.pageIndex);
+    if(data.pageSize) pageSize = Number(data.pageSize);
+    if(data.sortRule) sortArr = data.sortRule
 
+    console.log("表渲染",data)
     // 统一获取集合引用
     const collection = db
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    console.log('foreignDB[0]', JSON.stringify(foreignDB, null, 2))
+    // console.log('foreignDB[0]', JSON.stringify(foreignDB, null, 2))
     // 执行查询
     const result = await collection.aggregate([
+      ...(data.match && Object.keys(data.match).length > 0 ? [{ $match: data.match }] : []),
       { $match: whereJson },
       ...(groupJson && Object.keys(groupJson).length > 0 ? [{ $group: groupJson }] : []),
       ...foreignDB,
@@ -297,6 +304,7 @@ export class DbService {
 
     // 处理单条结果
     if (getOne) {
+      console.log('我有没有')
       return {
         rows: result[0],
         hasMore: false,
@@ -308,7 +316,29 @@ export class DbService {
       };
     }
 
-    return result;
+    // 计算总数和是否有更多数据
+    let total = result.length;
+    let calculatedHasMore = result.length >= pageSize;
+
+    if (getCount || hasMore) {
+      total = await collection.countDocuments(whereJson);
+      calculatedHasMore = (pageIndex * pageSize) < total;
+    }
+
+    return {
+      rows: result,
+      hasMore: calculatedHasMore,
+      total,
+      getCount,
+      pagination: { pageIndex, pageSize },
+      msg: '查询成功',
+      code: 0
+    };
+  }
+
+  @TransformDbParams
+  async getTableData(params: SelectsParams): Promise<SelectResult | Document[]> {
+    return this.selects(params);
   }
 
   @TransformDbParams
@@ -546,6 +576,7 @@ export class DbService {
     const totalAmount = result.length > 0 ? result[0].totalAmount : 0;
     return totalAmount;
   }
+
 
 
 }
