@@ -245,8 +245,6 @@ export const _ = {
   or: (...args: any[]) => LogicQuery.or(...args),
 };
 
-
-
 export const $: MongoAggBuilder = new Proxy({} as MongoAggBuilder, {
   get(target, prop: string) {
     // 处理特殊操作符（如 cond 需要特殊结构）
@@ -265,7 +263,6 @@ export const $: MongoAggBuilder = new Proxy({} as MongoAggBuilder, {
         const args = index !== undefined
           ? [arrOrFirstArg, index]
           : arrOrFirstArg;
-          console.log("我只想了", { $arrayElemAt: args })
         return { $arrayElemAt: args };
       };
     }

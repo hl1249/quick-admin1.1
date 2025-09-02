@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { UtilsService } from '@/common/utils/utils.service';
-import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
+import { DeleteResult, UpdateResult, Document, InsertManyResult } from 'mongodb'
 import { SelectResult } from '@/common/utils/utils.types';
 import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
-
+import { Log } from '@/common/logger/logger.decorator';
 @Controller()
 export class AppController {
   constructor(
@@ -70,13 +70,14 @@ export class AppController {
 
   }
 
+  @Log()
   @Get('/findByWhereJson')
   findByWhereJson(): Promise<Document | null> {
     return this.dbService.findByWhereJson({
       dbName: 'qa-users',
       whereJson: {
-        _id: "689beb65a0556c810061751f",
-        age: _.and(_.gte(10085), _.lte(10086)),
+        // _id: "689beb65a0556c810061751f",
+        // age: _.and(_.gte(10085), _.lte(10086)),
         // "arr.0": 1,
         // "arr.1": 2,
         // "arr.2": 3,
@@ -91,7 +92,8 @@ export class AppController {
     });
 
   }
-
+  
+  @Log()
   @Get('/selects')
   selects(): Promise<Document[] | SelectResult> {
     return this.dbService.selects({
@@ -113,18 +115,19 @@ export class AppController {
       addFields: {
         roleSex: "$roles.sex",
         roleTxt: "$roles.txt",
-        // andSex: {
-        //   $anyElementTrue: {
-        //     $map: {
-        //       input: "$roles",
-        //       as: "r",
-        //       in: { $gte: ["$$r.sex", 0] } // 判断每个 sex 是否 > 0
-        //     }
-        //   }
-        // }
+        andSex: {
+          $anyElementTrue: {
+            $map: {
+              input: "$roles",
+              as: "r",
+              in: { $gte: ["$$r.sex", 0] } // 判断每个 sex 是否 > 0
+            }
+          }
+        }
       },
       foreignDB: [
         {
+          limit:1,
           dbName: "qa-roles",
           // localKey: "_id",
           localKey: $.arrayElemAt(['$arr', 3]),
@@ -284,12 +287,12 @@ export class AppController {
   @Get('/update')
   update(): Promise<UpdateResult> {
     return this.dbService.update({
-      dbName: 'qa-users',
+      dbName: 'qa-logs',
       whereJson: {
-        age: _.gte(30),
+        _id:"68b754520506a4a703050a5d"
       },
       dataJson: {
-        _add_time: 0
+        name:"fuck"
       }
     });
 

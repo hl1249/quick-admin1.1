@@ -35,12 +35,10 @@ export const TransformDbParams = (target, key, descriptor) => {
     }
 
     if (params?.data) {
-      console.log('装饰器转换前data', JSON.stringify(params.data, null, 2));
       params.data = transTableData(params.data);
-      console.log('装饰器转换后data', JSON.stringify(params.data, null, 2));
     }
     // console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
-    // console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
+    console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
 
 
     return await originalMethod.call(this, params);

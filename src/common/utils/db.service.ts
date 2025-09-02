@@ -38,7 +38,7 @@ export class DbService {
       cancelAddTimeStr = false,
       db
     } = params;
-
+    
     // 是否包含添加时间戳
     if (!cancelAddTime) {
       dataJson['_add_time'] = Date.now();
@@ -271,11 +271,11 @@ export class DbService {
       db
     } = params;
 
-    if(data.pageIndex) pageIndex = Number(data.pageIndex);
-    if(data.pageSize) pageSize = Number(data.pageSize);
-    if(data.sortRule) sortArr = data.sortRule
+    if (data.pageIndex) pageIndex = Number(data.pageIndex);
+    if (data.pageSize) pageSize = Number(data.pageSize);
+    if (data.sortRule) sortArr = data.sortRule
 
-    console.log("表渲染",data)
+    console.log("表渲染", data)
     // 统一获取集合引用
     const collection = db
       ? db.collection(dbName)
@@ -304,7 +304,6 @@ export class DbService {
 
     // 处理单条结果
     if (getOne) {
-      console.log('我有没有')
       return {
         rows: result[0],
         hasMore: false,

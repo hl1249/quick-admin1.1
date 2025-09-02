@@ -10,13 +10,14 @@ import { ExceptionsFilter } from '@/common/exception/exception.filters';
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { DB_NAME, DB_URL, DEBUG} from './config';
-
+// 日志服务
+import {LogModule } from '@/common/logger/logger.module';
 @Module({
   providers: [AuthGuard,ResponseInterceptor,ExceptionsFilter],
-  imports: [JwtModule, UtilsModule,
+  imports: [JwtModule, UtilsModule,LogModule,
     MongooseModule.forRoot(`${DB_URL}/${DB_NAME}`), // 默认数据库实例
   ],
-  exports: [JwtModule],
+  exports: [JwtModule,LogModule],
 })
 export class Public implements OnModuleInit, OnModuleDestroy {
   logger: Logger;
