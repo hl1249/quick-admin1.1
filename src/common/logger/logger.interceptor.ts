@@ -16,6 +16,7 @@ export class LogInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         const req = context.switchToHttp().getRequest();
         const res = context.switchToHttp().getResponse();
+        const headers = req.headers;
         const method = req.method;
         const url = req.url;
         const body = req.body;
@@ -27,17 +28,16 @@ export class LogInterceptor implements NestInterceptor {
             this.asyncStorageService.run(async () => {
                 const requestId = this.asyncStorageService.getRequestId();
                 req.requestId = requestId;
-                req.fuck = '我是谁';
-                console.log(`[${requestId}] Incoming Request: ${method} ${url}`);
 
                 await this.dbService.add({
                     dbName: LOG_DB_NAME,
                     dataJson: {
+                        url,
                         method,
                         statusCode: 0,
-                        url,
-                        requestId,
+                        headers,
                         body,
+                        requestId,
                     }
                 })
 

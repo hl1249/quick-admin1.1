@@ -14,6 +14,8 @@ import { Connection } from 'mongoose';
 import { DB_NAME, DB_URL, DEBUG} from './config';
 // 日志服务
 import {LogModule } from '@/common/logger/logger.module';
+
+// 动态路由
 @Module({
   providers: [{
     provide: APP_GUARD,

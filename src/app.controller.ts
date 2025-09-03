@@ -6,7 +6,9 @@ import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import { Log } from '@/common/logger/logger.decorator';
-@Controller()
+
+@Log()
+@Controller('app')
 export class AppController {
   constructor(
     private readonly utilsService: UtilsService,
@@ -70,7 +72,6 @@ export class AppController {
 
   }
 
-  @Log()
   @Get('/findByWhereJson')
   findByWhereJson(@Request() req): Promise<Document | null> {
     return this.dbService.findByWhereJson({
@@ -93,7 +94,6 @@ export class AppController {
 
   }
   
-  @Log()
   @Get('/selects')
   selects(): Promise<Document[] | SelectResult> {
     return this.dbService.selects({

@@ -1,12 +1,53 @@
 import { Module, DynamicModule as NestDynamicModule } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
-import { APP_GUARD } from '@nestjs/core';
+import { loadControllers,loadProviders } from './dynamicLoader';
 import { join } from 'path';
-
 
 @Module({})
 export class DynamicModule {
-    
-}
+  static register(): NestDynamicModule {
+    const basePath = join(__dirname);
+    const rootDir = join(__dirname, '..');
 
+    const controllers = loadControllers(basePath, rootDir);
+    const providers = loadProviders(basePath);
+
+    console.log('controllers',controllers)
+    console.log('providers',providers)
+    return {
+      module: DynamicModule,
+      controllers,
+      providers,
+      exports: providers, // 如果其他模块也要用 service，需要导出
+    };
+  }
+
+  static registerAdmin(): NestDynamicModule {
+    const adminPath = join(__dirname, 'admin');
+    const rootDir = join(__dirname, '..');
+
+    const controllers = loadControllers(adminPath, rootDir);
+    const providers = loadProviders(adminPath);
+
+    return {
+      module: DynamicModule,
+      controllers,
+      providers,
+      exports: providers,
+    };
+  }
+
+  static registerClient(): NestDynamicModule {
+    const clientPath = join(__dirname, 'client');
+    const rootDir = join(__dirname, '..');
+
+    const controllers = loadControllers(clientPath, rootDir);
+    const providers = loadProviders(clientPath);
+
+    return {
+      module: DynamicModule,
+      controllers,
+      providers,
+      exports: providers,
+    };
+  }
+}
