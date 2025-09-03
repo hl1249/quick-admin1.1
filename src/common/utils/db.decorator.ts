@@ -202,6 +202,7 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
   return foreignDB.map(config => {
     const stages: PipelineStage[] = [];
 
+    console.log('config',config)
     // 判断是否有_id字段
     const hasIdField = config.localKey === '_id' || config.foreignKey === '_id';
     // 判断LocalKey是否是对象
@@ -215,11 +216,7 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
             $and: [
               {
                 $eq: [
-                  hasIdField
-                    ? { $toString: `$${config.foreignKey}` }  // _id字段转为字符串
-                    : isLocalKeyObject
-                      ? config.localKey  // 如果是对象，直接使用
-                      : `$${config.foreignKey}`,
+                  hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`, // _id字段转为字符串
                   "$$localVar"
                 ]
               }

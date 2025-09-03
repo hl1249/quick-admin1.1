@@ -41,6 +41,35 @@ export class UtilsService {
 
     return fmt;
   }
+
+
+  sleep(duration: number = 1000): Promise<void> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      }, duration)
+    })
+  }
+
+  filterObject<T extends Record<string, any>>(
+    obj: T,
+    keys: (keyof T)[],
+    include: boolean
+  ): Partial<T> {
+    const result = {} as Partial<T>;
+
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const typedKey = key as keyof T;
+        if ((include && keys.includes(typedKey)) || (!include && !keys.includes(typedKey))) {
+          result[typedKey] = obj[typedKey];
+        }
+      }
+    }
+
+    return result;
+  }
+
 }
 
 

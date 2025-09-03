@@ -30,7 +30,7 @@ export class ValidationPipe implements PipeTransform<any> {
     if (errors.length > 0) {
       const errorMessages = this.flattenValidationErrors(errors);
       throw new BadRequestException({
-        message: 'Validation failed',
+        message: '验证失败',
         errors: errorMessages,
         statusCode: 400,
       });
@@ -56,7 +56,7 @@ export class ValidationPipe implements PipeTransform<any> {
         );
       }
       
-      return [`${error.property}: Validation failed`];
+      return [`${error.property}: 验证失败`];
     });
   }
 }

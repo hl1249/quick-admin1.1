@@ -1,8 +1,11 @@
 import { Module, DynamicModule as NestDynamicModule } from '@nestjs/common';
-import { loadControllers,loadProviders } from './dynamicLoader';
+import { loadControllers,loadProviders } from './dynamic.loader';
 import { join } from 'path';
+import { Public } from '@/public.module';
 
-@Module({})
+@Module({
+  imports: [Public],
+})
 export class DynamicModule {
   static register(): NestDynamicModule {
     const basePath = join(__dirname);

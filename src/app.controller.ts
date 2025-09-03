@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Request  } from '@nestjs/common';
+import { Body, Post, Controller, Get, Request, Req  } from '@nestjs/common';
 import { UtilsService } from '@/common/utils/utils.service';
 import { DeleteResult, UpdateResult, Document, InsertManyResult } from 'mongodb'
 import { SelectResult } from '@/common/utils/utils.types';
@@ -8,7 +8,7 @@ import { _, $ } from '@/common/utils/fieldQueryTemp';
 import { Log } from '@/common/logger/logger.decorator';
 
 @Log()
-@Controller('app')
+@Controller()
 export class AppController {
   constructor(
     private readonly utilsService: UtilsService,
@@ -48,8 +48,9 @@ export class AppController {
 
   }
 
-  @Get('/del')
-  del(): Promise<DeleteResult> {
+  @Post('/del')
+  del(body: Body): Promise<DeleteResult> {
+    console.log('body',body)
     return this.dbService.del({
       dbName: 'qa-users',
       whereJson: {
@@ -112,15 +113,18 @@ export class AppController {
       //     else: 0
       //   }))
       // },//数据
+      // whereJson: { // 条件{}
+      //   role: _.eq('admin')
+      // },
       addFields: {
-        roleSex: "$roles.sex",
-        roleTxt: "$roles.txt",
+        role_name: "$roles.role_id",
+        comment: "$roles.comment",
         andSex: {
           $anyElementTrue: {
             $map: {
               input: "$roles",
               as: "r",
-              in: { $gte: ["$$r.sex", 0] } // 判断每个 sex 是否 > 0
+              in: { $gte: ["$$r.no", 1] } // 判断每个 sex 是否 > 0
             }
           }
         }
@@ -130,8 +134,8 @@ export class AppController {
           // limit:1,
           dbName: "qa-roles",
           // localKey: "_id",
-          localKey: $.arrayElemAt(['$arr', 3]),
-          foreignKey: "_id",
+          localKey: $.arrayElemAt(['$role', 0]),
+          foreignKey: "role_id",
           as: "roles",
           fieldJson: {
             // sex: true,
@@ -180,10 +184,7 @@ export class AppController {
         // }
 
       ],
-      whereJson: { // 条件
-        // _id: "689beb65a0556c810061751f"
-        _id: "689beb65a0556c810061751f"
-      },
+      
       lastWhereJson: {
         // _id: _.lte(20)
       },
@@ -336,11 +337,12 @@ export class AppController {
 
   @Get('/jwt')
   async testJwt(): Promise<string> {
-    const token = this.jwtService.generateToken({
-      userId: '12345',
-      username: 'testuser',
-      role: 'admin',
-    });
-    return token;
+    // const token = this.jwtService.generateToken({
+    //   userId: '12345',
+    //   username: 'testuser',
+    //   role: 'admin',
+    // });
+    // return token;
+    return this.jwtService.generateToken('123')
   }
 }

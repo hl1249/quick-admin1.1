@@ -1,4 +1,4 @@
-import { Controller, Get,Post } from '@nestjs/common';
+import { Controller, Get,Post,Body } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { authService } from './auth.service';
 import { UserDto } from './auth.dto';
@@ -10,7 +10,8 @@ export class AuthController {
   }
 
   @Post('/login')
-  async login(userDto: UserDto): Promise <Document | null> {   
-    return await this.authService.login();
+  async login(@Body() userDto: UserDto): Promise <Document | null> {  
+    console.log('userDto',userDto) 
+    return await this.authService.login(userDto);
   }
 }

@@ -22,7 +22,7 @@ function getFiles(dir: string, suffix: string[] = []): string[] {
   return result;
 }
 
-// 动态加载 controller 并设置路由前缀
+// 动态加载 controller 并设置路由前缀 加载的 controller 必须以 Controller 结尾
 export function loadControllers(basePath: string, rootDir: string): Type<any>[] {
   const files = getFiles(basePath, ['.controller.ts', '.controller.js']);
   const controllers: Type<any>[] = [];
@@ -56,7 +56,7 @@ export function loadControllers(basePath: string, rootDir: string): Type<any>[] 
   return controllers;
 }
 
-// 动态加载 service
+// 动态加载 service 加载的 service 必须以 Service 结尾
 export function loadProviders(basePath: string): Type<any>[] {
   const files = getFiles(basePath, ['.service.ts', '.service.js']);
   const providers: Type<any>[] = [];

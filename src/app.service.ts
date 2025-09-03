@@ -15,8 +15,8 @@ export class AppService {
     private readonly dbService: DbService,
     @InjectConnection() private readonly connection: Connection,
   ) {
-    const token = this.jwtService.generateToken({ userId: 123 });
-    const untoken = this.jwtService.verifyToken(token);
+    // const token = this.jwtService.generateToken({ userId: 123 });
+    // const untoken = this.jwtService.verifyToken(token);
   }
 
   async getHello() {

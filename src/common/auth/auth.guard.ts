@@ -16,6 +16,9 @@ export class AuthGuard implements CanActivate {
         console.log('AuthGuard: Checking authentication for request:', request.url);
         console.log('Headers:', request.headers[AUTHORIZATION]);
         console.log('解密:', this.jwtService.verifyToken(request.headers[AUTHORIZATION]));
+        
+        
+
         return true
     }
 }
