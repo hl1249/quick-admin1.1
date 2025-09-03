@@ -32,7 +32,6 @@ export class authService {
         const isMatch = await bcrypt.compare(password + PASSWORD_SECRET, userInfo.password); // 使用密钥解密密码
 
         if (!isMatch) {
-            // return this.util.errors("")
             throw new BadRequestException('账号或密码错误');
         }
         return {
