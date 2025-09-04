@@ -20,6 +20,9 @@ export const JWT_SECRET = 'your_jwt_secret_key';
 // JWT 过期时间
 export const JWT_EXPIRES_IN = '7d';
 
+// toeken 最大登录数量
+export const TOKEN_MAX_LIMIT = 3;
+
 // 密码加密密钥
 export const PASSWORD_SECRET = "passwordSecret-demo";
 

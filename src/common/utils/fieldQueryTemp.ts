@@ -44,6 +44,12 @@ export class FieldQueryTemp {
     return new FieldQueryTemp('$unset', '');
   }
 
+  // dataJson 中的 _.push() 操作
+  push(value: any) {
+    return new FieldQueryTemp('$push', value);
+  }
+
+
   /**
    * and 支持两种用法：
    * 1. 同字段多条件合并，参数是多个 FieldQueryTemp 实例
@@ -70,26 +76,30 @@ export class FieldQueryTemp {
   }
 
   buildWithField(field: string) {
-    // Special handling for $unset
-    if ('$unset' in this.ops) {
-      return { $unset: { [field]: this.ops['$unset'] } };
-    }
+  
     if ('$expr' in this.ops) {
       return { $expr: this.ops['$expr'] };
     }
+    
+    return { [field]: this.ops };
+  }
+
+  buildDataJsonWithField(field: string) {
+    // // 处理 remove 操作
+    if ('$unset' in this.ops) {
+      return { $unset: field };
+    }
+    // 处理 push 操作
+    if ('$push' in this.ops) {
+      return { $push: { [field]: this.ops['$push'] } };
+    }
+    // 默认处理其他操作
     return { [field]: this.ops };
   }
 
   // 对于selects第一层里面AddFields转换
   buildAddFieldsWithField(field: string) {
-    // 特殊处理 $unset 和 $expr
-    if ('$unset' in this.ops) {
-      return { $unset: { [field]: this.ops['$unset'] } };
-    }
-    if ('$expr' in this.ops) {
-      return { $expr: this.ops['$expr'] };
-    }
-
+    
     // 获取操作符和值
     const operator = Object.keys(this.ops)[0];
     const value = this.ops[operator];
@@ -124,16 +134,6 @@ export class FieldQueryTemp {
 
   // 对于selects里Foreign层里面AddFields转换
   buildForeignAddFieldsWithField(field: string) {
-    // Special handling for $expr - keep as is
-    if ('$expr' in this.ops) {
-      return { $expr: this.ops['$expr'] };
-    }
-
-    // Special handling for $unset
-    if ('$unset' in this.ops) {
-      return { $unset: { [field]: this.ops['$unset'] } };
-    }
-
     // For comparison operators, transform to array format with field reference
     const operator = Object.keys(this.ops)[0];
     const value = this.ops[operator];
@@ -149,11 +149,6 @@ export class FieldQueryTemp {
     // Special handling for $expr - keep as is
     if ('$expr' in this.ops) {
       return { $expr: this.ops['$expr'] };
-    }
-
-    // Special handling for $unset
-    if ('$unset' in this.ops) {
-      return { $unset: { [field]: this.ops['$unset'] } };
     }
 
     // For comparison operators, transform to array format with field reference
@@ -239,7 +234,10 @@ export const _ = {
   // 用于判断字段是否存在
   exists: (val: boolean) => new FieldQueryTemp('$exists', val),
   // dataJson 中的 _.remove() 操作
-  remove: () => ({ $unset: '' }), // 直接返回 $unset 操作
+  // remove: () => ({ $unset: '' }), // 直接返回 $unset 操作
+  remove: () => new FieldQueryTemp('$unset', ''),
+  // push 操作
+  push: (vals: any) => new FieldQueryTemp('$push', vals),
   // 这里用 rest 参数转发，支持两种写法
   and: (...args: any[]) => LogicQuery.and(...args),
   or: (...args: any[]) => LogicQuery.or(...args),

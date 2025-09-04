@@ -6,7 +6,6 @@ export const TransformDbParams = (target, key, descriptor) => {
   const originalMethod = descriptor.value;
   // 修改原方法
   descriptor.value = async function (params) {
-    console.log('装饰器params', params);
     if (params?.whereJson) {
       params.whereJson = transformWhereJson(params.whereJson);
     }
@@ -17,6 +16,7 @@ export const TransformDbParams = (target, key, descriptor) => {
     if (params?.dataJson) {
       params.dataJson = transformDataJson(params.dataJson);
     }
+    console.log('装饰器转换后的dataJson',JSON.stringify( params.dataJson, null, 2));
 
     if (params?.fieldJson) {
       params.fieldJson = transformFieldJson(params.fieldJson);
@@ -38,7 +38,8 @@ export const TransformDbParams = (target, key, descriptor) => {
       params.data = transTableData(params.data);
     }
     // console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
-    console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
+    // console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
+    console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
 
 
     return await originalMethod.call(this, params);
@@ -50,6 +51,7 @@ export const TransformDbParams = (target, key, descriptor) => {
 // 转换whereJson 中的操作符
 // 例 { gt: 20 } 转换为 { __op: '$gt', value: 20 }
 function transformWhereJson(whereJson: Record<string, any>): Record<string, any> {
+  console.log('transformWhereJson进入',whereJson)
   if (typeof whereJson !== 'object' || whereJson === null) return whereJson;
 
   // Handle $and and $or operators recursively
@@ -80,6 +82,10 @@ function transformWhereJson(whereJson: Record<string, any>): Record<string, any>
     else if (key === '_id' && typeof value === 'string' && ObjectId.isValid(value)) {
       result[key] = new ObjectId(value);
     }
+    // 对于 _id 为 objectId
+    else if (key === '_id' && value instanceof ObjectId) {
+      result[key] = value;
+    }
     // 对于 _id 的特殊处理
     else if (key === '_id' && typeof value === 'object' && value !== null) {
       const transformedIdObj: Record<string, any> = {};
@@ -104,35 +110,78 @@ function transformWhereJson(whereJson: Record<string, any>): Record<string, any>
   return result;
 }
 
+// function transformDataJson(dataJson: Record<string, any>): Record<string, any> {
+//   const result: Record<string, any> = { $set: {}, $unset: {} };
+
+//   for (const key in dataJson) {
+//     if (dataJson.hasOwnProperty(key)) {
+//       const value = dataJson[key];
+
+//       if (value instanceof FieldQueryTemp) {
+//         Object.assign(result, value.buildDataJsonWithField(key));
+//         console.log("我操你 result", JSON.stringify(result, null, 2));
+//       }
+
+//       // Check if the value is an object with $unset property
+//       if (typeof value === 'object' && value !== null && '$unset' in value) {
+//         result.$unset[key] = value.$unset;
+//       }
+//       // Check if the value is a function (like _.remove())
+//       else if (typeof value === 'function') {
+//         result.$unset[key] = "";
+//       }
+//       else {
+//         result.$set[key] = value;
+//       }
+//     }
+//   }
+
+//   // Clean up empty objects
+//   if (Object.keys(result.$set).length === 0) {
+//     delete result.$set;
+//   }
+//   if (Object.keys(result.$unset).length === 0) {
+//     delete result.$unset;
+//   }
+
+//   return result;
+// }
+
 function transformDataJson(dataJson: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = { $set: {}, $unset: {} };
+  const result: Record<string, any> = {};
 
   for (const key in dataJson) {
-    if (dataJson.hasOwnProperty(key)) {
-      const value = dataJson[key];
+    if (!dataJson.hasOwnProperty(key)) continue;
+    const value = dataJson[key];
 
-      // Check if the value is an object with $unset property
-      if (typeof value === 'object' && value !== null && '$unset' in value) {
-        result.$unset[key] = value.$unset;
+    if (value instanceof FieldQueryTemp) {
+      const built = value.buildDataJsonWithField(key);
+
+      // 合并 built 到 result
+      for (const op in built) {
+        if (!result[op]) result[op] = {};
+        // built[op] 可能是对象或字符串（$unset: field）
+        if (typeof built[op] === 'object') {
+          Object.assign(result[op], built[op]);
+        } else {
+          result[op][built[op]] = ""; // 如果 $unset 返回的是字段名字符串
+        }
       }
-      // Check if the value is a function (like _.remove())
-      else if (typeof value === 'function') {
-        result.$unset[key] = "";
-      }
-      else {
-        result.$set[key] = value;
-      }
+      continue;
+    }
+
+    // 处理普通字段，默认 $set
+    if (!result.$set) result.$set = {};
+    result.$set[key] = value;
+  }
+
+  // 清理空对象
+  for (const op of ['$set', '$unset', '$push']) {
+    if (result[op] && Object.keys(result[op]).length === 0) {
+      delete result[op];
     }
   }
-
-  // Clean up empty objects
-  if (Object.keys(result.$set).length === 0) {
-    delete result.$set;
-  }
-  if (Object.keys(result.$unset).length === 0) {
-    delete result.$unset;
-  }
-
+  console.log("转换后的",result)
   return result;
 }
 

@@ -1,9 +1,10 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException  } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { AUTHORIZATION } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { Reflector } from '@nestjs/core';
 import { DbService } from '@/common/utils/db.service';
+import { _ } from '@/common/utils/fieldQueryTemp';
+import { UtilsService } from '@/common/utils/utils.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -11,11 +12,12 @@ export class AuthGuard implements CanActivate {
         private readonly reflector: Reflector,
         private readonly jwtService: JwtService,
         private readonly dbService: DbService,
+        private readonly utilsService: UtilsService,
     ) { }
 
     async canActivate(
         context: ExecutionContext,
-    ): Promise<boolean>  {
+    ): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const token = request.headers[AUTHORIZATION];
 
@@ -26,25 +28,27 @@ export class AuthGuard implements CanActivate {
         const isPublicMethod = this.reflector.get<boolean>('isNoAuth', handler);
         const isPublicController = this.reflector.get<boolean>('isNoAuth', controller);
 
-        // console.log('isNoAuth',context.getClass())
         // 如果装饰带有isNoAuth 那么可以忽略token认证
         if (isPublicMethod || isPublicController) {
             return true; // 忽略认证
         }
 
-        try{
+        try {
             const userInfo = await this.dbService.findById({
                 dbName: "qa-users",
                 id: this.jwtService.verifyToken(token)?.userId
             })
 
-            if(!userInfo)  throw new UnauthorizedException('身份认证已过期'!);
-            request['userInfo'] = userInfo;
+            if (token && !userInfo?.token?.includes(token)) throw new UnauthorizedException('身份认证已过期'!);
+
+            if (!userInfo) throw new UnauthorizedException('身份认证已过期'!);
+            
+            request['userInfo'] = this.utilsService.filterObject(userInfo, ['password', 'token'], false);
 
             return true
-        }catch(e){
+        } catch (e) {
             throw new UnauthorizedException('身份认证已过期'!);
         }
-        
+
     }
 }

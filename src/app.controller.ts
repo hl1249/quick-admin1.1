@@ -288,12 +288,14 @@ export class AppController {
   @Get('/update')
   update(): Promise<UpdateResult> {
     return this.dbService.update({
-      dbName: 'qa-logs',
+      dbName: 'qa-users',
       whereJson: {
-        _id:"68b754520506a4a703050a5d"
+        _id:"672b901c0fcabce5e29faef5"
       },
       dataJson: {
-        name:"fuck"
+        // 'arr.0': 10086,
+        // giao:"维护"
+        // token:[]
       }
     });
 
