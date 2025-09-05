@@ -16,7 +16,6 @@ export const TransformDbParams = (target, key, descriptor) => {
     if (params?.dataJson) {
       params.dataJson = transformDataJson(params.dataJson);
     }
-    console.log('装饰器转换后的dataJson',JSON.stringify( params.dataJson, null, 2));
 
     if (params?.fieldJson) {
       params.fieldJson = transformFieldJson(params.fieldJson);
@@ -39,7 +38,7 @@ export const TransformDbParams = (target, key, descriptor) => {
     }
     // console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
     // console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
-    console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
+    // console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
 
 
     return await originalMethod.call(this, params);
@@ -51,7 +50,6 @@ export const TransformDbParams = (target, key, descriptor) => {
 // 转换whereJson 中的操作符
 // 例 { gt: 20 } 转换为 { __op: '$gt', value: 20 }
 function transformWhereJson(whereJson: Record<string, any>): Record<string, any> {
-  console.log('transformWhereJson进入',whereJson)
   if (typeof whereJson !== 'object' || whereJson === null) return whereJson;
 
   // Handle $and and $or operators recursively
@@ -110,43 +108,6 @@ function transformWhereJson(whereJson: Record<string, any>): Record<string, any>
   return result;
 }
 
-// function transformDataJson(dataJson: Record<string, any>): Record<string, any> {
-//   const result: Record<string, any> = { $set: {}, $unset: {} };
-
-//   for (const key in dataJson) {
-//     if (dataJson.hasOwnProperty(key)) {
-//       const value = dataJson[key];
-
-//       if (value instanceof FieldQueryTemp) {
-//         Object.assign(result, value.buildDataJsonWithField(key));
-//         console.log("我操你 result", JSON.stringify(result, null, 2));
-//       }
-
-//       // Check if the value is an object with $unset property
-//       if (typeof value === 'object' && value !== null && '$unset' in value) {
-//         result.$unset[key] = value.$unset;
-//       }
-//       // Check if the value is a function (like _.remove())
-//       else if (typeof value === 'function') {
-//         result.$unset[key] = "";
-//       }
-//       else {
-//         result.$set[key] = value;
-//       }
-//     }
-//   }
-
-//   // Clean up empty objects
-//   if (Object.keys(result.$set).length === 0) {
-//     delete result.$set;
-//   }
-//   if (Object.keys(result.$unset).length === 0) {
-//     delete result.$unset;
-//   }
-
-//   return result;
-// }
-
 function transformDataJson(dataJson: Record<string, any>): Record<string, any> {
   const result: Record<string, any> = {};
 
@@ -181,7 +142,7 @@ function transformDataJson(dataJson: Record<string, any>): Record<string, any> {
       delete result[op];
     }
   }
-  console.log("转换后的",result)
+  console.log("转换后的", result)
   return result;
 }
 
@@ -251,29 +212,71 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
   return foreignDB.map(config => {
     const stages: PipelineStage[] = [];
 
-    console.log('config',config)
+    console.log('config', config)
     // 判断是否有_id字段
     const hasIdField = config.localKey === '_id' || config.foreignKey === '_id';
     // 判断LocalKey是否是对象
     const isLocalKeyObject = typeof config.localKey === 'object';
+    const localKeyType = config.localKeyType
+    const foreignKeyType = config.foreignKeyType
+
+    // 创建基础表达式
+    let matchExpression: any;
+
+    if (localKeyType === 'array') {
+      // localKey是数组，使用 $in 操作符
+      matchExpression = {
+        $in: [
+          hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
+          "$$localVar",
+        ]
+      };
+    } else if (foreignKeyType === 'array') {
+      // foreignKey是数组，使用 $in 操作符（顺序调换）
+      matchExpression = {
+        $in: [
+          hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
+          "$$localVar",
+        ]
+      };
+    } else {
+      // 默认情况，使用 $eq 操作符
+      matchExpression = {
+        $eq: [
+          hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
+          "$$localVar"
+        ]
+      };
+    }
 
     // 创建lookup阶段的pipeline
     const lookupPipeline: PipelineStage[] = [
       {
         $match: {
           $expr: {
-            $and: [
-              {
-                $eq: [
-                  hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`, // _id字段转为字符串
-                  "$$localVar"
-                ]
-              }
-            ]
+            $and: [matchExpression]
           }
         }
       }
     ];
+
+    // // 创建lookup阶段的pipeline
+    // const lookupPipeline: PipelineStage[] = [
+    //   {
+    //     $match: {
+    //       $expr: {
+    //         $and: [
+    //           {
+    //             $eq: [
+    //               hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`, // _id字段转为字符串
+    //               "$$localVar"
+    //             ]
+    //           }
+    //         ]
+    //       }
+    //     }
+    //   }
+    // ];
 
     // 处理whereJson条件
     if (config.whereJson && Object.keys(config.whereJson).length > 0) {

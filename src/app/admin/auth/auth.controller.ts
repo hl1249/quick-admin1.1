@@ -9,7 +9,8 @@ export class AuthController {
   ) {
   }
 
-  @SetMetadata('isNoAuth', true) // 设置该路由不需要验证
+  @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
+  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
   @Post('/login')
   async login(
     @Body() userDto: UserDto, 

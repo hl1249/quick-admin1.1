@@ -25,10 +25,10 @@ export class AuthGuard implements CanActivate {
         const controller = context.getClass();
 
         // 获取方法的元数据，优先级高于控制器的元数据
-        const isPublicMethod = this.reflector.get<boolean>('isNoAuth', handler);
-        const isPublicController = this.reflector.get<boolean>('isNoAuth', controller);
+        const isPublicMethod = this.reflector.get<boolean>('skipAuth', handler);
+        const isPublicController = this.reflector.get<boolean>('skipAuth', controller);
 
-        // 如果装饰带有isNoAuth 那么可以忽略token认证
+        // 如果装饰带有skipAuth 那么可以忽略token认证
         if (isPublicMethod || isPublicController) {
             return true; // 忽略认证
         }

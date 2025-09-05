@@ -3,11 +3,12 @@ import { JwtModule } from '@/common/jwt/jwt.module';
 import { APP_PIPE, APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { UtilsModule } from '@/common/utils/utils.module';
 
-// 公共的守卫、响应拦截器、异常过滤器
+// TOKEN守卫、响应拦截器、异常过滤器、全局验证管道、后台接口鉴权
 import { AuthGuard } from '@/common/auth/auth.guard';
 import { ResponseInterceptor } from '@/common/response/respones.interceptors';
 import { ExceptionsFilter } from '@/common/exception/exception.filters';
 import { ValidationPipe } from '@/common/validation/validation.pipe';
+import { PermissionGuard } from '@/common/auth/permission.guard';
 // 数据库配置
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
@@ -29,6 +30,9 @@ import {LogModule } from '@/common/logger/logger.module';
   },{
     provide: APP_PIPE,
     useClass: ValidationPipe,
+  },{
+    provide: APP_GUARD,
+    useClass: PermissionGuard,
   }],
   imports: [JwtModule, UtilsModule,LogModule,
     MongooseModule.forRoot(`${DB_URL}/${DB_NAME}`), // 默认数据库实例

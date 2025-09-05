@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
   async transform(value: any, { metatype }: ArgumentMetadata) {
@@ -24,13 +23,13 @@ export class ValidationPipe implements PipeTransform<any> {
       whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
-      stopAtFirstError: false,
+      stopAtFirstError: true,
     });
 
     if (errors.length > 0) {
       const errorMessages = this.flattenValidationErrors(errors);
       throw new BadRequestException({
-        message: '验证失败',
+        message: 'DTO字段验证失败',
         errors: errorMessages,
         statusCode: 400,
       });
@@ -56,7 +55,7 @@ export class ValidationPipe implements PipeTransform<any> {
         );
       }
       
-      return [`${error.property}: 验证失败`];
+      return [`${error.property}: DTO字段验证失败`];
     });
   }
 }

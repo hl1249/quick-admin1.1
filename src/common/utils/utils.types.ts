@@ -26,6 +26,8 @@ export interface ForeignDB {
   foreignDB?: ForeignDB[];
   addFields?: Record<string, any>;
   fieldJson?: Record<string, any>;
+  localKeyType?: "array" | "string";
+  foreignKeyType?: "array" | "string";
 }
 
 // 聚合查询分组配置

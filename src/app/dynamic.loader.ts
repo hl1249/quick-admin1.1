@@ -2,6 +2,7 @@ import { Module, DynamicModule as NestDynamicModule, Type } from '@nestjs/common
 import { join, relative } from 'path';
 import { readdirSync, statSync } from 'fs';
 import { PATH_METADATA } from '@nestjs/common/constants';
+import { DEBUG } from '@/config';
 
 // 递归获取所有 controller 或 service 文件
 function getFiles(dir: string, suffix: string[] = []): string[] {
@@ -46,10 +47,11 @@ export function loadControllers(basePath: string, rootDir: string): Type<any>[] 
         Reflect.defineMetadata(PATH_METADATA, routePrefix, controllerClass);
         controllers.push(controllerClass);
 
-        console.log(`Loaded controller: ${controllerClass.name} with route prefix: ${routePrefix}`);
+         DEBUG ? console.log(`动态加载控制器: ${controllerClass.name} 控制器路由前缀: ${routePrefix}`) : null;
+       
       }
     } catch (err) {
-      console.warn(`Failed to load controller from ${file}:`, err);
+      DEBUG ? console.warn(`动态加载控制器失败 ${file}:`, err) : null;
     }
   });
 
@@ -70,10 +72,10 @@ export function loadProviders(basePath: string): Type<any>[] {
 
       if (serviceClass) {
         providers.push(serviceClass);
-        console.log(`Loaded provider: ${serviceClass.name}`);
+        DEBUG ? console.log(`动态加载服务层模块: ${serviceClass.name}`) : null;
       }
     } catch (err) {
-      console.warn(`Failed to load provider from ${file}:`, err);
+      DEBUG ? console.warn(`动态加载服务层模块失败 ${file}:`, err) : null;
     }
   });
 
