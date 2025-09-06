@@ -11,7 +11,7 @@
  Target Server Version : 80003
  File Encoding         : 65001
 
- Date: 06/09/2025 03:26:12
+ Date: 06/09/2025 08:16:15
 */
 
 
@@ -24,6 +24,57 @@ db.createCollection("qa-logs");
 // ----------------------------
 // Documents of qa-logs
 // ----------------------------
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68bb7759b8697b2e34eb1764"),
+    url: "/app/admin/auth/auth/login",
+    method: "POST",
+    statusCode: NumberInt("200"),
+    headers: {
+        host: "localhost:3000",
+        connection: "close",
+        "content-length": "44",
+        "sec-ch-ua-platform": "\"Windows\"",
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTYyMjEsImV4cCI6MTc1NzcyMTAyMX0.t1Xr2evVclINEQu9h1ErQQx5dZBXiYa7ysBiWgJVbIo",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+        accept: "application/json, text/plain, */*",
+        "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Google Chrome\";v=\"139\", \"Chromium\";v=\"139\"",
+        "content-type": "application/json",
+        "sec-ch-ua-mobile": "?0",
+        origin: "http://localhost:1818",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-dest": "empty",
+        referer: "http://localhost:1818/login",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "zh-CN,zh;q=0.9"
+    },
+    body: {
+        username: "admin",
+        password: "hr20001124"
+    },
+    requestId: "833442a4-88e2-4e84-bbd7-9a78a13ef849",
+    "_add_time": 1757116249610,
+    "_add_time_str": "2025-09-06 07:50:49",
+    response: {
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTYyNDksImV4cCI6MTc1NzcyMTA0OX0.OfscvJ0e-bc2vqGQ2Sz9sCJrcL7PKp0MVKHR0S9KsRk",
+        expired: 1757721049000,
+        userInfo: {
+            _id: ObjectId("672b901c0fcabce5e29faef5"),
+            username: "admin",
+            role: [
+                "admin"
+            ],
+            "_add_time": 1730908188567,
+            "_add_time_str": "2024-11-06 23:49:48",
+            no: NumberInt("2"),
+            image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+            avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+            lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+            "last_login_date": 1757116221286,
+            "last_login_ip": "未知IP"
+        }
+    }
+} ]);
 
 // ----------------------------
 // Collection structure for qa-menus
@@ -247,12 +298,12 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcwODk4MTksImV4cCI6MTc1NzY5NDYxOX0.j5bOqdySbYqWbR6qHYXfDG7psMP2kBhENw_y5yHOKi8",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcwOTAxNDgsImV4cCI6MTc1NzY5NDk0OH0.jlP4tFdDcZvOoRYU10uFJtAepc5UFq0CeYxljni_xFU",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcwOTIyNDEsImV4cCI6MTc1NzY5NzA0MX0.LvduHPhHkIc-hyyMu5-SLrj-dPxwjHDjA1GnOzZQhuw"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTY4MjMsImV4cCI6MTc1NzcyMTYyM30.QKPL40IPdnHw41QclJQqfHl7pVK_g05kR8i8dEafVLo",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTY4MjksImV4cCI6MTc1NzcyMTYyOX0.lIicBnWFfv-wazlGLIFpnfLgaGX9kYh_WcTtLSZJpxE",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTY4NDYsImV4cCI6MTc1NzcyMTY0Nn0.9KGrwgSWzRbxVEuiHXYmie0J__6FgTQhrPc_u9BR2w0"
     ],
-    "last_login_date": 1757092241598,
-    "last_login_ip": "127.0.0.1"
+    "last_login_date": 1757116846509,
+    "last_login_ip": "未知IP"
 } ]);
 db.getCollection("qa-users").insert([ {
     _id: ObjectId("68bb20b94f8c40661556f27c"),
@@ -268,8 +319,9 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NTcwOTQyMTIsImV4cCI6MTc1NzY5OTAxMn0.CZ0ZahlMM0dW2kPDmMLeuD4pIVB8uw58znW9QMLw90o"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NTcwOTQyMTIsImV4cCI6MTc1NzY5OTAxMn0.CZ0ZahlMM0dW2kPDmMLeuD4pIVB8uw58znW9QMLw90o",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NTcxMDY0MjEsImV4cCI6MTc1NzcxMTIyMX0.mGxrVIGRn-I3ew1gWVS5MD_MJqYv790er8vDa7aH2I4"
     ],
-    "last_login_date": 1757094212472,
+    "last_login_date": 1757106421363,
     "last_login_ip": "127.0.0.1"
 } ]);
