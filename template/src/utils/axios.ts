@@ -71,12 +71,12 @@ class HttpRequest {
         // 在发送请求之前做些什么
         this.queue[url] = true
 
-        const { userStore } = useStore()
+        const { authStore } = useStore()
         
-        const { token, expired, logout } = userStore
+        const { token, expired, logout } = authStore
         if (token && expired) {
           if (expired < new Date().getTime()) {
-            userStore.logout()
+            logout()
             return Promise.reject('token已过期')
           }
         }

@@ -1,6 +1,6 @@
 <template>
     <div class="position-relative">
-        <div id="lottie_box" class="animation"></div>
+        <div id="lottie_box" class="animation" ></div>
     </div>
 </template>
 
@@ -19,7 +19,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .animation {
     width: 500px;
     margin: auto;

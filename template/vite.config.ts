@@ -4,12 +4,14 @@ import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import vueJsx from "@vitejs/plugin-vue-jsx";
 
 export default defineConfig(async ({ mode }) => {
   const { VITE_PORT, VITE_OPEN, VITE_BASE_PATH, VITE_OUT_DIR } = loadEnv(mode, process.cwd())
 
   return {
     plugins: [vue(),
+      vueJsx(),
     AutoImport({
       imports: ['vue'], // 自动引入 vue 的 API
       dts: 'src/auto-imports.d.ts', // 自动生成类型声明文件
@@ -26,10 +28,10 @@ export default defineConfig(async ({ mode }) => {
     },
     server: {
       port: parseInt(VITE_PORT),
-      open: VITE_OPEN,
+      open: Boolean(VITE_OPEN),
       proxy: {
         '/api': {
-          target: 'http://localhost:3000',
+          target: 'http://localhost:3001',
           secure: false,
           changeOrigin: true,
           rewrite: (path:string) => path.replace(/^\/api/, ''),

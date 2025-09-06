@@ -28,9 +28,6 @@ export class AuthGuard implements CanActivate {
         const isPublicMethod = this.reflector.get<boolean>('skipAuth', handler);
         const isPublicController = this.reflector.get<boolean>('skipAuth', controller);
 
-        console.log('isPublicMethod',isPublicMethod)
-        console.log('isPublicController',isPublicController)
-        console.log('token',token)
         // 如果装饰带有skipAuth 那么可以忽略token认证
         if (isPublicMethod || isPublicController) {
             return true; // 忽略认证

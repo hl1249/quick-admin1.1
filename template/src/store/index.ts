@@ -1,6 +1,8 @@
-import { useUserStore } from './module/userStore'
+import { useAuthStore } from './modules/authStore'
+import { useMenuStore } from './modules/menuStore'
 export const useStore = () => {
   return {
-    userStore: useUserStore(),
+    authStore: useAuthStore(),
+    menuStore: useMenuStore()
   }
 }

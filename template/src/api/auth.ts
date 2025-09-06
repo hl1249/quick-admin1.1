@@ -1,9 +1,8 @@
 import http from '@/utils/axios'
 
 export const login = (data: any) => {
-    console.log("我进来了")
     return http.request({
-        url: '/app/admin/auth/auth/login',
+        url:'/app/client/user/user/login',
         method: 'post',
         data
     })
