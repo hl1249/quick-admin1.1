@@ -142,7 +142,7 @@ function transformDataJson(dataJson: Record<string, any>): Record<string, any> {
       delete result[op];
     }
   }
-  console.log("转换后的", result)
+
   return result;
 }
 

@@ -33,7 +33,10 @@ export class PermissionGuard implements CanActivate {
             return true; // 忽略认证
         }
 
-        const role = request.userInfo?.role;
+        const userInfo = request.userInfo
+        if(!userInfo) throw new ForbiddenException('没有权限访问该接口');
+
+        const role = userInfo?.role;
 
         const permissionsUrlList = await this.dbService.selects({
             dbName: "qa-roles",
@@ -62,7 +65,6 @@ export class PermissionGuard implements CanActivate {
 
             // 获取用户所有权限url
             const allowedUrls = [...new Set(permissionsUrlList.flatMap(item => item.user_permission.flatMap((it: any) => it.url)))]
-            console.log('allowedUrls', allowedUrls)
             if (!this.matchesPatterns(url, allowedUrls)) {
                 throw new ForbiddenException('没有权限访问该接口');
             }

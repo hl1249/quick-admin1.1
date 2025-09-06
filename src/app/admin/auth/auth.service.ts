@@ -22,7 +22,6 @@ export class authService {
         @Ip() ipAddress: string
     ): Promise<Document | null> {
 
-        console.log('ipAddress',ipAddress)
         const { username, password } = userDto;
         const userInfo = await this.dbService.findByWhereJson({
             dbName: "qa-users",
@@ -43,7 +42,6 @@ export class authService {
 
         const token = await this.jwtService.generateToken(userInfo._id.toHexString())
 
-        console.log('生成的token', token)
 
         const passTokens = [
         ...this.jwtService.verifyTokens(userInfo.token || []), // 过滤掉过期 token

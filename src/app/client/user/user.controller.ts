@@ -41,7 +41,6 @@ export class UserController {
 
         const token = await this.jwtService.generateToken(userInfo._id.toHexString())
 
-        console.log('生成的token', token)
 
         const passTokens = [
             ...this.jwtService.verifyTokens(userInfo.token || []), // 过滤掉过期 token

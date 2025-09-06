@@ -29,10 +29,10 @@ export const PASSWORD_SECRET = "passwordSecret-demo";
 // 日志表名称
 export const LOG_DB_NAME = 'qa-logs';
 
-// 需要接口鉴权路由开头 会判断用户是否有调用后台接口权限
+// 需要接口鉴权模块 如果走后台模块会做接口路由鉴权
 export const PERMISSION_URLS = [
     '/app/admin/'
 ]
 
-// 超级管理员role_id标识 对应 qa-roles 表中的 role_id 字段
+// 系统管理员role_id标识 对应 qa-roles 表中的 role_id 字段 无视接口鉴权
 export const ADMIN_ROLE_ID = 'admin';

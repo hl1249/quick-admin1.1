@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Req, SetMetadata, Ip } from '@nestjs/commo
 import { Document } from 'mongodb'
 import { authService } from './auth.service';
 import { UserDto } from './auth.dto';
+import { Log } from '@/common/logger/logger.decorator'
 @Controller()
 export class AuthController {
   constructor(
@@ -9,6 +10,7 @@ export class AuthController {
   ) {
   }
 
+  // @Log() 是否对该接口记录日志
   @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
   @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
   @Post('/login')
@@ -16,7 +18,6 @@ export class AuthController {
     @Body() userDto: UserDto, 
     @Ip() ipAddress: string,
   ): Promise<Document | null> {
-    console.log('userDto', userDto)
     return await this.authService.login(userDto, ipAddress);
   }
 
