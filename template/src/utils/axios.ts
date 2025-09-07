@@ -3,6 +3,7 @@ import type { AxiosInstance, InternalAxiosRequestConfig,AxiosResponse,AxiosReque
 import { ElMessage } from 'element-plus'
 import { useStore } from '@/store'
 import { AUTHORIZATION } from '@/config'
+import router from '@/router'
 
 export const getUrl = (): string => {
     const value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
@@ -55,6 +56,7 @@ class HttpRequest {
       },
       401: (res: any) => {
         ElMessage.error(res.data.message || '身份认证已过期')
+        router.push('/login')
       },
       403: (res: any) => {
         ElMessage.error(res.data.message || '没有权限访问该接口')

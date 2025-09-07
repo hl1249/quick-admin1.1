@@ -1,10 +1,9 @@
 <template>
-  <div>
-    用户表界面
-  </div>
+  <div>迷路了</div>
 </template>
 
 <script setup>
+import {ref} from "vue"
 
 </script>
 

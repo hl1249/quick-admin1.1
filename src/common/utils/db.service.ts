@@ -13,7 +13,7 @@ import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, Insert
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { DEBUG } from '@/config';
-import { UtilsService } from './utils.service';
+import { formatTimestamp } from '@/common/utils/utils'
 import { TransformDbParams } from './db.decorator';
 
 @Injectable()
@@ -21,7 +21,6 @@ export class DbService {
 
   constructor(
     @InjectConnection() private readonly connection: Connection,
-    private readonly utilsService: UtilsService,
   ) {
     if (DEBUG) {
       let logger = new Logger('DbService');
@@ -43,7 +42,7 @@ export class DbService {
     if (!cancelAddTime) {
       dataJson['_add_time'] = Date.now();
       if (!cancelAddTimeStr) {
-        dataJson['_add_time_str'] = this.utilsService.formatTimestamp(new Date())
+        dataJson['_add_time_str'] = formatTimestamp(new Date())
       }
     }
 
@@ -69,7 +68,7 @@ export class DbService {
     // 是否包含添加时间戳
     if (!cancelAddTime) {
       const currentTime = Date.now();
-      const currentTimeStr = this.utilsService.formatTimestamp(new Date());
+      const currentTimeStr = formatTimestamp(new Date());
       dataJson.forEach(item => {
         item['_add_time'] = currentTime;
         if (!cancelAddTimeStr) {

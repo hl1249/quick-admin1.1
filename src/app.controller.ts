@@ -1,5 +1,4 @@
 import { Body, Post, Controller, Get, Request, Req  } from '@nestjs/common';
-import { UtilsService } from '@/common/utils/utils.service';
 import { DeleteResult, UpdateResult, Document, InsertManyResult } from 'mongodb'
 import { SelectResult } from '@/common/utils/utils.types';
 import { DbService } from '@/common/utils/db.service';
@@ -11,7 +10,6 @@ import { Log } from '@/common/logger/logger.decorator';
 @Controller()
 export class AppController {
   constructor(
-    private readonly utilsService: UtilsService,
     private readonly dbService: DbService,
     private readonly jwtService: JwtService,
   ) {

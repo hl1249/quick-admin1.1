@@ -14,3 +14,9 @@ export const getDynamicMenu = () => {
         method: 'get'
     })
 }
+export const checkLogin = () => {
+    return http.request({
+        url:'/app/admin/auth/auth/checkLogin',
+        method: 'get'
+    })
+}

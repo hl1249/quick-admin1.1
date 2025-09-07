@@ -1,10 +1,11 @@
 <template>
   <div>
-    用户表界面
+    健身歌名
   </div>
 </template>
 
 <script setup>
+import {ref} from "vue"
 
 </script>
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@/common/jwt/jwt.service';
-import { UtilsService } from '@/common/utils/utils.service';
 import { Connection } from 'mongoose';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult, ReturnDocument } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
@@ -11,7 +10,6 @@ export class AppService {
 
   constructor(
     private readonly jwtService: JwtService, 
-    private readonly utilsService: UtilsService,
     private readonly dbService: DbService,
     @InjectConnection() private readonly connection: Connection,
   ) {

@@ -1,12 +1,14 @@
 <template>
     <div class="position-relative">
-        <div id="lottie_box" class="animation" ></div>
+        <el-button @click="goUser">动态添加</el-button>
+        <div id="lottie_box" class="animation"></div>
     </div>
 </template>
 
 <script setup lang="ts">
 import anData from '@/assets/lottie/mongo.json'
 import lottie from 'lottie-web'
+import router from '@/router'
 let animation = {};
 onMounted(() => {
     animation = lottie.loadAnimation({
@@ -17,6 +19,10 @@ onMounted(() => {
         animationData: anData,
     })
 })
+
+const goUser = () => {
+    router.push('/user')
+}
 </script>
 
 <style scoped lang="scss">

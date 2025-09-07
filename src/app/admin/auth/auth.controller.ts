@@ -21,6 +21,14 @@ export class AuthController {
     return await this.authService.login(userDto, ipAddress);
   }
 
+  @Get('/checkLogin')
+  async checkLogin(@Req() req) {
+      const {userInfo} = req
+      return {
+        isLogin:!!userInfo
+      }
+  }
+
   // @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
   @Get('/getUserInfo')
   getUserInfo(@Req() req) {

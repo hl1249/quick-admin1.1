@@ -1,7 +1,7 @@
 import { Module, OnModuleInit, OnModuleDestroy,Logger } from '@nestjs/common';
 import { JwtModule } from '@/common/jwt/jwt.module';
 import { APP_PIPE, APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
-import { UtilsModule } from '@/common/utils/utils.module';
+import { DbModule } from '@/common/utils/db.module';
 
 // TOKEN守卫、响应拦截器、异常过滤器、全局验证管道、后台接口鉴权
 import { AuthGuard } from '@/common/auth/auth.guard';
@@ -34,7 +34,7 @@ import {LogModule } from '@/common/logger/logger.module';
     provide: APP_GUARD,
     useClass: PermissionGuard,
   }],
-  imports: [JwtModule, UtilsModule,LogModule,
+  imports: [JwtModule, DbModule,LogModule,
     MongooseModule.forRoot(`${DB_URL}/${DB_NAME}`), // 默认数据库实例
   ],
   exports: [JwtModule,LogModule],

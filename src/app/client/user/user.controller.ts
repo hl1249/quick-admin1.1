@@ -3,7 +3,7 @@ import { Document } from 'mongodb'
 import { UserDto } from './user.dto';
 import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
-import { UtilsService } from '@/common/utils/utils.service';
+import { filterObject } from '@/common/utils/utils'
 import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
 import * as bcrypt from 'bcryptjs';
 @Controller()
@@ -11,7 +11,6 @@ export class UserController {
     constructor(
         private readonly dbService: DbService,
         private readonly jwtService: JwtService,
-        private readonly utilsService: UtilsService,
     ) {
     }
 
@@ -62,7 +61,7 @@ export class UserController {
         return {
             token,
             expired: await this.jwtService.getExpired(await this.jwtService.generateToken(userInfo._id.toHexString())),
-            userInfo: this.utilsService.filterObject(userInfo, ['password', 'token'], false)
+            userInfo: filterObject(userInfo, ['password', 'token'], false)
         }
 
     }

@@ -2,14 +2,14 @@
   <div class="px-[1rem] h-[40px]">
     <div class="flex justify-between items-center">
       <div class="w-0 flex-1">
-        <el-tabs v-model="editableTabsValue" type="card" class="demo-tabs"  @tab-remove="removeTab">
-          <el-tab-pane label="首页" name="/home" >
-          </el-tab-pane>
-          <el-tab-pane  closable v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+        <el-tabs v-model="menuStore.activeName" type="card" class="demo-tabs" @tab-remove="removeTab"
+          @tab-change="TabClick">
+          <el-tab-pane :closable="item?.noClosable ? false : true" v-for="item in menuStore.tabsList" :key="item.name"
+            :label="item.meta.title" :name="item.name">
           </el-tab-pane>
         </el-tabs>
       </div>
-      <div @click="addTab('维护')">
+      <div>
         我
       </div>
     </div>
@@ -17,62 +17,41 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-
 import type { TabPaneName } from 'element-plus'
+import type { TabItem } from '@/store/modules/menuStore'
+import router from '@/router'
+import { useStore } from '@/store'
 
-let tabIndex = 2
-const editableTabsValue = ref('2')
-const editableTabs = ref([
-  {
-    title: 'Tab 1',
-    name: '1',
-    content: 'Tab 1 content',
-  }
-])
+const { menuStore } = useStore()
 
-const addTab = (targetName: string) => {
-  const newTabName = `${++tabIndex}`
-  editableTabs.value.push({
-    title: '外国语',
-    name: newTabName,
-    content: 'New Tab content',
+const TabClick = (item: any) => {
+  const toRouter = router.getRoutes().find(i => i.name === item)
+  menuStore.tabsNavTo({
+    name:String(toRouter?.name),
+    path:toRouter?.path as string,
+    meta:toRouter?.meta,
   })
-  editableTabsValue.value = newTabName
 }
-const removeTab = (targetName: TabPaneName) => {
-  const tabs = editableTabs.value
-  let activeName = editableTabsValue.value
-  if (activeName === targetName) {
-    tabs.forEach((tab, index) => {
-      if (tab.name === targetName) {
-        const nextTab = tabs[index + 1] || tabs[index - 1]
-        if (nextTab) {
-          activeName = nextTab.name
-        }
-      }
-    })
-  }
 
-  editableTabsValue.value = activeName
-  editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
+const removeTab = (targetName: TabPaneName) => {
+  console.log('targetName', targetName)
 }
 </script>
 
 <style lang="less" scoped>
 .demo-tabs {
-  /deep/ .el-tabs__header {
+  :deep(.el-tabs__header) {
     margin: 0;
     border: none;
   }
 
-  /deep/ .el-tabs__nav {
+  :deep(.el-tabs__nav) {
     gap: 5px !important;
     border: none;
     background-color: transparent;
   }
 
-  /deep/ .el-tabs__item {
+  :deep(.el-tabs__item) {
     margin: 0;
     height: 25px;
     // padding: 4px 8px;
@@ -82,8 +61,8 @@ const removeTab = (targetName: TabPaneName) => {
     // background-color: white;
   }
 
-  /deep/ .el-tabs__nav-next,
-  /deep/ .el-tabs__nav-prev {
+  :deep(.el-tabs__nav-next),
+  :deep(.el-tabs__nav-prev) {
     line-height: 25px;
   }
 }

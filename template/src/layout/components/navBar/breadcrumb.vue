@@ -7,10 +7,15 @@
             <Expand />
             </el-icon>
             <el-breadcrumb :separator-icon="ArrowRight">
-                <el-breadcrumb-item :to="{ path: '/' }">homepage</el-breadcrumb-item>
-                <el-breadcrumb-item>promotion management</el-breadcrumb-item>
-                <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-                <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
+                <el-breadcrumb-item v-for="item in menuStore.brendCrumbList" 
+      :to="item.path" >
+                     <div class="flex flex-row items-center gap-1">
+                        <el-icon size="1rem">
+                        <component :is="item.meta.icon || item.icon"></component>
+                        </el-icon>
+                        {{ item.meta.title }}
+                    </div>
+                </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="flex pr-4 items-center gap-[10px]">

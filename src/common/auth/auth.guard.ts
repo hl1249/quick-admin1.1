@@ -4,7 +4,7 @@ import { JwtService } from '@/common/jwt/jwt.service';
 import { Reflector } from '@nestjs/core';
 import { DbService } from '@/common/utils/db.service';
 import { _ } from '@/common/utils/fieldQueryTemp';
-import { UtilsService } from '@/common/utils/utils.service';
+import { filterObject } from '@/common/utils/utils'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -12,7 +12,6 @@ export class AuthGuard implements CanActivate {
         private readonly reflector: Reflector,
         private readonly jwtService: JwtService,
         private readonly dbService: DbService,
-        private readonly utilsService: UtilsService,
     ) { }
 
     async canActivate(
@@ -43,7 +42,7 @@ export class AuthGuard implements CanActivate {
 
             if (!userInfo) throw new UnauthorizedException('身份认证已过期'!);
             
-            request['userInfo'] = this.utilsService.filterObject(userInfo, ['password', 'token'], false);
+            request['userInfo'] = filterObject(userInfo, ['password', 'token'], false);
 
             return true
         } catch (e) {

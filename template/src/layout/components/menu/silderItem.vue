@@ -29,7 +29,6 @@ defineOptions({
   name: 'SideItem'  // 让递归识别自己
 })
 import { useRouter } from 'vue-router';
-import { defineProps } from 'vue'
 
 const props = defineProps<{
   item: { [key: string]: any } // 不再标记为可选

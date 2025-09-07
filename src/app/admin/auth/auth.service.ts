@@ -4,7 +4,7 @@ import { Document } from 'mongodb'
 import { UserDto } from './auth.dto';
 import { PASSWORD_SECRET, TOKEN_MAX_LIMIT, ADMIN_ROLE_ID } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
-import { UtilsService } from '@/common/utils/utils.service';
+import { arrayToTree,filterObject } from '@/common/utils/utils'
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import * as bcrypt from 'bcryptjs';
 @Injectable()
@@ -12,7 +12,6 @@ export class authService {
     constructor(
         private readonly dbService: DbService,
         private readonly jwtService: JwtService,
-        private readonly utilsService: UtilsService,
     ) {
     }
 
@@ -63,7 +62,7 @@ export class authService {
         return {
             token,
             expired: await this.jwtService.getExpired(await this.jwtService.generateToken(userInfo._id.toHexString())),
-            userInfo: this.utilsService.filterObject(userInfo, ['password', 'token'], false)
+            userInfo: filterObject(userInfo, ['password', 'token'], false)
         }
     }
 
@@ -89,10 +88,10 @@ export class authService {
         children:"children"
         };
 
-        console.log('数组转树',JSON.stringify(this.utilsService.arrayToTree(res as Document[],treeProps),null,2))
+        console.log('数组转树',JSON.stringify(arrayToTree(res as Document[],treeProps),null,2))
         return{
             res,
-            menus:this.utilsService.arrayToTree(res as Document[],treeProps)
+            menus:arrayToTree(res as Document[],treeProps)
         }
         console.log('user',userInfo)
         console.log('allowedMenus',allowedMenus)

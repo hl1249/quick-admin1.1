@@ -1,6 +1,6 @@
 <template>
   <div>
-    用户表界面
+    日志
   </div>
 </template>
 
