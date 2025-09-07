@@ -1,8 +1,7 @@
 <template>
   <div class="px-[1rem] h-[40px]">
     <div class="flex justify-between items-center">
-      <div class="w-[80%] flex-1">
-
+      <div class="w-0 flex-1">
         <el-tabs v-model="editableTabsValue" type="card" class="demo-tabs"  @tab-remove="removeTab">
           <el-tab-pane label="首页" name="/home" >
           </el-tab-pane>
@@ -11,7 +10,7 @@
         </el-tabs>
       </div>
       <div @click="addTab('维护')">
-        我叼你妈
+        我
       </div>
     </div>
   </div>
@@ -35,7 +34,7 @@ const editableTabs = ref([
 const addTab = (targetName: string) => {
   const newTabName = `${++tabIndex}`
   editableTabs.value.push({
-    title: 'New Tab',
+    title: '外国语',
     name: newTabName,
     content: 'New Tab content',
   })
@@ -76,7 +75,7 @@ const removeTab = (targetName: TabPaneName) => {
   /deep/ .el-tabs__item {
     margin: 0;
     height: 25px;
-    padding: 4px 8px;
+    // padding: 4px 8px;
     border-left: none;
     border-radius: 3px;
     border: 1px solid var(--el-border-color) !important;

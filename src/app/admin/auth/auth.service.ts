@@ -2,7 +2,7 @@ import { Injectable, BadRequestException, Req, Request, Post, Ip } from '@nestjs
 import { DbService } from '@/common/utils/db.service';
 import { Document } from 'mongodb'
 import { UserDto } from './auth.dto';
-import { PASSWORD_SECRET, TOKEN_MAX_LIMIT } from '@/config';
+import { PASSWORD_SECRET, TOKEN_MAX_LIMIT, ADMIN_ROLE_ID } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { UtilsService } from '@/common/utils/utils.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
@@ -65,5 +65,36 @@ export class authService {
             expired: await this.jwtService.getExpired(await this.jwtService.generateToken(userInfo._id.toHexString())),
             userInfo: this.utilsService.filterObject(userInfo, ['password', 'token'], false)
         }
+    }
+
+    async getMenu(req): Promise<any>{
+        const { userInfo, allowedMenus} = req
+        let whereJson = {}
+        if(!userInfo.role.includes(ADMIN_ROLE_ID)){
+            whereJson = {
+                menu_id:_.in(allowedMenus)
+            }
+        }
+
+        const res = await this.dbService.selects({
+            dbName:'qa-menus',
+            whereJson,
+            getMain:true,
+            pageSize:200
+        })
+
+        let treeProps = {
+        id:"name",
+        parent_id:"parent_id", 
+        children:"children"
+        };
+
+        console.log('数组转树',JSON.stringify(this.utilsService.arrayToTree(res as Document[],treeProps),null,2))
+        return{
+            res,
+            menus:this.utilsService.arrayToTree(res as Document[],treeProps)
+        }
+        console.log('user',userInfo)
+        console.log('allowedMenus',allowedMenus)
     }
 }

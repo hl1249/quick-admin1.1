@@ -1,34 +1,15 @@
 <template>
-    <el-menu default-active="2" popper-effect="dark"
-  :collapse="menuStore.isCollapse" class="el-menu-vertical-demo theme-bg" @open="handleOpen" @close="handleClose">
-    <el-sub-menu index="1">
-      <template #title>
-        <el-icon>
-          <location />
-        </el-icon>
-        <span>Navigator One</span>
-      </template>
-      <el-menu-item-group title="Group One">
-        <el-menu-item index="1-1">item one</el-menu-item>
-        <el-menu-item index="1-2">item two</el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group title="Group Two">
-        <el-menu-item index="1-3">item three</el-menu-item>
-      </el-menu-item-group>
-    </el-sub-menu>
-      <el-sub-menu index="1-4">
-        <template #title>
-        <el-icon>
-          <location />
-        </el-icon>
-        <span>item four</span>
-      </template>
-        <el-menu-item index="1-4-1">item one</el-menu-item>
-      </el-sub-menu>
-  </el-menu>
+    <div class="left-silder">
+        <el-menu :default-openeds="menuStore.openeds" popper-effect="dark" :default-active="menuStore.activeName" class="el-menu-vertical-demo theme-bg" :collapse="menuStore.isCollapse" @open="handleOpen"
+            @close="handleClose">
+            <silder-item v-for="route,index in menuStore.menuList" :key="route._id" :item="route"/>
+        </el-menu>
+    </div>
 </template>
 
 <script lang="ts" setup>
+import SilderItem from './silderItem.vue'
+
 import {
   Document,
   Menu as IconMenu,

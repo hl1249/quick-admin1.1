@@ -57,9 +57,13 @@ export class PermissionGuard implements CanActivate {
             }]
         })
 
+        console.log('permissionsUrlList',permissionsUrlList)
+
         if (permissionsUrlList && Array.isArray(permissionsUrlList)) {
 
-            if (permissionsUrlList.some(item => item.role === ADMIN_ROLE_ID)) { // 超级管理员不进行权限验证
+            const allowedMenus = [...new Set(permissionsUrlList.flatMap(item => item.menu))]
+            request['allowedMenus'] = allowedMenus
+            if (permissionsUrlList.some(item => item.role_id === ADMIN_ROLE_ID)) { // 如果该用户有一个role 包含系统管理员标识那么不进行验证
                 return true
             }
 

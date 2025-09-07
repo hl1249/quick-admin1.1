@@ -16,30 +16,40 @@ export type MenuList = Routers & {
 }
 
 export interface MenuState {
-//   menuList: Ref<MenuList[]>
-//   setMenuList: (menus: MenuList[]) => void
+  menuList: Ref<MenuList[]>
+  initMenu: (menus: MenuList[]) => void
   isCollapse: Ref<boolean>
   changeIsCollapse: (val: boolean) => void
-//   openeds: Ref<any[]>
-//   setOpeneds: (value: any[]) => void
-//   activeName: Ref<any>
-//   setActiveName: (name: string) => void
-//   setBreadCrumb: (to: any, route: any[]) => void
-//   brendCrumbList: Ref<any[]>
+    openeds: Ref<any[]>
+  //   setOpeneds: (value: any[]) => void
+    activeName: Ref<any>
+  //   setActiveName: (name: string) => void
+  //   setBreadCrumb: (to: any, route: any[]) => void
+  //   brendCrumbList: Ref<any[]>
 }
 
 export const useMenuStore = defineStore(
   'menuConfig',
-  ():MenuState => {
+  (): MenuState => {
 
     const isCollapse = ref(true)
     const changeIsCollapse = () => {
-        isCollapse.value = !isCollapse.value
+      isCollapse.value = !isCollapse.value
     }
-    
+
+
+    const menuList:MenuState['menuList'] = ref([])
+    const initMenu:MenuState['initMenu'] = (newMenuList) => {
+      menuList.value = newMenuList
+    }
+
+    const openeds:MenuState['openeds'] = ref([])
+    const activeName:MenuState['activeName'] = ref('')
 
     return {
-        isCollapse, changeIsCollapse
+      isCollapse, changeIsCollapse, menuList, initMenu,
+      openeds,
+      activeName
     }
   },
   {

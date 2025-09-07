@@ -2,7 +2,8 @@
     <div class=" flex justify-between items-center">
         <div class="flex items-center gap-5 px-4 h-16">   
             <el-icon size="1.5rem" @click="menuStore.changeIsCollapse"
-            :class=" 'transition-all duration-200' + (menuStore.isCollapse ? 'rotate-90 rotate' : 'rotate')">
+             :class=" 'transition-all duration-200 ' + (menuStore.isCollapse ? 'rotate-90' : '')"
+             >
             <Expand />
             </el-icon>
             <el-breadcrumb :separator-icon="ArrowRight">

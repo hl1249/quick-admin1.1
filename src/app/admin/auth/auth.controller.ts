@@ -21,9 +21,15 @@ export class AuthController {
     return await this.authService.login(userDto, ipAddress);
   }
 
+  // @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
   @Get('/getUserInfo')
   getUserInfo(@Req() req) {
     const { userInfo } = req;
     return userInfo
+  }
+
+  @Get('/getDynamicMenu')
+  async getDynamicMenu(@Req() req) {
+        return this.authService.getMenu(req)
   }
 }

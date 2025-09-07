@@ -1,6 +1,20 @@
 // utils.service.ts
 import { Injectable } from '@nestjs/common';
 
+
+
+
+interface TreeNode {
+  [key: string]: any;
+  children?: TreeNode[];
+}
+
+interface TreeProps {
+  id: string;
+  parent_id: string;
+  children: string;
+}
+
 @Injectable()
 export class UtilsService {
   treeToList(tree: any[], list: any[] = []): any[] {
@@ -51,6 +65,7 @@ export class UtilsService {
     })
   }
 
+  // 过滤对象属性 let obj = {a:1,b:2}  filterObject(obj,'a',false) => {b:2}
   filterObject<T extends Record<string, any>>(
     obj: T,
     keys: (keyof T)[],
@@ -69,6 +84,59 @@ export class UtilsService {
 
     return result;
   }
+
+  // 数组转树
+  arrayToTree(arrayData: TreeNode[], treeProps: TreeProps): TreeNode[] {
+    const { id, parent_id, children } = treeProps;
+
+    // 创建映射表，用于快速查找节点
+    const nodeMap = new Map<string, TreeNode>();
+    const result: TreeNode[] = [];
+
+    // 第一遍遍历：创建所有节点的映射
+    arrayData.forEach(item => {
+      const nodeId = item[id];
+      nodeMap.set(nodeId, { ...item });
+    });
+
+    // 第二遍遍历：构建树结构
+    arrayData.forEach(item => {
+      const node = nodeMap.get(item[id])!;
+      const parentId = item[parent_id];
+
+      if (parentId) {
+        const parentNode = nodeMap.get(parentId);
+        if (parentNode) {
+          if (!parentNode[children]) {
+            parentNode[children] = [];
+          }
+          parentNode[children].push(node);
+        }
+      } else {
+        // 没有父节点，说明是根节点
+        result.push(node);
+      }
+    });
+
+    // 第三遍遍历：移除空的 children 数组
+    const removeEmptyChildren = (node: TreeNode): TreeNode => {
+      const newNode = { ...node };
+
+      if (newNode[children] && Array.isArray(newNode[children])) {
+        if (newNode[children].length === 0) {
+          delete newNode[children];
+        } else {
+          // 递归处理子节点
+          newNode[children] = newNode[children].map(removeEmptyChildren);
+        }
+      }
+
+      return newNode;
+    };
+
+    return result.map(removeEmptyChildren);
+  }
+
 
 }
 

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { login as loginApi } from '@/api/auth'
+import { login as loginApi, getDynamicMenu } from '@/api/auth'
 import { ElMessage } from 'element-plus'
+import { useMenuStore } from './menuStore'
 import router from '@/router'
 
 export const useAuthStore = defineStore(
@@ -21,6 +22,8 @@ export const useAuthStore = defineStore(
         }
 
         const login = async (data: any) => {
+            const menuStore = useMenuStore()
+
             const res = await loginApi(data)
             const {
                 data: {
@@ -36,6 +39,10 @@ export const useAuthStore = defineStore(
             })
             router.push('/home')
 
+            getDynamicMenu().then(res => {
+                console.log('菜单', res)
+                menuStore.initMenu(res.data.data.menus)
+            })
             console.log("登陆", res)
         }
 

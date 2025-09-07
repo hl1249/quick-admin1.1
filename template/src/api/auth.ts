@@ -2,12 +2,15 @@ import http from '@/utils/axios'
 
 export const login = (data: any) => {
     return http.request({
-        url:'/app/client/user/user/login',
+        url:'/app/admin/auth/auth/login',
         method: 'post',
         data
     })
 }
 
 export const getDynamicMenu = () => {
-
+    return http.request({
+        url:'/app/admin/auth/auth/getDynamicMenu',
+        method: 'get'
+    })
 }
