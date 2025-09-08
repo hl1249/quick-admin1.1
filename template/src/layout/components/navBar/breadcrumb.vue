@@ -42,5 +42,4 @@ import Dark from './dark.vue'
 import { useStore } from '@/store'
 const { menuStore, authStore } = useStore()
 const { userInfo } = authStore
-console.log('userInfo', userInfo)
 </script>

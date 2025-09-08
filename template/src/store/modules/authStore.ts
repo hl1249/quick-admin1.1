@@ -47,7 +47,6 @@ export const useAuthStore = defineStore(
         }
 
         const checkLogin = async () => {
-            console.log('token', token)
             if (!token.value) return false
 
             try {
