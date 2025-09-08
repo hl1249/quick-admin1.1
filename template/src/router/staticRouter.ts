@@ -19,12 +19,12 @@ export type Routers = RouteRecordRaw & {
 const staticRouter: Routers[] = [
     {
         path: '/',
-        name:'home',
-        component: main,
+        // name:'home',
         redirect: '/home',
+        component: main,
         meta: {
             title: "根页",
-            icon: ""
+            icon: "House"
         },
         children: [{
             path: '/home',
@@ -35,7 +35,15 @@ const staticRouter: Routers[] = [
                 icon: "HomeFilled"
             },
         },
-        
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'NotFound',
+            meta:{
+                title:"未知页面",
+                icon: "QuestionFilled"
+            },
+            component: () => import('@/pages/error/index.vue')
+            }
         ]
     },
     {

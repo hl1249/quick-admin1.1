@@ -67,7 +67,6 @@ export const useMenuStore = defineStore(
         children: buildAsyncMenus(menuList.value),
       })
 
-      console.log(router.getRoutes())
     }
 
     // 左侧菜单展开状态
@@ -79,7 +78,6 @@ export const useMenuStore = defineStore(
     // 左侧菜单激活选项
     const activeName = ref<string>('')
     const initActiveName: MenuState['initActiveName'] = (newActiveName) => {
-      console.log('newActiveName', newActiveName)
       activeName.value = newActiveName
     }
 
@@ -105,7 +103,16 @@ export const useMenuStore = defineStore(
     const addTabs: MenuState['addTabs'] = (tabsItem) => {
       const exists = tabsList.value.some(tab => tab.name === tabsItem.name)
       if (!exists && tabsItem.name != 'NotFound') {
-        tabsList.value.push(tabsItem)
+        // tabsList.value.push({
+        //     name:String(tabsItem.name),
+        //     path:tabsItem.path,
+        //     meta:tabsItem.meta,
+        // })
+         tabsList.value.push({
+            name:String(tabsItem.name),
+            path:tabsItem.path,
+            meta:tabsItem.meta,
+        })
       }
     }
     const removeTabs: MenuState['removeTabs'] = (index, targetName) => {
@@ -125,7 +132,6 @@ export const useMenuStore = defineStore(
     }
 
     const tabsNavTo = (tabsItem: TabItem) => {
-      console.log('点击跳转', tabsItem)
       if (tabsItem.name === currentTagName.value) {
         router.replace({
           name: 'redirect',

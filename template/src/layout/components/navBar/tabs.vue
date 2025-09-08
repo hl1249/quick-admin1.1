@@ -26,11 +26,7 @@ const { menuStore } = useStore()
 
 const TabClick = (item: any) => {
   const toRouter = router.getRoutes().find(i => i.name === item)
-  menuStore.tabsNavTo({
-    name:String(toRouter?.name),
-    path:toRouter?.path as string,
-    meta:toRouter?.meta,
-  })
+  menuStore.tabsNavTo(toRouter as TabItem)
 }
 
 const removeTab = (targetName: TabPaneName) => {
