@@ -11,7 +11,7 @@
  Target Server Version : 80003
  File Encoding         : 65001
 
- Date: 06/09/2025 08:16:15
+ Date: 08/09/2025 08:02:18
 */
 
 
@@ -85,6 +85,102 @@ db.createCollection("qa-menus");
 // ----------------------------
 // Documents of qa-menus
 // ----------------------------
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("672b207918a1950fd5ed570b"),
+    "_add_time": NumberLong("1596416400000"),
+    enable: true,
+    icon: "tools",
+    "menu_id": "system",
+    title: "系统设置",
+    name: "system",
+    sort: NumberInt("110"),
+    component: null,
+    "parent_id": null,
+    path: null
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("672b209618a1950fd5ed570c"),
+    "_add_time": NumberLong("1596416400000"),
+    enable: true,
+    icon: "folder-opened",
+    "menu_id": "system-uni-uni-id-files",
+    title: "素材管理",
+    name: "systemFile",
+    "parent_id": "system",
+    sort: NumberInt("2"),
+    component: "/src/pages/system/systemFile",
+    path: "system/system-file"
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("672dc39fef2124dea37e285d"),
+    "_add_time": NumberLong("1596416400000"),
+    comment: "1个角色可以分配多个角色",
+    enable: true,
+    icon: "user-filled",
+    "menu_id": "sys-user-manage",
+    title: "系统用户管理",
+    name: "systemUser",
+    "parent_id": "system",
+    sort: NumberInt("1"),
+    component: "/src/pages/system/systemUser",
+    path: "system/system-user"
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("672dc3c2ef2124dea37e285e"),
+    "_add_time": NumberLong("1596416400000"),
+    comment: "1个角色可以分配多个权限和菜单",
+    enable: true,
+    icon: "user",
+    "menu_id": "sys-role-manage",
+    title: "角色管理",
+    name: "systemRole",
+    "parent_id": "system",
+    sort: NumberInt("3"),
+    component: "/src/pages/system/systemRole",
+    path: "system/system-role"
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("672dc3d5ef2124dea37e285f"),
+    "_add_time": NumberLong("1596416400000"),
+    comment: "控制admin左侧菜单的显示和隐藏",
+    enable: true,
+    icon: "Menu",
+    "menu_id": "sys-menus-manage",
+    title: "菜单管理",
+    name: "systemMenu",
+    "parent_id": "system",
+    sort: NumberInt("4"),
+    component: "/src/pages/system/systemMenu",
+    path: "system/system-menu"
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("673f2966f80f4613e73ed0cc"),
+    "parent_id": "systemRole",
+    "menu_id": "enable",
+    title: "健身",
+    icon: "AlarmClock",
+    "_add_time": NumberLong("1732192614508"),
+    "_add_time_str": "2024-11-21 20:36:54",
+    enable: true,
+    name: "muscle",
+    component: "/src/pages/muscle/muscleManage",
+    path: "Muscle/muscleManage",
+    sort: null
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("6740620e947e19874d59330d"),
+    "parent_id": "system",
+    "menu_id": "system-log",
+    icon: "Document",
+    path: "system/system-log",
+    "_add_time": NumberLong("1732272654771"),
+    "_add_time_str": "2024-11-22 18:50:54",
+    component: "/src/pages/system/systemLog",
+    sort: null,
+    title: "请求日志",
+    enable: true,
+    name: "systemLog"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-permissions
@@ -298,12 +394,12 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTY4MjMsImV4cCI6MTc1NzcyMTYyM30.QKPL40IPdnHw41QclJQqfHl7pVK_g05kR8i8dEafVLo",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTY4MjksImV4cCI6MTc1NzcyMTYyOX0.lIicBnWFfv-wazlGLIFpnfLgaGX9kYh_WcTtLSZJpxE",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTY4NDYsImV4cCI6MTc1NzcyMTY0Nn0.9KGrwgSWzRbxVEuiHXYmie0J__6FgTQhrPc_u9BR2w0"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcyODg2MTMsImV4cCI6MTc1Nzg5MzQxM30.eh97-S9fqk43sOPnCMFZwgeZ7-pAALP46L3_QM_JqrA",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcyODg2MTcsImV4cCI6MTc1Nzg5MzQxN30.UPGZj_Zqavx_8U60rXD6bUgVjjPjXAS7D2ohrssHyyw",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcyODk1NDUsImV4cCI6MTc1Nzg5NDM0NX0.lHJiqo-nx2tvLtLZruVtjmHW-fPReoEP7vjm67wei3E"
     ],
-    "last_login_date": 1757116846509,
-    "last_login_ip": "未知IP"
+    "last_login_date": 1757289545327,
+    "last_login_ip": "127.0.0.1"
 } ]);
 db.getCollection("qa-users").insert([ {
     _id: ObjectId("68bb20b94f8c40661556f27c"),

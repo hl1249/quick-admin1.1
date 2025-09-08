@@ -19,16 +19,16 @@ export type Routers = RouteRecordRaw & {
 const staticRouter: Routers[] = [
     {
         path: '/',
-        name:'root',
+        name:'home',
         component: main,
         redirect: '/home',
         meta: {
-            title: "首页",
+            title: "根页",
             icon: ""
         },
         children: [{
-            path: 'home',
-            name: 'home',
+            path: '/home',
+            name: 'home_page',
             component: () => import('@/pages/home/index.vue'),
             meta: {
                 title: "首页",

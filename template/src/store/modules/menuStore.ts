@@ -42,7 +42,7 @@ export interface MenuState {
   tabsList: Ref<TabItem[]>
   initTabsList: (tabsList: TabItem[]) => void
   addTabs: (tabItem: TabItem) => void
-  removeTabs: (index: number) => void
+  removeTabs: (index: number, targetName: string | number) => void
   removeAllTabs: () => void
   tabsNavTo: (tabItem: TabItem) => void
 }
@@ -93,7 +93,7 @@ export const useMenuStore = defineStore(
     }
 
     // tag历史记录
-    const currentTagName: MenuState['currentTagName'] = ref("首页")
+    const currentTagName: MenuState['currentTagName'] = ref("home")
 
     const homeRoute = getHomeRoute(router.getRoutes())
     const tabsList: MenuState['tabsList'] = ref([{ ...homeRoute, noClosable: true }])
@@ -107,9 +107,17 @@ export const useMenuStore = defineStore(
       if (!exists && tabsItem.name != 'NotFound') {
         tabsList.value.push(tabsItem)
       }
-      // console.log("添加tabas记录",tabsItem)
     }
-    const removeTabs: MenuState['removeTabs'] = (index) => {
+    const removeTabs: MenuState['removeTabs'] = (index, targetName) => {
+      const currentRoute = router.currentRoute.value
+
+      if (currentRoute.name === targetName) {
+        if (tabsList.value[index + 1]) {
+          tabsNavTo(tabsList.value[index + 1] as TabItem)
+        } else {
+          tabsNavTo(tabsList.value[index - 1] as TabItem)
+        }
+      }
       tabsList.value.splice(index, 1)
     }
     const removeAllTabs: MenuState['removeAllTabs'] = () => {

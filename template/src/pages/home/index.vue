@@ -21,7 +21,7 @@ onMounted(() => {
 })
 
 const goUser = () => {
-    router.push('/user')
+    router.push('/home')
 }
 </script>
 

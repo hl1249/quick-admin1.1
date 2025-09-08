@@ -1,13 +1,14 @@
-<template>
+<template lang="">
   <div>
-    菜单
+    菜单管理
+    
   </div>
 </template>
-
-<script setup>
-
+<script>
+export default {
+  
+}
 </script>
-
-<style lang="vue" scoped>
-
+<style lang="">
+  
 </style>

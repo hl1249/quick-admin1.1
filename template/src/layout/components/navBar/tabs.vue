@@ -34,7 +34,9 @@ const TabClick = (item: any) => {
 }
 
 const removeTab = (targetName: TabPaneName) => {
-  console.log('targetName', targetName)
+  const findIndex = menuStore.tabsList.findIndex( item => item.name === targetName)
+  console.log('targetName', findIndex)
+  menuStore.removeTabs(findIndex,targetName)
 }
 </script>
 

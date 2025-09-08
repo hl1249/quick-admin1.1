@@ -84,8 +84,8 @@ export class authService {
 
         let treeProps = {
         id:"name",
-        parent_id:"parent_id", 
-        children:"children"
+            parent_id:"parent_id", 
+            children:"children"
         };
 
         console.log('数组转树',JSON.stringify(arrayToTree(res as Document[],treeProps),null,2))
@@ -93,7 +93,5 @@ export class authService {
             res,
             menus:arrayToTree(res as Document[],treeProps)
         }
-        console.log('user',userInfo)
-        console.log('allowedMenus',allowedMenus)
     }
 }

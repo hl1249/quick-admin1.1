@@ -1,6 +1,6 @@
 <template>
   <div>
-    健身歌名
+    健身
   </div>
 </template>
 

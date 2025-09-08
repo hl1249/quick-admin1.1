@@ -66,7 +66,7 @@ export const getBreadCrumbList = (route: any, homeRoute: any) => {
 }
 
 
-export const getHomeRoute = (routers: any[], homeName = 'home') => {
+export const getHomeRoute = (routers: any[], homeName = 'home_page') => {
     let i = -1
     let len = routers.length
     let homeRoute = {}
