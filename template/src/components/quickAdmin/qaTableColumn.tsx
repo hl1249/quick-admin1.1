@@ -1,10 +1,10 @@
 
-import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable, ElButton } from 'element-plus'
+import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable, ElButton, ElRadio } from 'element-plus'
 import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
 import { timeFormat } from '@/utils'
-import QaTableColumn from './qaTableColumn'  // ✅ 引入自
+
 
 export default defineComponent({
     name: 'qaTableColumn',
@@ -74,11 +74,10 @@ export default defineComponent({
             type: String as PropType<string>,
             default: 'yyyy-MM-dd hh:mm:ss'
         },
-
-
     },
     setup(props) {
-        const { prop, label, type, width, columns, data, defaultValue, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align } = props;
+        const { prop, label, type, width, columns, data, defaultValue, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align, 
+            } = props;
 
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
@@ -99,13 +98,13 @@ export default defineComponent({
             const iconName = renderData?.find(item => item.value === value)?.icon ?? value;
             const IconComponent = (Icons as Record<string, any>)[iconName];
 
-            return <ElIcon>
+            return IconComponent ? <ElIcon>
                 <IconComponent />
-            </ElIcon>
+            </ElIcon> : <></>
         }
-        const renderTag = (value: any, renderData: Data[]) => {
-            const findItem = renderData.find((item: any) => item.value === value) as Data
-            return <ElTag effect="dark" type={findItem.tagType}>{value}</ElTag>
+        const renderTag = (value: any, data: Data[]) => {
+            const findItem = data.find((item: any) => item.value === value) as Data
+            return findItem ? <ElTag effect="dark" type={findItem.tagType}>{value}</ElTag> : <></>
         }
         const renderTime = (value: any, valueFormat: string) => {
             return <span>
@@ -127,7 +126,7 @@ export default defineComponent({
             if (!isNaN(Number(value))) {
                 return <span>{(Number(value) / 100).toFixed(2)}</span>
             }
-            return <span>0.00</span>;
+            return <span>-</span>;
         }
         const renderPercentage = (value: any) => {
             if (!isNaN(Number(value))) {
@@ -168,7 +167,11 @@ export default defineComponent({
 
             })}</div>
         }
-        const renderJson = (value: any) => <span>{JSON.stringify(value)}</span>;
+        const renderBranch = (value: any, data: any) => {
+            const findItem = data.find((item: any) => item.value === value) as Data
+            return findItem ? <span>{findItem.label}</span> : <></>
+        }
+        const renderJson = (value: any) => <div class="whitespace-nowrap">{value}</div>;
         const renderObject = (value: Record<string, any>,columns: Columns[]) => {
             if (!value || Object.keys(value).length === 0) return null;
             const tableDatas = columns.map((item) => ({
@@ -187,7 +190,7 @@ export default defineComponent({
             avatar: ({ value }) => renderAvatar(value, shape),
             json: ({ value }) => renderJson(value),
             object: ({ value, columns}) => renderObject(value, columns),
-            tag: ({ value }) => renderTag(value, data),
+            tag: ({ value, data }) => renderTag(value, data),
             image: ({ value }) => renderImage(value),
             rate: ({ value }) => renderRate(value),
             switch: ({ value }) => renderSwitch(value),
@@ -198,12 +201,16 @@ export default defineComponent({
             percentage: ({ value }) => renderPercentage(value),
             address: ({ value }) => renderAddress(value),
             userInfo: ({ value }) => renderUserInfo(value),
-            group: ({ row, column, index, columns }) => renderGroup(columns, row, column, index)
+            group: ({ row, column, index, columns }) => renderGroup(columns, row, column, index),
+            radio:({ value, data })=> renderBranch(value, data),
+            select:({ value, data })=> renderBranch(value, data),
+            checkbox:({ value, data })=> renderBranch(value, data),
+
         };
 
         const render = (params: any) => {
             const renderer = renderMap[params.type];
-            return renderer ? renderer(params) : null;
+            return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
 
         return () => (
@@ -211,16 +218,18 @@ export default defineComponent({
             <ElTableColumn prop={prop} label={label} width={width} sortable={sortable} align={align}>
                 {{
                     default: ({ row, column, $index }: { row: any; column: any; $index: number }) => {
+                        let value = row[prop]
                         if (formatter) {
-                            return type === 'html' ? <div v-html={formatter(row[prop], row, column, $index)} /> : formatter(row[prop], row, column, $index)
+                            return type === 'html' ? <div v-html={formatter(value, row, column, $index)} /> : formatter(row[prop], row, column, $index)
                         }
                         return render({
-                            value: row[prop],
+                            value: typeof value === 'object' ? JSON.stringify(value) : value ,
                             type,
                             row,
                             column,
                             $index,
-                            columns
+                            columns,
+                            data
                         });
                     }
                 }}

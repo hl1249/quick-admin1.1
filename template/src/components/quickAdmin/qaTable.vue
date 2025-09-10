@@ -4,14 +4,15 @@
             @sort-change="columnSort">
             <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
 
-            <qa-table-column v-for="item in columns" :key="item.key" :prop="item.key" :label="item.title"
+            <template v-for="item in columns" :key="item.key">
+            <qa-table-column :key="item.key" :prop="item.key" :label="item.title" v-if="item?.show ? item.show.includes('row') : true"
                 :width="item.width" :columns="item.columns" :data="item.data" :sortable="item.sortable"
                 :align="item.align"
                 :shape="item.shape"
                 :formatter="item.formatter" :type="item.type"
                 :valueFormat="item.valueFormat"
                 />
-
+            </template>
             <el-table-column align="center" v-if="rightBtns" width="400" fixed="right">
                 <template #header>
                     操作
@@ -64,8 +65,8 @@ import http from '@/utils/axios'
 import { ElMessage } from 'element-plus'
 import qaTableColumn from './qaTableColumn'
 
-type Type = 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage' | 'address' | 'userInfo' | 'group'
-
+type Type =  'radio' | 'select' | 'checkbox' | 'json' | 'radio' | 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage' | 'address' | 'userInfo' | 'group' | 'table'
+type Show = 'detail' | 'row'
 export interface Data {
     value: number | string
     label?: string,
@@ -77,6 +78,7 @@ export interface Columns {
     key?: string
     title: string
     type: Type,
+    show?: Show[]
     width?: string | number,
     columns?: Columns[]
     data?: Data[]
@@ -89,7 +91,8 @@ export interface Columns {
     sortable?: boolean | string,
     shape?: 'circle' | 'square',
     align?: 'left' | 'center' | 'right',
-    valueFormat?: string
+    valueFormat?: string,
+    rowHeight?:  string | number,
 }
 
 type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more'
@@ -103,14 +106,22 @@ export interface DeleteRequset{
     (params: { action: string; data: any }): void
 }
 
-const props = defineProps<{
-    action: string,
-    columns: Columns[],
+const props = withDefaults(
+  defineProps<{
+    action: string
+    columns: Columns[]
     queryFormParam?: Record<string, any>
     rightBtns?: RightBtn[]
     rightBtnsMore?: RightBtnMoreItem[]
-    rowNo?: boolean,
-}>()
+    rowNo?: boolean
+    renderNode?: 'detail' | 'row'   // 渲染位置
+  }>(),
+  {
+    renderNode: 'row',  // 默认值
+    rowNo: false,       // 其他可选默认值
+  }
+)
+
 const emit = defineEmits(['elTableSelect', 'delete', 'update'])
 
 const selectable = (row: any) => ![1, 2].includes(row.id)
