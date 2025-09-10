@@ -151,6 +151,7 @@ export default defineComponent({
             </div>
         }
         const renderGroup = (columns: Columns[] | undefined, row: any, column: any, index: any) => {
+      
             if (!columns) return null; // 防止 undefined 报错
             return <div>{columns.map((item) => {
                 if (item.type === 'group') {
@@ -161,18 +162,18 @@ export default defineComponent({
                 } else {
                     return <span class="flex items-start gap-[10px] whitespace-nowrap">
                         <span>{item.title}:</span>
-                        <span>{item.key ? render({ value: row[item.key], type: item.type, row, column, index }) : null}</span>
+                        <span>{item.key ? render({ value: row[item.key], type: item.type, row, column, index, columns:item.columns }) : null}</span>
                     </span>;
                 }
 
             })}</div>
         }
         const renderJson = (value: any) => <span>{JSON.stringify(value)}</span>;
-        const renderObject = (value: Record<string, any>) => {
+        const renderObject = (value: Record<string, any>,columns: Columns[]) => {
             if (!value || Object.keys(value).length === 0) return null;
-            const tableDatas = Object.keys(value).map((key) => ({
-                title: key,
-                value: value[key],
+            const tableDatas = columns.map((item) => ({
+                title: item.title,
+                value: value[item.key as keyof typeof value],
             }));
             return (
                 <ElTable data={tableDatas} show-header={false} border>
@@ -185,7 +186,7 @@ export default defineComponent({
             text: ({ value }) => renderText(value),
             avatar: ({ value }) => renderAvatar(value, shape),
             json: ({ value }) => renderJson(value),
-            object: ({ value }) => renderObject(value),
+            object: ({ value, columns}) => renderObject(value, columns),
             tag: ({ value }) => renderTag(value, data),
             image: ({ value }) => renderImage(value),
             rate: ({ value }) => renderRate(value),
@@ -197,7 +198,7 @@ export default defineComponent({
             percentage: ({ value }) => renderPercentage(value),
             address: ({ value }) => renderAddress(value),
             userInfo: ({ value }) => renderUserInfo(value),
-            group: ({ row, column, index }) => renderGroup(columns, row, column, index)
+            group: ({ row, column, index, columns }) => renderGroup(columns, row, column, index)
         };
 
         const render = (params: any) => {
@@ -218,7 +219,8 @@ export default defineComponent({
                             type,
                             row,
                             column,
-                            $index
+                            $index,
+                            columns
                         });
                     }
                 }}

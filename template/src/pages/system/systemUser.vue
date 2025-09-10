@@ -24,8 +24,12 @@ const table = ref<{
       title: "分组",
       columns: [
         {
-          key: "userInfo", title: "用户", type: "userInfo",
-          width: 200
+          key: "userInfo", title: "用户", type: "object",
+          width: 200,
+          columns: [
+            { key: "avatar", title: "对象内字段1", type: "text" },
+            { key: "nickname", title: "对象内字段2", type: "text" },
+          ]
         },
         {
           "key": "last_login_date",
@@ -53,9 +57,14 @@ const table = ref<{
               type: "group",
               title: "分组3",
               columns: [
+
                 {
-                  key: "userInfo", title: "用户", type: "userInfo",
-                  width: 200
+                  key: "userInfo", title: "用户", type: "object",
+                  width: 200,
+                  columns: [
+                    { key: "avatar", title: "对象内字段1", type: "text" },
+                    { key: "nickname", title: "对象内字段2", type: "text" },
+                  ]
                 },
                 {
                   "key": "last_login_date",
