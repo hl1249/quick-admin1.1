@@ -10,7 +10,7 @@
         </el-tabs>
       </div>
       <div>
-        我
+        操作区
       </div>
     </div>
   </div>
@@ -31,7 +31,6 @@ const TabClick = (item: any) => {
 
 const removeTab = (targetName: TabPaneName) => {
   const findIndex = menuStore.tabsList.findIndex( item => item.name === targetName)
-  console.log('targetName', findIndex)
   menuStore.removeTabs(findIndex,targetName)
 }
 </script>

@@ -48,7 +48,6 @@ export class AppController {
 
   @Post('/del')
   del(body: Body): Promise<DeleteResult> {
-    console.log('body',body)
     return this.dbService.del({
       dbName: 'qa-users',
       whereJson: {
@@ -205,15 +204,15 @@ export class AppController {
         pageIndex: 1,
         pageSize: 2,
         formData: {
-          name: '批量',
-          _add_time: [0, Date.now()] // datetimerange 对应 mode []
+          // name: '批量',
+          // _add_time: [0, Date.now()] // datetimerange 对应 mode []
         },
         columns: [
           { key: "name", title: "昵称", type: "text", width: 160, mode: "%%" },
           { key: "_add_time", title: "添加时间", type: "datetimerange", width: 400, mode: "[]" },
         ],
         sortRule: [
-          { name: "age", type: "desc" }
+          { name: "no", type: "desc" }
         ]
       },
       dbName: 'qa-users',

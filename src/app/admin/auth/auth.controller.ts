@@ -9,7 +9,6 @@ export class AuthController {
     private readonly authService: authService,
   ) {
   }
-
   // @Log() 是否对该接口记录日志
   @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
   @SetMetadata('skipAuth', true) // 设置该路由不需要验证token

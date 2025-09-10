@@ -79,7 +79,13 @@ export class authService {
             dbName:'qa-menus',
             whereJson,
             getMain:true,
-            pageSize:200
+            pageSize:200,
+            sortArr:[
+                {
+                    name:"sort",
+                    type:"asc"
+                }
+            ]
         })
 
         let treeProps = {
@@ -87,8 +93,7 @@ export class authService {
             parent_id:"parent_id", 
             children:"children"
         };
-
-        console.log('数组转树',JSON.stringify(arrayToTree(res as Document[],treeProps),null,2))
+        
         return{
             res,
             menus:arrayToTree(res as Document[],treeProps)

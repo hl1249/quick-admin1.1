@@ -30,6 +30,7 @@ export type MenuList = Routers & {
 export interface MenuState {
   menuList: Ref<MenuList[]>
   initMenu: (menus: MenuList[]) => void
+  clearMenuList: () => void
   isCollapse: Ref<boolean>
   changeIsCollapse: (val: boolean) => void
   openeds: Ref<any[]>
@@ -66,7 +67,9 @@ export const useMenuStore = defineStore(
         component: () => import('@/layout/main.vue'),
         children: buildAsyncMenus(menuList.value),
       })
-
+    }
+    const clearMenuList: MenuState['clearMenuList'] = () => {
+      menuList.value = []
     }
 
     // 左侧菜单展开状态
@@ -103,15 +106,11 @@ export const useMenuStore = defineStore(
     const addTabs: MenuState['addTabs'] = (tabsItem) => {
       const exists = tabsList.value.some(tab => tab.name === tabsItem.name)
       if (!exists && tabsItem.name != 'NotFound') {
-        // tabsList.value.push({
-        //     name:String(tabsItem.name),
-        //     path:tabsItem.path,
-        //     meta:tabsItem.meta,
-        // })
          tabsList.value.push({
             name:String(tabsItem.name),
             path:tabsItem.path,
             meta:tabsItem.meta,
+            query:tabsItem.query
         })
       }
     }
@@ -151,7 +150,8 @@ export const useMenuStore = defineStore(
     }
 
     return {
-      isCollapse, changeIsCollapse, menuList, initMenu,
+      menuList, initMenu,clearMenuList,
+      isCollapse, changeIsCollapse, 
       openeds,
       initOpends,
       activeName, initActiveName,

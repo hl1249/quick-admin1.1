@@ -93,6 +93,10 @@ export class DbService {
       db
     } = params;
 
+    if(Object.keys(whereJson).length === 0) {
+      throw new Error('dbSerivce.del whereJson 不能为空')
+    }
+
     if (db) {
       return await db.collection(dbName).deleteMany(whereJson);
     } else {
@@ -282,18 +286,7 @@ export class DbService {
 
     console.log('foreignDB[0]', JSON.stringify(foreignDB, null, 2))
     console.log('addFields[0]', JSON.stringify(addFields, null, 2))
-    console.log('查询语句',JSON.stringify([
-      ...(data.match && Object.keys(data.match).length > 0 ? [{ $match: data.match }] : []),
-      { $match: whereJson },
-      ...(groupJson && Object.keys(groupJson).length > 0 ? [{ $group: groupJson }] : []),
-      ...foreignDB,
-      { $match: lastWhereJson },
-      ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
-      ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),
-      ...(sortArr && Object.keys(sortArr).length > 0 ? [{ $sort: sortArr }] : []),
-      { $skip: pageSize * (pageIndex - 1) },
-      { $limit: pageSize }
-    ]))
+  
     // 执行查询
     const result = await collection.aggregate([
       ...(data.match && Object.keys(data.match).length > 0 ? [{ $match: data.match }] : []),

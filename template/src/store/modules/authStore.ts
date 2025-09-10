@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { login as loginApi, getDynamicMenu, checkLogin as checkLoginApi } from '@/api/auth'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
+import { useMenuStore } from './menuStore'
 
 export const useAuthStore = defineStore(
     'auth', () => {
@@ -39,6 +40,8 @@ export const useAuthStore = defineStore(
         }
 
         const logout = () => {
+            const menuStore = useMenuStore()
+            menuStore.clearMenuList()
             token.value = ''
             expired.value = 0
             userInfo.value = {}
@@ -53,6 +56,7 @@ export const useAuthStore = defineStore(
                 await checkLoginApi()
                 return true
             } catch (err) {
+                logout()
                 return false
             }
 

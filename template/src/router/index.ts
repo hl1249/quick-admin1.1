@@ -25,7 +25,7 @@ router.beforeEach(async (to, from, next) => {
     const isLogin = await authStore.checkLogin()
     if (isLogin) {
       // 已登录，重定向到首页
-      next(to)
+      next({path:'/'})
     } else {
       // 未登录，允许访问登录页
       next()
@@ -34,9 +34,9 @@ router.beforeEach(async (to, from, next) => {
   }
 
   menuStore.initActiveName(to.name as string)
-  menuStore.initBreadCrumbList(to,router.getRoutes())
+  menuStore.initBreadCrumbList(to, router.getRoutes())
   menuStore.addTabs(to as TabItem)
-  
+
   if (firstLoad) {
     firstLoad = false
     try {
@@ -44,14 +44,14 @@ router.beforeEach(async (to, from, next) => {
       const res = await getDynamicMenu()
       menuStore.initMenu(res.data.data.menus)
       // 菜单加载完成后继续导航
-      next({path: to.path})
+      next({ path: to.path, query: to.query })
     } catch (error) {
       console.error('Failed to load dynamic menu:', error)
       // 即使菜单加载失败也允许继续导航
       next()
     }
   } else {
-    if(menuStore.menuList.length <= 0){
+    if (menuStore.menuList.length <= 0) {
       const res = await getDynamicMenu()
       menuStore.initMenu(res.data.data.menus)
     }

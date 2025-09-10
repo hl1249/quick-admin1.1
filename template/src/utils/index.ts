@@ -81,3 +81,52 @@ export const getHomeRoute = (routers: any[], homeName = 'home_page') => {
     }
     return homeRoute
 }
+
+export const timeFormat = (date: Date | string | number, fmt = 'yyyy-MM-dd hh:mm:ss'): string => {
+  if (!date) return "";
+
+  if (!date) return "";
+
+  // 确保传入的date是Date类型，如果是数字或字符串则转换为Date
+  if (typeof date === 'number' || typeof date === 'string') {
+    date = new Date(date);
+  }
+
+  // 确保date是有效的Date对象
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    return "";
+  }
+
+  let nowDate = date;
+
+  // 格式化选项
+  let opt: { [key: string]: number | string } = {
+    "M+": nowDate.getMonth() + 1, // 月份
+    "d+": nowDate.getDate(), // 日
+    "h+": nowDate.getHours(), // 小时
+    "m+": nowDate.getMinutes(), // 分钟
+    "s+": nowDate.getSeconds(), // 秒
+    "q+": Math.floor((nowDate.getMonth() + 3) / 3), // 季度
+    "S": nowDate.getMilliseconds(), // 毫秒
+  };
+
+  // 处理年份（特殊情况，年份可以是两位或四位）
+  let regex = new RegExp("(y+)");
+  let fmtMatch = fmt.match(regex);
+  if (fmtMatch) {
+    fmt = fmt.replace(fmtMatch[1], (nowDate.getFullYear() + "").substr(4 - fmtMatch[1].length));
+  }
+
+  // 遍历并替换格式中的其他部分（M、d、h、m、s、q、S）
+  for (let k in opt) {
+    let regex = new RegExp("(" + k + ")");
+    let fmtMatch = fmt.match(regex);
+    if (fmtMatch) {
+      fmt = fmt.replace(fmtMatch[1],
+        (fmtMatch[1].length == 1) ? (opt[k] as string) : (("00" + (opt[k] as string)).substr(("" + opt[k]).length))
+      );
+    }
+  }
+
+  return fmt;
+};

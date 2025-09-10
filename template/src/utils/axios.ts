@@ -1,13 +1,13 @@
 import axios from 'axios'
-import type { AxiosInstance, InternalAxiosRequestConfig,AxiosResponse,AxiosRequestConfig } from 'axios'
+import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 import { useStore } from '@/store'
 import { AUTHORIZATION } from '@/config'
 import router from '@/router'
 
 export const getUrl = (): string => {
-    const value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
-    return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
+  const value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
+  return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
 }
 
 class HttpRequest {
@@ -30,43 +30,45 @@ class HttpRequest {
     return config
   }
 
-  errorCode(code: number, res?: any) {
+  errorCode(code: number, res?: any, openMessage = true) {
+    if (!openMessage) return
     const errorCodeMap: { [key: number]: (res: any) => void } = {
       10: res => {
-        ElMessage.error(res.data.message || 'token过期，请重新登录')
+        this.errorMessag(res.data.message || 'token过期，请重新登录', openMessage)
       },
       100: res => {
-        ElMessage.error(res.data.message || '这个接口无权限')
+        this.errorMessag(res.data.message || '这个接口无权限', openMessage)
       }
     }
 
-     errorCodeMap[code] && errorCodeMap[code](res)
+    errorCodeMap[code] && errorCodeMap[code](res)
   }
 
-  httpErrorCode(code: number, res?: any) {
+  httpErrorCode(code: number, res?: any, openMessage = true) {
+
     const httpErrorMap: { [key: number]: (res: any) => void } = {
       404: (res: any) => {
-        ElMessage.error(res.data.message || '请求资源不存在')
+        this.errorMessag(res.data.message || '请求资源不存在', openMessage)
       },
       500: (res: any) => {
-        ElMessage.error(res.data.message || '服务器内部错误')
+        this.errorMessag(res.data.message || '服务器内部错误')
       },
       400: (res: any) => {
-        ElMessage.error(res.data.message || '请求错误')
+        this.errorMessag(res.data.message || '请求错误', openMessage)
       },
       401: (res: any) => {
-        ElMessage.error(res.data.message || '身份认证已过期')
+        this.errorMessag(res.data.message || '身份认证已过期', openMessage)
         router.push('/login')
       },
       403: (res: any) => {
-        ElMessage.error(res.data.message || '没有权限访问该接口')
+        this.errorMessag(res.data.message || '没有权限访问该接口', openMessage)
       }
     }
 
     httpErrorMap[code] && httpErrorMap[code](res)
   }
 
-  interceptors(instance: AxiosInstance, url: string) {
+  interceptors(instance: AxiosInstance, url: string, openMessage: boolean) {
 
     instance.interceptors.request.use(
       config => {
@@ -74,7 +76,7 @@ class HttpRequest {
         this.queue[url] = true
 
         const { authStore } = useStore()
-        
+
         const { token, expired, logout } = authStore
         if (token && expired) {
           if (expired < new Date().getTime()) {
@@ -97,32 +99,39 @@ class HttpRequest {
         // 对响应数据做点什么
         this.destroy(url)
         const { data: { code, message } } = response
-        this.errorCode(code,message)
+        this.errorCode(code, message, openMessage)
         return response
       },
       error => {
         this.destroy(url)
         if (!error.response) {
-          ElMessage({
-            message: "本地请求失败，请检查网络连接",
-            type: 'error',
-          })
+          if (!openMessage) {
+            ElMessage({
+              message: "本地请求失败，请检查网络连接",
+              type: 'error',
+            })
+          }
+
           return Promise.reject(error)
         }
         const { status } = error.response
 
-        this.httpErrorCode(status, error.response)
-
+        this.httpErrorCode(status, error.response, openMessage)
         return Promise.reject(error)
 
       },
     )
   }
 
-  request(options: AxiosRequestConfig) {
+  errorMessag(message: string, openMessage = true) {
+    if (openMessage) ElMessage.error(message)
+  }
+
+  request(options: AxiosRequestConfig & { openMessage?: boolean }) {
     const instance = axios.create()
+    const { openMessage = true } = options
     options = Object.assign(this.getInsidConfig(), options)
-    this.interceptors(instance, options.url!)
+    this.interceptors(instance, options.url!, openMessage)
     return instance(options)
   }
 }

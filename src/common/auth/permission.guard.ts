@@ -57,7 +57,6 @@ export class PermissionGuard implements CanActivate {
             }]
         })
 
-        console.log('permissionsUrlList',permissionsUrlList)
 
         if (permissionsUrlList && Array.isArray(permissionsUrlList)) {
 
