@@ -1,3 +1,4 @@
+import {cloneDeep} from '@/utils'
 
 export interface RegionItem {
   value: string;
@@ -23,27 +24,6 @@ export interface CodeToTextMap {
   [code: string]: string;
 }
 
-export function cloneDeep<T>(value: T): T {
-  if (value === null || typeof value !== 'object') {
-    return value;
-  }
-
-  if (value instanceof Date) {
-    return new Date(value.getTime()) as any;
-  }
-
-  if (Array.isArray(value)) {
-    return value.map(item => cloneDeep(item)) as any;
-  }
-
-  const objCopy: any = {};
-  for (const key in value) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
-      objCopy[key] = cloneDeep((value as any)[key]);
-    }
-  }
-  return objCopy;
-}
 
 import REGION_DATA_RAW from './areaData/data.json' assert { type: 'json' };
 const REGION_DATA = REGION_DATA_RAW as RegionJSON;

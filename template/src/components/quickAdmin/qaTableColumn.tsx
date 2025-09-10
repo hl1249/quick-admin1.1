@@ -4,14 +4,14 @@ import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
 import { timeFormat } from '@/utils'
-
+import QaTableColumn from './qaTableColumn'  // ✅ 引入自
 
 export default defineComponent({
     name: 'qaTableColumn',
     props: {
         prop: {
             type: String as PropType<string>,
-            required: true
+            default: ""
         },
         label: String,
         type: String,
@@ -125,7 +125,7 @@ export default defineComponent({
         }
         const renderMoney = (value: any) => {
             if (!isNaN(Number(value))) {
-                return <span>{Number(value).toFixed(2)}</span>
+                return <span>{(Number(value) / 100).toFixed(2)}</span>
             }
             return <span>0.00</span>;
         }
@@ -135,8 +135,38 @@ export default defineComponent({
             }
             return <span>0%</span>;
         }
+        const renderAddress = (value: any) => {
+            return <span>
+                {
+                    (Object.keys(value).map((item: any) => {
+                        return value[item]['name']
+                    })).join('/')
+                }
+            </span>
+        }
+        const renderUserInfo = (value: any) => {
+            return <div class="flex items-center gap-[10px]">
+                <ElAvatar src={value?.avatar} size={24}></ElAvatar>
+                <span>{value?.nickname}</span>
+            </div>
+        }
+        const renderGroup = (columns: Columns[] | undefined, row: any, column: any, index: any) => {
+            if (!columns) return null; // 防止 undefined 报错
+            return <div>{columns.map((item) => {
+                if (item.type === 'group') {
+                    return <div class="flex items-start gap-[10px] whitespace-nowrap">
+                        <span>{item.title}:</span>
+                        <span>{renderGroup(item.columns, row, column, index)}</span>
+                    </div>;
+                } else {
+                    return <span class="flex items-start gap-[10px] whitespace-nowrap">
+                        <span>{item.title}:</span>
+                        <span>{item.key ? render({ value: row[item.key], type: item.type, row, column, index }) : null}</span>
+                    </span>;
+                }
 
-
+            })}</div>
+        }
         const renderJson = (value: any) => <span>{JSON.stringify(value)}</span>;
         const renderObject = (value: Record<string, any>) => {
             if (!value || Object.keys(value).length === 0) return null;
@@ -151,25 +181,28 @@ export default defineComponent({
                 </ElTable>
             );
         };
-        const renderMap: Record<string, (value: any, row: any, column: any, index: number) => JSX.Element | null> = {
-            text: (value) => renderText(value),
-            avatar: (value) => renderAvatar(value, shape),
-            json: (value) => renderJson(value),
-            object: (value) => renderObject(value),
-            tag: (value) => renderTag(value, data),
-            image: (value) => renderImage(value),
-            rate: (value) => renderRate(value),
-            switch: (value) => renderSwitch(value),
-            icon: (value) => renderIcon(value, data),
-            time: (value) => renderTime(value, valueFormat),
-            html: (value, row, column, index) => renderHtml(value, row, column, index, formatter),
-            money: (value) => renderMoney(value),
-            percentage: (value) =>　renderPercentage(value)
+        const renderMap: Record<string, (params: any) => JSX.Element | null> = {
+            text: ({ value }) => renderText(value),
+            avatar: ({ value }) => renderAvatar(value, shape),
+            json: ({ value }) => renderJson(value),
+            object: ({ value }) => renderObject(value),
+            tag: ({ value }) => renderTag(value, data),
+            image: ({ value }) => renderImage(value),
+            rate: ({ value }) => renderRate(value),
+            switch: ({ value }) => renderSwitch(value),
+            icon: ({ value }) => renderIcon(value, data),
+            time: ({ value }) => renderTime(value, valueFormat),
+            html: ({ value, row, column, index }) => renderHtml(value, row, column, index, formatter),
+            money: ({ value }) => renderMoney(value),
+            percentage: ({ value }) => renderPercentage(value),
+            address: ({ value }) => renderAddress(value),
+            userInfo: ({ value }) => renderUserInfo(value),
+            group: ({ row, column, index }) => renderGroup(columns, row, column, index)
         };
 
-        const render = (value: any, type: string, row: any, column: any, index: number) => {
-            const renderer = renderMap[type];
-            return renderer ? renderer(value, row, column, index) : null;
+        const render = (params: any) => {
+            const renderer = renderMap[params.type];
+            return renderer ? renderer(params) : null;
         };
 
         return () => (
@@ -180,7 +213,13 @@ export default defineComponent({
                         if (formatter) {
                             return type === 'html' ? <div v-html={formatter(row[prop], row, column, $index)} /> : formatter(row[prop], row, column, $index)
                         }
-                        return render(row[prop], type as string, row, column, $index);
+                        return render({
+                            value: row[prop],
+                            type,
+                            row,
+                            column,
+                            $index
+                        });
                     }
                 }}
             </ElTableColumn>

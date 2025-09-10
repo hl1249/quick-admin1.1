@@ -8,16 +8,33 @@ import { ref, computed, type Ref } from 'vue'
 import type { CascaderOption } from 'element-plus'
 import { regionData, CodeToText } from '@/utils/chinaAreaData'
 
-const emit = defineEmits(['confirm'])
+const props = defineProps<{
+  modelValue: AddrResult,
+}>()
 
+const emit = defineEmits(['confirm','update:modelValue'])
 const onChang = () => {
-    emit('confirm',selectedResult.value)
+  emit('confirm', selectedResult.value)
+  emit('update:modelValue', selectedResult.value)
 }
 // Cascader 的选项
 const options = regionData as unknown as CascaderOption[]
 
 // 用户选择的 code 数组
 const selectedOptions: Ref<string[]> = ref([])
+
+watch(
+  () => props.modelValue,
+  (val) => {
+    const arr: string[] = []
+    if (val.province) arr.push(val.province.code)
+    if (val.city) arr.push(val.city.code)
+    if (val.area) arr.push(val.area.code)
+    selectedOptions.value = arr
+  },
+  { immediate: true } // 初始化时就执行一次
+)
+
 
 // 计算选中的省市区对象
 interface AddrItem {

@@ -130,3 +130,25 @@ export const timeFormat = (date: Date | string | number, fmt = 'yyyy-MM-dd hh:mm
 
   return fmt;
 };
+
+export const cloneDeep = <T>(value: T): T =>{
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+
+  if (value instanceof Date) {
+    return new Date(value.getTime()) as any;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(item => cloneDeep(item)) as any;
+  }
+
+  const objCopy: any = {};
+  for (const key in value) {
+    if (Object.prototype.hasOwnProperty.call(value, key)) {
+      objCopy[key] = cloneDeep((value as any)[key]);
+    }
+  }
+  return objCopy;
+}

@@ -1,6 +1,6 @@
 <template>
     <div class="position-relative">
-       <qa-area-cascader @confirm="confirm" />
+       <qa-area-cascader v-model="wuhu" @confirm="confirm" />
         <div id="lottie_box" class="animation"></div>
     </div>
 </template>
@@ -12,6 +12,8 @@ import type {AddrResult} from '@/components/quickAdmin/qaAreaCascader.vue';
 const confirm = (value: AddrResult) => {
     console.log(value)
 }
+
+let wuhu = ref({})
 
 import anData from '@/assets/lottie/mongo.json'
 import lottie from 'lottie-web'

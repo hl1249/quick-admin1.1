@@ -17,17 +17,61 @@ const table = ref<{
 }>({
   action: '/app/admin/system/systemUser/systemUser/getList',
   columns: [
-    // {
-    //   "key": "_id",
-    //   "title": "ID",
-    //   "type": "text",
-    //   "width": 220,
-    // },
     {
-      key: "_id", title: "htmsl渲染", type: "html",
-      formatter: (val, row, column, index) => {
-        return '<span>标签</span>'
-      },
+      key: "",
+      type: "group",
+      width: 500,
+      title: "分组",
+      columns: [
+        {
+          key: "userInfo", title: "用户", type: "userInfo",
+          width: 200
+        },
+        {
+          "key": "last_login_date",
+          "title": "添加时间",
+          "type": "money",
+          "width": 220,
+
+        },
+        {
+          key: "",
+          type: "group",
+          title: "分组2",
+          columns: [
+            {
+              key: "userInfo", title: "用户", type: "userInfo",
+              width: 200
+            },
+            {
+              "key": "last_login_date",
+              "title": "添加时间",
+              "type": "money",
+            },
+            {
+              key: "",
+              type: "group",
+              title: "分组3",
+              columns: [
+                {
+                  key: "userInfo", title: "用户", type: "userInfo",
+                  width: 200
+                },
+                {
+                  "key": "last_login_date",
+                  "title": "添加时间",
+                  "type": "money",
+                  "width": 220,
+
+                },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      key: "userInfo", title: "用户", type: "userInfo",
       width: 200
     },
     {
@@ -35,19 +79,7 @@ const table = ref<{
       "title": "添加时间",
       "type": "money",
       "width": 220,
-    
-    },
-    
-    { key: "rate", title: "占比", type: "percentage", width: 120 },
-    {
-      "key": "no",
-      "title": "排序",
-      "type": "tag",
-      sortable: "custom",
-      "data": [
-        { value: 1, label: "老大", tagType: "success" },
-        { value: 2, label: "老二", tagType: "danger" }
-      ]
+
     },
     {
       "key": "icon",

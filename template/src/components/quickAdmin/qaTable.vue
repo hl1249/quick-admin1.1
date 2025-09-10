@@ -64,7 +64,7 @@ import http from '@/utils/axios'
 import { ElMessage } from 'element-plus'
 import qaTableColumn from './qaTableColumn'
 
-type Type = 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage'
+type Type = 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage' | 'address' | 'userInfo' | 'group'
 
 export interface Data {
     value: number | string
@@ -74,7 +74,7 @@ export interface Data {
 }
 
 export interface Columns {
-    key: string
+    key?: string
     title: string
     type: Type,
     width?: string | number,
