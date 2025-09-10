@@ -1,17 +1,22 @@
 <template>
     <div class="position-relative">
-        <el-button @click="goUser">动态添加</el-button>
+       <qa-area-cascader @confirm="confirm" />
         <div id="lottie_box" class="animation"></div>
     </div>
 </template>
 
 <script setup lang="ts">
+import qaAreaCascader from '@/components/quickAdmin/qaAreaCascader.vue';
+import type {AddrResult} from '@/components/quickAdmin/qaAreaCascader.vue';
+
+const confirm = (value: AddrResult) => {
+    console.log(value)
+}
+
 import anData from '@/assets/lottie/mongo.json'
 import lottie from 'lottie-web'
-import router from '@/router'
-let animation = {};
 onMounted(() => {
-    animation = lottie.loadAnimation({
+    lottie.loadAnimation({
         container: document.getElementById('lottie_box') as HTMLElement,
         renderer: 'svg',
         loop: true,
@@ -20,9 +25,6 @@ onMounted(() => {
     })
 })
 
-const goUser = () => {
-    router.push('/home')
-}
 </script>
 
 <style scoped lang="scss">
