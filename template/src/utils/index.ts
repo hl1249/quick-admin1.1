@@ -152,3 +152,26 @@ export const cloneDeep = <T>(value: T): T =>{
   }
   return objCopy;
 }
+
+
+export const debounce  = <T extends (...args: any[]) => void> (fn: T, delay = 300) => {
+  let timer: number | undefined
+
+  const debounced = (...args: Parameters<T>) => {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = window.setTimeout(() => {
+      fn(...args)
+    }, delay)
+  }
+
+  debounced.cancel = () => {
+    if (timer) {
+      clearTimeout(timer)
+      timer = undefined
+    }
+  }
+
+  return debounced as T & { cancel: () => void }
+}

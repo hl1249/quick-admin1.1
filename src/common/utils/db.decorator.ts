@@ -463,6 +463,11 @@ function transTableData(data: any) {
   }
 
   const match: any = {};
+  for (const key in data.formData) {
+      if (data.formData[key] === null) {
+        delete data.formData[key]
+      }
+    }
 
   data.columns.forEach(col => {
     const value = data.formData[col.key];

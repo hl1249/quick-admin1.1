@@ -1,6 +1,6 @@
 <template>
     <div v-loading="loading">
-        <el-table :data="tableData" style="width: 100%" @selection-change="selectionChange" row-key="_id"
+        <el-table :data="tableData" style="width: 100%" @selection-change="selectionChange" row-key="_id" :height="responsiveHeight"
             @sort-change="columnSort">
             <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
 
@@ -53,33 +53,54 @@
 
                 </template>
             </el-table-column>
-
         </el-table>
+
+         <div class="qa-pagination flex items-center justify-center pt-[12px]">
+            <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[1,5,10,20,50,100,500]"
+            :size="size"
+            :disabled="disabled"
+            :background="background"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            />
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 
 import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue'
+import type { ComponentSize } from 'element-plus'
 import http from '@/utils/axios'
 import { ElMessage } from 'element-plus'
 import qaTableColumn from './qaTableColumn'
+import { debounce } from '@/utils'
 
+type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more'
 type Type =  'radio' | 'select' | 'checkbox' | 'json' | 'radio' | 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage' | 'address' | 'userInfo' | 'group' | 'table'
 type Show = 'detail' | 'row'
+type TableRow = {
+    _id: number
+    [key: string]: any // 表示除了 _id 外，其他字段可以是任意 key，值类型为 any
+};
 export interface Data {
     value: number | string
     label?: string,
-    tagType?: "success" | "danger",
+    tagType?: "success" | "danger" | 'primary' | 'info' | 'warning',
     icon?: string,
 }
-
 export interface Columns {
     key?: string
     title: string
     type: Type,
     show?: Show[]
     width?: string | number,
+    minWidth?:  string | number,
     columns?: Columns[]
     data?: Data[]
     defaultValue?: string | number;
@@ -94,16 +115,13 @@ export interface Columns {
     valueFormat?: string,
     rowHeight?:  string | number,
 }
-
-type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more'
+export interface DeleteRequset{
+    (params: { action: string; data: any }): void
+}
 export interface RightBtnMoreItem {
     title: string
     disabled: (item: any) => boolean  // 可选函数
     onClick: (item: any) => void      // 可选函数
-}
-
-export interface DeleteRequset{
-    (params: { action: string; data: any }): void
 }
 
 const props = withDefaults(
@@ -115,6 +133,7 @@ const props = withDefaults(
     rightBtnsMore?: RightBtnMoreItem[]
     rowNo?: boolean
     renderNode?: 'detail' | 'row'   // 渲染位置
+    height?: string | number,
   }>(),
   {
     renderNode: 'row',  // 默认值
@@ -128,7 +147,6 @@ const selectable = (row: any) => ![1, 2].includes(row.id)
 const selectionChange = (row: any) => {
     emit('elTableSelect', row)
 }
-
 
 interface SortItem {
   name: string;
@@ -161,12 +179,14 @@ const getTableData = async () => {
             method: 'post',
             data: {
                 ...props.queryFormParam,
-                sortRule:sortRule.value
-            }
+                sortRule:sortRule.value,
+                pageIndex: currentPage.value,
+                pageSize: pageSize.value,
+            },
         })
 
         tableData.value = res.data.data.rows
-        console.log("请求数据", res)
+        total.value = res.data.data.total
     } catch (err) {
         console.log(err)
     } finally {
@@ -178,10 +198,6 @@ onMounted(() => {
     getTableData()
 })
 
-type TableRow = {
-    _id: number
-    [key: string]: any // 表示除了 _id 外，其他字段可以是任意 key，值类型为 any
-};
 
 const btnsDetail = (index: number, row: TableRow) => {
     console.log("详情", row)
@@ -210,9 +226,56 @@ const btnsDeleteRequset = async ({ action, data }: { action: string; data: any }
     }
 }
 
+
+const total = ref(0)
+const currentPage = ref(1)
+const pageSize = ref(10)
+const disabled = ref(false)
+const size = ref<ComponentSize>('default')
+const background = ref(false)
+const handleSizeChange = (val: number) => {
+  console.log(`${val} items per page`)
+  getTableData()
+}
+const handleCurrentChange = (val: number) => {
+  console.log(`current page: ${val}`)
+  getTableData()
+}
+
+
+const responsiveHeight:Ref<string | number> = ref(0)
+const onResize = () => {
+  console.log("大小改变")
+  if (props.height) {
+    responsiveHeight.value = props.height
+    return
+  };
+  const qaTableQueryHeight = document.querySelector('.qa-table-query')?.clientHeight || 0;
+  const qaPaginHeight = (document.querySelector(".qa-pagination") as HTMLElement)?.offsetHeight || 0;
+  responsiveHeight.value = window.innerHeight - qaTableQueryHeight! - qaPaginHeight! - 150
+}
+
+
+const debouncedResize = debounce(onResize, 200)
+onMounted(() => {
+  onResize()
+  window.addEventListener('resize', debouncedResize);
+
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', debouncedResize)
+})
+
+
+
 // 如果布尔值 返回布尔值 如果是函数调用
 const checkRightBtnsMoreDisabled = (disabled: any, row: TableRow) => {
     if (typeof disabled === 'boolean') return disabled
     if (typeof disabled === 'function') return disabled(row)
 }
+
+defineExpose({
+  search: getTableData,
+  refresh: getTableData,
+});
 </script>

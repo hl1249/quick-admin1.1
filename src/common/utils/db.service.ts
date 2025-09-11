@@ -342,7 +342,7 @@ export class DbService {
 
   @TransformDbParams
   async getTableData(params: SelectsParams): Promise<SelectResult | Document[]> {
-    return this.selects(params);
+    return this.selects({...params,getCount:true});
   }
 
   @TransformDbParams

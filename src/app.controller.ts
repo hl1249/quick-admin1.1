@@ -5,7 +5,7 @@ import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import { Log } from '@/common/logger/logger.decorator';
-
+import {sleep} from '@/common/utils/utils'
 @Log()
 @Controller()
 export class AppController {
@@ -72,6 +72,7 @@ export class AppController {
 
   @Get('/findByWhereJson')
   findByWhereJson(@Request() req): Promise<Document | null> {
+
     return this.dbService.findByWhereJson({
       dbName: 'qa-users',
       whereJson: {
@@ -93,8 +94,8 @@ export class AppController {
   }
   
   @Get('/selects')
-  selects(): Promise<Document[] | SelectResult> {
-    return this.dbService.selects({
+  async selects(): Promise<Document[] | SelectResult> {
+    return await this.dbService.selects({
       dbName: 'qa-users',
       getCount: true, // 是否需要同时查询满足条件的记录总数量，默认false
       getMain: false, // 是否只返回rows数据，默认false

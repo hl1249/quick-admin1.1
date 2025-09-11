@@ -4,6 +4,7 @@ import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
 import { timeFormat } from '@/utils'
+import { useDark, useLocalStorage } from '@vueuse/core'
 
 
 export default defineComponent({
@@ -76,8 +77,11 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { prop, label, type, width, columns, data, defaultValue, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align, 
-            } = props;
+        
+        const isDark = useDark()
+
+        const { prop, label, type, width, columns, data, defaultValue, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
+        } = props;
 
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
@@ -103,8 +107,9 @@ export default defineComponent({
             </ElIcon> : <></>
         }
         const renderTag = (value: any, data: Data[]) => {
+            if (!data) return null; // 防止 undefined 报错
             const findItem = data.find((item: any) => item.value === value) as Data
-            return findItem ? <ElTag effect="dark" type={findItem.tagType}>{value}</ElTag> : <></>
+            return findItem ? <ElTag effect={isDark.value ? 'plain' : 'dark'} type={findItem.tagType}>{findItem.label}</ElTag> : <></>
         }
         const renderTime = (value: any, valueFormat: string) => {
             return <span>
@@ -150,19 +155,19 @@ export default defineComponent({
             </div>
         }
         const renderGroup = (columns: Columns[] | undefined, row: any, column: any, index: any) => {
-      
+
             if (!columns) return null; // 防止 undefined 报错
             return <div>{columns.map((item) => {
                 if (item.type === 'group') {
                     return <div class="flex items-start gap-[10px] whitespace-nowrap">
-                        <span>{item.title}:</span>
-                        <span>{renderGroup(item.columns, row, column, index)}</span>
+                        <div>{item.title}:</div>
+                        <div>{renderGroup(item.columns, row, column, index)}</div>
                     </div>;
                 } else {
-                    return <span class="flex items-start gap-[10px] whitespace-nowrap">
-                        <span>{item.title}:</span>
-                        <span>{item.key ? render({ value: row[item.key], type: item.type, row, column, index, columns:item.columns }) : null}</span>
-                    </span>;
+                    return <div class="flex items-start gap-[10px] whitespace-nowrap">
+                        <div>{item.title}:</div>
+                        <div class="flex-1 min-w-0">{item.key ? render({ value: row[item.key], type: item.type, row, column, index, columns: item.columns, data: item.data }) : null}</div>
+                    </div>;
                 }
 
             })}</div>
@@ -171,9 +176,13 @@ export default defineComponent({
             const findItem = data.find((item: any) => item.value === value) as Data
             return findItem ? <span>{findItem.label}</span> : <></>
         }
-        const renderJson = (value: any) => <div class="whitespace-nowrap">{value}</div>;
-        const renderObject = (value: Record<string, any>,columns: Columns[]) => {
-            if (!value || Object.keys(value).length === 0) return null;
+        const renderJson = (value: any) => {
+            return <div>
+                <pre class="bg-[--v-main-bg-color] whitespace-pre overflow-x-auto" >{JSON.stringify(value, null, 2)}</pre>
+            </div>
+        }
+        const renderObject = (value: Record<string, any>, columns: Columns[]) => {
+            if (!value || Object.keys(value).length === 0 || !columns) return null;
             const tableDatas = columns.map((item) => ({
                 title: item.title,
                 value: value[item.key as keyof typeof value],
@@ -189,7 +198,7 @@ export default defineComponent({
             text: ({ value }) => renderText(value),
             avatar: ({ value }) => renderAvatar(value, shape),
             json: ({ value }) => renderJson(value),
-            object: ({ value, columns}) => renderObject(value, columns),
+            object: ({ value, columns }) => renderObject(value, columns),
             tag: ({ value, data }) => renderTag(value, data),
             image: ({ value }) => renderImage(value),
             rate: ({ value }) => renderRate(value),
@@ -202,9 +211,9 @@ export default defineComponent({
             address: ({ value }) => renderAddress(value),
             userInfo: ({ value }) => renderUserInfo(value),
             group: ({ row, column, index, columns }) => renderGroup(columns, row, column, index),
-            radio:({ value, data })=> renderBranch(value, data),
-            select:({ value, data })=> renderBranch(value, data),
-            checkbox:({ value, data })=> renderBranch(value, data),
+            radio: ({ value, data }) => renderBranch(value, data),
+            select: ({ value, data }) => renderBranch(value, data),
+            checkbox: ({ value, data }) => renderBranch(value, data),
 
         };
 
@@ -212,7 +221,6 @@ export default defineComponent({
             const renderer = renderMap[params.type];
             return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
-
         return () => (
 
             <ElTableColumn prop={prop} label={label} width={width} sortable={sortable} align={align}>
@@ -223,7 +231,7 @@ export default defineComponent({
                             return type === 'html' ? <div v-html={formatter(value, row, column, $index)} /> : formatter(row[prop], row, column, $index)
                         }
                         return render({
-                            value: typeof value === 'object' ? JSON.stringify(value) : value ,
+                            value: typeof value === 'object' ? JSON.stringify(value) : value,
                             type,
                             row,
                             column,
