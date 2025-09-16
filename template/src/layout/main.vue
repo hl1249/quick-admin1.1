@@ -4,9 +4,9 @@
     <div class="right-content ">
       <NavBar />
       <div id="view" class="view h-[calc(100%-4rem-40px)] p-4">
-          <el-scrollbar class="h-full">
+          <div class="h-full p-4 bg-[--pg-bg-color] border-none" >
             <router-view />
-          </el-scrollbar>
+          </div>
       </div>
     </div>
   </div>

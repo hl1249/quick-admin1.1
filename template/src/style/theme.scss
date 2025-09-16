@@ -1,5 +1,10 @@
 @use 'element-plus/theme-chalk/src/dark/css-vars.scss' as *;
 
+html{
+  // --el-fill-color:red !important;
+  --pg-bg-color: white;
+}
+
 /** 自定义黑暗主题 */
 html.dark {
   // * admin
@@ -8,6 +13,7 @@ html.dark {
   --v-border-light: 1px solid #4c4c4d;
   --v-active-color: #213353;
   --v-over-color: #213353;
+  --pg-bg-color: #141414;
   // scroll-bar
   ::-webkit-scrollbar {
     background-color: var(--el-scrollbar-bg-color) !important;

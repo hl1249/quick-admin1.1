@@ -2,9 +2,27 @@
   <div>
     <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
 
+    <div>
+      <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
+    </div>
     <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
       :pagination="false" :right-btns="['detail_auto', 'delete']" :right-btns-more="table.rightBtnsMore" :row-no="true"
       @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" />
+
+
+    <div>
+      <el-row>
+        <el-dialog v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+          <qa-form v-model="form.data" :rules="form.props.rules" :action="form.props.action"
+            :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
+            @success="form.props.show = false, refresh()">
+
+          </qa-form>
+        </el-dialog>
+      </el-row>
+    </div>
+
+
   </div>
 </template>
 
@@ -12,6 +30,8 @@
 import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
 import qaDataTable from '@/components/quickAdmin/qaTable.vue';
 import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
+import qaForm from '@/components/quickAdmin/qaForm.vue';
+import { CirclePlus } from '@element-plus/icons-vue'
 
 
 const qaTableRef = ref<InstanceType<typeof qaDataTable> | null>(null);
@@ -133,7 +153,37 @@ const selectionChange = (row: any) => {
   multipleSelection.value = row
 }
 
+const form = ref({
+  data: {
 
+  },
+  props: {
+    action: "",
+    columns: [
+      {
+        "key": "user_id",
+        "title": "用户ID",
+        "type": "text",
+        "width": 200
+      },
+      {
+        key: "date1", title: "date类型", type: "date", valueFormat: "timestamp", tips: "可选择年月日", dateType: "daterange"
+      }],
+    rules: {
+
+    },
+    formType: "",
+    title: "",
+    show: false
+  }
+})
+
+const refresh = () => {
+  qaTableRef.value?.refresh()
+}
+const addBtn = () => {
+  form.value.props.show = true
+}
 const updateBtn = (index: number, row: any) => {
   console.log("调用编辑", index, row)
 }

@@ -1,11 +1,12 @@
 <template>
     <div v-loading="loading">
         <el-table :data="tableData" style="width: 100%" @selection-change="selectionChange" row-key="_id" :height="responsiveHeight"
+            :border="border"
             @sort-change="columnSort">
             <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
 
             <template v-for="item in columns" :key="item.key">
-            <qa-table-column :key="item.key" :prop="item.key" :label="item.title" v-if="item?.show ? item.show.includes('row') : true"
+            <qa-table-column show-overflow-tooltip :key="item.key" :prop="item.key" :label="item.title" v-if="item?.show ? item.show.includes('row') : true"
                 :width="item.width" :columns="item.columns" :data="item.data" :sortable="item.sortable"
                 :align="item.align"
                 :shape="item.shape"
@@ -134,6 +135,7 @@ const props = withDefaults(
     rowNo?: boolean
     renderNode?: 'detail' | 'row'   // 渲染位置
     height?: string | number,
+    border?: boolean
   }>(),
   {
     renderNode: 'row',  // 默认值
@@ -232,7 +234,7 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const disabled = ref(false)
 const size = ref<ComponentSize>('default')
-const background = ref(false)
+const background = ref(true)
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`)
   getTableData()
@@ -252,7 +254,7 @@ const onResize = () => {
   };
   const qaTableQueryHeight = document.querySelector('.qa-table-query')?.clientHeight || 0;
   const qaPaginHeight = (document.querySelector(".qa-pagination") as HTMLElement)?.offsetHeight || 0;
-  responsiveHeight.value = window.innerHeight - qaTableQueryHeight! - qaPaginHeight! - 150
+  responsiveHeight.value = window.innerHeight - qaTableQueryHeight! - qaPaginHeight! - 180
 }
 
 
@@ -265,7 +267,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', debouncedResize)
 })
-
 
 
 // 如果布尔值 返回布尔值 如果是函数调用

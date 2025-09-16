@@ -46,7 +46,7 @@
 
     <!-- 如果是日期选择框 -->
     <el-date-picker v-model="value" v-if="type === 'date'" type="date" :style="`width:${width}px`" value-format="x"
-      @change="(value: any) =>  emit('update:modelValue', value)"></el-date-picker>
+      @change="emit('search')"></el-date-picker>
 
     <!-- 如果是开关 -->
     <el-switch v-model="value" v-if="type === 'switch'" :style="`width:${width}px`"></el-switch>
@@ -54,7 +54,7 @@
     <!-- 如果是日期选择框 -->
     <el-date-picker v-model="value" v-if="type === 'datetimerange'" type="datetimerange" :style="`width:${width}px`"
       range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" value-format="x"
-      @change="(value: any) => emit('update:modelValue', value)"></el-date-picker>
+      @change="emit('search')"></el-date-picker>
 
 
     <!-- 如果是远程下拉 -->
