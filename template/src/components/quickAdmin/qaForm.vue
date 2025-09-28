@@ -1,15 +1,25 @@
 <template>
     <div>
-        <el-form>
-            <qa-form-item v-for="item in columns" :label="item.title" 
-            :type="item.type"
-            :labelWidth="item.labelWidth"></qa-form-item>
+        <el-form :rules="rules" ref="ruleFormRef" :model="model">
+            <qa-form-item v-model="model" v-for="item in columns" :label="item.title" :type="item.type"
+                :itemKey="item.key" :labelWidth="item.labelWidth"></qa-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="submitForm(ruleFormRef)">
+                    提交
+                </el-button>
+                <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+            </el-form-item>
+
         </el-form>
     </div>
 </template>
 
 <script setup lang="ts">
-import qaFormItem from './qaFormItem.tsx';
+import qaFormItem from './qaFormItems.vue';
+import type { FormInstance } from 'element-plus'
+import { useVModel } from "@vueuse/core"
+const emit = defineEmits(["update:modelValue"])
+
 interface QaFormColumns {
     key: string
     title: string
@@ -32,8 +42,27 @@ const props = withDefaults(
     {
     }
 )
+// 通过 useVModel 直接拿到响应式 formData（相当于 computed + emit）
+const model = useVModel(props, "modelValue", emit)
 
-const emit = defineEmits(['success'])
+
+const ruleFormRef = ref<FormInstance>()
+const submitForm = async (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    await formEl.validate((valid, fields) => {
+        if (valid) {
+            console.log('submit!')
+        } else {
+            console.log('error submit!', fields)
+        }
+    })
+}
+
+const resetForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.resetFields()
+}
+
 </script>
 
 <style scoped></style>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    form.data:{{ form.data }}
     <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
 
     <div>
@@ -16,7 +17,6 @@
           <qa-form v-model="form.data" :rules="form.props.rules" :action="form.props.action"
             :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
             @success="form.props.show = false, refresh()">
-
           </qa-form>
         </el-dialog>
       </el-row>
@@ -155,7 +155,6 @@ const selectionChange = (row: any) => {
 
 const form = ref({
   data: {
-
   },
   props: {
     action: "",
@@ -170,7 +169,9 @@ const form = ref({
         key: "date1", title: "date类型", type: "date", valueFormat: "timestamp", tips: "可选择年月日", dateType: "daterange"
       }],
     rules: {
-
+       user_id: [
+        { min: 3, max: 5, message: '长度3-5', trigger: 'blur',required: true, },
+      ],
     },
     formType: "",
     title: "",
