@@ -1,32 +1,60 @@
 <script lang="tsx">
 import { defineComponent } from "vue";
 import { useVModel } from "@vueuse/core";
+import type { JSX } from "vue/jsx-runtime";
 
 export default defineComponent({
-  name: "MyComponent",
+  name: "qaFormItem",
   props: {
     modelValue: { type: Object, required: true },
-    label: {},
-    itemKey: {
-      type: String,
-      required: true
-    },
-    type: {},
-    labelWidth: {},
+    label: String,
+    itemKey: { type: String, required: true },
+    type: String,
+    labelWidth: [String, Number],
   },
-  emits: ["update:modelValue"], // emit 名称要写
+  emits: ["update:modelValue"],
   setup(props, { emit }) {
-    // 现在可以访问 props 和 emit
-    const { label, itemKey, type, labelWidth } = props
+    const { label, itemKey, type } = props;
     const model = useVModel(props, "modelValue", emit);
 
+    // 渲染输入框
+    const renderText = ({ value, label, onChange }) => {
+      return (
+        <el-input
+          modelValue={value}
+          placeholder={"请输入" + label}
+          onUpdate:modelValue={onChange}
+        />
+      );
+    };
+
+    // 不同类型的渲染映射
+    const renderMap: Record<string, (params: any) => JSX.Element | null> = {
+      text: ({ value, label, onChange }) =>
+      renderText({ value, label, onChange }),
+    };
+
+    // 统一渲染
+    const render = (params: any) => {
+      const renderer = renderMap[params.type];
+      return renderer ? (
+        renderer(params)
+      ) : (
+        <div class="whitespace-nowrap">{params.value}</div>
+      );
+    };
+
     return () => {
-      return <el-form-item prop={itemKey}>
-        <el-input modelValue={model.value[itemKey]}
-          placeholder={'请输入' + label}
-          label={label}
-          onInput={(val: string) => (model.value[itemKey] = val)}></el-input>
-      </el-form-item>
+      return (
+        <el-form-item label={label} prop={itemKey}>
+          {render({
+            value: model.value[itemKey],
+            label,
+            type,
+            onChange: (val: string) => (model.value[itemKey] = val),
+          })}
+        </el-form-item>
+      );
     };
   },
 });

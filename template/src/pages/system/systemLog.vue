@@ -1,7 +1,7 @@
 <template>
   <div>
     form.data:{{ form.data }}
-    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
+    <!-- <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" /> -->
 
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>

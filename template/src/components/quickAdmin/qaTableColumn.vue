@@ -1,4 +1,5 @@
-
+<script lang="tsx">
+    
 import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable, ElButton, ElRadio } from 'element-plus'
 import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
@@ -246,3 +247,4 @@ export default defineComponent({
         )
     }
 })
+</script>

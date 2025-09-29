@@ -15,7 +15,7 @@
 <script setup lang="ts">
 const emit = defineEmits(['search', 'update:modelValue'])
 import { Search } from '@element-plus/icons-vue'
-import qaFormItem from './qaFormItem.tsx'
+import qaFormItem from './qaFormItems.vue'
 
 
 interface QueryColumns {

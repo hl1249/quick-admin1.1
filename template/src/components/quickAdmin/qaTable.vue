@@ -79,7 +79,7 @@ import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue'
 import type { ComponentSize } from 'element-plus'
 import http from '@/utils/axios'
 import { ElMessage } from 'element-plus'
-import qaTableColumn from './qaTableColumn'
+import qaTableColumn from './qaTableColumn.vue'
 import { debounce } from '@/utils'
 
 type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more'

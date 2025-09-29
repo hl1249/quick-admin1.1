@@ -58,6 +58,7 @@ declare module 'vue' {
     QaFormItems: typeof import('./src/components/quickAdmin/qaFormItems.vue')['default']
     QaQueryFormItem: typeof import('./src/components/quickAdmin/qaQueryFormItem.vue')['default']
     QaTable: typeof import('./src/components/quickAdmin/qaTable.vue')['default']
+    QaTableColumn: typeof import('./src/components/quickAdmin/qaTableColumn.vue')['default']
     QaTableQuery: typeof import('./src/components/quickAdmin/qaTableQuery.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
