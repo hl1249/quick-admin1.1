@@ -11,10 +11,14 @@ export default defineComponent({
     itemKey: { type: String, required: true },
     type: String,
     labelWidth: [String, Number],
+    dateType: String,
+    valueFormat: String,
+    format: String
+
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
-    const { label, itemKey, type } = props;
+    const { label, itemKey, type, dateType, valueFormat, format } = props;
     const model = useVModel(props, "modelValue", emit);
 
     // 渲染输入框
@@ -28,10 +32,23 @@ export default defineComponent({
       );
     };
 
+    // 日期 
+    const renderDate = ({ value, dateType, format, valueFormat, onChange }) => {
+      return (
+        <el-date-picker
+          modelValue={value}
+          onUpdate:modelValue={onChange}
+          type={dateType}
+          format={format}
+          valueFormat={valueFormat}
+        ></el-date-picker>
+      )
+    }
+
     // 不同类型的渲染映射
     const renderMap: Record<string, (params: any) => JSX.Element | null> = {
-      text: ({ value, label, onChange }) =>
-      renderText({ value, label, onChange }),
+      text: ({ value, label, onChange }) => renderText({ value, label, onChange }),
+      date: ({ value, dateType, format, valueFormat, onChange }) => renderDate({ value, dateType, format, valueFormat, onChange })
     };
 
     // 统一渲染
@@ -51,6 +68,11 @@ export default defineComponent({
             value: model.value[itemKey],
             label,
             type,
+
+            dateType,
+            valueFormat,
+            format,
+
             onChange: (val: string) => (model.value[itemKey] = val),
           })}
         </el-form-item>

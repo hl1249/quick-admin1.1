@@ -9,9 +9,19 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <div>
-        操作区
-      </div>
+      <el-dropdown trigger="click">
+        <span class="el-dropdown-link">
+          操作
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item :disabled="menuStore.tabsList.length <= 1" @click="menuStore.removeAllTabs()">关闭所有标签页</el-dropdown-item>
+            <el-dropdown-item @click="menuStore.closeLeftNavTab()" :disabled="menuStore.tabsActiveIndex < 2">关闭左侧标签页</el-dropdown-item>
+            <el-dropdown-item @click="menuStore.closeRightNavTab()" :disabled="!(menuStore.tabsList.length > 1 && menuStore.tabsActiveIndex != menuStore.tabsList.length-1)">关闭右侧标签页</el-dropdown-item>
+            <el-dropdown-item @click="menuStore.closeOtherNavTab()" :disabled="menuStore.tabsList.length <= 1">关闭其他标签页</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
   </div>
 </template>

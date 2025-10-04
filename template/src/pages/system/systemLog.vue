@@ -166,11 +166,12 @@ const form = ref({
         "width": 200
       },
       {
-        key: "date1", title: "date类型", type: "date", valueFormat: "timestamp", tips: "可选择年月日", dateType: "daterange"
+        key: "date1", title: "date类型", type: "date", valueFormat: "timestamp", tips: "可选择年月日", dateType: "daterange",
+        format: "yyyy-MM-dd"
       }],
     rules: {
-       user_id: [
-        { min: 3, max: 5, message: '长度3-5', trigger: 'blur',required: true, },
+      user_id: [
+        { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
       ],
     },
     formType: "",

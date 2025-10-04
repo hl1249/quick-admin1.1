@@ -1,15 +1,14 @@
 <template>
     <div>
         <el-form :rules="rules" ref="ruleFormRef" :model="model">
-            <qa-form-item v-model="model" v-for="item in columns" :label="item.title" :type="item.type"
-                :itemKey="item.key" :labelWidth="item.labelWidth"></qa-form-item>
+            <qa-form-item v-model="model" v-for="item in columns"
+                v-bind="{ ...item, key: item.key, itemKey: item.key, label: item.title }"></qa-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm(ruleFormRef)">
                     提交
                 </el-button>
                 <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
             </el-form-item>
-
         </el-form>
     </div>
 </template>

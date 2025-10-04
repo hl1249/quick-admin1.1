@@ -46,18 +46,22 @@ export interface MenuState {
   removeTabs: (index: number, targetName: string | number) => void
   removeAllTabs: () => void
   tabsNavTo: (tabItem: TabItem) => void
+  tabsActiveIndex: Number
+  closeLeftNavTab: () => void
+  closeRightNavTab: () => void
+  closeOtherNavTab: () => void
 }
 
 export const useMenuStore = defineStore(
   'menuConfig',
   () => {
-
+    // 左侧菜单隐藏状态
     const isCollapse = ref(true)
     const changeIsCollapse = () => {
       isCollapse.value = !isCollapse.value
     }
 
-
+    // 身份动态菜单
     const menuList: MenuState['menuList'] = ref([])
     const initMenu: MenuState['initMenu'] = (newMenuList) => {
       menuList.value = newMenuList
@@ -72,7 +76,7 @@ export const useMenuStore = defineStore(
       menuList.value = []
     }
 
-    // 左侧菜单展开状态
+    // 左侧菜单树状展开状态
     const openeds: MenuState['openeds'] = ref([])
     const initOpends: MenuState['initOpends'] = (newOpeneds) => {
       openeds.value = newOpeneds
@@ -95,8 +99,13 @@ export const useMenuStore = defineStore(
 
     // tag历史记录
     const currentTagName: MenuState['currentTagName'] = ref("home")
+    // tag当前下标
+    const tabsActiveIndex = computed(()=>{
+      return tabsList.value.findIndex(item => item.name === activeName.value)
+    })
 
     const homeRoute = getHomeRoute(router.getRoutes())
+    // tags列表
     const tabsList: MenuState['tabsList'] = ref([{ ...homeRoute, noClosable: true }])
     const initTabsList: MenuState['initTabsList'] = (newTabsList) => {
       tabsList.value = newTabsList
@@ -127,6 +136,7 @@ export const useMenuStore = defineStore(
       tabsList.value.splice(index, 1)
     }
     const removeAllTabs: MenuState['removeAllTabs'] = () => {
+      tabsNavTo(tabsList.value[0] as TabItem)
       tabsList.value.splice(1, tabsList.value.length)
     }
 
@@ -149,6 +159,19 @@ export const useMenuStore = defineStore(
 
     }
 
+    const closeLeftNavTab = () => {
+       tabsList.value =  [tabsList.value[0],...tabsList.value.slice(tabsActiveIndex.value,tabsList.value.length)]
+    }
+
+    const closeRightNavTab = () => {
+       tabsList.value =  tabsList.value.slice(0,tabsActiveIndex.value+1)
+    }
+
+    const closeOtherNavTab = () => {
+      if( tabsActiveIndex.value === 0) tabsList.value = [tabsList.value[0]]
+      else tabsList.value =  [tabsList.value[0],tabsList.value[tabsActiveIndex.value]]
+    }
+
     return {
       menuList, initMenu,clearMenuList,
       isCollapse, changeIsCollapse, 
@@ -162,6 +185,10 @@ export const useMenuStore = defineStore(
       removeTabs,
       removeAllTabs,
       tabsNavTo,
+      tabsActiveIndex,
+      closeLeftNavTab,
+      closeRightNavTab,
+      closeOtherNavTab
     }
   },
   {
