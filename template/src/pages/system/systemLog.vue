@@ -185,7 +185,7 @@ const form = ref({
   data: {
   },
   props: {
-    action: "",
+    action: '/app/admin/system/systemLog/systemLog/add',
     columns: [
       {
         "key": "user_id",

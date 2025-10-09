@@ -10,15 +10,43 @@
         </el-tabs>
       </div>
       <el-dropdown trigger="click">
-        <span class="el-dropdown-link">
-          操作
-        </span>
+        <div class="border w-[32px] h-[32px] flex items-center justify-center"> <el-icon>
+            <ArrowDown />
+          </el-icon> </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item :disabled="menuStore.tabsList.length <= 1" @click="menuStore.removeAllTabs()">关闭所有标签页</el-dropdown-item>
-            <el-dropdown-item @click="menuStore.closeLeftNavTab()" :disabled="menuStore.tabsActiveIndex < 2">关闭左侧标签页</el-dropdown-item>
-            <el-dropdown-item @click="menuStore.closeRightNavTab()" :disabled="!(menuStore.tabsList.length > 1 && menuStore.tabsActiveIndex != menuStore.tabsList.length-1)">关闭右侧标签页</el-dropdown-item>
-            <el-dropdown-item @click="menuStore.closeOtherNavTab()" :disabled="menuStore.tabsList.length <= 1">关闭其他标签页</el-dropdown-item>
+
+            <el-dropdown-item @click="menuStore.closeLeftNavTab()" :disabled="menuStore.tabsActiveIndex < 2">
+              <div class="flex items-center justify-center">
+                <el-icon>
+                  <Back />
+                </el-icon>
+                关闭左侧
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click="menuStore.closeRightNavTab()"
+              :disabled="!(menuStore.tabsList.length > 1 && menuStore.tabsActiveIndex != menuStore.tabsList.length - 1)">
+              <div class="flex items-center justify-center"><el-icon>
+                  <Right />
+                </el-icon>
+                关闭右侧
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click="menuStore.closeOtherNavTab()" :disabled="menuStore.tabsList.length <= 1">
+              <div class="flex items-center justify-center"><el-icon>
+                  <Close />
+                </el-icon>
+                关闭其他
+              </div>
+            </el-dropdown-item>
+
+            <el-dropdown-item :disabled="menuStore.tabsList.length <= 1" @click="menuStore.removeAllTabs()">
+              <div class="flex items-center justify-center"><el-icon>
+                  <CircleCloseFilled />
+                </el-icon>
+                关闭所有
+              </div>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -40,8 +68,8 @@ const TabClick = (item: any) => {
 }
 
 const removeTab = (targetName: TabPaneName) => {
-  const findIndex = menuStore.tabsList.findIndex( item => item.name === targetName)
-  menuStore.removeTabs(findIndex,targetName)
+  const findIndex = menuStore.tabsList.findIndex(item => item.name === targetName)
+  menuStore.removeTabs(findIndex, targetName)
 }
 </script>
 

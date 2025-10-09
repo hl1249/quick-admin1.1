@@ -15,9 +15,9 @@
 
 <script setup lang="ts">
 import qaFormItem from './qaFormItems.vue';
-import type { FormInstance } from 'element-plus'
+import { ElMessage, type FormInstance } from 'element-plus'
 import { useVModel } from "@vueuse/core"
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(["update:modelValue","success"])
 
 interface QaFormColumns {
     key: string
@@ -45,11 +45,22 @@ const props = withDefaults(
 const model = useVModel(props, "modelValue", emit)
 
 
+import http from '@/utils/axios'
 const ruleFormRef = ref<FormInstance>()
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate(async(valid, fields) => {
         if (valid) {
+
+            const res = await http.request({
+                url: props.action,
+                method: 'post',
+                data: model.value,
+            })
+
+            ElMessage.success("提交成功!")
+            emit('success')
+
             console.log('submit!')
         } else {
             console.log('error submit!', fields)
