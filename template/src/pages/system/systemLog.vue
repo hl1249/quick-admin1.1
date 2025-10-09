@@ -1,8 +1,7 @@
 <template>
   <div>
     form.data:{{ form.data }}
-    <!-- <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" /> -->
-
+    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
@@ -13,7 +12,7 @@
 
     <div>
       <el-row>
-        <el-dialog v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+        <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
           <qa-form v-model="form.data" :rules="form.props.rules" :action="form.props.action"
             :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
             @success="form.props.show = false, refresh()">
@@ -32,7 +31,7 @@ import qaDataTable from '@/components/quickAdmin/qaTable.vue';
 import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus } from '@element-plus/icons-vue'
-
+import { getCommonTime } from '@/utils'
 
 const qaTableRef = ref<InstanceType<typeof qaDataTable> | null>(null);
 const table = ref<{
@@ -128,6 +127,9 @@ const search = () => {
   }
 }
 
+const { todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd, yearStart, yearEnd } = getCommonTime()
+console.log('todayStart', todayStart)
+console.log('todayEnd', todayEnd)
 const queryForm = ref({
   formData: {
   },
@@ -135,14 +137,40 @@ const queryForm = ref({
     key: "_add_time",
     type: "datetimerange",
     title: "添加时间",
-    "mode": "[]"
+    format: 'YYYY-MM-DD',
+    width: 230,
+    "mode": "[]",
+    pickerOptions: {
+      // defaultTime: ['00:00:00', '23:59:59'],
+      shortcuts: [{
+        text: '今天',
+        value: () => {
+          return [new Date(todayStart), new Date(todayEnd)]
+        }
+      }, {
+        text: '本周',
+        value: () => {
+          return [new Date(weekStart), new Date(weekEnd)]
+        }
+      }, {
+        text: '本月',
+        value: () => {
+          return [new Date(monthStart), new Date(monthEnd)]
+        }
+      }, {
+        text: '本年',
+        value: () => {
+          return [new Date(yearStart), new Date(yearEnd)]
+        }
+      }]
+    }
   },
   {
     key: "requestId",
     type: "text",
     title: "请求ID",
     mode: "=",
-    width: 300
+    width: 230,
   }]
 })
 
@@ -163,11 +191,12 @@ const form = ref({
         "key": "user_id",
         "title": "用户ID",
         "type": "text",
-        "width": 200
+        width: 250
       },
       {
-        key: "date1", title: "date类型", type: "date", valueFormat: "timestamp", tips: "可选择年月日", dateType: "daterange",
-        format: "yyyy-MM-dd"
+        key: "date1", title: "date类型", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
+        format: "YYYY-MM-DD HH:mm:ss",
+        width: 250
       }],
     rules: {
       user_id: [

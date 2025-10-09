@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-form :rules="rules" ref="ruleFormRef" :model="model">
+        <el-form :rules="rules" ref="ruleFormRef" :model="model" :label-width="labelWidth" >
             <qa-form-item v-model="model" v-for="item in columns"
                 v-bind="{ ...item, key: item.key, itemKey: item.key, label: item.title }"></qa-form-item>
             <el-form-item>

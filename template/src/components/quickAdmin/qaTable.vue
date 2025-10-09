@@ -1,6 +1,6 @@
 <template>
     <div v-loading="loading">
-        <el-table :data="tableData" style="width: 100%" @selection-change="selectionChange" row-key="_id" :height="responsiveHeight"
+        <el-table :data="tableData" style="width: 100%" @selection-change="selectionChange" row-key="_id" 
             :border="border"
             @sort-change="columnSort">
             <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />

@@ -464,7 +464,7 @@ function transTableData(data: any) {
 
   const match: any = {};
   for (const key in data.formData) {
-      if (data.formData[key] === null) {
+      if (data.formData[key] === null || data.formData[key]?.length <= 0) {
         delete data.formData[key]
       }
     }

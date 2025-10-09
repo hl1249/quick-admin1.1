@@ -215,7 +215,6 @@ export default defineComponent({
             radio: ({ value, data }) => renderBranch(value, data),
             select: ({ value, data }) => renderBranch(value, data),
             checkbox: ({ value, data }) => renderBranch(value, data),
-
         };
 
         const render = (params: any) => {
