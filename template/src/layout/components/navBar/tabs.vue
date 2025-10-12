@@ -10,7 +10,7 @@
         </el-tabs>
       </div>
       <el-dropdown trigger="click">
-        <div class="border w-[32px] h-[32px] flex items-center justify-center"> <el-icon>
+        <div class="border  border-[--el-border-color] w-[32px] h-[32px] flex items-center justify-center"> <el-icon>
             <ArrowDown />
           </el-icon> </div>
         <template #dropdown>

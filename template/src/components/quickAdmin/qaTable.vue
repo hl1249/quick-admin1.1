@@ -1,6 +1,7 @@
 <template>
-    <div v-loading="loading">
-        <el-table :data="tableData" style="width: 100%" @selection-change="selectionChange" row-key="_id" 
+    <div v-loading="loading" class="flex flex-col flex-auto overflow-hidden">
+        <div class="flex-auto overflow-hidden">
+            <el-table :data="tableData" height="100%" style="width: 100%" @selection-change="selectionChange" row-key="_id" 
             :border="border"
             @sort-change="columnSort">
             <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
@@ -55,8 +56,9 @@
                 </template>
             </el-table-column>
         </el-table>
+        </div>
 
-         <div class="qa-pagination flex items-center justify-center pt-[12px]">
+         <div class="qa-pagination flex items-center justify-center pt-[12px] flex-unset ">
             <el-pagination
             v-model:current-page="currentPage"
             v-model:page-size="pageSize"
@@ -206,6 +208,7 @@ const btnsDetail = (index: number, row: TableRow) => {
 }
 const btnsUpdate = (index: number, row: TableRow) => {
     console.log("编辑", row)
+    emit('update',row)
 }
 
 const confirmDelete = (row: TableRow, deleteRequset: DeleteRequset) => {
@@ -254,7 +257,10 @@ const onResize = () => {
   };
   const qaTableQueryHeight = document.querySelector('.qa-table-query')?.clientHeight || 0;
   const qaPaginHeight = (document.querySelector(".qa-pagination") as HTMLElement)?.offsetHeight || 0;
-  responsiveHeight.value = window.innerHeight - qaTableQueryHeight! - qaPaginHeight! - 180
+  const qaCustomActionHeight = (document.querySelector(".qa-custom-action") as HTMLElement)?.offsetHeight || 0;
+  console.log("%cqaTableQueryHeight",'color:red',qaTableQueryHeight)
+  console.log("%cqaPaginHeight",'color:red',qaPaginHeight)
+  responsiveHeight.value = window.innerHeight - qaTableQueryHeight! - qaPaginHeight! - qaCustomActionHeight! - 104 - 65
 }
 
 

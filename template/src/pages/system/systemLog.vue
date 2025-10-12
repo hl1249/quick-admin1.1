@@ -1,14 +1,12 @@
 <template>
-  <div>
-    form.data:{{ form.data }}
+  <div class="flex flex-col h-full">
     <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
     <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
-      :pagination="false" :right-btns="['detail_auto', 'delete']" :right-btns-more="table.rightBtnsMore" :row-no="true"
+      :pagination="false" :right-btns="['detail_auto', 'delete', 'update']" :right-btns-more="table.rightBtnsMore" :row-no="true"
       @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" />
-
 
     <div>
       <el-row>
@@ -107,7 +105,7 @@ const table = ref<{
     {
       key: "_add_time_str",
       title: "时间",
-      type: 'text'
+      type: 'text',
     },
   ],
   rightBtnsMore: [{
@@ -191,13 +189,22 @@ const form = ref({
         "key": "user_id",
         "title": "用户ID",
         "type": "text",
-        width: 250
+        width: 250,
+        show:['add']
       },
       {
         key: "date1", title: "date类型", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
         format: "YYYY-MM-DD HH:mm:ss",
-        width: 250
-      }],
+        width: 250,
+        show:['add','edit'],
+        // showRule:"user_id==自定义文案",
+        showRule:(formData: any)=>{
+          console.log('带就不',formData)
+          if(formData.user_id === "123456") return true
+          else return false
+        }
+      }
+    ],
     rules: {
       user_id: [
         { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
@@ -213,9 +220,14 @@ const refresh = () => {
   qaTableRef.value?.refresh()
 }
 const addBtn = () => {
+  form.value.props.formType = 'add';
+  form.value.props.title = '添加'
   form.value.props.show = true
 }
 const updateBtn = (index: number, row: any) => {
+  form.value.props.formType = 'edit';
+  form.value.props.title = '编辑'
+  form.value.props.show = true
   console.log("调用编辑", index, row)
 }
 const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {

@@ -3,6 +3,7 @@
 html{
   // --el-fill-color:red !important;
   --pg-bg-color: white;
+  --v-main-content-bg-color: white;
 }
 
 /** 自定义黑暗主题 */
@@ -10,6 +11,7 @@ html.dark {
   // * admin
   --v-bg-color: #1D1E1F;
   --v-main-bg-color: #1D1E1F;
+  --v-main-content-bg-color: #1D1E1F;
   --v-border-light: 1px solid #4c4c4d;
   --v-active-color: #213353;
   --v-over-color: #213353;

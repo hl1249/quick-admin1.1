@@ -3,10 +3,10 @@
     <Menu />
     <div class="right-content ">
       <NavBar />
-      <div id="view" class="view h-[calc(100%-4rem-40px)] p-4">
-          <div class="h-full p-4 bg-[--pg-bg-color] border-none" >
-            <router-view />
-          </div>
+      <div id="view" class="view h-[calc(100%-4rem-40px)] p-[10px]">
+        <div class="h-full border-none bg-[--v-main-content-bg-color] rounded-[4px] p-[10px] shadow">
+          <router-view />
+        </div>
       </div>
     </div>
   </div>
