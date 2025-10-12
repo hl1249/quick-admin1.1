@@ -5,7 +5,7 @@
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
     <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
-      :pagination="false" :right-btns="['detail_auto', 'delete', 'update']" :right-btns-more="table.rightBtnsMore" :row-no="true"
+      :pagination="false" :right-btns="['detail_auto', 'delete', 'update','more']" :right-btns-more="table.rightBtnsMore" :row-no="true"
       @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" />
 
     <div>
@@ -13,6 +13,7 @@
         <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
           <qa-form v-model="form.data" :rules="form.props.rules" :action="form.props.action"
             :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
+            :before-action="form.props.beforeAction"
             @success="form.props.show = false, refresh()">
           </qa-form>
         </el-dialog>
@@ -129,6 +130,7 @@ const { todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd, yearStar
 console.log('todayStart', todayStart)
 console.log('todayEnd', todayEnd)
 const queryForm = ref({
+ 
   formData: {
   },
   columns: [{
@@ -183,6 +185,10 @@ const form = ref({
   data: {
   },
   props: {
+    // 请求预处理
+    beforeAction:(formData: any) =>{
+      return true
+    },
     action: '/app/admin/system/systemLog/systemLog/add',
     columns: [
       {
@@ -190,7 +196,11 @@ const form = ref({
         "title": "用户ID",
         "type": "text",
         width: 250,
-        show:['add']
+        showLabel:true,
+        show:['add','edit'],
+        watch: (res:any) => {
+          console.log("watch", res)
+        }
       },
       {
         key: "date1", title: "日期", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
@@ -198,11 +208,12 @@ const form = ref({
         width: 250,
         show:['add','edit'],
         // showRule:"user_id==自定义文案",
-        showRule:(formData: any)=>{
-          console.log('带就不',formData)
-          if(formData.user_id === "123456") return true
-          else return false
-        }
+        // showRule:(formData: any)=>{
+        //   console.log('带就不',formData)
+        //   if(formData.user_id === "123456") return true
+        //   else return false
+        // },
+        disabled:"user_id==自定义文案"
       }
     ],
     rules: {

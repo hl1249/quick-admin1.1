@@ -39,6 +39,7 @@ const props = withDefaults(
         formType: string
         columns: QaFormColumns[]
         labelWidth: string | number,
+        beforeAction: (value: any) => boolean | void
     }>(),
     {
     }
@@ -53,11 +54,20 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate(async(valid, fields) => {
         if (valid) {
+            let postData = model.value
+
+            if(props.beforeAction(model.value) === false){
+                return
+            }
+
+            if(props.beforeAction(model.value)){
+                postData = props.beforeAction(model.value)
+            }
 
             const res = await http.request({
                 url: props.action,
                 method: 'post',
-                data: model.value,
+                data: postData,
             })
 
             ElMessage.success("提交成功!")

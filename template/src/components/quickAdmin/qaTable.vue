@@ -15,7 +15,7 @@
                 :valueFormat="item.valueFormat"
                 />
             </template>
-            <el-table-column align="center" v-if="rightBtns" width="400" fixed="right">
+            <el-table-column align="center" :width="flexColumnWidth()" v-if="rightBtns" fixed="right">
                 <template #header>
                     操作
                 </template>
@@ -247,38 +247,14 @@ const handleCurrentChange = (val: number) => {
   getTableData()
 }
 
-
-const responsiveHeight:Ref<string | number> = ref(0)
-const onResize = () => {
-  console.log("大小改变")
-  if (props.height) {
-    responsiveHeight.value = props.height
-    return
-  };
-  const qaTableQueryHeight = document.querySelector('.qa-table-query')?.clientHeight || 0;
-  const qaPaginHeight = (document.querySelector(".qa-pagination") as HTMLElement)?.offsetHeight || 0;
-  const qaCustomActionHeight = (document.querySelector(".qa-custom-action") as HTMLElement)?.offsetHeight || 0;
-  console.log("%cqaTableQueryHeight",'color:red',qaTableQueryHeight)
-  console.log("%cqaPaginHeight",'color:red',qaPaginHeight)
-  responsiveHeight.value = window.innerHeight - qaTableQueryHeight! - qaPaginHeight! - qaCustomActionHeight! - 104 - 65
-}
-
-
-const debouncedResize = debounce(onResize, 200)
-onMounted(() => {
-  onResize()
-  window.addEventListener('resize', debouncedResize);
-
-})
-onUnmounted(() => {
-  window.removeEventListener('resize', debouncedResize)
-})
-
-
 // 如果布尔值 返回布尔值 如果是函数调用
 const checkRightBtnsMoreDisabled = (disabled: any, row: TableRow) => {
     if (typeof disabled === 'boolean') return disabled
     if (typeof disabled === 'function') return disabled(row)
+}
+
+const flexColumnWidth = () => {
+    return 100* (props.rightBtns.length)+ 5 
 }
 
 defineExpose({

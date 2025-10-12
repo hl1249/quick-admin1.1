@@ -14,6 +14,10 @@ export default defineComponent({
     type: String,
     placeholder: String,
     tips: String,
+    showLabel: {
+      type: Boolean,
+      default: true  // 设置默认值为 true
+    },
     labelWidth: [String, Number],
     width: [String, Number],
     dateType: String,
@@ -21,14 +25,23 @@ export default defineComponent({
     format: String,
     pickerOptions: Object,
     show: Array,
-    showRule: [Function, String],   // ✅ 可以是函数或字符串 
+    showRule: [Function, String],   // 是否展示对应表单项
+    disabled: [Function, String],   // 是否禁用对应表单项
+    watch: Function
   },
   emits: ["update:modelValue", "search"],
   setup(props, { emit }) {
-    const { label, labelWidth, width, itemKey, type, placeholder, tips,  dateType, valueFormat, format, pickerOptions } = props;
-    const { show, showRule } = toRefs(props)
+    const { formType, label, labelWidth, width, itemKey, type, placeholder, tips, showLabel,  dateType, valueFormat, format, pickerOptions } = props;
+    const { show, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
 
+    watch(
+      () =>  model.value[itemKey], // 注意这里要用函数
+      (newValue) => {
+        props?.watch?.(newValue) // 防止 props.watch 未传
+      },
+      { deep: true } // 如果 model.value 是对象，建议加上 deep
+    )
     // 渲染输入框
     const renderText = ({ value, label, onChange, placeholder }: {
       value: string
@@ -41,6 +54,7 @@ export default defineComponent({
           clearable
           modelValue={value}
           placeholder={ placeholder || "请输入" + label}
+          disabled={isDisabled()}
           onUpdate:modelValue={onChange}
           style={{ width: realUnitConversion(width) }}
         />
@@ -63,6 +77,7 @@ export default defineComponent({
           type={dateType}
           format={format}
           placeholder={ placeholder || "请选择" + label}
+          disabled={isDisabled()}
           valueFormat={valueFormat}
           style={{ width: realUnitConversion(width) }}
         ></el-date-picker>
@@ -92,6 +107,7 @@ export default defineComponent({
           type={dateType}
           format={format}
           placeholder={ placeholder || "请选择" + label}
+          disabled={isDisabled()}
           valueFormat={valueFormat}
           {...pickerOptions}
           style={{ width: realUnitConversion(width) }}
@@ -110,32 +126,31 @@ export default defineComponent({
     const render = (params: any) => {
       const renderer = renderMap[params.type];
       return renderer ? (
-        renderer(params)
+        <div>
+          {renderer(params)}
+          {tips && formType !='query' ? <div class="text-[#909399] text-[12px]">{tips}</div> : null}
+        </div>
       ) : (
         <div class="whitespace-nowrap">{params.value}</div>
       );
     };
 
     const isShow = () => {
-      if(props.formType === 'query') return true
-      return show.value?.includes(props.formType)
+      if(formType === 'query') return true
+      return show.value?.includes(formType)
     }
 
     const isShowRule = () => {
       if (typeof showRule.value === 'function') {
-        console.log("函数调用")
         return showRule.value(model.value) // 调用函数
       }
 
       if (typeof showRule.value === 'string') {
-        console.log("模板字符串")
         const match = showRule.value.match(/^(\w+)\s*==\s*(.+)$/)
         if (!match) return false
         const [, key, value] = match
         const modelVal = model.value[key]
         const targetVal = isNaN(Number(value)) ? value : Number(value)
-        console.log('match',modelVal,typeof(modelVal))
-        console.log('value',targetVal,typeof(targetVal))
         return modelVal === targetVal
       }
 
@@ -146,15 +161,32 @@ export default defineComponent({
       return isShow() && isShowRule();
     }
 
+    const isDisabled = () => {
+       if (typeof disabled.value === 'function') {
+        return !(disabled.value(model.value)) // 调用函数
+      }
+
+      if (typeof disabled.value === 'string') {
+        const match = disabled.value.match(/^(\w+)\s*==\s*(.+)$/)
+        if (!match) return false
+        const [, key, value] = match
+        const modelVal = model.value[key]
+        const targetVal = isNaN(Number(value)) ? value : Number(value)
+        return !(modelVal === targetVal)
+      }
+
+      return false // 默认不禁用
+    }
+
     return () => {
       return finalShow() ? (
-        <el-form-item label={label} labelWidth={labelWidth} prop={itemKey}>
+        <el-form-item label={showLabel && label} labelWidth={showLabel ? labelWidth : '0'} prop={itemKey}>
           {render({
             value: model.value[itemKey],
             label,
             type,
             placeholder,
-            tips,
+
             dateType,
             valueFormat,
             format,
