@@ -193,7 +193,7 @@ const form = ref({
         show:['add']
       },
       {
-        key: "date1", title: "date类型", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
+        key: "date1", title: "日期", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
         format: "YYYY-MM-DD HH:mm:ss",
         width: 250,
         show:['add','edit'],

@@ -7,9 +7,9 @@
             ></qa-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm(ruleFormRef)">
-                    提交 :{{ formType }}
+                    提交
                 </el-button>
-                <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+                <el-button @click="resetForm(ruleFormRef)">重置</el-button>
             </el-form-item>
         </el-form>
     </div>

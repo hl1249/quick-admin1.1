@@ -12,32 +12,35 @@ export default defineComponent({
     label: String,
     itemKey: { type: String, required: true },
     type: String,
-    showRule: [Function, String],   // ✅ 可以是函数或字符串 
-    show: Array,
+    placeholder: String,
+    tips: String,
     labelWidth: [String, Number],
     width: [String, Number],
     dateType: String,
     valueFormat: String,
     format: String,
     pickerOptions: Object,
+    show: Array,
+    showRule: [Function, String],   // ✅ 可以是函数或字符串 
   },
   emits: ["update:modelValue", "search"],
   setup(props, { emit }) {
-    const { label, labelWidth, width, itemKey, type, dateType, valueFormat, format, pickerOptions } = props;
-    const { show, showRule, } = toRefs(props)
+    const { label, labelWidth, width, itemKey, type, placeholder, tips,  dateType, valueFormat, format, pickerOptions } = props;
+    const { show, showRule } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
 
     // 渲染输入框
-    const renderText = ({ value, label, onChange }: {
+    const renderText = ({ value, label, onChange, placeholder }: {
       value: string
       label: string
-      onChange: (val: string) => void
+      onChange: (val: string) => void,
+      placeholder: string
     }) => {
       return (
         <el-input
           clearable
           modelValue={value}
-          placeholder={"请输入" + label}
+          placeholder={ placeholder || "请输入" + label}
           onUpdate:modelValue={onChange}
           style={{ width: realUnitConversion(width) }}
         />
@@ -45,12 +48,13 @@ export default defineComponent({
     };
 
     // 日期 
-    const renderDate = ({ value, dateType, format, valueFormat, onChange }: {
+    const renderDate = ({ value, dateType, format, valueFormat, onChange,placeholder }: {
       value: string | number | Date | null
       dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
       format?: string
       valueFormat?: string
       onChange: (val: string | number | Date | null) => void
+      placeholder?: string
     }) => {
       return (
         <el-date-picker
@@ -58,13 +62,14 @@ export default defineComponent({
           onUpdate:modelValue={onChange}
           type={dateType}
           format={format}
+          placeholder={ placeholder || "请选择" + label}
           valueFormat={valueFormat}
           style={{ width: realUnitConversion(width) }}
         ></el-date-picker>
       )
     }
 
-    const renderDateTimerange = ({ value, dateType, format, valueFormat, onChange }: {
+    const renderDateTimerange = ({ value, dateType, format, valueFormat, onChange,placeholder }: {
       value: string | number | Date | null
       dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
       format?: string
@@ -76,7 +81,8 @@ export default defineComponent({
           text: string
           value: () => void | Date | [Date, Date]
         }[]
-      }
+      },
+      placeholder: String
     }) => {
       return (
         <el-date-picker
@@ -85,6 +91,7 @@ export default defineComponent({
           change={emit('search')}
           type={dateType}
           format={format}
+          placeholder={ placeholder || "请选择" + label}
           valueFormat={valueFormat}
           {...pickerOptions}
           style={{ width: realUnitConversion(width) }}
@@ -94,9 +101,9 @@ export default defineComponent({
 
     // 不同类型的渲染映射
     const renderMap: Record<string, (params: any) => JSX.Element | null> = {
-      text: ({ value, label, onChange }) => renderText({ value, label, onChange }),
-      date: ({ value, dateType, format, valueFormat, onChange }) => renderDate({ value, dateType, format, valueFormat, onChange }),
-      datetimerange: ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, pickerOptions }) => renderDateTimerange({ value, dateType, format, valueFormat, onChange, pickerOptions })
+      text: ({ value, label, onChange, placeholder }) => renderText({ value, label, onChange, placeholder }),
+      date: ({ value, dateType, format, valueFormat, onChange, placeholder }) => renderDate({ value, dateType, format, valueFormat, onChange, placeholder }),
+      datetimerange: ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, pickerOptions,placeholder }) => renderDateTimerange({ value, dateType, format, valueFormat, onChange, pickerOptions,placeholder })
     };
 
     // 统一渲染
@@ -110,6 +117,7 @@ export default defineComponent({
     };
 
     const isShow = () => {
+      if(props.formType === 'query') return true
       return show.value?.includes(props.formType)
     }
 
@@ -141,12 +149,12 @@ export default defineComponent({
     return () => {
       return finalShow() ? (
         <el-form-item label={label} labelWidth={labelWidth} prop={itemKey}>
-          {model.value[itemKey]}:isShowRule:{isShowRule() ? 'true' : 'false'}:show{isShow()?'true':'false'}
           {render({
             value: model.value[itemKey],
             label,
             type,
-
+            placeholder,
+            tips,
             dateType,
             valueFormat,
             format,
