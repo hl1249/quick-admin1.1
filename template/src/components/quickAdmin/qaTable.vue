@@ -254,7 +254,8 @@ const checkRightBtnsMoreDisabled = (disabled: any, row: TableRow) => {
 }
 
 const flexColumnWidth = () => {
-    return 100* (props.rightBtns.length)+ 5 
+    if(props.rightBtns) return 100* (props.rightBtns.length)+ 5
+    else return 0
 }
 
 defineExpose({

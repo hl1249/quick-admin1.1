@@ -5,22 +5,21 @@
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
     <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
-      :pagination="false" :right-btns="['detail_auto', 'delete', 'update','more']" :right-btns-more="table.rightBtnsMore" :row-no="true"
-      @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" />
+      :pagination="false" :right-btns="['detail_auto', 'delete', 'update', 'more']"
+      :right-btns-more="table.rightBtnsMore" :row-no="true" @selection-change="selectionChange" @update="updateBtn"
+      @delete="deleteBtn" />
 
     <div>
       <el-row>
         <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
-          <qa-form v-model="form.data" :rules="form.props.rules" :action="form.props.action"
+          <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
             :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-            :before-action="form.props.beforeAction"
-            @success="form.props.show = false, refresh()">
+            :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
           </qa-form>
+          <el-button @click="fromDefalut">表单默认值</el-button>
         </el-dialog>
       </el-row>
     </div>
-
-
   </div>
 </template>
 
@@ -31,6 +30,12 @@ import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus } from '@element-plus/icons-vue'
 import { getCommonTime } from '@/utils'
+
+
+const formRefs = ref()
+const fromDefalut = () => {
+  formRefs.value.setResetFormData({ user_id: '我叼你妈的' })
+}
 
 const qaTableRef = ref<InstanceType<typeof qaDataTable> | null>(null);
 const table = ref<{
@@ -119,18 +124,17 @@ const table = ref<{
     }
   }]
 })
-
 const search = () => {
   if (qaTableRef.value) {
     qaTableRef.value.search()
   }
+
 }
 
 const { todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd, yearStart, yearEnd } = getCommonTime()
-console.log('todayStart', todayStart)
-console.log('todayEnd', todayEnd)
+
 const queryForm = ref({
- 
+
   formData: {
   },
   columns: [{
@@ -186,7 +190,7 @@ const form = ref({
   },
   props: {
     // 请求预处理
-    beforeAction:(formData: any) =>{
+    beforeAction: (formData: any) => {
       return true
     },
     action: '/app/admin/system/systemLog/systemLog/add',
@@ -196,9 +200,9 @@ const form = ref({
         "title": "用户ID",
         "type": "text",
         width: 250,
-        showLabel:true,
-        show:['add','edit'],
-        watch: (res:any) => {
+        showLabel: true,
+        show: ['add', 'edit'],
+        watch: (res: any) => {
           console.log("watch", res)
         }
       },
@@ -206,14 +210,14 @@ const form = ref({
         key: "date1", title: "日期", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
         format: "YYYY-MM-DD HH:mm:ss",
         width: 250,
-        show:['add','edit'],
+        show: ['add', 'edit'],
         // showRule:"user_id==自定义文案",
         // showRule:(formData: any)=>{
         //   console.log('带就不',formData)
         //   if(formData.user_id === "123456") return true
         //   else return false
         // },
-        disabled:"user_id==自定义文案"
+        disabled: "user_id==自定义文案"
       }
     ],
     rules: {
@@ -227,15 +231,24 @@ const form = ref({
   }
 })
 
+// 表格数据刷新
 const refresh = () => {
   qaTableRef.value?.refresh()
 }
+// 表单数据重置
+const resetForm = async () => {
+  // 弹窗已经显示，子组件应该已经渲染完
+  
+  formRefs.value?.resetFields?.() // 安全调用
+}
 const addBtn = () => {
+  resetForm()
   form.value.props.formType = 'add';
   form.value.props.title = '添加'
   form.value.props.show = true
 }
 const updateBtn = (index: number, row: any) => {
+  resetForm()
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
   form.value.props.show = true
