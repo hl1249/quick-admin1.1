@@ -30,7 +30,7 @@ export default defineComponent({
     watch: Function
   },
   emits: ["update:modelValue", "search"],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const { formType, label, labelWidth, width, itemKey, type, placeholder, tips, showLabel,  dateType, valueFormat, format, pickerOptions } = props;
     const { show, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
@@ -177,11 +177,12 @@ export default defineComponent({
 
       return false // 默认不禁用
     }
+    const hasSlot = !!slots.default
 
     return () => {
       return finalShow() ? (
         <el-form-item label={showLabel && label} labelWidth={showLabel ? labelWidth : '0'} prop={itemKey}>
-          {render({
+          {hasSlot ? slots.default?.() : render({
             value: model.value[itemKey],
             label,
             type,

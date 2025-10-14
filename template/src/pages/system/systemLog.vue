@@ -15,6 +15,18 @@
           <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
             :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
             :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
+             <template v-slot:user_id="{ form, keyName }">
+              <view style="height: 36px;display: flex;align-items: center;">
+                <br/>
+                <el-input v-model="form[keyName]" placeholder="插槽输入框" />
+              </view>
+            </template>
+             <template v-slot:footer="{ loading }">
+                <view style="text-align: center;" >
+                  <el-button :loading="loading" type="danger"  size="small" style="padding: 10px 40px;margin-right: 30px; " @click="adopt(-1)"> 拒绝 </el-button>
+                  <el-button :loading="loading" type="success" size="small" style="padding: 10px 40px; " @click="adopt(1)"> 通过 </el-button>
+                </view>
+              </template>
           </qa-form>
           <el-button @click="fromDefalut">表单默认值</el-button>
         </el-dialog>
@@ -32,9 +44,29 @@ import { CirclePlus } from '@element-plus/icons-vue'
 import { getCommonTime } from '@/utils'
 
 
+
+const adopt = (status: number) => {
+  formRefs.value.submitForm({
+    // data为额外提交的参数，真正提交的参数为form1.data+这里的data
+    data: {
+      status: status
+    },
+    success: (data:any) => {
+      // 提交成功
+      
+    },
+    fail: (data:any) => {
+      // 提交失败
+      
+    }
+  });
+}
+
 const formRefs = ref()
 const fromDefalut = () => {
   formRefs.value.setResetFormData({ user_id: '我叼你妈的' })
+  // 还原表单验证并恢复默认数据
+  formRefs.value.resetFormDataDefault()
 }
 
 const qaTableRef = ref<InstanceType<typeof qaDataTable> | null>(null);
@@ -238,8 +270,7 @@ const refresh = () => {
 // 表单数据重置
 const resetForm = async () => {
   // 弹窗已经显示，子组件应该已经渲染完
-  
-  formRefs.value?.resetFields?.() // 安全调用
+  formRefs.value?.resetForm?.() // 安全调用
 }
 const addBtn = () => {
   resetForm()
