@@ -4,46 +4,42 @@
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
-    <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
+    <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
       :pagination="false" :right-btns="['detail_auto', 'delete', 'update', 'more']"
       :right-btns-more="table.rightBtnsMore" :row-no="true" @selection-change="selectionChange" @update="updateBtn"
       @delete="deleteBtn" />
 
-    <div>
-      <el-row>
-        <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
-          <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
-            :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-            :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
-             <template v-slot:user_id="{ form, keyName }">
-              <view style="height: 36px;display: flex;align-items: center;">
-                <br/>
-                <el-input v-model="form[keyName]" placeholder="插槽输入框" />
+  
+      <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+        <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
+          :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
+          :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
+            <template v-slot:user_id="{ form, keyName }">
+            <view style="height: 36px;display: flex;align-items: center;">
+              <br/>
+              <el-input v-model="form[keyName]" placeholder="插槽输入框" />
+            </view>
+          </template>
+            <template v-slot:footer="{ loading }">
+              <view style="text-align: center;" >
+                <el-button :loading="loading" type="danger"  size="small" style="padding: 10px 40px;margin-right: 30px; " @click="adopt(-1)"> 拒绝 </el-button>
+                <el-button :loading="loading" type="success" size="small" style="padding: 10px 40px; " @click="adopt(1)"> 通过 </el-button>
               </view>
             </template>
-             <template v-slot:footer="{ loading }">
-                <view style="text-align: center;" >
-                  <el-button :loading="loading" type="danger"  size="small" style="padding: 10px 40px;margin-right: 30px; " @click="adopt(-1)"> 拒绝 </el-button>
-                  <el-button :loading="loading" type="success" size="small" style="padding: 10px 40px; " @click="adopt(1)"> 通过 </el-button>
-                </view>
-              </template>
-          </qa-form>
-          <el-button @click="fromDefalut">表单默认值</el-button>
-        </el-dialog>
-      </el-row>
-    </div>
+        </qa-form>
+        <el-button @click="fromDefalut">表单默认值</el-button>
+      </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
-import qaDataTable from '@/components/quickAdmin/qaTable.vue';
+import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus } from '@element-plus/icons-vue'
 import { getCommonTime } from '@/utils'
-
-
+import http from '@/utils/axios'
 
 const adopt = (status: number) => {
   formRefs.value.submitForm({
@@ -69,7 +65,7 @@ const fromDefalut = () => {
   formRefs.value.resetFormDataDefault()
 }
 
-const qaTableRef = ref<InstanceType<typeof qaDataTable> | null>(null);
+const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null);
 const table = ref<{
   action: string,
   columns: Columns[]
@@ -166,7 +162,6 @@ const search = () => {
 const { todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd, yearStart, yearEnd } = getCommonTime()
 
 const queryForm = ref({
-
   formData: {
   },
   columns: [{
@@ -226,6 +221,16 @@ const form = ref({
       return true
     },
     action: '/app/admin/system/systemLog/systemLog/add',
+    // action:  ({data}:{
+    //   data: any
+    // })=>{
+    //   return http.request({
+    //       url: '/app/admin/system/systemLog/systemLog/update',
+    //       method: 'post',
+    //       data,
+    //       openMessage: false
+    //   })
+    // },
     columns: [
       {
         "key": "user_id",

@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading" class="flex flex-col flex-auto overflow-hidden">
+    <div v-loading="loading" class="flex flex-col flex-auto overflow-hidden pb-[2px]">
         <div class="flex-auto overflow-hidden">
             <el-table :data="tableData" height="100%" style="width: 100%" @selection-change="selectionChange" row-key="_id" 
             :border="border"
@@ -7,13 +7,9 @@
             <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
 
             <template v-for="item in columns" :key="item.key">
-            <qa-table-column show-overflow-tooltip :key="item.key" :prop="item.key" :label="item.title" v-if="item?.show ? item.show.includes('row') : true"
-                :width="item.width" :columns="item.columns" :data="item.data" :sortable="item.sortable"
-                :align="item.align"
-                :shape="item.shape"
-                :formatter="item.formatter" :type="item.type"
-                :valueFormat="item.valueFormat"
-                />
+            <qa-table-column show-overflow-tooltip v-bind="{ ...item, prop: item.key, label: item.title }" v-if="item?.show ? item.show.includes('row') : true"
+               @changeValue="changeValue"
+            />
             </template>
             <el-table-column align="center" :width="flexColumnWidth()" v-if="rightBtns" fixed="right">
                 <template #header>
@@ -117,6 +113,7 @@ export interface Columns {
     align?: 'left' | 'center' | 'right',
     valueFormat?: string,
     rowHeight?:  string | number,
+    watch?: (value:any) => void
 }
 export interface DeleteRequset{
     (params: { action: string; data: any }): void
@@ -152,6 +149,13 @@ const selectionChange = (row: any) => {
     emit('elTableSelect', row)
 }
 
+const changeValue = (row: any, key:string, value: string) =>{
+     const index = tableData.value.findIndex(item => item._id === row._id);
+    if (index !== -1) {
+        tableData.value[index][key] = value;
+    }
+}
+
 interface SortItem {
   name: string;
   type: 'asc' | 'desc';
@@ -172,7 +176,7 @@ const columnSort = (data: any) => {
 }
 
 const loading = ref(false)
-const tableData = ref([])
+const tableData = ref<{ _id: string; [key: string]: any }[]>([]);
 
 const getTableData = async () => {
     loading.value = true
@@ -204,11 +208,11 @@ onMounted(() => {
 
 
 const btnsDetail = (index: number, row: TableRow) => {
-    console.log("详情", row)
+    console.log("详情",index, row)
 }
 const btnsUpdate = (index: number, row: TableRow) => {
     console.log("编辑", row)
-    emit('update',row)
+    emit('update',index,row)
 }
 
 const confirmDelete = (row: TableRow, deleteRequset: DeleteRequset) => {

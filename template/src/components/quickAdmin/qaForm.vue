@@ -11,10 +11,10 @@
             <template v-if="!$slots.footer">
                 <el-form-item>
                     <el-button type="primary" @click="submitForm(ruleFormRef)">
-                        提交:resetCache:{{ resetCache }}
+                        提交
                     </el-button>
                     <el-button @click="resetFormDataDefault(ruleFormRef)">
-                        重置:model:{{ model }}
+                        重置
                     </el-button>
                 </el-form-item>
             </template>
@@ -48,7 +48,7 @@ const props = withDefaults(
     defineProps<{
         modelValue: any
         rules: any
-        action: string
+        action: string | ((value: any) => void)
         formType: string
         columns: QaFormColumns[]
         labelWidth: string | number,
@@ -71,47 +71,64 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
     console.log('当前表单数据:', JSON.parse(JSON.stringify(model.value)))
     console.log('表单规则:', props.rules)
+
     await formEl.validate(async (valid, fields) => {
         if (valid) {
+
             loading.value = true
 
-            let postData = model.value
+            if (typeof props.action === 'string') {
 
-            if (props.beforeAction(model.value) === false) {
-                return
+                let postData = model.value
+
+                if (props.beforeAction(model.value) === false) {
+                    return
+                }
+
+                if (props.beforeAction(model.value)) {
+                    postData = props.beforeAction(model.value) === true ? model.value : props.beforeAction(model.value)
+                }
+
+                try {
+                    const res = await http.request({
+                        url: props.action as string,
+                        method: 'post',
+                        data: postData,
+                    })
+                    ElMessage.success("提交成功!")
+                    emit('success')
+                } catch (error: any) {
+                    ElMessage.error(error)
+                } finally {
+                    loading.value = false
+                }
+
+                console.log('submit!')
             }
 
-            if (props.beforeAction(model.value)) {
-                postData = props.beforeAction(model.value) === true ? model.value : props.beforeAction(model.value)
+            if (typeof props.action === 'function') {
+                try{
+                    await props.action({data:model.value})
+                    ElMessage.success("提交成功!")
+                }catch(error:any){
+                    ElMessage.error(error)
+                } finally {
+                    loading.value = false
+                }
             }
-
-            try {
-                const res = await http.request({
-                    url: props.action,
-                    method: 'post',
-                    data: postData,
-                })
-            } catch (error) {
-
-            } finally {
-                loading.value = false
-            }
-            ElMessage.success("提交成功!")
-            emit('success')
-
-            console.log('submit!')
-        } else {
+        }
+        else {
             console.log('error submit!', fields)
         }
     })
 }
 
-const beforeSubmitForm = async ({data,success,fail}: {
-  data: any
-  success: (result:any) => void
-  fail: (error:any) => void
-}) =>{
-    
+const beforeSubmitForm = async ({ data, success, fail }: {
+    data: any
+    success: (result: any) => void
+    fail: (error: any) => void
+}) => {
+
 }
 
 

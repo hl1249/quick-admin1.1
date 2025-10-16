@@ -31,10 +31,9 @@ export default defineComponent({
   },
   emits: ["update:modelValue", "search"],
   setup(props, { emit, slots }) {
-    const { formType, label, labelWidth, width, itemKey, type, placeholder, tips, showLabel,  dateType, valueFormat, format, pickerOptions } = props;
-    const { show, showRule, disabled } = toRefs(props)
+    const {  label, labelWidth, width, itemKey, type, placeholder, tips, show, showLabel,  dateType, valueFormat, format, pickerOptions } = props;
+    const { formType, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
-
     watch(
       () =>  model.value[itemKey], // 注意这里要用函数
       (newValue) => {
@@ -128,7 +127,7 @@ export default defineComponent({
       return renderer ? (
         <div>
           {renderer(params)}
-          {tips && formType !='query' ? <div class="text-[#909399] text-[12px]">{tips}</div> : null}
+          {tips && formType.value !='query' ? <div class="text-[#909399] text-[12px]">{tips}</div> : null}
         </div>
       ) : (
         <div class="whitespace-nowrap">{params.value}</div>
@@ -136,8 +135,9 @@ export default defineComponent({
     };
 
     const isShow = () => {
-      if(formType === 'query') return true
-      return show.value?.includes(formType)
+      if(formType.value === 'query') return true
+      if(show === undefined) return true
+      return show?.includes(formType.value)
     }
 
     const isShowRule = () => {

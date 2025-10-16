@@ -464,33 +464,36 @@ function transTableData(data: any) {
 
   const match: any = {};
   for (const key in data.formData) {
-      if (data.formData[key] === null || data.formData[key]?.length <= 0) {
-        delete data.formData[key]
+    if (data.formData[key] === null || data.formData[key]?.length <= 0) {
+      delete data.formData[key]
+    }
+  }
+
+  if (data.columns && data.columns.length >= 1) {
+    data.columns.forEach(col => {
+      const value = data.formData[col.key];
+      if (value === undefined || col.mode === "custom") return;
+
+      switch (col.mode) {
+        case "=": match[col.key] = value; break;
+        case "!=": match[col.key] = { $ne: value }; break;
+        case "%%": match[col.key] = { $regex: value, $options: "i" }; break;
+        case "%*": match[col.key] = { $regex: `^${value}`, $options: "i" }; break;
+        case "*%": match[col.key] = { $regex: `${value}$`, $options: "i" }; break;
+        case ">": match[col.key] = { $gt: value }; break;
+        case ">=": match[col.key] = { $gte: value }; break;
+        case "<": match[col.key] = { $lt: value }; break;
+        case "<=": match[col.key] = { $lte: value }; break;
+        case "in": match[col.key] = { $in: value }; break;
+        case "nin": match[col.key] = { $nin: value }; break;
+        case "[]": match[col.key] = { $gte: value[0], $lte: value[1] }; break;
+        case "[)": match[col.key] = { $gte: value[0], $lt: value[1] }; break;
+        case "(]": match[col.key] = { $gt: value[0], $lte: value[1] }; break;
+        case "()": match[col.key] = { $gt: value[0], $lt: value[1] }; break;
       }
-    }
+    });
+  }
 
-  data.columns.forEach(col => {
-    const value = data.formData[col.key];
-    if (value === undefined || col.mode === "custom") return;
-
-    switch (col.mode) {
-      case "=": match[col.key] = value; break;
-      case "!=": match[col.key] = { $ne: value }; break;
-      case "%%": match[col.key] = { $regex: value, $options: "i" }; break;
-      case "%*": match[col.key] = { $regex: `^${value}`, $options: "i" }; break;
-      case "*%": match[col.key] = { $regex: `${value}$`, $options: "i" }; break;
-      case ">": match[col.key] = { $gt: value }; break;
-      case ">=": match[col.key] = { $gte: value }; break;
-      case "<": match[col.key] = { $lt: value }; break;
-      case "<=": match[col.key] = { $lte: value }; break;
-      case "in": match[col.key] = { $in: value }; break;
-      case "nin": match[col.key] = { $nin: value }; break;
-      case "[]": match[col.key] = { $gte: value[0], $lte: value[1] }; break;
-      case "[)": match[col.key] = { $gte: value[0], $lt: value[1] }; break;
-      case "(]": match[col.key] = { $gt: value[0], $lte: value[1] }; break;
-      case "()": match[col.key] = { $gt: value[0], $lt: value[1] }; break;
-    }
-  });
   data.match = match;
   return data;
 }

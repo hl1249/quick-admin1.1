@@ -1,4 +1,4 @@
-import { Controller, Get, } from '@nestjs/common';
+import { Controller, Post,Body, Req } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
@@ -10,18 +10,29 @@ export class SystemRoleController {
   ) {
   }
 
-  @Get('/getList')
-  getList(): Promise<Document | null> {   
-    return this.dbService.getTableData({
-      dbName: "qa-roles",
-      data:{
-        formData:{
-          role_id:''
-        },
-        columns:[
-          { title: '角色ID', key: 'role_id', width: 150, mode: "%%" },
+  @Post('/getList')
+  getList(@Req() req, @Body() data): Promise<Document | null> {
+      console.log("请求body", data)
+      return this.dbService.getTableData({
+        dbName: "qa-roles",
+        data,
+        foreignDB:[
+          {
+            dbName:"qa-menus",
+            localKey:"menu",
+            localKeyType: "array",
+            foreignKey:"menu_id",
+            as:'menuList'
+          },
+          
+          {
+            dbName:"qa-permissions",
+            localKey:"permission",
+            localKeyType: "array",
+            foreignKey:"parent_id",
+            as:'permissionsList'
+          }
         ]
-      }
-    })
-  }
+      })
+    }
 }
