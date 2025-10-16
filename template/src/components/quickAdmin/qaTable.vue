@@ -1,87 +1,89 @@
 <template>
     <div v-loading="loading" class="flex flex-col flex-auto overflow-hidden pb-[2px]">
         <div class="flex-auto overflow-hidden">
-            <el-table :data="tableData" height="100%" style="width: 100%" @selection-change="selectionChange" row-key="_id" 
-            :border="border"
-            @sort-change="columnSort">
-            <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
+            <el-table :data="tableData" height="100%" style="width: 100%" @selection-change="selectionChange"
+                row-key="_id" :border="border" @sort-change="columnSort">
+                <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
 
-            <template v-for="item in columns" :key="item.key">
-            <qa-table-column show-overflow-tooltip v-bind="{ ...item, prop: item.key, label: item.title }" v-if="item?.show ? item.show.includes('row') : true"
-               @changeValue="changeValue"
-            />
-            </template>
-            <el-table-column align="center" :width="flexColumnWidth()" v-if="rightBtns" fixed="right">
-                <template #header>
-                    操作
+                <template v-for="item in columns" :key="item.key">
+                    <qa-table-column show-overflow-tooltip v-bind="{ ...item, prop: item.key, label: item.title }"
+                        v-if="item?.show ? item.show.includes('row') : true" @changeValue="changeValue" />
                 </template>
-                <template #default="scope">
-                    <el-button :icon="Document" v-if="rightBtns.includes('detail_auto')"
-                        @click="btnsDetail(scope.$index, scope.row)">
-                        详情
-                    </el-button>
-                    <el-button type="primary" :icon="Edit" v-if="rightBtns.includes('update')"
-                        @click="btnsUpdate(scope.$index, scope.row)">
-                        编辑
-                    </el-button>
-
-                    <el-popconfirm title="确定删除吗？" v-if="rightBtns.includes('delete')"
-                        @confirm="confirmDelete(scope.row, btnsDeleteRequset)">
-                        <template #reference>
-                            <el-button type="danger" :icon="Delete">
-                                删除
-                            </el-button>
-                        </template>
-                    </el-popconfirm>
-
-                    <el-dropdown trigger="click" v-if="rightBtns.includes('more')" class="ml-[12px]">
-                        <el-button type="success" :icon="ArrowDown">
-                            更多
+                <el-table-column align="center" :width="flexColumnWidth()" v-if="rightBtns" fixed="right">
+                    <template #header>
+                        操作
+                    </template>
+                    <template #default="scope">
+                        <el-button :icon="Document" v-if="rightBtns.includes('detail_auto')"
+                            @click="btnsDetail(scope.$index, scope.row)">
+                            详情
                         </el-button>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item v-for="item in rightBtnsMore" :key="item.title"
-                                    @click="item.onClick(scope.row)"
-                                    :disabled="checkRightBtnsMoreDisabled(item.disabled, scope.row)">
-                                    {{ item.title }}
-                                </el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
+                        <el-button type="primary" :icon="Edit" v-if="rightBtns.includes('update')"
+                            @click="btnsUpdate(scope.$index, scope.row)">
+                            编辑
+                        </el-button>
 
-                </template>
-            </el-table-column>
-        </el-table>
+                        <el-popconfirm title="确定删除吗？" v-if="rightBtns.includes('delete')"
+                            @confirm="confirmDelete(scope.row, btnsDeleteRequset)">
+                            <template #reference>
+                                <el-button type="danger" :icon="Delete">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-popconfirm>
+
+                        <el-dropdown trigger="click" v-if="rightBtns.includes('more')" class="ml-[12px]">
+                            <el-button type="success" :icon="ArrowDown">
+                                更多
+                            </el-button>
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item v-for="item in rightBtnsMore" :key="item.title"
+                                        @click="item.onClick(scope.row)"
+                                        :disabled="checkRightBtnsMoreDisabled(item.disabled, scope.row)">
+                                        {{ item.title }}
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
+
+                    </template>
+                </el-table-column>
+            </el-table>
         </div>
 
-         <div class="qa-pagination flex items-center justify-center pt-[12px] flex-unset ">
-            <el-pagination
-            v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
-            :page-sizes="[1,5,10,20,50,100,500]"
-            :size="size"
-            :disabled="disabled"
-            :background="background"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            />
+        <div class="qa-pagination flex items-center justify-center pt-[12px] flex-unset ">
+            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
+                :page-sizes="[1, 5, 10, 20, 50, 100, 500]" :size="size" :disabled="disabled" :background="background"
+                layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+                @current-change="handleCurrentChange" />
         </div>
+
+        <el-dialog v-model="infoDialogVisible" title="详情" width="500" :before-close="infoHandleClose">
+            <el-table :data="detailData" border :show-header="false" max-height="800">
+                <el-table-column width="200" prop="title" />
+                <el-table-column>
+                    <template #default="scope">
+                        <qa-detail v-bind="{scope,columns}"/>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
     </div>
 </template>
 
 <script lang="ts" setup>
 
+import qaDetail from './qaDetail.vue'
 import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue'
 import type { ComponentSize } from 'element-plus'
 import http from '@/utils/axios'
 import { ElMessage } from 'element-plus'
 import qaTableColumn from './qaTableColumn.vue'
-import { debounce } from '@/utils'
+import { cloneDeep } from '@/utils'
 
 type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more'
-type Type =  'radio' | 'select' | 'checkbox' | 'json' | 'radio' | 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage' | 'address' | 'userInfo' | 'group' | 'table'
+type Type = 'radio' | 'select' | 'checkbox' | 'json' | 'radio' | 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage' | 'address' | 'userInfo' | 'group' | 'table'
 type Show = 'detail' | 'row'
 type TableRow = {
     _id: number
@@ -99,7 +101,7 @@ export interface Columns {
     type: Type,
     show?: Show[]
     width?: string | number,
-    minWidth?:  string | number,
+    minWidth?: string | number,
     columns?: Columns[]
     data?: Data[]
     defaultValue?: string | number;
@@ -112,10 +114,10 @@ export interface Columns {
     shape?: 'circle' | 'square',
     align?: 'left' | 'center' | 'right',
     valueFormat?: string,
-    rowHeight?:  string | number,
-    watch?: (value:any) => void
+    rowHeight?: string | number,
+    watch?: (value: any) => void
 }
-export interface DeleteRequset{
+export interface DeleteRequset {
     (params: { action: string; data: any }): void
 }
 export interface RightBtnMoreItem {
@@ -125,21 +127,21 @@ export interface RightBtnMoreItem {
 }
 
 const props = withDefaults(
-  defineProps<{
-    action: string
-    columns: Columns[]
-    queryFormParam?: Record<string, any>
-    rightBtns?: RightBtn[]
-    rightBtnsMore?: RightBtnMoreItem[]
-    rowNo?: boolean
-    renderNode?: 'detail' | 'row'   // 渲染位置
-    height?: string | number,
-    border?: boolean
-  }>(),
-  {
-    renderNode: 'row',  // 默认值
-    rowNo: false,       // 其他可选默认值
-  }
+    defineProps<{
+        action: string
+        columns: Columns[]
+        queryFormParam?: Record<string, any>
+        rightBtns?: RightBtn[]
+        rightBtnsMore?: RightBtnMoreItem[]
+        rowNo?: boolean
+        renderNode?: 'detail' | 'row'   // 渲染位置
+        height?: string | number,
+        border?: boolean
+    }>(),
+    {
+        renderNode: 'row',  // 默认值
+        rowNo: false,       // 其他可选默认值
+    }
 )
 
 const emit = defineEmits(['elTableSelect', 'delete', 'update'])
@@ -149,26 +151,26 @@ const selectionChange = (row: any) => {
     emit('elTableSelect', row)
 }
 
-const changeValue = (row: any, key:string, value: string) =>{
-     const index = tableData.value.findIndex(item => item._id === row._id);
+const changeValue = (row: any, key: string, value: string) => {
+    const index = tableData.value.findIndex(item => item._id === row._id);
     if (index !== -1) {
         tableData.value[index][key] = value;
     }
 }
 
 interface SortItem {
-  name: string;
-  type: 'asc' | 'desc';
+    name: string;
+    type: 'asc' | 'desc';
 }
 
 const sortRule = ref<SortItem[]>([]);
 const columnSort = (data: any) => {
     sortRule.value = sortRule.value.filter(item => item.name != data.prop)
 
-    if(data.order){
+    if (data.order) {
         sortRule.value.push({
-            name:data.prop,
-            type:data.order === "ascending" ? 'asc' : 'desc'
+            name: data.prop,
+            type: data.order === "ascending" ? 'asc' : 'desc'
         })
     }
 
@@ -176,7 +178,7 @@ const columnSort = (data: any) => {
 }
 
 const loading = ref(false)
-const tableData = ref<{ _id: string; [key: string]: any }[]>([]);
+const tableData = ref<{ _id: string;[key: string]: any }[]>([]);
 
 const getTableData = async () => {
     loading.value = true
@@ -187,7 +189,7 @@ const getTableData = async () => {
             method: 'post',
             data: {
                 ...props.queryFormParam,
-                sortRule:sortRule.value,
+                sortRule: sortRule.value,
                 pageIndex: currentPage.value,
                 pageSize: pageSize.value,
             },
@@ -208,11 +210,22 @@ onMounted(() => {
 
 
 const btnsDetail = (index: number, row: TableRow) => {
-    console.log("详情",index, row)
+    const tableDatas = props.columns.map((item) => {
+        console.log(item)
+        return {
+            value: row[item.key as string],
+            row,
+            ...item
+        }
+    })
+    console.log('tableDatas', tableDatas)
+    detailData.value = tableDatas
+
+    openInfoDialog()
 }
 const btnsUpdate = (index: number, row: TableRow) => {
     console.log("编辑", row)
-    emit('update',index,row)
+    emit('update', index, cloneDeep(row))
 }
 
 const confirmDelete = (row: TableRow, deleteRequset: DeleteRequset) => {
@@ -243,12 +256,12 @@ const disabled = ref(false)
 const size = ref<ComponentSize>('default')
 const background = ref(true)
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
-  getTableData()
+    console.log(`${val} items per page`)
+    getTableData()
 }
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`)
-  getTableData()
+    console.log(`current page: ${val}`)
+    getTableData()
 }
 
 // 如果布尔值 返回布尔值 如果是函数调用
@@ -258,12 +271,21 @@ const checkRightBtnsMoreDisabled = (disabled: any, row: TableRow) => {
 }
 
 const flexColumnWidth = () => {
-    if(props.rightBtns) return 100* (props.rightBtns.length)+ 5
+    if (props.rightBtns) return 100 * (props.rightBtns.length) + 5
     else return 0
 }
 
+const detailData = ref()
+const openInfoDialog = () => {
+    infoDialogVisible.value = true
+}
+const infoDialogVisible = ref(false)
+const infoHandleClose = () => {
+    infoDialogVisible.value = false
+}
+
 defineExpose({
-  search: getTableData,
-  refresh: getTableData,
+    search: getTableData,
+    refresh: getTableData,
 });
 </script>

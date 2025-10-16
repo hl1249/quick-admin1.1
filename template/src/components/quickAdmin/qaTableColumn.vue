@@ -5,7 +5,7 @@ import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
 import { timeFormat } from '@/utils'
-import { useDark, useLocalStorage } from '@vueuse/core'
+import { useDark } from '@vueuse/core'
 
 
 export default defineComponent({
@@ -28,11 +28,6 @@ export default defineComponent({
         data: {
             type: Array as PropType<Data[]>,
             default: () => [],
-        },
-        // 修改 defaultValue 类型以匹配 Columns 接口
-        defaultValue: {
-            type: [String, Number] as PropType<string | number>, // ✅ 改为 string | number
-            default: undefined
         },
         minWidth: {
             type: [String, Number] as PropType<string | number>, // ✅ 改为支持 string | number
@@ -84,11 +79,6 @@ export default defineComponent({
             type: Function as PropType<(value: any) => void>,
             default: undefined
         },
-        // 添加 key 属性（如果需要）
-        key: {
-            type: String as PropType<string>,
-            default: undefined
-        },
         // 添加 title 属性（与 label 对应）
         title: {
             type: String as PropType<string>,
@@ -100,7 +90,7 @@ export default defineComponent({
         
         const isDark = useDark()
 
-        const { prop, label, type, width, columns, data, defaultValue, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
+        const { prop, label, type, width, columns, data, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
         } = props;
 
         const changeValue = (row: any, prop:string, value: any) => {

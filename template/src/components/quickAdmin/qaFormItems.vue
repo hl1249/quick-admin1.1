@@ -60,6 +60,39 @@ export default defineComponent({
       );
     };
 
+    // 渲染switch
+    const renderSwitch = ({value,onChange}:{
+      value: boolean
+      onChange: (val: string) => void,
+    }) => {
+      return(
+        <el-switch 
+        modelValue={value}
+          onUpdate:modelValue={onChange}
+         ></el-switch>
+      )
+    }
+
+    // 渲染文本域
+    const renderTextarea = ({ value, label, onChange, placeholder }: {
+      value: string
+      label: string
+      onChange: (val: string) => void,
+      placeholder: string
+    }) => {
+      return (
+        <el-input
+          clearable
+          modelValue={value}
+          placeholder={ placeholder || "请输入" + label}
+          type='textarea'
+          disabled={isDisabled()}
+          onUpdate:modelValue={onChange}
+          style={{ width: realUnitConversion(width) }}
+        />
+      );
+    };
+
     // 日期 
     const renderDate = ({ value, dateType, format, valueFormat, onChange,placeholder }: {
       value: string | number | Date | null
@@ -117,6 +150,8 @@ export default defineComponent({
     // 不同类型的渲染映射
     const renderMap: Record<string, (params: any) => JSX.Element | null> = {
       text: ({ value, label, onChange, placeholder }) => renderText({ value, label, onChange, placeholder }),
+      switch: ({value,onChange}) => renderSwitch({value,onChange}),
+      textarea:({ value, label, onChange, placeholder }) => renderTextarea({ value, label, onChange, placeholder }),
       date: ({ value, dateType, format, valueFormat, onChange, placeholder }) => renderDate({ value, dateType, format, valueFormat, onChange, placeholder }),
       datetimerange: ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, pickerOptions,placeholder }) => renderDateTimerange({ value, dateType, format, valueFormat, onChange, pickerOptions,placeholder })
     };

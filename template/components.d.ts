@@ -54,6 +54,7 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     QaAreaCascader: typeof import('./src/components/quickAdmin/qaAreaCascader.vue')['default']
     QaDataTable: typeof import('./src/components/quickAdmin/qa-data-table.vue')['default']
+    QaDetail: typeof import('./src/components/quickAdmin/qaDetail.vue')['default']
     QaForm: typeof import('./src/components/quickAdmin/qaForm.vue')['default']
     QaFormItem: typeof import('./src/components/quickAdmin/qaFormItem.vue')['default']
     QaFormItems: typeof import('./src/components/quickAdmin/qaFormItems.vue')['default']
@@ -63,6 +64,7 @@ declare module 'vue' {
     QaTableQuery: typeof import('./src/components/quickAdmin/qaTableQuery.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Test: typeof import('./src/components/quickAdmin/test.vue')['default']
   }
   export interface GlobalDirectives {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

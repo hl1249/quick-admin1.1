@@ -224,22 +224,62 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
     let matchExpression: any;
 
     if (localKeyType === 'array') {
-      // localKey是数组，使用 $in 操作符
-      matchExpression = {
-        $in: [
-          hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
-          "$$localVar",
-        ]
-      };
-    } else if (foreignKeyType === 'array') {
-      // foreignKey是数组，使用 $in 操作符（顺序调换）
-      matchExpression = {
-        $in: [
-          hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
-          "$$localVar",
-        ]
-      };
-    } else {
+  // localKey 是数组，使用 $in（foreignKey 是单值）
+  matchExpression = {
+    $in: [
+      // foreignKey 保护：存在时转字符串或原值，否则 null
+      {
+        $cond: {
+          if: { $gt: [`$${config.foreignKey}`, null] },
+          then: hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
+          else: null
+        }
+      },
+      // localVar 保护：必须是数组，否则转单值或空数组
+      {
+        $cond: {
+          if: { $isArray: "$$localVar" },
+          then: "$$localVar",
+          else: {
+            $cond: {
+              if: { $gt: ["$$localVar", null] },
+              then: ["$$localVar"],
+              else: []
+            }
+          }
+        }
+      }
+    ]
+  };
+} else if (foreignKeyType === 'array') {
+  // foreignKey 是数组，使用 $in（localVar 是单值）
+  matchExpression = {
+    $in: [
+      // foreignKey 保护：必须是数组，否则转单值或空数组
+      {
+        $cond: {
+          if: { $isArray: `$${config.foreignKey}` },
+          then: `$${config.foreignKey}`,
+          else: {
+            $cond: {
+              if: { $gt: [`$${config.foreignKey}`, null] },
+              then: [hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`],
+              else: []
+            }
+          }
+        }
+      },
+      // localVar 保护：存在时取值，否则 null
+      {
+        $cond: {
+          if: { $gt: ["$$localVar", null] },
+          then: "$$localVar",
+          else: null
+        }
+      }
+    ]
+  };
+} else {
       // 默认情况，使用 $eq 操作符
       matchExpression = {
         $eq: [

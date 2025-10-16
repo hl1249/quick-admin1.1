@@ -8,7 +8,8 @@
 
     <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
       :pagination="false" :right-btns="['detail_auto', 'delete', 'update', 'more']"
-      :right-btns-more="table.rightBtnsMore" :row-no="true" @update="updateBtn" />
+      :right-btns-more="table.rightBtnsMore" :row-no="true" @update="updateBtn" 
+			@delete="deleteBtn" />
 
 
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
@@ -25,6 +26,7 @@ import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quic
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus } from '@element-plus/icons-vue'
+import http from '@/utils/axios'
 
 const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null);
 const table = ref<{
@@ -46,7 +48,7 @@ const table = ref<{
       title: "角色标识",
     },
     {
-      key: "comment",
+      key: "role_name",
       type: 'text',
       title: "角色名称",
       width: 240
@@ -58,7 +60,7 @@ const table = ref<{
       width: 240
     },
     {
-      key: "permissionList",
+      key: "permissionsList",
       title: "拥有权限",
       type: "text",
       formatter: (val: any, row: any, column: any, index: number) => {
@@ -108,8 +110,16 @@ const table = ref<{
       title: "是否启用",
       watch: (res) => {
         let { value, row, change } = res;
-
-        change(value)
+        http.request({
+          method:'POST',
+          url:"/app/admin/system/systemRole/systemRole/updateBase",
+          data:{
+            _id: row._id,
+            enable: value
+          }
+        }).then((res) => {
+          change(value)
+        })
       }
     },
     {
@@ -164,6 +174,7 @@ const queryForm = ref({
 
 const form = ref({
   data: {
+    enable:true,
   },
   props: {
     // 请求预处理
@@ -228,6 +239,7 @@ const addBtn = () => {
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
+	form.value.props.action = '/app/admin/system/systemRole/systemRole/update';
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
   form.value.props.show = true
@@ -236,7 +248,7 @@ const updateBtn = (index: number, row: any) => {
 }
 const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
   btnsDeleteRequset({
-    action: '/app/admin/system/systemLog/systemLog/delete',
+    action: '/app/admin/system/systemRole/systemRole/delete',
     data: {
       _id: row._id
     }
