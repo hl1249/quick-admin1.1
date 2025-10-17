@@ -1,6 +1,6 @@
 <template>
   <div>
-    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
+    <!-- <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" /> -->
 
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
@@ -167,7 +167,7 @@ const form = ref({
         "width": 200
       },
       {
-        key: "date1", title: "date类型", type: "date", valueFormat: "timestamp", tips: "可选择年月日", dateType: "daterange"
+        key: "date1", title: "date类型", type: "date", tips: "可选择年月日",
       }],
     rules: {
 

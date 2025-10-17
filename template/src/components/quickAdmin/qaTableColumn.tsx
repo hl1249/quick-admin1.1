@@ -4,7 +4,7 @@ import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
 import { timeFormat } from '@/utils'
-import { useDark, useLocalStorage } from '@vueuse/core'
+import { useDark } from '@vueuse/core'
 
 
 export default defineComponent({

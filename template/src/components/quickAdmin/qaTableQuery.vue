@@ -1,8 +1,7 @@
 <template>
   <div class="qa-table-query">
     <el-form :model="modelValue" label-width="auto" class="flex flex-wrap gap-x-1">
-      <qa-form-item v-for="item, index in columns" :label="item.title" :type="item.type" :key="item.key"
-        :width="item.width" :min-width="item.minWidth" :labelWidth="item.labelWidth" :data="item.data"
+      <qa-form-item v-for="item, index in columns" v-bind="item"
         v-model="modelValue[item.key]" @search="emit('search')" />
       <el-button type="primary" @click="emit('search')" :icon="Search">
         搜索
@@ -15,13 +14,14 @@
 <script setup lang="ts">
 const emit = defineEmits(['search', 'update:modelValue'])
 import { Search } from '@element-plus/icons-vue'
-import qaFormItem from './qaFormItem.tsx'
+import qaFormItem from './qaFormItem.vue'
 
 
-interface QueryColumns {
+interface QueryColumnsItem {
   key: string;
+  itemKey: string
   title: string;
-  type: string;
+  type: 'text'
   width?: number; // 可选字段
   minWidth?: number;
   labelWidth?: number;
@@ -33,7 +33,7 @@ interface QueryColumns {
 
 const props = withDefaults(
   defineProps<{
-    columns: QueryColumns[];
+    columns: QueryColumnsItem[];
     modelValue: any
   }>(),
   {
