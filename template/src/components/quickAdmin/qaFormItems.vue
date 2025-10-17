@@ -35,7 +35,7 @@ export default defineComponent({
     disabled: [Function, String],   // 是否禁用对应表单项
     watch: Function
   },
-  emits: ["update:modelValue", "search","clearSearch"],
+  emits: ["update:modelValue", "search"],
   setup(props, { emit, slots }) {
     const {  label, labelWidth, width, itemKey, type, placeholder, tips, show, showLabel,  dateType, valueFormat, format, pickerOptions } = props;
     const { formType, showRule, disabled } = toRefs(props)
@@ -61,7 +61,7 @@ export default defineComponent({
           placeholder={ placeholder || "请输入" + label}
           disabled={isDisabled()}
           onUpdate:modelValue={onChange}
-          onClear={() => emit("clearSearch")} // ✅ 点击时才执行
+          onClear={() => emit("search")} // ✅ 点击时才执行
           style={{ width: realUnitConversion(width) }}
         />
       );
@@ -95,6 +95,7 @@ export default defineComponent({
           type='textarea'
           disabled={isDisabled()}
           onUpdate:modelValue={onChange}
+          onClear={() => emit("search")} // ✅ 点击时才执行
           style={{ width: realUnitConversion(width) }}
         />
       );
@@ -113,6 +114,7 @@ export default defineComponent({
         <el-date-picker
           modelValue={value}
           onUpdate:modelValue={onChange}
+          onClear={() => emit("search")} // ✅ 点击时才执行
           type={dateType}
           format={format}
           placeholder={ placeholder || "请选择" + label}
@@ -142,7 +144,8 @@ export default defineComponent({
         <el-date-picker
           modelValue={value}
           onUpdate:modelValue={onChange}
-          change={emit('search')}
+          onChange={()=>emit('search')}
+          onClear={() => emit("search")}
           type={dateType}
           format={format}
           placeholder={ placeholder || "请选择" + label}

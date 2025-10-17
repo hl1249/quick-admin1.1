@@ -15,11 +15,11 @@ export default defineComponent({
     },
     setup(props) {
         const { scope, columns } = props
-        const columnsItem = columns?.find(item => item.key == scope.row.key)
+        const columnsItem = columns?.find(item => item.key == scope.row.key) as Columns
 
         const isDark = useDark()
 
-        const {prop,type,column,data,formatter} = columnsItem
+        const { key: prop ,type, columns:column,data,formatter} = columnsItem
         const { row, $index, row:{value}} = scope
 
         const renderText = (value: any) => <span>{value}</span>;

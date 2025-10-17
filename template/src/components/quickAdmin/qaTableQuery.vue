@@ -4,7 +4,7 @@
       <qa-form-item v-model="localModel" v-for="item in columns"
         v-bind="{ ...item, key: item.key, itemKey: item.key, label: item.title }"
         form-type="query"
-        @clearSearch="formItemSearch"
+        @search="formItemSearch"
         />
       <el-button type="primary" @click="handleSearch" :icon="Search">
         搜索
