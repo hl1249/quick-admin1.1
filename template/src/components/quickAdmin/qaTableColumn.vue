@@ -1,4 +1,5 @@
-
+<script lang="tsx">
+    
 import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable, ElButton, ElRadio } from 'element-plus'
 import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
@@ -17,23 +18,19 @@ export default defineComponent({
         label: String,
         type: String,
         width: {
-            type: [String, Number] as PropType<string | number>, // ✅ 支持 string 或 number
+            type: [String, Number] as PropType<string | number>,
             default: undefined
         },
         columns: {
-            type: Array as PropType<Columns[]>, // ✅ 这里用 PropType 包裹接口数组
+            type: Array as PropType<Columns[]>,
             default: () => [],
         },
         data: {
             type: Array as PropType<Data[]>,
             default: () => [],
         },
-        defaultValue: {
-            type: [Boolean, String] as PropType<boolean | string>,
-            default: undefined
-        },
         minWidth: {
-            type: Number as PropType<number>,
+            type: [String, Number] as PropType<string | number>, // ✅ 改为支持 string | number
             default: 150
         },
         align: {
@@ -45,20 +42,19 @@ export default defineComponent({
             default: undefined
         },
         imageWidth: {
-            type: Number as PropType<number>,
+            type: [String, Number] as PropType<string | number>, // ✅ 改为支持 string | number
             default: 40
         },
-
+        // 修改 activeValue 类型以匹配 Columns 接口
         activeValue: {
-            type: [Boolean, String, Number] as PropType<boolean | string>,
+            type: [Boolean, String, Number] as PropType<boolean | string | number>, // ✅ 添加 number 类型
             default: undefined
         },
-
+        // 修改 inactiveValue 类型以匹配 Columns 接口
         inactiveValue: {
-            type: [Boolean, String, Number] as PropType<boolean | string>,
+            type: [Boolean, String, Number] as PropType<boolean | string | number>, // ✅ 添加 number 类型
             default: undefined
         },
-
         size: {
             type: String as PropType<'' | 'large' | 'default' | 'small'>,
             default: ''
@@ -75,13 +71,42 @@ export default defineComponent({
             type: String as PropType<string>,
             default: 'yyyy-MM-dd hh:mm:ss'
         },
+        rowHeight: {
+            type: [String, Number] as PropType<string | number>,
+            default: undefined
+        },
+        watch: {
+            type: Function as PropType<(value: any) => void>,
+            default: undefined
+        },
+        // 添加 title 属性（与 label 对应）
+        title: {
+            type: String as PropType<string>,
+            default: undefined
+        }
     },
-    setup(props) {
+    emits: ["changeValue"],
+    setup(props, { emit }) {
         
         const isDark = useDark()
 
-        const { prop, label, type, width, columns, data, defaultValue, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
+        const { prop, label, type, width, columns, data, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
         } = props;
+
+        const changeValue = (row: any, prop:string, value: any) => {
+            emit('changeValue',  row, prop, value)
+        }
+
+        const handleChange = (value: any, row: any, prop: any) => {
+            if (props.watch) {
+                console.log("我改变了",prop, value)
+                props.watch({
+                    value, 
+                    row, 
+                    change: (newValue: any) => changeValue(row, prop, newValue)
+                })
+            }
+        }
 
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
@@ -97,7 +122,7 @@ export default defineComponent({
         }
 
         const renderRate = (value: any) => <ElRate v-model={value} disabled />
-        const renderSwitch = (value: any) => <ElSwitch v-model={value} disabled />
+        const renderSwitch = (value: any,row: any, prop: any) => <ElSwitch v-model={value} disabled={typeof(value) != 'boolean'} onChange={()=>{ handleChange(value,row,prop) }}/>
         const renderIcon = (value: any, renderData: Data[]) => {
             const iconName = renderData?.find(item => item.value === value)?.icon ?? value;
             const IconComponent = (Icons as Record<string, any>)[iconName];
@@ -202,7 +227,7 @@ export default defineComponent({
             tag: ({ value, data }) => renderTag(value, data),
             image: ({ value }) => renderImage(value),
             rate: ({ value }) => renderRate(value),
-            switch: ({ value }) => renderSwitch(value),
+            switch: ({ value,row,prop }) => renderSwitch(value,row,prop),
             icon: ({ value }) => renderIcon(value, data),
             time: ({ value }) => renderTime(value, valueFormat),
             html: ({ value, row, column, index }) => renderHtml(value, row, column, index, formatter),
@@ -214,7 +239,6 @@ export default defineComponent({
             radio: ({ value, data }) => renderBranch(value, data),
             select: ({ value, data }) => renderBranch(value, data),
             checkbox: ({ value, data }) => renderBranch(value, data),
-
         };
 
         const render = (params: any) => {
@@ -234,6 +258,7 @@ export default defineComponent({
                             value: typeof value === 'object' ? JSON.stringify(value) : value,
                             type,
                             row,
+                            prop,
                             column,
                             $index,
                             columns,
@@ -246,3 +271,4 @@ export default defineComponent({
         )
     }
 })
+</script>

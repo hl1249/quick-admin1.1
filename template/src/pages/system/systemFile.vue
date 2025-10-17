@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background-color: green;">
     附件管理
   </div>
 </template>

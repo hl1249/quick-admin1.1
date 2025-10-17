@@ -13,7 +13,7 @@ document.documentElement.classList.toggle('dark', isDark.value)
 import { ElConfigProvider } from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 const locale = ref(zhCn)
-const size = useLocalStorage('element-size', 'large') as unknown as
+const size = useLocalStorage('element-size', 'default') as unknown as
   | ''
   | 'small'
   | 'default'

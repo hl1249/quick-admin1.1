@@ -224,22 +224,62 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
     let matchExpression: any;
 
     if (localKeyType === 'array') {
-      // localKey是数组，使用 $in 操作符
-      matchExpression = {
-        $in: [
-          hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
-          "$$localVar",
-        ]
-      };
-    } else if (foreignKeyType === 'array') {
-      // foreignKey是数组，使用 $in 操作符（顺序调换）
-      matchExpression = {
-        $in: [
-          hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
-          "$$localVar",
-        ]
-      };
-    } else {
+  // localKey 是数组，使用 $in（foreignKey 是单值）
+  matchExpression = {
+    $in: [
+      // foreignKey 保护：存在时转字符串或原值，否则 null
+      {
+        $cond: {
+          if: { $gt: [`$${config.foreignKey}`, null] },
+          then: hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`,
+          else: null
+        }
+      },
+      // localVar 保护：必须是数组，否则转单值或空数组
+      {
+        $cond: {
+          if: { $isArray: "$$localVar" },
+          then: "$$localVar",
+          else: {
+            $cond: {
+              if: { $gt: ["$$localVar", null] },
+              then: ["$$localVar"],
+              else: []
+            }
+          }
+        }
+      }
+    ]
+  };
+} else if (foreignKeyType === 'array') {
+  // foreignKey 是数组，使用 $in（localVar 是单值）
+  matchExpression = {
+    $in: [
+      // foreignKey 保护：必须是数组，否则转单值或空数组
+      {
+        $cond: {
+          if: { $isArray: `$${config.foreignKey}` },
+          then: `$${config.foreignKey}`,
+          else: {
+            $cond: {
+              if: { $gt: [`$${config.foreignKey}`, null] },
+              then: [hasIdField ? { $toString: `$${config.foreignKey}` } : `$${config.foreignKey}`],
+              else: []
+            }
+          }
+        }
+      },
+      // localVar 保护：存在时取值，否则 null
+      {
+        $cond: {
+          if: { $gt: ["$$localVar", null] },
+          then: "$$localVar",
+          else: null
+        }
+      }
+    ]
+  };
+} else {
       // 默认情况，使用 $eq 操作符
       matchExpression = {
         $eq: [
@@ -464,33 +504,36 @@ function transTableData(data: any) {
 
   const match: any = {};
   for (const key in data.formData) {
-      if (data.formData[key] === null) {
-        delete data.formData[key]
+    if (data.formData[key] === null || data.formData[key]?.length <= 0) {
+      delete data.formData[key]
+    }
+  }
+
+  if (data.columns && data.columns.length >= 1) {
+    data.columns.forEach(col => {
+      const value = data.formData[col.key];
+      if (value === undefined || col.mode === "custom") return;
+
+      switch (col.mode) {
+        case "=": match[col.key] = value; break;
+        case "!=": match[col.key] = { $ne: value }; break;
+        case "%%": match[col.key] = { $regex: value, $options: "i" }; break;
+        case "%*": match[col.key] = { $regex: `^${value}`, $options: "i" }; break;
+        case "*%": match[col.key] = { $regex: `${value}$`, $options: "i" }; break;
+        case ">": match[col.key] = { $gt: value }; break;
+        case ">=": match[col.key] = { $gte: value }; break;
+        case "<": match[col.key] = { $lt: value }; break;
+        case "<=": match[col.key] = { $lte: value }; break;
+        case "in": match[col.key] = { $in: value }; break;
+        case "nin": match[col.key] = { $nin: value }; break;
+        case "[]": match[col.key] = { $gte: value[0], $lte: value[1] }; break;
+        case "[)": match[col.key] = { $gte: value[0], $lt: value[1] }; break;
+        case "(]": match[col.key] = { $gt: value[0], $lte: value[1] }; break;
+        case "()": match[col.key] = { $gt: value[0], $lt: value[1] }; break;
       }
-    }
+    });
+  }
 
-  data.columns.forEach(col => {
-    const value = data.formData[col.key];
-    if (value === undefined || col.mode === "custom") return;
-
-    switch (col.mode) {
-      case "=": match[col.key] = value; break;
-      case "!=": match[col.key] = { $ne: value }; break;
-      case "%%": match[col.key] = { $regex: value, $options: "i" }; break;
-      case "%*": match[col.key] = { $regex: `^${value}`, $options: "i" }; break;
-      case "*%": match[col.key] = { $regex: `${value}$`, $options: "i" }; break;
-      case ">": match[col.key] = { $gt: value }; break;
-      case ">=": match[col.key] = { $gte: value }; break;
-      case "<": match[col.key] = { $lt: value }; break;
-      case "<=": match[col.key] = { $lte: value }; break;
-      case "in": match[col.key] = { $in: value }; break;
-      case "nin": match[col.key] = { $nin: value }; break;
-      case "[]": match[col.key] = { $gte: value[0], $lte: value[1] }; break;
-      case "[)": match[col.key] = { $gte: value[0], $lt: value[1] }; break;
-      case "(]": match[col.key] = { $gt: value[0], $lte: value[1] }; break;
-      case "()": match[col.key] = { $gt: value[0], $lt: value[1] }; break;
-    }
-  });
   data.match = match;
   return data;
 }

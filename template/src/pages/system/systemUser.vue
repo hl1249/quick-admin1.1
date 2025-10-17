@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col h-full">
     <qa-data-table :action="table.action" :columns="table.columns" :query-form-param="queryForm" :pagination="false"
       :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true"
       @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" />

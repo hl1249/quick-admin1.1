@@ -9,9 +9,47 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <div>
-        操作区
-      </div>
+      <el-dropdown trigger="click">
+        <div class="border  border-[--el-border-color] w-[32px] h-[32px] flex items-center justify-center"> <el-icon>
+            <ArrowDown />
+          </el-icon> </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+
+            <el-dropdown-item @click="menuStore.closeLeftNavTab()" :disabled="menuStore.tabsActiveIndex < 2">
+              <div class="flex items-center justify-center">
+                <el-icon>
+                  <Back />
+                </el-icon>
+                关闭左侧
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click="menuStore.closeRightNavTab()"
+              :disabled="!(menuStore.tabsList.length > 1 && menuStore.tabsActiveIndex != menuStore.tabsList.length - 1)">
+              <div class="flex items-center justify-center"><el-icon>
+                  <Right />
+                </el-icon>
+                关闭右侧
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click="menuStore.closeOtherNavTab()" :disabled="menuStore.tabsList.length <= 1">
+              <div class="flex items-center justify-center"><el-icon>
+                  <Close />
+                </el-icon>
+                关闭其他
+              </div>
+            </el-dropdown-item>
+
+            <el-dropdown-item :disabled="menuStore.tabsList.length <= 1" @click="menuStore.removeAllTabs()">
+              <div class="flex items-center justify-center"><el-icon>
+                  <CircleCloseFilled />
+                </el-icon>
+                关闭所有
+              </div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
   </div>
 </template>
@@ -30,8 +68,8 @@ const TabClick = (item: any) => {
 }
 
 const removeTab = (targetName: TabPaneName) => {
-  const findIndex = menuStore.tabsList.findIndex( item => item.name === targetName)
-  menuStore.removeTabs(findIndex,targetName)
+  const findIndex = menuStore.tabsList.findIndex(item => item.name === targetName)
+  menuStore.removeTabs(findIndex, targetName)
 }
 </script>
 

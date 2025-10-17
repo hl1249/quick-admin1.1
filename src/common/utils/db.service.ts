@@ -278,6 +278,7 @@ export class DbService {
     if (data.pageSize) pageSize = Number(data.pageSize);
     if (data.sortRule) sortArr = data.sortRule
 
+    console.log("表渲染-foreignDB",foreignDB)
     console.log("表渲染", data)
     // 统一获取集合引用
     const collection = db
@@ -340,7 +341,7 @@ export class DbService {
     };
   }
 
-  @TransformDbParams
+  // @TransformDbParams
   async getTableData(params: SelectsParams): Promise<SelectResult | Document[]> {
     return this.selects({...params,getCount:true});
   }

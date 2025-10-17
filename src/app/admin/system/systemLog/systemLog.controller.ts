@@ -10,6 +10,15 @@ export class SystemLogController {
   ) {
   }
 
+  @Post('/add')
+  add(@Req() req, @Body() data): Promise<Document | null> {
+    console.log("请求body", data)
+    return this.dbService.add({
+      dbName: "qa-logs",
+      dataJson:data
+    })
+  }
+
   @Post('/getList')
   getList(@Req() req, @Body() data): Promise<Document | null> {
     console.log("请求body", data)

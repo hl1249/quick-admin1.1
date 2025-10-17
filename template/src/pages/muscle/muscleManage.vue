@@ -13,12 +13,19 @@
         @panel-change="confrimTime"
       />
     </div>
+    
+  <div>
+    <p>宽度：{{ width }}</p>
+    <p>高度：{{ height }}</p>
+  </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 
+import { useWindowSize } from '@vueuse/core'
+const { width, height } = useWindowSize()
 const confrimTime:(date: Date | [Date, Date], mode: 'month' | 'year', view?: string) => void =(date,mode,view) => {
   console.log("关闭了",date,mode,view)
 } 

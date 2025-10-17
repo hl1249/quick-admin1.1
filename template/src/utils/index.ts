@@ -1,5 +1,8 @@
 
 const pagesModule = import.meta.glob('@/pages/**/*.vue')
+// utils/renderComponent.ts
+import { createApp,} from 'vue'
+import type { App, Component, ComponentPublicInstance } from 'vue'
 
 // 后端传来的菜单构建动态路由
 export const buildAsyncMenus = (menus: any) => {
@@ -153,7 +156,6 @@ export const cloneDeep = <T>(value: T): T =>{
   return objCopy;
 }
 
-
 export const debounce  = <T extends (...args: any[]) => void> (fn: T, delay = 300) => {
   let timer: number | undefined
 
@@ -174,4 +176,212 @@ export const debounce  = <T extends (...args: any[]) => void> (fn: T, delay = 30
   }
 
   return debounced as T & { cancel: () => void }
+}
+
+
+interface DayTimeRange {
+  start: number;
+  end: number;
+}
+
+interface MonthTimeRange {
+  start: number;
+  end: number;
+}
+
+interface TimeRangeObject {
+  // 基础时间范围
+  todayStart: number;
+  todayEnd: number;
+  today12End: number;
+  monthStart: number;
+  monthEnd: number;
+  yearStart: number;
+  yearEnd: number;
+  weekStart: number;
+  weekEnd: number;
+  hourStart: number;
+  hourEnd: number;
+  
+  // 历史时间范围
+  yesterdayStart: number;
+  yesterday12End: number;
+  yesterdayEnd: number;
+  lastMonthStart: number;
+  lastMonthEnd: number;
+  
+  // 当前时间
+  now: number;
+  
+  // 详细数据
+  months: { [month: number]: MonthTimeRange };
+  days: { [day: number]: DayTimeRange };
+}
+
+/**
+ * 获取时间范围
+ * @param {Date} date 日期对象 可以指定时间计算节点，默认使用当前时间进行计算
+ * @param {number} targetTimezone 时区 默认东8区 正数代表东 负数代表西
+ * @return {TimeRangeObject} timeObj
+ */
+export const getCommonTime = (date: Date = new Date(), targetTimezone: number = 8): TimeRangeObject => {
+  // 创建日期对象的副本，避免修改原对象
+  const baseDate = new Date(date);
+  
+  // 调整时区
+  const adjustForTimezone = (d: Date): Date => {
+    const timezoneOffset = d.getTimezoneOffset(); // 分钟
+    const targetOffset = targetTimezone * 60; // 分钟
+    const diff = timezoneOffset + targetOffset; // 分钟
+    return new Date(d.getTime() + diff * 60 * 1000);
+  };
+  
+  const currentDate = adjustForTimezone(baseDate);
+  
+  // 获取时间戳
+  const getTimestamp = (d: Date): number => d.getTime();
+  
+  // 工具函数：设置时间
+  const setTime = (
+    d: Date, 
+    hours: number = 0, 
+    minutes: number = 0, 
+    seconds: number = 0, 
+    ms: number = 0
+  ): Date => {
+    const newDate = new Date(d);
+    newDate.setHours(hours, minutes, seconds, ms);
+    return newDate;
+  };
+  
+  // 今日开始和结束
+  const todayStart = getTimestamp(setTime(currentDate, 0, 0, 0, 0));
+  const todayEnd = getTimestamp(setTime(currentDate, 23, 59, 59, 999));
+  const today12End = getTimestamp(setTime(currentDate, 11, 59, 59, 999));
+  
+  // 当前小时开始和结束
+  const hourStart = getTimestamp(setTime(currentDate, currentDate.getHours(), 0, 0, 0));
+  const hourEnd = getTimestamp(setTime(currentDate, currentDate.getHours(), 59, 59, 999));
+  
+  // 本月开始和结束
+  const monthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+  const monthStart = getTimestamp(setTime(monthStartDate, 0, 0, 0, 0));
+  const monthEnd = getTimestamp(setTime(monthEndDate, 23, 59, 59, 999));
+  
+  // 本年开始和结束
+  const yearStart = getTimestamp(setTime(new Date(currentDate.getFullYear(), 0, 1), 0, 0, 0, 0));
+  const yearEnd = getTimestamp(setTime(new Date(currentDate.getFullYear(), 11, 31), 23, 59, 59, 999));
+  
+  // 本周开始和结束（周一到周日）
+  const weekStartDate = new Date(currentDate);
+  const dayOfWeek = currentDate.getDay() || 7; // 将周日(0)转换为7
+  weekStartDate.setDate(currentDate.getDate() - dayOfWeek + 1);
+  const weekEndDate = new Date(weekStartDate);
+  weekEndDate.setDate(weekStartDate.getDate() + 6);
+  const weekStart = getTimestamp(setTime(weekStartDate, 0, 0, 0, 0));
+  const weekEnd = getTimestamp(setTime(weekEndDate, 23, 59, 59, 999));
+  
+  // 昨天开始和结束
+  const yesterdayDate = new Date(currentDate);
+  yesterdayDate.setDate(currentDate.getDate() - 1);
+  const yesterdayStart = getTimestamp(setTime(yesterdayDate, 0, 0, 0, 0));
+  const yesterdayEnd = getTimestamp(setTime(yesterdayDate, 23, 59, 59, 999));
+  const yesterday12End = getTimestamp(setTime(yesterdayDate, 11, 59, 59, 999));
+  
+  // 上月开始和结束
+  const lastMonthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+  const lastMonthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+  const lastMonthStart = getTimestamp(setTime(lastMonthStartDate, 0, 0, 0, 0));
+  const lastMonthEnd = getTimestamp(setTime(lastMonthEndDate, 23, 59, 59, 999));
+  
+  // 本年度每月的开始和结束时间
+  const months: { [month: number]: MonthTimeRange } = {};
+  for (let i = 0; i < 12; i++) {
+    const monthStart = getTimestamp(setTime(new Date(currentDate.getFullYear(), i, 1), 0, 0, 0, 0));
+    const monthEnd = getTimestamp(setTime(new Date(currentDate.getFullYear(), i + 1, 0), 23, 59, 59, 999));
+    months[i + 1] = { start: monthStart, end: monthEnd };
+  }
+  
+  // 本月每天的开始和结束时间
+  const days: { [day: number]: DayTimeRange } = {};
+  const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dayStart = getTimestamp(setTime(new Date(currentDate.getFullYear(), currentDate.getMonth(), i), 0, 0, 0, 0));
+    const dayEnd = getTimestamp(setTime(new Date(currentDate.getFullYear(), currentDate.getMonth(), i), 23, 59, 59, 999));
+    days[i] = { start: dayStart, end: dayEnd };
+  }
+  
+  return {
+    todayStart,
+    todayEnd,
+    today12End,
+    monthStart,
+    monthEnd,
+    yearStart,
+    yearEnd,
+    weekStart,
+    weekEnd,
+    hourStart,
+    hourEnd,
+    yesterdayStart,
+    yesterday12End,
+    yesterdayEnd,
+    lastMonthStart,
+    lastMonthEnd,
+    now: getTimestamp(currentDate),
+    months,
+    days
+  };
+}
+
+export interface RenderResult<T> {
+  /** Vue 实例（组件实例） */
+  instance: ComponentPublicInstance<T>
+  /** Vue App 实例 */
+  app: App
+  /** 卸载函数 */
+  unmount: () => void
+}
+
+/**
+ * 动态渲染 Vue 组件
+ * @param Component 要渲染的组件
+ * @param props 传递给组件的 props
+ * @param container 可选，挂载的 DOM 容器
+ * @returns 包含 instance 和 unmount 方法
+ */
+export function renderComponent<T extends Record<string, any>>(
+  Component: Component,
+  props?: T,
+  container?: HTMLElement
+): RenderResult<T> {
+  const app = createApp(Component, props)
+  const mountNode = container || document.createElement('div')
+  document.body.appendChild(mountNode)
+
+  const instance = app.mount(mountNode) as ComponentPublicInstance<T>
+
+  return {
+    app,
+    instance,
+    unmount() {
+      app.unmount()
+      mountNode.remove()
+    }
+  }
+}
+
+// 单位转换
+export const realUnitConversion = (unit: string | number | undefined): string | undefined => {
+  if (unit == null || unit === '') return undefined;
+  
+  if (typeof unit === 'string') {
+    // 检查字符串是否已经包含 CSS 单位
+    const hasUnit = /^(auto|calc\(.*\)|[-+]?[\d.]+(px|rem|em|%|vw|vh|vmin|vmax|ex|ch|mm|cm|in|pt|pc))$/i.test(unit.trim());
+    return hasUnit ? unit : unit; // 或者可以根据需要添加默认单位
+  }
+  
+  // 数字默认添加 px 单位
+  return `${unit}px`;
 }

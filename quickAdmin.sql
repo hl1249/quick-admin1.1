@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : 本地
  Source Server Type    : MongoDB
  Source Server Version : 80003
  Source Host           : localhost:27017
@@ -11,7 +11,7 @@
  Target Server Version : 80003
  File Encoding         : 65001
 
- Date: 08/09/2025 08:02:18
+ Date: 17/10/2025 18:10:22
 */
 
 
@@ -25,55 +25,1017 @@ db.createCollection("qa-logs");
 // Documents of qa-logs
 // ----------------------------
 db.getCollection("qa-logs").insert([ {
-    _id: ObjectId("68bb7759b8697b2e34eb1764"),
-    url: "/app/admin/auth/auth/login",
-    method: "POST",
+    _id: ObjectId("68e73412133974dcd6ba3b12"),
+    url: "/findByWhereJson",
+    method: "GET",
     statusCode: NumberInt("200"),
     headers: {
-        host: "localhost:3000",
-        connection: "close",
-        "content-length": "44",
-        "sec-ch-ua-platform": "\"Windows\"",
-        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTYyMjEsImV4cCI6MTc1NzcyMTAyMX0.t1Xr2evVclINEQu9h1ErQQx5dZBXiYa7ysBiWgJVbIo",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
-        accept: "application/json, text/plain, */*",
-        "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Google Chrome\";v=\"139\", \"Chromium\";v=\"139\"",
-        "content-type": "application/json",
-        "sec-ch-ua-mobile": "?0",
-        origin: "http://localhost:1818",
-        "sec-fetch-site": "same-origin",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-dest": "empty",
-        referer: "http://localhost:1818/login",
-        "accept-encoding": "gzip, deflate, br, zstd",
-        "accept-language": "zh-CN,zh;q=0.9"
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
     },
-    body: {
-        username: "admin",
-        password: "hr20001124"
-    },
-    requestId: "833442a4-88e2-4e84-bbd7-9a78a13ef849",
-    "_add_time": 1757116249610,
-    "_add_time_str": "2025-09-06 07:50:49",
+    body: null,
+    requestId: "b26c3a1a-5f72-47fd-8e65-516258dbfd53",
+    "_add_time": 1759982610253,
+    "_add_time_str": "2025-10-09 12:03:30",
     response: {
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcxMTYyNDksImV4cCI6MTc1NzcyMTA0OX0.OfscvJ0e-bc2vqGQ2Sz9sCJrcL7PKp0MVKHR0S9KsRk",
-        expired: 1757721049000,
-        userInfo: {
-            _id: ObjectId("672b901c0fcabce5e29faef5"),
-            username: "admin",
-            role: [
-                "admin"
-            ],
-            "_add_time": 1730908188567,
-            "_add_time_str": "2024-11-06 23:49:48",
-            no: NumberInt("2"),
-            image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
-            avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
-            lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
-            "last_login_date": 1757116221286,
-            "last_login_ip": "未知IP"
-        }
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDMzMDksImV4cCI6MTc2MDE0ODEwOX0.P4jx_yBBs8E4aRlIMAwWu5JCIUsHAqJcbfDcNmtJ08Q",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDM0NzUsImV4cCI6MTc2MDE0ODI3NX0.kesy8Nx4rOrCKlXvNct587VuDAxwVOq8YnSejRdOf6g",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc"
+        ],
+        "last_login_date": 1759982578168,
+        "last_login_ip": "127.0.0.1"
     }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e778d9c635e46a2c8c4b82"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "e1de129c-05e6-4d99-80e0-0b2015499a29",
+    "_add_time": 1760000217615,
+    "_add_time_str": "2025-10-09 16:56:57",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDMzMDksImV4cCI6MTc2MDE0ODEwOX0.P4jx_yBBs8E4aRlIMAwWu5JCIUsHAqJcbfDcNmtJ08Q",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDM0NzUsImV4cCI6MTc2MDE0ODI3NX0.kesy8Nx4rOrCKlXvNct587VuDAxwVOq8YnSejRdOf6g",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc"
+        ],
+        "last_login_date": 1759982578168,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e778dec635e46a2c8c4b88"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "a745ba84-c395-4aba-879b-afa03e080a91",
+    "_add_time": 1760000222572,
+    "_add_time_str": "2025-10-09 16:57:02",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDMzMDksImV4cCI6MTc2MDE0ODEwOX0.P4jx_yBBs8E4aRlIMAwWu5JCIUsHAqJcbfDcNmtJ08Q",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDM0NzUsImV4cCI6MTc2MDE0ODI3NX0.kesy8Nx4rOrCKlXvNct587VuDAxwVOq8YnSejRdOf6g",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc"
+        ],
+        "last_login_date": 1759982578168,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e778dfc635e46a2c8c4b8e"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "3a7a1df8-8c5c-4a73-89c4-ed9582483482",
+    "_add_time": 1760000223755,
+    "_add_time_str": "2025-10-09 16:57:03",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDMzMDksImV4cCI6MTc2MDE0ODEwOX0.P4jx_yBBs8E4aRlIMAwWu5JCIUsHAqJcbfDcNmtJ08Q",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDM0NzUsImV4cCI6MTc2MDE0ODI3NX0.kesy8Nx4rOrCKlXvNct587VuDAxwVOq8YnSejRdOf6g",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc"
+        ],
+        "last_login_date": 1759982578168,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e778e0c635e46a2c8c4b94"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "2ca65838-5773-4a6c-b1c7-d6935d09599a",
+    "_add_time": 1760000224540,
+    "_add_time_str": "2025-10-09 16:57:04",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDMzMDksImV4cCI6MTc2MDE0ODEwOX0.P4jx_yBBs8E4aRlIMAwWu5JCIUsHAqJcbfDcNmtJ08Q",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDM0NzUsImV4cCI6MTc2MDE0ODI3NX0.kesy8Nx4rOrCKlXvNct587VuDAxwVOq8YnSejRdOf6g",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc"
+        ],
+        "last_login_date": 1759982578168,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e8731e9e15e24eb6a4e578"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "d970f994-41db-467b-9f84-b98469105595",
+    "_add_time": 1760064286977,
+    "_add_time_str": "2025-10-10 10:44:46",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+        ],
+        "last_login_date": 1760064273066,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e873209e15e24eb6a4e57e"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "e5253d85-1124-4aa8-af9c-9fba3de06c00",
+    "_add_time": 1760064288135,
+    "_add_time_str": "2025-10-10 10:44:48",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+        ],
+        "last_login_date": 1760064273066,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e873209e15e24eb6a4e584"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "3f84a383-9587-4e5f-84f3-44c29a9ab714",
+    "_add_time": 1760064288901,
+    "_add_time_str": "2025-10-10 10:44:48",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+        ],
+        "last_login_date": 1760064273066,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e873219e15e24eb6a4e58a"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "538b5488-cb1a-4d61-8e82-18db9739cb5c",
+    "_add_time": 1760064289680,
+    "_add_time_str": "2025-10-10 10:44:49",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+        ],
+        "last_login_date": 1760064273066,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e873229e15e24eb6a4e590"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "e96f0626-a89a-402c-bae2-70bdf692254b",
+    "_add_time": 1760064290409,
+    "_add_time_str": "2025-10-10 10:44:50",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+        ],
+        "last_login_date": 1760064273066,
+        "last_login_ip": "127.0.0.1"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e875d29e15e24eb6a4e5d0"),
+    "user_id": "3214",
+    date1: 1759593600000,
+    "_add_time": 1760064978801,
+    "_add_time_str": "2025-10-10 10:56:18"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88420a65dfb1f0206a22d"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "bceb0427-c9a7-49ef-a35f-bfabc28c706b",
+    "_add_time": 1760068640129,
+    "_add_time_str": "2025-10-10 11:57:20",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88421a65dfb1f0206a233"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "82b07aa7-77c8-49e9-bbdd-13abb31dbfaa",
+    "_add_time": 1760068641007,
+    "_add_time_str": "2025-10-10 11:57:21",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88421a65dfb1f0206a239"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "4eb5f07c-8846-4697-ac37-55326e3f1a3e",
+    "_add_time": 1760068641672,
+    "_add_time_str": "2025-10-10 11:57:21",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88422a65dfb1f0206a23f"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "17a9e157-639b-4297-9f73-4b44dfee84b7",
+    "_add_time": 1760068642486,
+    "_add_time_str": "2025-10-10 11:57:22",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88423a65dfb1f0206a245"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "919a0c21-02ea-4cd1-b5bd-85de2f46f981",
+    "_add_time": 1760068643174,
+    "_add_time_str": "2025-10-10 11:57:23",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88423a65dfb1f0206a24b"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "d8dc0577-e27d-4d4e-9753-d4e12516543b",
+    "_add_time": 1760068643801,
+    "_add_time_str": "2025-10-10 11:57:23",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88424a65dfb1f0206a251"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "705430b3-24c1-490c-894a-eb1e16c81499",
+    "_add_time": 1760068644514,
+    "_add_time_str": "2025-10-10 11:57:24",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88425a65dfb1f0206a257"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "4f630eb0-0269-4ce1-b039-b20422b47643",
+    "_add_time": 1760068645153,
+    "_add_time_str": "2025-10-10 11:57:25",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88425a65dfb1f0206a25d"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "9266ff5c-001e-4f51-80b5-21e2b6414b74",
+    "_add_time": 1760068645751,
+    "_add_time_str": "2025-10-10 11:57:25",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88427a65dfb1f0206a269"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "29898e05-e57e-41f6-bbe2-3c3fab8d49c9",
+    "_add_time": 1760068647005,
+    "_add_time_str": "2025-10-10 11:57:27",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88427a65dfb1f0206a26f"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "6ff897fe-a1e1-43be-8ebc-b6b2dff83a60",
+    "_add_time": 1760068647597,
+    "_add_time_str": "2025-10-10 11:57:27",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88428a65dfb1f0206a275"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "afb6207f-7ef2-468a-b87e-81e2e0e2f6e1",
+    "_add_time": 1760068648288,
+    "_add_time_str": "2025-10-10 11:57:28",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68e88428a65dfb1f0206a27b"),
+    url: "/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3001",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "550e45c4-fa86-4999-b306-0aa115af5dbe",
+    "_add_time": 1760068648926,
+    "_add_time_str": "2025-10-10 11:57:28",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+        ],
+        "last_login_date": 1760064656254,
+        "last_login_ip": "未知IP"
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68ec5cd84ef2a4b6b64b2485"),
+    "user_id": "1008",
+    "_add_time": 1760320728489,
+    "_add_time_str": "2025-10-13 09:58:48"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68ec5cdb4ef2a4b6b64b248d"),
+    "user_id": "10081",
+    "_add_time": 1760320731499,
+    "_add_time_str": "2025-10-13 09:58:51"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68ec5e134ef2a4b6b64b24aa"),
+    "user_id": "我叼你妈",
+    "_add_time": 1760321043454,
+    "_add_time_str": "2025-10-13 10:04:03"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68ec5e1e4ef2a4b6b64b24bd"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760321054724,
+    "_add_time_str": "2025-10-13 10:04:14"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68ec5e484ef2a4b6b64b24c5"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760321096330,
+    "_add_time_str": "2025-10-13 10:04:56"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68ec5e5c4ef2a4b6b64b24d8"),
+    "user_id": "自定义文案",
+    "_add_time": 1760321116006,
+    "_add_time_str": "2025-10-13 10:05:16"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68eda4c08ffc792b4b04bce0"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760404672922,
+    "_add_time_str": "2025-10-14 09:17:52"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68eda4c38ffc792b4b04bce8"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760404675617,
+    "_add_time_str": "2025-10-14 09:17:55"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68eda9518ffc792b4b04bcf7"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760405841181,
+    "_add_time_str": "2025-10-14 09:37:21"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68eda9f48ffc792b4b04bd14"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760406004714,
+    "_add_time_str": "2025-10-14 09:40:04"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68edaad28ffc792b4b04bd2e"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760406226061,
+    "_add_time_str": "2025-10-14 09:43:46"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68edab1d8ffc792b4b04bd41"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760406301404,
+    "_add_time_str": "2025-10-14 09:45:01"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68edab3b8ffc792b4b04bd59"),
+    "user_id": "自定义文案",
+    date1: 1759680000000,
+    "_add_time": 1760406331992,
+    "_add_time_str": "2025-10-14 09:45:31"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68edac2e8ffc792b4b04bd6f"),
+    "user_id": "到底是SB",
+    "_add_time": 1760406574498,
+    "_add_time_str": "2025-10-14 09:49:34"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68edaf3a8ffc792b4b04bdc9"),
+    "user_id": "assda",
+    "_add_time": 1760407354131,
+    "_add_time_str": "2025-10-14 10:02:34"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68f043c40dcd5301a935f106"),
+    "user_id": "插槽的数据",
+    "_add_time": 1760576452739,
+    "_add_time_str": "2025-10-16 09:00:52"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68f044170dcd5301a935f10e"),
+    "user_id": "我叼你妈的",
+    "_add_time": 1760576535582,
+    "_add_time_str": "2025-10-16 09:02:15"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68f0512c0dcd5301a935f12d"),
+    "user_id": "21321",
+    "_add_time": 1760579884878,
+    "_add_time_str": "2025-10-16 09:58:04"
 } ]);
 
 // ----------------------------
@@ -136,7 +1098,7 @@ db.getCollection("qa-menus").insert([ {
     name: "systemRole",
     "parent_id": "system",
     sort: NumberInt("3"),
-    component: "/src/pages/system/systemRole",
+    component: "/src/pages/system/systemRole/index",
     path: "system/system-role"
 } ]);
 db.getCollection("qa-menus").insert([ {
@@ -155,7 +1117,7 @@ db.getCollection("qa-menus").insert([ {
 } ]);
 db.getCollection("qa-menus").insert([ {
     _id: ObjectId("673f2966f80f4613e73ed0cc"),
-    "parent_id": "systemRole",
+    "parent_id": "system",
     "menu_id": "enable",
     title: "健身",
     icon: "AlarmClock",
@@ -332,22 +1294,21 @@ db.createCollection("qa-roles");
 // ----------------------------
 db.getCollection("qa-roles").insert([ {
     _id: ObjectId("672b1fc518a1950fd5ed56ff"),
-    "_add_time": NumberLong("1596416400000"),
-    comment: "系统内置角色 - 请勿修改",
+    "_add_time": NumberLong("1760595008000"),
+    "_add_time_str": "2025-10-16 14:10:08",
+    comment: "系统角色-请勿删除",
     enable: true,
-    permission: [
-        "sys-permission",
-        "sys-file",
-        "sys-auth"
-    ],
+    permission: [ ],
     "role_id": "admin",
     "role_name": "超级管理员",
-    no: NumberInt("1")
+    no: NumberInt("1"),
+    menu: [ ]
 } ]);
 db.getCollection("qa-roles").insert([ {
     _id: ObjectId("672b1fc518a1950fd5ed565f"),
-    "_add_time": NumberLong("1731550508000"),
-    comment: "系统内置角色 - 请勿修改",
+    "_add_time": NumberLong("1760595008000"),
+    "_add_time_str": "2025-10-16 14:10:08",
+    comment: "二级管理员",
     enable: true,
     permission: [
         "sys-manage",
@@ -369,6 +1330,24 @@ db.getCollection("qa-roles").insert([ {
         "sys-menus-manage",
         "system-log"
     ]
+} ]);
+db.getCollection("qa-roles").insert([ {
+    _id: ObjectId("68f099d01c5507ab49971458"),
+    "role_id": "test",
+    "role_name": "测试角色",
+    comment: "测试角色",
+    enable: true,
+    "_add_time": NumberLong("1760598480627"),
+    "_add_time_str": "2025-10-16 15:08:00"
+} ]);
+db.getCollection("qa-roles").insert([ {
+    _id: ObjectId("68f0b0bcb7ed70d671c2152d"),
+    "role_id": "agen1",
+    "role_name": "测试",
+    comment: "测试",
+    enable: true,
+    "_add_time": 1760604348199,
+    "_add_time_str": "2025-10-16 16:45:48"
 } ]);
 
 // ----------------------------
@@ -394,12 +1373,12 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcyODg2MTMsImV4cCI6MTc1Nzg5MzQxM30.eh97-S9fqk43sOPnCMFZwgeZ7-pAALP46L3_QM_JqrA",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcyODg2MTcsImV4cCI6MTc1Nzg5MzQxN30.UPGZj_Zqavx_8U60rXD6bUgVjjPjXAS7D2ohrssHyyw",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTcyODk1NDUsImV4cCI6MTc1Nzg5NDM0NX0.lHJiqo-nx2tvLtLZruVtjmHW-fPReoEP7vjm67wei3E"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA2NzkxMjAsImV4cCI6MTc2MTI4MzkyMH0.CkV7VqKO9SfbGaY64mwbD4hJuRYsODXukdt4UPsM8TI",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA2ODAxOTUsImV4cCI6MTc2MTI4NDk5NX0.cDKj7Z2-mHcw30eeg7OSQ0VW_e4aPU8ZYLLRnt_nFug",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA2OTEwNjUsImV4cCI6MTc2MTI5NTg2NX0.3ohmN2D3pnJ0DqRoRxmn09Ej72M3-s63jJHvk1XY8iM"
     ],
-    "last_login_date": 1757289545327,
-    "last_login_ip": "127.0.0.1"
+    "last_login_date": 1760691065239,
+    "last_login_ip": "未知IP"
 } ]);
 db.getCollection("qa-users").insert([ {
     _id: ObjectId("68bb20b94f8c40661556f27c"),
