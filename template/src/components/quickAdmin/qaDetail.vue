@@ -1,114 +1,26 @@
 <script lang="tsx">
-    
-import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable, ElButton, ElRadio } from 'element-plus'
-import type { JSX } from 'vue/jsx-runtime';
+import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable} from 'element-plus'
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
-import { timeFormat } from '@/utils'
 import { useDark } from '@vueuse/core'
-
-
+import { timeFormat } from '@/utils'
 export default defineComponent({
-    name: 'qaTableColumn',
+    name: "qaDetail",
     props: {
-        prop: {
-            type: String as PropType<string>,
-            default: ""
-        },
-        label: String,
-        type: String,
-        width: {
-            type: [String, Number] as PropType<string | number>,
-            default: undefined
-        },
+        scope: Object,
         columns: {
-            type: Array as PropType<Columns[]>,
-            default: () => [],
+        type: Array as PropType<Columns[]>,
+        required: true,
         },
-        data: {
-            type: Array as PropType<Data[]>,
-            default: () => [],
-        },
-        minWidth: {
-            type: [String, Number] as PropType<string | number>, // ✅ 改为支持 string | number
-            default: 150
-        },
-        align: {
-            type: String as PropType<'left' | 'center' | 'right'>,
-            default: undefined
-        },
-        formatter: {
-            type: Function as PropType<(value: any, row: any, column: any, index: number) => string | number>,
-            default: undefined
-        },
-        imageWidth: {
-            type: [String, Number] as PropType<string | number>, // ✅ 改为支持 string | number
-            default: 40
-        },
-        // 修改 activeValue 类型以匹配 Columns 接口
-        activeValue: {
-            type: [Boolean, String, Number] as PropType<boolean | string | number>, // ✅ 添加 number 类型
-            default: undefined
-        },
-        // 修改 inactiveValue 类型以匹配 Columns 接口
-        inactiveValue: {
-            type: [Boolean, String, Number] as PropType<boolean | string | number>, // ✅ 添加 number 类型
-            default: undefined
-        },
-        size: {
-            type: String as PropType<'' | 'large' | 'default' | 'small'>,
-            default: ''
-        },
-        sortable: {
-            type: [Boolean, String] as PropType<boolean | string>,
-            default: false
-        },
-        shape: {
-            type: String as PropType<'circle' | 'square'>,
-            default: 'circle'
-        },
-        valueFormat: {
-            type: String as PropType<string>,
-            default: 'yyyy-MM-dd hh:mm:ss'
-        },
-        rowHeight: {
-            type: [String, Number] as PropType<string | number>,
-            default: undefined
-        },
-        watch: {
-            type: Function as PropType<(value: any) => void>,
-            default: undefined
-        },
-        // 添加 title 属性（与 label 对应）
-        title: {
-            type: String as PropType<string>,
-            default: undefined
-        }
     },
-    emits: ["changeValue"],
-    setup(props, { emit }) {
-        
+    setup(props) {
+        const { scope, columns } = props
+        const columnsItem = columns?.find(item => item.key == scope.row.key)
+
         const isDark = useDark()
 
-        const { prop, label, type, width, columns, data, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
-        } = props;
-
-        const changeValue = (row: any, prop:string, value: any) => {
-            console.log("emit执行的参数",row)
-            console.log("emit执行的参数",value)
-            emit('changeValue',  row, prop, value)
-        }
-
-        const handleChange = (value: any, row: any, prop: any) => {
-            if (props.watch) {
-                console.log("我改变了",prop, value)
-                props.watch({
-                    value, 
-                    row, 
-                    change: (newValue: any) => changeValue(row, prop, newValue)
-                })
-            }
-        }
+        const {prop,type,column,data,formatter} = columnsItem
+        const { row, $index, row:{value}} = scope
 
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
@@ -124,7 +36,7 @@ export default defineComponent({
         }
 
         const renderRate = (value: any) => <ElRate v-model={value} disabled />
-        const renderSwitch = (value: any,row: any, prop: any) => <ElSwitch v-model={value} disabled={typeof(value) != 'boolean'} onChange={()=>{ handleChange(value,row,prop) }}/>
+        const renderSwitch = (value: any,row: any, prop: any) => <ElSwitch v-model={value} disabled={typeof(value) != 'boolean'} />
         const renderIcon = (value: any, renderData: Data[]) => {
             const iconName = renderData?.find(item => item.value === value)?.icon ?? value;
             const IconComponent = (Icons as Record<string, any>)[iconName];
@@ -247,31 +159,24 @@ export default defineComponent({
             const renderer = renderMap[params.type];
             return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
-        return () => (
-
-            <ElTableColumn prop={prop} label={label} width={width} sortable={sortable} align={align}>
-                {{
-                    default: ({ row, column, $index }: { row: any; column: any; $index: number }) => {
-                        console.log('%crow','color:green',row)
-                        let value = row[prop]
-                        if (formatter) {
-                            return type === 'html' ? <div v-html={formatter(value, row, column, $index)} /> : formatter(row[prop], row, column, $index)
-                        }
-                        return render({
-                            value: typeof value === 'object' ? JSON.stringify(value) : value,
-                            type,
-                            row,
-                            prop,
-                            column,
-                            $index,
-                            columns,
-                            data
-                        });
-                    }
-                }}
-            </ElTableColumn>
-
-        )
+        console.log('%cscope','color:red',scope)
+        return () =>
+            columnsItem.formatter
+            ? (
+                columnsItem.type === 'html'
+                ? <div innerHTML={formatter(value, row, column, $index)}></div>
+                : formatter(row[prop], row, column, $index)
+            )
+            : render({
+                value: typeof value === 'object' ? JSON.stringify(value) : value,
+                type,
+                row,
+                prop,
+                column,
+                $index,
+                columns,
+                data
+            })
     }
 })
 </script>

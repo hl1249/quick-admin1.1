@@ -15,7 +15,7 @@
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
+        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()" @closeForm="form.props.show = false">
       </qa-form>
     </el-dialog>
   </div>
@@ -154,7 +154,7 @@ const queryForm = ref({
     type: "text",
     title: "角色标识",
     width: 230,
-    "mode": "[]",
+    "mode": "=",
   },
   {
     key: "role_name",
@@ -188,25 +188,21 @@ const form = ref({
         "title": "角色标识",
         "type": "text",
         show:['add'],
-        width: 250,
       },
       {
         "key": "role_name",
         "title": "角色名称",
         "type": "text",
-        width: 250,
       },
       {
         "key": "comment",
         "title": "备注",
         "type": "textarea",
-        width: 250,
       },
       {
         "key": "enable",
         "title": "是否启用",
         "type": "switch",
-        width: 250,
       },
     ],
     rules: {
@@ -230,6 +226,14 @@ const refresh = () => {
 const resetForm = async () => {
   // 弹窗已经显示，子组件应该已经渲染完
   formRefs.value?.resetForm?.() // 安全调用
+}
+// 表单提交
+const submitForm = () => {
+  formRefs.value?.submitForm?.() // 安全调用
+}
+// 表单关闭
+const closeForm = () => {
+  form.value.props.show = false
 }
 const addBtn = () => {
   resetForm()

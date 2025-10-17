@@ -18,8 +18,14 @@ export default defineComponent({
       type: Boolean,
       default: true  // 设置默认值为 true
     },
-    labelWidth: [String, Number],
-    width: [String, Number],
+    labelWidth: {
+      type: [String, Number],
+      default: '80px', // 默认值
+    },
+    width: {
+      type: [String, Number],
+      default: '100%', // 默认值
+    },
     dateType: String,
     valueFormat: String,
     format: String,
@@ -29,7 +35,7 @@ export default defineComponent({
     disabled: [Function, String],   // 是否禁用对应表单项
     watch: Function
   },
-  emits: ["update:modelValue", "search"],
+  emits: ["update:modelValue", "search","clearSearch"],
   setup(props, { emit, slots }) {
     const {  label, labelWidth, width, itemKey, type, placeholder, tips, show, showLabel,  dateType, valueFormat, format, pickerOptions } = props;
     const { formType, showRule, disabled } = toRefs(props)
@@ -55,6 +61,7 @@ export default defineComponent({
           placeholder={ placeholder || "请输入" + label}
           disabled={isDisabled()}
           onUpdate:modelValue={onChange}
+          onClear={() => emit("clearSearch")} // ✅ 点击时才执行
           style={{ width: realUnitConversion(width) }}
         />
       );
@@ -235,3 +242,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" >
+.el-form-item__content > :first-child {
+  width: 100%;      /* 或其他样式 */
+  box-sizing: border-box; /* 防止 padding/margin 影响宽度 */
+}
+</style>

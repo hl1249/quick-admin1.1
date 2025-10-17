@@ -9,14 +9,17 @@
             </qa-form-item>
             <!-- ✅ 外层用 template 包裹，v-if/v-else 才算同级 -->
             <template v-if="!$slots.footer">
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm(ruleFormRef)">
-                        提交
-                    </el-button>
-                    <el-button @click="resetFormDataDefault(ruleFormRef)">
+                <div class="flex items-center justify-end" >
+                    <!-- <el-button @click="resetFormDataDefault(ruleFormRef)">
                         重置
+                    </el-button> -->
+                    <el-button @click="closeForm">
+                        关闭
                     </el-button>
-                </el-form-item>
+                    <el-button type="primary" @click="submitForm(ruleFormRef)">
+                        确定
+                    </el-button>
+                </div>
             </template>
 
             <template v-else>
@@ -32,7 +35,7 @@ import { useVModel } from "@vueuse/core"
 import { cloneDeep } from '@/utils'
 import qaFormItem from './qaFormItems.vue';
 import http from '@/utils/axios'
-const emit = defineEmits(["update:modelValue", "success"])
+const emit = defineEmits(["update:modelValue", "success","closeForm"])
 
 interface QaFormColumns {
     key: string
@@ -123,15 +126,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-const beforeSubmitForm = async ({ data, success, fail }: {
-    data: any
-    success: (result: any) => void
-    fail: (error: any) => void
-}) => {
-
-}
-
-
 // 完全重置表单
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
@@ -157,6 +151,10 @@ const resetFormDataDefault = (formEl: FormInstance | undefined) => {
     Object.assign(model.value, cloneDeep(resetCache.value))
 }
 
+// 关闭表单弹窗
+const closeForm = () => {
+    emit('closeForm')
+}
 
 defineExpose({
     validate: (...args: any[]) => ruleFormRef.value?.validate?.(...args),
