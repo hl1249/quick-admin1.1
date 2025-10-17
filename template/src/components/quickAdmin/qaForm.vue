@@ -50,12 +50,12 @@ interface QaFormColumns {
 const props = withDefaults(
     defineProps<{
         modelValue: any
-        rules: any
+        rules?: any
         action: string | ((value: any) => void)
-        formType: string
+        formType?: string
         columns: QaFormColumns[]
-        labelWidth: string | number,
-        beforeAction: (value: any) => boolean | void
+        labelWidth?: string | number,
+        beforeAction?: (value: any) => boolean | void
     }>(),
     {
     }
@@ -84,12 +84,16 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                 let postData = model.value
 
-                if (props.beforeAction(model.value) === false) {
+                // 调用前先判断是否存在
+                const beforeResult = props.beforeAction?.(model.value)
+
+                if (beforeResult === false) {
                     return
                 }
 
-                if (props.beforeAction(model.value)) {
-                    postData = props.beforeAction(model.value) === true ? model.value : props.beforeAction(model.value)
+                // 如果存在返回值并且不是 false
+                if (beforeResult !== undefined) {
+                    postData = beforeResult === true ? model.value : beforeResult
                 }
 
                 try {
@@ -177,5 +181,3 @@ defineExpose({
 })
 
 </script>
-
-<style scoped></style>

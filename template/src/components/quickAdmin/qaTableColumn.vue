@@ -94,8 +94,6 @@ export default defineComponent({
         } = props;
 
         const changeValue = (row: any, prop:string, value: any) => {
-            console.log("emit执行的参数",row)
-            console.log("emit执行的参数",value)
             emit('changeValue',  row, prop, value)
         }
 
@@ -252,7 +250,6 @@ export default defineComponent({
             <ElTableColumn prop={prop} label={label} width={width} sortable={sortable} align={align}>
                 {{
                     default: ({ row, column, $index }: { row: any; column: any; $index: number }) => {
-                        console.log('%crow','color:green',row)
                         let value = row[prop]
                         if (formatter) {
                             return type === 'html' ? <div v-html={formatter(value, row, column, $index)} /> : formatter(row[prop], row, column, $index)

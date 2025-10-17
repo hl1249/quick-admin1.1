@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable} from 'element-plus'
+import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
 import { useDark } from '@vueuse/core'
@@ -16,11 +17,11 @@ export default defineComponent({
     setup(props) {
         const { scope, columns } = props
         const columnsItem = columns?.find(item => item.key == scope.row.key) as Columns
-
         const isDark = useDark()
 
-        const { key: prop ,type, columns:column,data,formatter} = columnsItem
-        const { row, $index, row:{value}} = scope
+        const { key: prop ,type,data,formatter, valueFormat, shape} = columnsItem
+        const { row:{row}, $index, row:{value}, column} = scope
+            console.log("%c我是item",'color:red;font-weight:bold',row)
 
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
@@ -95,6 +96,7 @@ export default defineComponent({
         }
         const renderGroup = (columns: Columns[] | undefined, row: any, column: any, index: any) => {
 
+            // console.log("%c我是gropu",'color:red;font-weight:bold',columns)
             if (!columns) return null; // 防止 undefined 报错
             return <div>{columns.map((item) => {
                 if (item.type === 'group') {
@@ -159,13 +161,12 @@ export default defineComponent({
             const renderer = renderMap[params.type];
             return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
-        console.log('%cscope','color:red',scope)
         return () =>
             columnsItem.formatter
             ? (
                 columnsItem.type === 'html'
-                ? <div innerHTML={formatter(value, row, column, $index)}></div>
-                : formatter(row[prop], row, column, $index)
+                ? <div innerHTML={columnsItem.formatter(value, row, column, $index)}></div>
+                : columnsItem.formatter(row[prop], row, column, $index)
             )
             : render({
                 value: typeof value === 'object' ? JSON.stringify(value) : value,

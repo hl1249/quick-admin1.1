@@ -1,5 +1,8 @@
 
 const pagesModule = import.meta.glob('@/pages/**/*.vue')
+// utils/renderComponent.ts
+import { createApp,} from 'vue'
+import type { App, Component, ComponentPublicInstance } from 'vue'
 
 // 后端传来的菜单构建动态路由
 export const buildAsyncMenus = (menus: any) => {
@@ -332,3 +335,53 @@ export const getCommonTime = (date: Date = new Date(), targetTimezone: number = 
   };
 }
 
+export interface RenderResult<T> {
+  /** Vue 实例（组件实例） */
+  instance: ComponentPublicInstance<T>
+  /** Vue App 实例 */
+  app: App
+  /** 卸载函数 */
+  unmount: () => void
+}
+
+/**
+ * 动态渲染 Vue 组件
+ * @param Component 要渲染的组件
+ * @param props 传递给组件的 props
+ * @param container 可选，挂载的 DOM 容器
+ * @returns 包含 instance 和 unmount 方法
+ */
+export function renderComponent<T extends Record<string, any>>(
+  Component: Component,
+  props?: T,
+  container?: HTMLElement
+): RenderResult<T> {
+  const app = createApp(Component, props)
+  const mountNode = container || document.createElement('div')
+  document.body.appendChild(mountNode)
+
+  const instance = app.mount(mountNode) as ComponentPublicInstance<T>
+
+  return {
+    app,
+    instance,
+    unmount() {
+      app.unmount()
+      mountNode.remove()
+    }
+  }
+}
+
+// 单位转换
+export const realUnitConversion = (unit: string | number | undefined): string | undefined => {
+  if (unit == null || unit === '') return undefined;
+  
+  if (typeof unit === 'string') {
+    // 检查字符串是否已经包含 CSS 单位
+    const hasUnit = /^(auto|calc\(.*\)|[-+]?[\d.]+(px|rem|em|%|vw|vh|vmin|vmax|ex|ch|mm|cm|in|pt|pc))$/i.test(unit.trim());
+    return hasUnit ? unit : unit; // 或者可以根据需要添加默认单位
+  }
+  
+  // 数字默认添加 px 单位
+  return `${unit}px`;
+}

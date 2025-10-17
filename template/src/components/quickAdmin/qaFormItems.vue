@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent } from "vue";
 import { useVModel } from "@vueuse/core";
-import { realUnitConversion } from '@/utils/qaUtils'
+import { realUnitConversion } from '@/utils'
 import type { JSX } from "vue/jsx-runtime";
 
 export default defineComponent({
@@ -227,7 +227,8 @@ export default defineComponent({
     return () => {
       return finalShow() ? (
         <el-form-item label={showLabel && label} labelWidth={showLabel ? labelWidth : '0'} prop={itemKey}>
-          {hasSlot ? slots.default?.() : render({
+          <div style={{width:'100%'}}>
+            {hasSlot ? slots.default?.() : render({
             value: model.value[itemKey],
             label,
             type,
@@ -239,16 +240,10 @@ export default defineComponent({
             pickerOptions,
             onChange: (val: string) => (model.value[itemKey] = val),
           })}
+          </div>
         </el-form-item>
       ) : null;
     };
   },
 });
 </script>
-
-<style lang="scss" >
-.el-form-item__content > :first-child {
-  width: 100%;      /* 或其他样式 */
-  box-sizing: border-box; /* 防止 padding/margin 影响宽度 */
-}
-</style>

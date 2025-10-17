@@ -4,18 +4,21 @@
 
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
+      <el-button type="primary" :icon="Tools" :disabled="!selectItem" @click="bindPermissionBtn">权限赋予</el-button>
+      <el-button type="danger" :icon="Tools" :disabled="!selectItem" @click="bindMenuBtn">菜单赋予</el-button>
     </div>
 
     <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
       :pagination="false" :right-btns="['detail_auto', 'delete', 'update', 'more']"
-      :right-btns-more="table.rightBtnsMore" :row-no="true" @update="updateBtn" 
-			@delete="deleteBtn" />
+      :right-btns-more="table.rightBtnsMore" @update="updateBtn" highlight-current-row selection row-no
+      @current-change="currentChange" @delete="deleteBtn" />
 
 
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()" @closeForm="form.props.show = false">
+        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()"
+        @closeForm="form.props.show = false">
       </qa-form>
     </el-dialog>
   </div>
@@ -25,9 +28,18 @@
 import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
-import { CirclePlus } from '@element-plus/icons-vue'
+import bindMenu from './form/bindMenu.vue';
+import { CirclePlus, Tools } from '@element-plus/icons-vue'
+import { renderComponent } from '@/utils'
 import http from '@/utils/axios'
+import { title } from 'process';
 
+
+const currentChange = (row: any) => {
+  selectItem.value = row
+}
+
+const selectItem = ref()
 const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null);
 const table = ref<{
   action: string,
@@ -111,9 +123,9 @@ const table = ref<{
       watch: (res) => {
         let { value, row, change } = res;
         http.request({
-          method:'POST',
-          url:"/app/admin/system/systemRole/systemRole/updateBase",
-          data:{
+          method: 'POST',
+          url: "/app/admin/system/systemRole/systemRole/updateBase",
+          data: {
             _id: row._id,
             enable: value
           }
@@ -145,7 +157,6 @@ const search = () => {
   }
 }
 
-
 const queryForm = ref({
   formData: {
   },
@@ -174,7 +185,7 @@ const queryForm = ref({
 
 const form = ref({
   data: {
-    enable:true,
+    enable: true,
   },
   props: {
     // 请求预处理
@@ -187,7 +198,7 @@ const form = ref({
         "key": "role_id",
         "title": "角色标识",
         "type": "text",
-        show:['add'],
+        show: ['add'],
       },
       {
         "key": "role_name",
@@ -243,7 +254,7 @@ const addBtn = () => {
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
-	form.value.props.action = '/app/admin/system/systemRole/systemRole/update';
+  form.value.props.action = '/app/admin/system/systemRole/systemRole/update';
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
   form.value.props.show = true
@@ -258,6 +269,19 @@ const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
     }
   })
 }
+
+const bindPermissionBtn = () => {
+}
+
+const bindMenuBtn = () => {
+  renderComponent(bindMenu, {
+    modelValue: true,
+    selectItem: selectItem.value,
+    title:"绑定菜单"
+  })
+  // const row = qaTableRef?.value?.getCurrentRow(true)
+}
+
 </script>
 
 <style lang="vue" scoped>

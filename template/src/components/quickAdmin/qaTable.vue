@@ -1,9 +1,36 @@
 <template>
     <div v-loading="loading" class="flex flex-col flex-auto overflow-hidden pb-[2px]">
         <div class="flex-auto overflow-hidden">
-            <el-table :data="tableData" height="100%" style="width: 100%" @selection-change="selectionChange"
-                row-key="_id" :border="border" @sort-change="columnSort">
-                <el-table-column type="selection" :selectable="selectable" width="55" v-if="rowNo" />
+            <el-table :data="tableData" style="width: 100%" 
+                @current-change="(row) => {
+                     emits('current-change', row)
+                     setCurrentRow(row)
+                }"
+                @row-click="(row, column, event) => emits('row-click', row, column, event)"
+                @row-dblclick="(row, column, event) => emits('row-dblclick', row, column, event)"
+                @row-contextmenu="(row, column, event) => emits('row-contextmenu', row, column, event)"
+                @cell-click="(row, column, cell, event) => emits('cell-click', row, column, cell, event)"
+                @cell-dblclick="(row, column, cell, event) => emits('cell-dblclick', row, column, cell, event)"
+                @cell-mouse-enter="(row, column, cell, event) => emits('cell-mouse-enter', row, column, cell, event)"
+                @cell-mouse-leave="(row, column, cell, event) => emits('cell-mouse-leave', row, column, cell, event)"
+                @header-click="(column, event) => emits('header-click', column, event)"
+                @header-contextmenu="(column, event) => emits('header-contextmenu', column, event)"
+                @header-dragend="(newWidth, oldWidth, column, event) => emits('header-dragend', newWidth, oldWidth, column, event)"
+                @selection-change="(selection) => emits('selection-change', selection)"
+                @select="(selection, row) => emits('select', selection, row)"
+                @select-all="(selection) => emits('select-all', selection)"
+                @sort-change="columnSort"
+                 v-bind="{...tableProps}"
+                >
+                <el-table-column v-if="selection" type="selection" :selectable="selectable" width="55"  />
+                
+                 <el-table-column
+                    type="index"
+                    label="序号"
+                    :index="computeIndex"
+                    width="60"
+                    v-if="rowNo"
+                ></el-table-column>
 
                 <template v-for="item in columns" :key="item.key">
                     <qa-table-column show-overflow-tooltip v-bind="{ ...item, prop: item.key, label: item.title }"
@@ -59,7 +86,7 @@
                 @current-change="handleCurrentChange" />
         </div>
 
-        <el-dialog v-model="infoDialogVisible" title="详情" width="500" :before-close="infoHandleClose">
+        <el-dialog v-model="infoDialogVisible" title="详情" width="830" :before-close="infoHandleClose">
             <el-table :data="detailData" border :show-header="false" max-height="800">
                 <el-table-column width="200" prop="title" />
                 <el-table-column>
@@ -76,7 +103,6 @@
 
 import qaDetail from './qaDetail.vue'
 import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue'
-import type { ComponentSize } from 'element-plus'
 import http from '@/utils/axios'
 import { ElMessage } from 'element-plus'
 import qaTableColumn from './qaTableColumn.vue'
@@ -126,6 +152,12 @@ export interface RightBtnMoreItem {
     onClick: (item: any) => void      // 可选函数
 }
 
+const tableProps = computed(() => {
+  const { rowNo, rowKey, selection, height, border, highlightCurrentRow, size, selectable, stripe, } = props;
+  return { rowNo, rowKey, selection, height, border, highlightCurrentRow, size, selectable, stripe };
+});
+
+
 const props = withDefaults(
     defineProps<{
         action: string
@@ -134,22 +166,43 @@ const props = withDefaults(
         rightBtns?: RightBtn[]
         rightBtnsMore?: RightBtnMoreItem[]
         rowNo?: boolean
+        rowKey?: string
+        selection?: boolean
         renderNode?: 'detail' | 'row'   // 渲染位置
         height?: string | number,
-        border?: boolean
+        border?: boolean,
+        highlightCurrentRow: boolean,
+        size?: '' | 'large' | 'default' | 'small'
+        selectable?: (row:any,index: number) => boolean
+        stripe?: boolean
     }>(),
     {
         renderNode: 'row',  // 默认值
         rowNo: false,       // 其他可选默认值
+        rowKey: '_id',
+        selection: false
     }
 )
 
-const emit = defineEmits(['elTableSelect', 'delete', 'update'])
-
-const selectable = (row: any) => ![1, 2].includes(row.id)
-const selectionChange = (row: any) => {
-    emit('elTableSelect', row)
-}
+const emits = defineEmits([
+  'delete',
+  'update',
+  'current-change',
+  'row-click',
+  'row-dblclick',
+  'row-contextmenu',
+  'cell-mouse-enter',
+  'cell-mouse-leave',
+  'cell-click',
+  'cell-dblclick',
+  'header-click',
+  'header-contextmenu',
+  'header-dragend',
+  'select',
+  'select-all',
+  'selection-change',
+  'pagination-change'
+])
 
 const changeValue = (row: any, key: string, value: string) => {
     const index = tableData.value.findIndex(item => item._id === row._id);
@@ -225,12 +278,12 @@ const btnsDetail = (index: number, row: TableRow) => {
 }
 const btnsUpdate = (index: number, row: TableRow) => {
     console.log("编辑", row)
-    emit('update', index, cloneDeep(row))
+    emits('update', index, cloneDeep(row))
 }
 
 const confirmDelete = (row: TableRow, deleteRequset: DeleteRequset) => {
 
-    emit('delete', row, deleteRequset)
+    emits('delete', row, deleteRequset)
 }
 const btnsDeleteRequset = async ({ action, data }: { action: string; data: any }) => {
     console.log("请求删除接口", action, data)
@@ -253,7 +306,6 @@ const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(10)
 const disabled = ref(false)
-const size = ref<ComponentSize>('default')
 const background = ref(true)
 const handleSizeChange = (val: number) => {
     console.log(`${val} items per page`)
@@ -263,6 +315,11 @@ const handleCurrentChange = (val: number) => {
     console.log(`current page: ${val}`)
     getTableData()
 }
+
+const computeIndex = (index: number) => {
+  return (currentPage.value - 1) * pageSize.value + index + 1;
+};
+
 
 // 如果布尔值 返回布尔值 如果是函数调用
 const checkRightBtnsMoreDisabled = (disabled: any, row: TableRow) => {
@@ -284,8 +341,19 @@ const infoHandleClose = () => {
     infoDialogVisible.value = false
 }
 
+const getCurrentRow = (isOrigin?: boolean) => {
+    if(isOrigin) return currentRow.value
+    else return cloneDeep(currentRow.value)
+}
+
+const currentRow = ref()
+const setCurrentRow = (row: any) =>{
+    currentRow.value = row
+}
+
 defineExpose({
     search: getTableData,
     refresh: getTableData,
+    getCurrentRow,
 });
 </script>

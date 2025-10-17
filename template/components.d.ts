@@ -52,6 +52,7 @@ declare module 'vue' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElTree: typeof import('element-plus/es')['ElTree']
     QaAreaCascader: typeof import('./src/components/quickAdmin/qaAreaCascader.vue')['default']
     QaDataTable: typeof import('./src/components/quickAdmin/qa-data-table.vue')['default']
     QaDetail: typeof import('./src/components/quickAdmin/qaDetail.vue')['default']
