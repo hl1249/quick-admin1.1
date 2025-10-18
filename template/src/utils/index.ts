@@ -1,14 +1,14 @@
 
 const pagesModule = import.meta.glob('@/pages/**/*.vue')
 // utils/renderComponent.ts
-import { createApp,} from 'vue'
+import { createApp, ref, nextTick} from 'vue'
 import type { App, Component, ComponentPublicInstance } from 'vue'
 
 // 后端传来的菜单构建动态路由
 export const buildAsyncMenus = (menus: any) => {
     const routeMenu = menus.map((menu: any) => {
-
-        if (menu.children && menu.children.length > 1) {
+        // 如果有子菜单（无论数量多少）
+        if (menu.children && menu.children.length > 0) {
             return {
                 path: `/${menu.path || ''}`,
                 name: menu.name,
@@ -18,17 +18,9 @@ export const buildAsyncMenus = (menus: any) => {
                 },
                 children: buildAsyncMenus(menu.children),
             }
-        } else if (menu.children && menu.children.length === 1) {
-            return {
-                path: `/${menu.path || ''}`,
-                name: menu.name,
-                meta: {
-                    title: menu.title,
-                    icon: menu.icon,
-                },
-                children: buildAsyncMenus(menu.children),
-            }
-        } else {
+        } 
+        // 没有子菜单的情况
+        else {
             return {
                 path: `/${menu.path}`,
                 name: menu.name,
@@ -45,6 +37,70 @@ export const buildAsyncMenus = (menus: any) => {
     return routeMenu
 }
 
+
+// 数组转树
+
+interface TreeNode {
+    [key: string]: any;
+    children?: TreeNode[];
+}
+
+interface TreeProps {
+    id: string;
+    parent_id: string;
+    children: string;
+}
+
+export const arrayToTree = (arrayData: TreeNode[], treeProps: TreeProps): TreeNode[] => {
+    const { id, parent_id, children } = treeProps;
+
+    // 创建映射表，用于快速查找节点
+    const nodeMap = new Map<string, TreeNode>();
+    const result: TreeNode[] = [];
+
+    // 第一遍遍历：创建所有节点的映射
+    arrayData.forEach(item => {
+        const nodeId = item[id];
+        nodeMap.set(nodeId, { ...item });
+    });
+
+    // 第二遍遍历：构建树结构
+    arrayData.forEach(item => {
+        const node = nodeMap.get(item[id])!;
+        const parentId = item[parent_id];
+
+        if (parentId) {
+            const parentNode = nodeMap.get(parentId);
+            if (parentNode) {
+                if (!parentNode[children]) {
+                    parentNode[children] = [];
+                }
+                parentNode[children].push(node);
+            }
+        } else {
+            // 没有父节点，说明是根节点
+            result.push(node);
+        }
+    });
+
+    // 第三遍遍历：移除空的 children 数组
+    const removeEmptyChildren = (node: TreeNode): TreeNode => {
+        const newNode = { ...node };
+
+        if (newNode[children] && Array.isArray(newNode[children])) {
+            if (newNode[children].length === 0) {
+                delete newNode[children];
+            } else {
+                // 递归处理子节点
+                newNode[children] = newNode[children].map(removeEmptyChildren);
+            }
+        }
+
+        return newNode;
+    };
+
+    return result.map(removeEmptyChildren);
+}
 
 export const getBreadCrumbList = (route: any, homeRoute: any) => {
     let homeItem = { ...homeRoute, icon: homeRoute.meta.icon }
@@ -335,32 +391,45 @@ export const getCommonTime = (date: Date = new Date(), targetTimezone: number = 
   };
 }
 
-export interface RenderResult<T> {
-  /** Vue 实例（组件实例） */
-  instance: ComponentPublicInstance<T>
-  /** Vue App 实例 */
-  app: App
-  /** 卸载函数 */
+export interface RenderResult<T = any> {
+  app: ReturnType<typeof createApp>
+  instance: ComponentPublicInstance<T> & { open: () => void; close: () => void }
   unmount: () => void
 }
 
-/**
- * 动态渲染 Vue 组件
- * @param Component 要渲染的组件
- * @param props 传递给组件的 props
- * @param container 可选，挂载的 DOM 容器
- * @returns 包含 instance 和 unmount 方法
- */
+// 动态渲染组件
 export function renderComponent<T extends Record<string, any>>(
   Component: Component,
   props?: T,
   container?: HTMLElement
 ): RenderResult<T> {
-  const app = createApp(Component, props)
   const mountNode = container || document.createElement('div')
   document.body.appendChild(mountNode)
 
-  const instance = app.mount(mountNode) as ComponentPublicInstance<T>
+  // 内部维护 visible
+  const visible = ref(true)
+
+  // 包装 props，把 modelValue 映射到内部 visible
+  const wrappedProps = {
+    ...(props || {}),
+    modelValue: visible.value
+  }
+
+  const app = createApp(Component, wrappedProps)
+  const instance = app.mount(mountNode) as ComponentPublicInstance<T> & { open: () => void; close: () => void }
+
+  // 给 instance 添加 open / close 方法
+  instance.open = () => { visible.value = true }
+  instance.close = () => { visible.value = false }
+
+  // 自动 watch visible 同步给组件
+  nextTick(() => {
+    if ('$props' in instance) {
+      watch(visible, (val) => {
+        (instance as any).modelValue = val
+      })
+    }
+  })
 
   return {
     app,
@@ -371,6 +440,7 @@ export function renderComponent<T extends Record<string, any>>(
     }
   }
 }
+
 
 // 单位转换
 export const realUnitConversion = (unit: string | number | undefined): string | undefined => {

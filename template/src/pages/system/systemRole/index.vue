@@ -277,7 +277,6 @@ const bindMenuBtn = () => {
   renderComponent(bindMenu, {
     modelValue: true,
     selectItem: selectItem.value,
-    title:"绑定菜单"
   })
   // const row = qaTableRef?.value?.getCurrentRow(true)
 }

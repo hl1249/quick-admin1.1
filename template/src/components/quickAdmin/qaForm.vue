@@ -55,7 +55,7 @@ const props = withDefaults(
         formType?: string
         columns: QaFormColumns[]
         labelWidth?: string | number,
-        beforeAction?: (value: any) => boolean | void
+        beforeAction?: (value: any) => boolean | void | any
     }>(),
     {
     }
@@ -86,6 +86,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                 // 调用前先判断是否存在
                 const beforeResult = props.beforeAction?.(model.value)
+
+                console.log('beforeResult',beforeResult)
 
                 if (beforeResult === false) {
                     return

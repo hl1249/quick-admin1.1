@@ -10,6 +10,14 @@ export class SystemRoleController {
   ) {
   }
 
+  @Post('/getAllMenu')
+  getAllMenu(): Promise<Document | null>{
+     return this.dbService.select({
+      dbName:"qa-menus",
+      getMain: true
+     })
+  }
+
   @Post('/getList')
   getList(@Req() req, @Body() data): Promise<Document | null> {
       console.log("请求body", data)
@@ -105,6 +113,22 @@ export class SystemRoleController {
       id:_id,
       dataJson:{
         enable
+      }
+    })
+  }
+
+  @Post('/bindMenu')
+  bindMenu(@Body() data): Promise<Document | null> {
+    let {
+      _id,
+			menu
+		} = data
+
+    return this.dbService.updateById({
+      dbName: "qa-roles",
+      id:_id,
+      dataJson:{
+        menu
       }
     })
   }
