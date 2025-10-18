@@ -18,9 +18,18 @@ export class SystemRoleController {
      })
   }
 
+
+  @Post('/getAllPermissions')
+  getAllPermissions(): Promise<Document | null>{
+     return this.dbService.select({
+      dbName:"qa-permissions",
+      getMain: true,
+      pageSize:999
+     })
+  }
+
   @Post('/getList')
   getList(@Req() req, @Body() data): Promise<Document | null> {
-      console.log("请求body", data)
       return this.dbService.getTableData({
         dbName: "qa-roles",
         data,
@@ -129,6 +138,22 @@ export class SystemRoleController {
       id:_id,
       dataJson:{
         menu
+      }
+    })
+  }
+
+  @Post('/bindPermissions')
+  bindPermissions(@Body() data): Promise<Document | null> {
+    let {
+      _id,
+			permission
+		} = data
+
+    return this.dbService.updateById({
+      dbName: "qa-roles",
+      id:_id,
+      dataJson:{
+        permission
       }
     })
   }

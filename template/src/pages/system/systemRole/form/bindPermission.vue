@@ -1,20 +1,20 @@
 <template>
-  <el-dialog v-model="visible" :title="title" width="800" :before-close="handleBeforeClose" @open="getAllMenu" @close="handleClose">
+  <el-dialog v-model="visible" :title="title" width="800" :before-close="handleBeforeClose" @open="getAllPermissions" @close="handleClose">
     <div class="dialog-content">
       <!-- 你的弹窗内容 -->
       <qa-form v-model="selectItem" :columns="form.props.columns" :action="form.props.action" @success="visible = false"
         @closeForm="visible = false" :before-action="form.props.beforeAction">
-        <template v-slot:menuList>
+        <template v-slot:permission>
           <el-input placeholder="输入关键字进行搜索" v-model="filterText"> </el-input>
-         <div class="my-[10px]">
+          <div class="my-[10px]">
             <el-checkbox v-model="isExpandAll">展开/折叠</el-checkbox>
             <el-checkbox v-model="isCheckAll">全选/全不选</el-checkbox>
           </div>
           <div class="border border-gray-300 rounded-[4px] overflow-hidden p-[10px]">
-          <el-tree ref="treeRefs" :data="treeData" node-key="menu_id" :default-checked-keys="localSelectItem.menu"
+            <el-tree ref="treeRefs" :data="treeData" node-key="permission_id" :default-checked-keys="localSelectItem.permission"
             :props="{
               children: 'children',
-              label: 'title'
+              label: 'permission_name'
             }" show-checkbox expand-on-click-node :default-expand-all="isExpandAll"
             :filter-node-method="filterNode"></el-tree>
           </div>
@@ -59,7 +59,7 @@ const filterNode = (value: any, data: any) => {
   return data.title.indexOf(value) !== -1;
 }
 
-const title = ref('默认标题')
+const title = ref('权限赋予')
 
 const isExpandAll = ref(false)
 watch(isExpandAll, (newValue) => {
@@ -67,7 +67,7 @@ watch(isExpandAll, (newValue) => {
 })
 const expandAll = (nodes: any[], open: boolean) => {
   nodes.forEach(node => {
-    treeRefs.value!.store.nodesMap[node.menu_id].expanded = open
+    treeRefs.value!.store.nodesMap[node.permission_id].expanded = open
     if (node.children) expandAll(node.children, open)
   })
 }
@@ -77,15 +77,10 @@ watch(isCheckAll, (newValue) => {
   checkAll(treeData.value, newValue)
 })
 const checkAll = (nodes: any[], isCheckAll: boolean) => {
-
   if(isCheckAll)
   treeRefs.value.setCheckedNodes(treeData.value);
   else
   treeRefs.value?.setCheckedKeys([])
-  // nodes.forEach(node => {
-    // treeRefs.value!.store.nodesMap[node.menu_id].expanded = open
-    // if (node.children) expandAll(node.children, open)
-  // })
 }
 
 
@@ -116,9 +111,9 @@ const form = ref({
       postData.menu = Array.from(new Set([...getChecked(),...getHalfChecked()]))
       return postData
     },
-    action: "/app/admin/system/systemRole/systemRole/bindMenu",
+    action: "/app/admin/system/systemRole/systemRole/bindPermissions",
     columns: [{
-      key: "menuList",
+      key: "permission",
       title: "菜单",
       type: "text"
     }]
@@ -136,7 +131,7 @@ watch(visible, val => {
 
 // 获取全部菜单
 onMounted(() => {
-  getAllMenu()
+  getAllPermissions()
   title.value += `(${selectItem.value?.role_name})`
 })
 
@@ -156,15 +151,14 @@ watch(filterText, (val) => {
 })
 // 渲染的树形数据
 const treeData = ref()
-const getAllMenu = async () => {
-  console.log("我有没有执行")
+const getAllPermissions = async () => {
   const { data: { data } } = await http.request({
     method: "POST",
-    url: "/app/admin/system/systemRole/systemRole/getAllMenu",
+    url: "/app/admin/system/systemRole/systemRole/getAllPermissions",
   })
 
   let treeProps = {
-    id: "name",
+    id: "permission_id",
     parent_id: "parent_id",
     children: "children"
   };

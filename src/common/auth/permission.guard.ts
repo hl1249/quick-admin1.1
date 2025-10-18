@@ -57,6 +57,7 @@ export class PermissionGuard implements CanActivate {
             }]
         })
 
+        console.log('url',url)
 
         if (permissionsUrlList && Array.isArray(permissionsUrlList)) {
 
@@ -68,6 +69,7 @@ export class PermissionGuard implements CanActivate {
 
             // 获取用户所有权限url
             const allowedUrls = [...new Set(permissionsUrlList.flatMap(item => item.user_permission.flatMap((it: any) => it.url)))]
+            console.log('allowedUrls',allowedUrls)
             if (!this.matchesPatterns(url, allowedUrls)) {
                 throw new ForbiddenException('没有权限访问该接口');
             }
@@ -78,9 +80,10 @@ export class PermissionGuard implements CanActivate {
 
     private matchesPatterns(url: string, patterns: string[]): boolean {
         return patterns.some(pattern => {
-            // 去掉尾部的 '*'，作为前缀
-            const prefix = pattern.endsWith('*') ? pattern.slice(0, -1) : pattern;
-            return url.startsWith(prefix);
+            // 将 * 转换成正则通配符
+            const regexPattern = '^' + pattern.replace(/\*/g, '.*') + '$';
+            const regex = new RegExp(regexPattern);
+            return regex.test(url);
         });
     }
 }

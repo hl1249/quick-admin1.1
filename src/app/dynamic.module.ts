@@ -14,8 +14,6 @@ export class DynamicModule {
     const controllers = loadControllers(basePath, rootDir);
     const providers = loadProviders(basePath);
 
-    // console.log('controllers',controllers)
-    // console.log('providers',providers)
     return {
       module: DynamicModule,
       controllers,

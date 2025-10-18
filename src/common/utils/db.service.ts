@@ -278,16 +278,10 @@ export class DbService {
     if (data.pageSize) pageSize = Number(data.pageSize);
     if (data.sortRule) sortArr = data.sortRule
 
-    console.log("表渲染-foreignDB",foreignDB)
-    console.log("表渲染", data)
-    // 统一获取集合引用
     const collection = db
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    console.log('foreignDB[0]', JSON.stringify(foreignDB, null, 2))
-    console.log('addFields[0]', JSON.stringify(addFields, null, 2))
-  
     // 执行查询
     const result = await collection.aggregate([
       ...(data.match && Object.keys(data.match).length > 0 ? [{ $match: data.match }] : []),

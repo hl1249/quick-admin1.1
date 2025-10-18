@@ -29,6 +29,7 @@ import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quic
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import bindMenu from './form/bindMenu.vue';
+import bindPermission from './form/bindPermission.vue';
 import { CirclePlus, Tools } from '@element-plus/icons-vue'
 import { renderComponent } from '@/utils'
 import http from '@/utils/axios'
@@ -271,6 +272,10 @@ const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
 }
 
 const bindPermissionBtn = () => {
+  renderComponent(bindPermission, {
+    modelValue: true,
+    selectItem: selectItem.value,
+  })
 }
 
 const bindMenuBtn = () => {

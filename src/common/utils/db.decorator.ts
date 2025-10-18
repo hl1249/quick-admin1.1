@@ -36,9 +36,6 @@ export const TransformDbParams = (target, key, descriptor) => {
     if (params?.data) {
       params.data = transTableData(params.data);
     }
-    // console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
-    // console.log('装饰器转换后的foreignDB',JSON.stringify( params.foreignDB, null, 2));
-    // console.log('装饰器转换后的whereJson',JSON.stringify( params.whereJson, null, 2));
 
 
     return await originalMethod.call(this, params);
@@ -212,7 +209,6 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
   return foreignDB.map(config => {
     const stages: PipelineStage[] = [];
 
-    console.log('config', config)
     // 判断是否有_id字段
     const hasIdField = config.localKey === '_id' || config.foreignKey === '_id';
     // 判断LocalKey是否是对象
