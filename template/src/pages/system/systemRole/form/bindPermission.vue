@@ -56,7 +56,7 @@ const emit = defineEmits<{
 const filterNode = (value: any, data: any) => {
   console.log('data', data)
   if (!value) return true;
-  return data.title.indexOf(value) !== -1;
+  return data.permission_name.indexOf(value) !== -1;
 }
 
 const title = ref('权限赋予')
