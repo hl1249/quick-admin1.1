@@ -11,7 +11,7 @@
  Target Server Version : 80003
  File Encoding         : 65001
 
- Date: 17/10/2025 18:10:22
+ Date: 19/10/2025 17:22:59
 */
 
 
@@ -1037,6 +1037,30 @@ db.getCollection("qa-logs").insert([ {
     "_add_time": 1760579884878,
     "_add_time_str": "2025-10-16 09:58:04"
 } ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68f436cd732bed4455fa51de"),
+    "user_id": "11123",
+    "_add_time": 1760835277402,
+    "_add_time_str": "2025-10-19 08:54:37"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68f43780732bed4455fa5233"),
+    "user_id": "21312",
+    "_add_time": 1760835456975,
+    "_add_time_str": "2025-10-19 08:57:36"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68f4378e732bed4455fa523b"),
+    "user_id": "12345",
+    "_add_time": 1760835470293,
+    "_add_time_str": "2025-10-19 08:57:50"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("68f437b8732bed4455fa5243"),
+    "user_id": "12345",
+    "_add_time": 1760835512760,
+    "_add_time_str": "2025-10-19 08:58:32"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-menus
@@ -1143,6 +1167,20 @@ db.getCollection("qa-menus").insert([ {
     enable: true,
     name: "systemLog"
 } ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("68f43fe1bcda844d0bc82270"),
+    "parent_id": "system",
+    "menu_id": "system-permission",
+    icon: "Document",
+    path: "system/system-permission",
+    "_add_time": NumberLong("1732272654771"),
+    "_add_time_str": "2024-11-22 18:50:54",
+    component: "/src/pages/system/systemPermission",
+    sort: null,
+    title: "权限管理",
+    enable: true,
+    name: "systemPermission"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-permissions
@@ -1176,7 +1214,10 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemUser/*"
+        "/app/admin/system/systemUser/systemUser/add",
+        "/app/admin/system/systemUser/systemUser/delete",
+        "/app/admin/system/systemUser/systemUser/update",
+        "/app/admin/system/systemUser/systemUser/getList"
     ]
 } ]);
 db.getCollection("qa-permissions").insert([ {
@@ -1189,7 +1230,10 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemMenu/*"
+        "/app/admin/system/systemMenu/systemMenu/add",
+        "/app/admin/system/systemMenu/systemMenu/delete",
+        "/app/admin/system/systemMenu/systemMenu/update",
+        "/app/admin/system/systemMenu/systemMenu/getList"
     ]
 } ]);
 db.getCollection("qa-permissions").insert([ {
@@ -1202,7 +1246,10 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemRole/*"
+        "/app/admin/system/systemRole/systemRole/add",
+        "/app/admin/system/systemRole/systemRole/delete",
+        "/app/admin/system/systemRole/systemRole/update",
+        "/app/admin/system/systemRole/systemRole/getList"
     ]
 } ]);
 db.getCollection("qa-permissions").insert([ {
@@ -1215,7 +1262,10 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemFile/*"
+        "/app/admin/system/systemFile/systemFile/add",
+        "/app/admin/system/systemFile/systemFile/delete",
+        "/app/admin/system/systemFile/systemFile/update",
+        "/app/admin/system/systemFile/systemFile/getList"
     ]
 } ]);
 db.getCollection("qa-permissions").insert([ {
@@ -1279,8 +1329,19 @@ db.getCollection("qa-permissions").insert([ {
     url: [
         "*/getList",
         "*/select",
-        "*/getAll"
+        "*/getAll",
+        "*/getDynamicMenu"
     ]
+} ]);
+db.getCollection("qa-permissions").insert([ {
+    _id: ObjectId("68f346d5a144c9f3f337272d"),
+    "_add_time": NumberLong("1596416400000"),
+    comment: "菜单权限",
+    enable: true,
+    "permission_id": "sys-manage",
+    "permission_name": "系统菜单权限",
+    sort: NumberInt("0"),
+    url: [ ]
 } ]);
 
 // ----------------------------
@@ -1302,7 +1363,15 @@ db.getCollection("qa-roles").insert([ {
     "role_id": "admin",
     "role_name": "超级管理员",
     no: NumberInt("1"),
-    menu: [ ]
+    menu: [
+        "system",
+        "system-uni-uni-id-files",
+        "sys-user-manage",
+        "sys-role-manage",
+        "sys-menus-manage",
+        "enable",
+        "system-log"
+    ]
 } ]);
 db.getCollection("qa-roles").insert([ {
     _id: ObjectId("672b1fc518a1950fd5ed565f"),
@@ -1311,13 +1380,16 @@ db.getCollection("qa-roles").insert([ {
     comment: "二级管理员",
     enable: true,
     permission: [
-        "sys-manage",
-        "sys-role",
-        "sys-file",
-        "sys-menu",
+        "sys-permission",
+        "sys-add",
+        "sys-delete",
+        "sys-update",
+        "sys-read",
         "sys-log",
         "sys-user",
-        "sys-permission"
+        "sys-menu",
+        "sys-file",
+        "sys-manage"
     ],
     "role_id": "agent",
     "role_name": "代理商",
@@ -1328,26 +1400,27 @@ db.getCollection("qa-roles").insert([ {
         "sys-user-manage",
         "sys-role-manage",
         "sys-menus-manage",
+        "enable",
         "system-log"
     ]
 } ]);
 db.getCollection("qa-roles").insert([ {
     _id: ObjectId("68f099d01c5507ab49971458"),
     "role_id": "test",
-    "role_name": "测试角色",
+    "role_name": "测试角色1",
     comment: "测试角色",
     enable: true,
     "_add_time": NumberLong("1760598480627"),
-    "_add_time_str": "2025-10-16 15:08:00"
-} ]);
-db.getCollection("qa-roles").insert([ {
-    _id: ObjectId("68f0b0bcb7ed70d671c2152d"),
-    "role_id": "agen1",
-    "role_name": "测试",
-    comment: "测试",
-    enable: true,
-    "_add_time": 1760604348199,
-    "_add_time_str": "2025-10-16 16:45:48"
+    "_add_time_str": "2025-10-16 15:08:00",
+    menu: [
+        "system",
+        "system-uni-uni-id-files",
+        "sys-user-manage",
+        "sys-role-manage",
+        "sys-menus-manage",
+        "enable",
+        "system-log"
+    ]
 } ]);
 
 // ----------------------------
@@ -1369,16 +1442,26 @@ db.getCollection("qa-users").insert([ {
     "_add_time": NumberLong("1730908188567"),
     "_add_time_str": "2024-11-06 23:49:48",
     no: NumberInt("2"),
-    image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+    image: "https://avatars.githubusercontent.com/u/53579755?v=4",
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA2NzkxMjAsImV4cCI6MTc2MTI4MzkyMH0.CkV7VqKO9SfbGaY64mwbD4hJuRYsODXukdt4UPsM8TI",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA2ODAxOTUsImV4cCI6MTc2MTI4NDk5NX0.cDKj7Z2-mHcw30eeg7OSQ0VW_e4aPU8ZYLLRnt_nFug",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA2OTEwNjUsImV4cCI6MTc2MTI5NTg2NX0.3ohmN2D3pnJ0DqRoRxmn09Ej72M3-s63jJHvk1XY8iM"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA3NzQxMTAsImV4cCI6MTc2MTM3ODkxMH0.tnOkGu0vUho18JPgqz1nlLzXYcaqOdSrqqCrk8lm3YY",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA3NzQxMjMsImV4cCI6MTc2MTM3ODkyM30.Ic46KljPYGdMTxxbOjNAZg7XSCDJSJh3G3_qvtsHa3U",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjA4MzUyMzgsImV4cCI6MTc2MTQ0MDAzOH0.ljWVgBId2bOfdA_-KRauJRpgINO2EjjyaTXDf7viLD4"
     ],
-    "last_login_date": 1760691065239,
-    "last_login_ip": "未知IP"
+    "last_login_date": NumberLong("1760835238988"),
+    "last_login_ip": "未知IP",
+    object: {
+        name: "小明",
+        age: NumberInt("18")
+    },
+    userInfo: {
+        name: "小明",
+        age: NumberInt("18"),
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        nickname: "你猜"
+    }
 } ]);
 db.getCollection("qa-users").insert([ {
     _id: ObjectId("68bb20b94f8c40661556f27c"),
@@ -1394,9 +1477,20 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NTcwOTQyMTIsImV4cCI6MTc1NzY5OTAxMn0.CZ0ZahlMM0dW2kPDmMLeuD4pIVB8uw58znW9QMLw90o",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NTcxMDY0MjEsImV4cCI6MTc1NzcxMTIyMX0.mGxrVIGRn-I3ew1gWVS5MD_MJqYv790er8vDa7aH2I4"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NjA3NzQxNDMsImV4cCI6MTc2MTM3ODk0M30.C6KsNTmm3Pp4aM4P20ozpTP7irTscNn-qrfBOIfqHzo",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NjA3NzQ3NTQsImV4cCI6MTc2MTM3OTU1NH0.HaNh7ywd5VxDfL9fbQ8GOU1ClzhI95mgOpfatO9OrIs",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NjA4MzYzNTEsImV4cCI6MTc2MTQ0MTE1MX0.RMhyi1UR0spfHL7waT00op8UF7bIKBWvD8V0EKArTEA"
     ],
-    "last_login_date": 1757106421363,
-    "last_login_ip": "127.0.0.1"
+    "last_login_date": NumberLong("1760836351787"),
+    "last_login_ip": "未知IP",
+    object: {
+        name: "小王",
+        age: NumberInt("18")
+    },
+    userInfo: {
+        name: "小明",
+        age: NumberInt("18"),
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        nickname: "你猜"
+    }
 } ]);
