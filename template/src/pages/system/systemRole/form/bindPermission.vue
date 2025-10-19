@@ -108,7 +108,9 @@ watch(selectItem, (val) => {
 const form = ref({
   props: {
     beforeAction: (postData: any) => {
-      postData.menu = Array.from(new Set([...getChecked(),...getHalfChecked()]))
+      console.log('getChecked',getChecked())
+      console.log('getHalfChecked',getHalfChecked())
+      postData.permission = Array.from(new Set([...getChecked(),...getHalfChecked()]))
       return postData
     },
     action: "/app/admin/system/systemRole/systemRole/bindPermissions",

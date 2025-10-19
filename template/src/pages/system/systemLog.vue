@@ -39,7 +39,6 @@ import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus } from '@element-plus/icons-vue'
 import { getCommonTime } from '@/utils'
-import http from '@/utils/axios'
 
 const adopt = (status: number) => {
   formRefs.value.submitForm({

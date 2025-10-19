@@ -18,10 +18,11 @@ export default defineComponent({
         const { scope, columns } = props
         const columnsItem = columns?.find(item => item.key == scope.row.key) as Columns
         const isDark = useDark()
-
+        
         const { key: prop ,type,data,formatter, valueFormat, shape} = columnsItem
-        const { row:{row}, $index, row:{value}, column} = scope
-            console.log("%c我是item",'color:red;font-weight:bold',row)
+        const { $index, row:{value,row}, column} = scope
+            // console.log("%c我是scope",'color:red;font-weight:bold',scope)
+            // console.log("%c我是scope.row",'color:red;font-weight:bold',scope.row)
 
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
@@ -123,6 +124,7 @@ export default defineComponent({
             </div>
         }
         const renderObject = (value: Record<string, any>, columns: Columns[]) => {
+            console.log("%cvalue",'color:pink;font-weight:bold',value)
             if (!value || Object.keys(value).length === 0 || !columns) return null;
             const tableDatas = columns.map((item) => ({
                 title: item.title,
@@ -161,6 +163,19 @@ export default defineComponent({
             const renderer = renderMap[params.type];
             return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
+
+        // return () => (
+        //     // <>
+        //     // row:{JSON.stringify(row)}<br/>
+        //     // <br/>
+        //     // columnItem：{JSON.stringify(columnsItem)}<br/>
+        //     // <br/>
+        //     // value:{JSON.stringify(value)}<br/>
+        //     // </>
+        //     <>
+        //     </>
+        // )
+
         return () =>
             columnsItem.formatter
             ? (
@@ -169,13 +184,14 @@ export default defineComponent({
                 : columnsItem.formatter(row[prop], row, column, $index)
             )
             : render({
-                value: typeof value === 'object' ? JSON.stringify(value) : value,
+                // value: typeof value === 'object' ? JSON.stringify(value) : value,
+                value,
                 type,
                 row,
                 prop,
                 column,
                 $index,
-                columns,
+                columns:columnsItem?.columns || [],
                 data
             })
     }

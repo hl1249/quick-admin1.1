@@ -91,6 +91,7 @@
                 <el-table-column width="200" prop="title" />
                 <el-table-column>
                     <template #default="scope">
+                        <!-- scope:{{ scope.row }} -->
                         <qa-detail v-bind="{scope,columns}"/>
                     </template>
                 </el-table-column>
@@ -171,7 +172,7 @@ const props = withDefaults(
         renderNode?: 'detail' | 'row'   // 渲染位置
         height?: string | number,
         border?: boolean,
-        highlightCurrentRow: boolean,
+        highlightCurrentRow?: boolean,
         size?: '' | 'large' | 'default' | 'small'
         selectable?: (row:any,index: number) => boolean
         stripe?: boolean
@@ -180,7 +181,8 @@ const props = withDefaults(
         renderNode: 'row',  // 默认值
         rowNo: false,       // 其他可选默认值
         rowKey: '_id',
-        selection: false
+        selection: false,
+        height: '100%'
     }
 )
 
@@ -271,6 +273,8 @@ const btnsDetail = (index: number, row: TableRow) => {
             ...item
         }
     })
+
+    
     console.log('tableDatas', tableDatas)
     detailData.value = tableDatas
 

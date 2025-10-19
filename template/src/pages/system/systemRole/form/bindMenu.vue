@@ -59,7 +59,7 @@ const filterNode = (value: any, data: any) => {
   return data.title.indexOf(value) !== -1;
 }
 
-const title = ref('默认标题')
+const title = ref('菜单赋予')
 
 const isExpandAll = ref(false)
 watch(isExpandAll, (newValue) => {

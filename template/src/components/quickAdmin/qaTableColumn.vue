@@ -207,6 +207,7 @@ export default defineComponent({
             </div>
         }
         const renderObject = (value: Record<string, any>, columns: Columns[]) => {
+            console.log("%cvalue",'color:pink;font-weight:bold',value)
             if (!value || Object.keys(value).length === 0 || !columns) return null;
             const tableDatas = columns.map((item) => ({
                 title: item.title,
@@ -255,7 +256,7 @@ export default defineComponent({
                             return type === 'html' ? <div v-html={formatter(value, row, column, $index)} /> : formatter(row[prop], row, column, $index)
                         }
                         return render({
-                            value: typeof value === 'object' ? JSON.stringify(value) : value,
+                            value,
                             type,
                             row,
                             prop,

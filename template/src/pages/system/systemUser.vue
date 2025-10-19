@@ -1,8 +1,15 @@
 <template>
   <div class="flex flex-col h-full">
-    <qa-data-table :action="table.action" :columns="table.columns" :query-form-param="queryForm" :pagination="false"
+    <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm" :pagination="false"
       :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true"
       @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" />
+    
+    <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+      <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
+        :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
+        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
+      </qa-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -27,8 +34,8 @@ const table = ref<{
           key: "userInfo", title: "用户", type: "object",
           width: 200,
           columns: [
-            { key: "avatar", title: "对象内字段1", type: "text" },
-            { key: "nickname", title: "对象内字段2", type: "text" },
+            { key: "name", title: "对象内字段1", type: "text" },
+            { key: "age", title: "对象内字段2", type: "text" },
           ]
         },
         {
@@ -78,6 +85,15 @@ const table = ref<{
           ]
         },
       ]
+    },
+    {
+      key:"object",
+      type:"object",
+      title:"对象",
+       columns: [
+        { key: "name", title: "对象内字段1", type: "text" },
+        { key: "age", title: "对象内字段2", type: "text" },
+      ],
     },
     {
       key: "userInfo", title: "用户", type: "userInfo",
@@ -130,7 +146,7 @@ const table = ref<{
     {
       "key": "role",
       "title": "角色",
-      "type": "object",
+      "type": "json",
       "width": 200
     },
   ],
@@ -145,6 +161,13 @@ const table = ref<{
   }]
 })
 
+
+const qaTableRef = ref()
+// 表格数据刷新
+const refresh = () => {
+  qaTableRef.value?.refresh()
+}
+
 const queryForm = ref({
   formData: {
 
@@ -158,6 +181,70 @@ const queryForm = ref({
   }]
 })
 
+const form = ref({
+  data: {
+  },
+  props: {
+    // 请求预处理
+    beforeAction: (formData: any) => {
+      return true
+    },
+    action: '/app/admin/system/systemLog/systemLog/add',
+    // action:  ({data}:{
+    //   data: any
+    // })=>{
+    //   return http.request({
+    //       url: '/app/admin/system/systemLog/systemLog/update',
+    //       method: 'post',
+    //       data,
+    //       openMessage: false
+    //   })
+    // },
+    columns: [
+      {
+        "key": "user_id",
+        "title": "用户ID",
+        "type": "text",
+        width: 250,
+        showLabel: true,
+        show: ['add', 'edit'],
+        watch: (res: any) => {
+          console.log("watch", res)
+        }
+      },
+      {
+        key: "date1", title: "日期", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
+        format: "YYYY-MM-DD HH:mm:ss",
+        width: 250,
+        show: ['add', 'edit'],
+        // showRule:"user_id==自定义文案",
+        // showRule:(formData: any)=>{
+        //   console.log('带就不',formData)
+        //   if(formData.user_id === "123456") return true
+        //   else return false
+        // },
+        disabled: "user_id==自定义文案"
+      }
+    ],
+    rules: {
+      user_id: [
+        { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
+      ],
+    },
+    formType: "",
+    title: "",
+    show: false
+  }
+})
+
+const formRefs = ref()
+
+// 表单重置
+const resetForm = () => {
+  formRefs.value?.refresh()
+}
+
+
 // 多选逻辑
 const multipleSelection = ref([])
 const selectionChange = (row: any) => {
@@ -167,6 +254,11 @@ const selectionChange = (row: any) => {
 
 
 const updateBtn = (index: number, row: any) => {
+  console.log("调用编辑", index, row)
+  resetForm()
+  form.value.props.formType = 'edit';
+  form.value.props.title = '编辑'
+  form.value.props.show = true
   console.log("调用编辑", index, row)
 }
 const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
