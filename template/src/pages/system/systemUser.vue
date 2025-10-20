@@ -74,6 +74,15 @@ const table = ref<{
                   ]
                 },
                 {
+                  key: "username", title: "用户", type: "tag",
+                  width: 200,
+                  show: ['detail'],
+                  data: [
+                  { value: "admin", label: "收入", tagType: "success" },
+                  { value: "agent", label: "支出", tagType: "danger" }
+                ]
+                },
+                {
                   "key": "last_login_date",
                   "title": "添加时间",
                   "type": "money",

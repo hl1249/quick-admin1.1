@@ -5,13 +5,29 @@ import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
 import { useDark } from '@vueuse/core'
 import { timeFormat } from '@/utils'
+
+type Row = {
+    value:object
+    row: Row
+    key: string
+}
+
+interface Scope {
+    $index: number
+    row:Row
+    column: Array<any>
+}
+
 export default defineComponent({
     name: "qaDetail",
     props: {
-        scope: Object,
+        scope: {
+            type: Object as PropType<Scope>, // ✅ 运行时类型检查 + 编译时类型提示
+            required: true, // 如果是必传的
+        },
         columns: {
-        type: Array as PropType<Columns[]>,
-        required: true,
+            type: Array as PropType<Columns[]>,
+            required: true,
         },
     },
     setup(props) {

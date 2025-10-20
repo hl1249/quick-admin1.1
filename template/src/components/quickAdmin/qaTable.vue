@@ -33,8 +33,8 @@
                 ></el-table-column>
 
                 <template v-for="item in columns" :key="item.key">
-                    <qa-table-column show-overflow-tooltip v-bind="{ ...item, prop: item.key, label: item.title }"
-                        v-if="item?.show ? item.show.includes('row') : true" @changeValue="changeValue" />
+                    <qa-table-column v-bind="{ ...item, prop: item.key, label: item.title }"
+                      @changeValue="changeValue" />
                 </template>
                 <el-table-column align="center" :width="flexColumnWidth()" v-if="rightBtns" fixed="right">
                     <template #header>
@@ -111,7 +111,7 @@ import { cloneDeep } from '@/utils'
 
 type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more'
 type Type = 'radio' | 'select' | 'checkbox' | 'json' | 'radio' | 'text' | 'image' | 'avatar' | 'rate' | 'switch' | 'icon' | 'tag' | 'time' | 'object' | 'html' | 'money' | 'percentage' | 'address' | 'userInfo' | 'group' | 'table'
-type Show = 'detail' | 'row'
+type Show = "detail" | "row" | "expand" | "none"
 type TableRow = {
     _id: number
     [key: string]: any // 表示除了 _id 外，其他字段可以是任意 key，值类型为 any

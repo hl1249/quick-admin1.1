@@ -67,6 +67,10 @@ export default defineComponent({
             type: String as PropType<'circle' | 'square'>,
             default: 'circle'
         },
+        show:{
+            type: Array as PropType<Array<'row' | 'detail' | 'expand' | 'none'>>,
+            default: () => ['row','detail','detail'] // 每个组件实例都会生成新的数组
+        },
         valueFormat: {
             type: String as PropType<string>,
             default: 'yyyy-MM-dd hh:mm:ss'
@@ -91,7 +95,7 @@ export default defineComponent({
         const isDark = useDark()
 
         const { prop, label, type, width, columns, data, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
-        } = props;
+        show} = props;
 
         const changeValue = (row: any, prop:string, value: any) => {
             emit('changeValue',  row, prop, value)
@@ -180,9 +184,10 @@ export default defineComponent({
             </div>
         }
         const renderGroup = (columns: Columns[] | undefined, row: any, column: any, index: any) => {
-
+            
             if (!columns) return null; // 防止 undefined 报错
             return <div>{columns.map((item) => {
+
                 if (item.type === 'group') {
                     return <div class="flex items-start gap-[10px] whitespace-nowrap">
                         <div>{item.title}:</div>
@@ -247,8 +252,8 @@ export default defineComponent({
             return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
         return () => (
-
-            <ElTableColumn prop={prop} label={label} width={width} sortable={sortable} align={align}>
+                show.includes('row')?
+                <ElTableColumn prop={prop} label={label} width={width} sortable={sortable} align={align}>
                 {{
                     default: ({ row, column, $index }: { row: any; column: any; $index: number }) => {
                         let value = row[prop]
@@ -267,8 +272,8 @@ export default defineComponent({
                         });
                     }
                 }}
-            </ElTableColumn>
-
+            </ElTableColumn>:
+            null
         )
     }
 })
