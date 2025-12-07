@@ -40,19 +40,23 @@ export class SystemPermissionController {
   add(@Req() req, @Body() data): Promise<Document | null> {
 
     let {
-			role_id,
-			role_name,
-			comment,
+			permission_id,
+			permission_name,
+      url,
+      match_mode,
 			enable = true,
+			comment,
 		} = data;
 
     return this.dbService.add({
-      dbName: "qa-roles",
+      dbName: "qa-permissions",
       dataJson:{
-        role_id,
-        role_name,
+        permission_id,
+        permission_name,
+        url,
+        match_mode,
+        enable,
         comment,
-        enable 
       }
     })
   }
@@ -64,7 +68,7 @@ export class SystemPermissionController {
 		} = data
 
     return this.dbService.del({
-      dbName: "qa-roles",
+      dbName: "qa-permissions",
       whereJson:{
         _id
       }
@@ -73,22 +77,27 @@ export class SystemPermissionController {
 
   @Post('/update')
   update(@Body() data): Promise<Document | null> {
+    console.log("我执行力")
     let {
       _id,
-			role_id,
-			role_name,
-			comment,
+			permission_id,
+			permission_name,
+      url,
+      match_mode,
 			enable = true,
-		} = data
+			comment,
+		} = data;
 
     return this.dbService.updateById({
-      dbName: "qa-roles",
+      dbName: "qa-permissions",
       id:_id,
       dataJson:{
-        role_id,
-        role_name,
+        permission_id,
+        permission_name,
+        url,
+        match_mode,
+        enable,
         comment,
-        enable
       }
     })
   }
@@ -101,7 +110,7 @@ export class SystemPermissionController {
 		} = data
 
     return this.dbService.updateById({
-      dbName: "qa-roles",
+      dbName: "qa-permissions",
       id:_id,
       dataJson:{
         enable
@@ -109,35 +118,4 @@ export class SystemPermissionController {
     })
   }
 
-  @Post('/bindMenu')
-  bindMenu(@Body() data): Promise<Document | null> {
-    let {
-      _id,
-			menu
-		} = data
-
-    return this.dbService.updateById({
-      dbName: "qa-roles",
-      id:_id,
-      dataJson:{
-        menu
-      }
-    })
-  }
-
-  @Post('/bindPermissions')
-  bindPermissions(@Body() data): Promise<Document | null> {
-    let {
-      _id,
-			permission
-		} = data
-
-    return this.dbService.updateById({
-      dbName: "qa-roles",
-      id:_id,
-      dataJson:{
-        permission
-      }
-    })
-  }
 }

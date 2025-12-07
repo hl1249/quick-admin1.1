@@ -27,6 +27,7 @@ export default defineComponent({
       type: [String, Number],
       default: '100%', // 默认值
     },
+    data: Object,
     dateType: String,
     valueFormat: String,
     format: String,
@@ -38,7 +39,7 @@ export default defineComponent({
   },
   emits: ["update:modelValue", "search"],
   setup(props, { emit, slots }) {
-    const { label, labelWidth, width, itemKey, type, placeholder, tips, show, showLabel, dateType, valueFormat, format, pickerOptions } = props;
+    const { label, labelWidth, width, data, itemKey, type, placeholder, tips, show, showLabel, dateType, valueFormat, format, pickerOptions } = props;
     const { formType, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
     watch(
@@ -79,6 +80,16 @@ export default defineComponent({
           onUpdate:modelValue={onChange}
         ></el-switch>
       )
+    }
+
+    // 单选
+    const renderRadio = ({value,onChange,data}) => {
+      return(
+       <el-radio-group  modelValue={value} onUpdate:modelValue={onChange}>
+        {data.map((item,index) => {
+          return <el-radio value={item.value}>{item.label}</el-radio>
+        })}
+        </el-radio-group>)
     }
 
     // 渲染文本域
@@ -158,7 +169,7 @@ export default defineComponent({
           {arrayValue.length === 0 && (
             <div >
               <el-button
-                type="primary"
+                plain
                 onClick={handleAdd}
                 icon={<ElIcon><Plus /></ElIcon>}
               >
@@ -172,7 +183,7 @@ export default defineComponent({
             <div class='flex gap-[15px]'>
               <div >
               <el-button
-                type="primary"
+                plain
                 onClick={handleAdd}
               >
                 添加
@@ -181,6 +192,8 @@ export default defineComponent({
             <div >
               <ElPopconfirm
                 onConfirm={handleClear}
+                width="160"
+                title="确定全部清空吗？"
                 v-slots={{
                   reference: () => {
                     return <el-button
@@ -259,6 +272,7 @@ export default defineComponent({
     const renderMap: Record<string, (params: any) => JSX.Element | null> = {
       text: ({ value, label, onChange, placeholder }) => renderText({ value, label, onChange, placeholder }),
       switch: ({ value, onChange }) => renderSwitch({ value, onChange }),
+      radio: ({ value, onChange, data }) => renderRadio({ value, onChange,data }),
       textarea: ({ value, label, onChange, placeholder }) => renderTextarea({ value, label, onChange, placeholder }),
       date: ({ value, dateType, format, valueFormat, onChange, placeholder }) => renderDate({ value, dateType, format, valueFormat, onChange, placeholder }),
       datetimerange: ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, pickerOptions, placeholder }) => renderDateTimerange({ value, dateType, format, valueFormat, onChange, pickerOptions, placeholder }),
@@ -333,6 +347,7 @@ export default defineComponent({
               type,
               placeholder,
 
+              data,
               dateType,
               valueFormat,
               format,

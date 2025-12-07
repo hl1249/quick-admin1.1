@@ -7,12 +7,12 @@
     </div>
 
     <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
-      :pagination="false" :right-btns="['detail_auto', 'delete', 'update', 'more']"
-      :right-btns-more="table.rightBtnsMore" @update="updateBtn" highlight-current-row selection row-no
+      :pagination="false" :right-btns="['detail_auto', 'delete', 'update']"
+      :right-btns-more="table.rightBtnsMore" @update="updateBtn" highlight-current-row
       @current-change="currentChange" @delete="deleteBtn" />
 
 
-    <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+    <el-dialog width="700" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()"
@@ -45,74 +45,43 @@ const table = ref<{
 }>({
   action: '/app/admin/system/systemPermission/systemPermission/getList',
   columns: [
-    // {
-    //   key: "_id",
-    //   type: 'text',
-    //   title: "ID(唯一ID)",
-    //   width: 240
-    // },
     {
-      key: "role_id",
-      type: 'text',
-      title: "角色标识",
-    },
-    {
-      key: "role_name",
-      type: 'text',
-      title: "角色名称",
-      width: 240
-    },
-    {
-      key: "comment",
-      type: 'text',
-      title: "备注",
-      width: 240
-    },
-    {
-      key: "permissionsList",
-      title: "拥有权限",
-      type: "text",
-      formatter: (val: any, row: any, column: any, index: number) => {
-        let str = "";
-        if (row.role_id === "admin") {
-          str = "系统内置角色 - 拥有所有权限";
-        } else if (val === null || val === undefined || val.length <= 0) {
-          str = "该角色未赋予任何权限";
-        } else {
-          val.map((item: any, index: number) => {
-            str += item.permission_name;
-            if (index !== val.length - 1) {
-              str += "、";
-            }
-          });
-        }
-        return str;
+        "key": "permission_id",
+        "title": "权限标识",
+        "type": "text",
       },
-      align: "left",
-      width: 240,
-    },
-    {
-      key: "menuList",
-      type: 'text',
-      title: "拥有菜单",
-      width: 240,
-      formatter: (val, row, column, index) => {
-        let str = "";
-        if (row.role_id === "admin") {
-          str = "系统内置角色 - 拥有所有菜单";
-        } else if (val === null || val === undefined || val.length <= 0) {
-          str = "该角色未赋予任何菜单";
-        } else {
-          val.map((item: any, index: number) => {
-            str += item.title;
-            if (index !== val.length - 1) {
-              str += "、";
-            }
-          });
-        }
-        return str;
+      {
+        "key": "permission_name",
+        "title": "权限名称",
+        "type": "text",
       },
-    },
+      {
+        "key": "comment",
+        "title": "备注",
+        "type": "text",
+      },
+      {
+        "key": "url",
+        "title": "URL",
+        "type": "json",
+        "width": 500
+      },
+      {
+        "key": "match_mode",
+        "title": "匹配模式",
+        "type": "text",
+         formatter: (val: any, row: any, column: any, index: number) => {
+            let str = "";
+            if (row.match_mode == "0") {
+                str = "完整路径";
+            } else if (row.match_mode == "1") {
+                str = "通配符";
+            } else if (row.match_mode == "2"){
+                str = "正则表达式"
+            }
+            return str;
+        },
+      },
     {
       key: "enable",
       type: 'switch',
@@ -121,7 +90,7 @@ const table = ref<{
         let { value, row, change } = res;
         http.request({
           method: 'POST',
-          url: "/app/admin/system/systemRole/systemRole/updateBase",
+          url: "/app/admin/system/systemPermission/systemPermission/updateBase",
           data: {
             _id: row._id,
             enable: value
@@ -137,16 +106,7 @@ const table = ref<{
       type: 'text',
       width: 240,
     },
-  ],
-  rightBtnsMore: [{
-    title: "按钮1",
-    disabled: (row) => {
-      return false
-    },
-    onClick: (row) => {
-      console.log("按1", row)
-    }
-  }]
+  ]
 })
 const search = () => {
   if (qaTableRef.value) {
@@ -189,13 +149,12 @@ const form = ref({
     beforeAction: (formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemRole/systemRole/add',
+    action: '/app/admin/system/systemPermission/systemPermission/add',
     columns: [
       {
         "key": "permission_id",
         "title": "权限标识",
         "type": "text",
-        show: ['add'],
       },
       {
         "key": "permission_name",
@@ -208,9 +167,24 @@ const form = ref({
         "type": "array<string>",
       },
       {
+        "key": "match_mode",
+        "title": "匹配模式",
+        "type": "radio",
+        data: [
+        { value: 0, label: "完整路径" },
+        { value: 1, label: "通配符" },
+        { value: 2, label: "正则表达式" },
+        ]
+      },
+      {
         "key": "enable",
         "title": "是否启用",
         "type": "switch",
+      },
+      {
+        "key": "comment",
+        "title": "备注",
+        "type": "textarea",
       },
     ],
     rules: {
@@ -251,7 +225,7 @@ const addBtn = () => {
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
-  form.value.props.action = '/app/admin/system/systemRole/systemRole/update';
+  form.value.props.action = '/app/admin/system/systemPermission/systemPermission/update';
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
   form.value.props.show = true
@@ -260,7 +234,7 @@ const updateBtn = (index: number, row: any) => {
 }
 const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
   btnsDeleteRequset({
-    action: '/app/admin/system/systemRole/systemRole/delete',
+    action: '/app/admin/system/systemPermission/systemPermission/delete',
     data: {
       _id: row._id
     }
