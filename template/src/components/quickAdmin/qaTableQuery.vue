@@ -6,12 +6,14 @@
         form-type="query"
         @search="formItemSearch"
         />
-      <el-button type="primary" @click="handleSearch" :icon="Search">
+      <el-form-item>
+        <el-button type="primary" @click="handleSearch" :icon="Search">
         搜索
       </el-button>
       <el-button @click="handleReset" :icon="Refresh">
         重置
       </el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>

@@ -34,7 +34,7 @@ export default defineComponent({
         const { scope, columns } = props
         const columnsItem = columns?.find(item => item.key == scope.row.key) as Columns
         const isDark = useDark()
-        
+        console.log("columnsItem",columnsItem)
         const { key: prop ,type,data,formatter, valueFormat, shape} = columnsItem
         const { $index, row:{value,row}, column} = scope
             // console.log("%c我是scope",'color:red;font-weight:bold',scope)

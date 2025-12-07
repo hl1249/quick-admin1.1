@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import { useVModel } from "@vueuse/core";
 import { realUnitConversion } from '@/utils'
 import type { JSX } from "vue/jsx-runtime";
+import { RemoveFilled } from '@element-plus/icons-vue'
 
 export default defineComponent({
   name: "qaFormItem",
@@ -37,11 +38,11 @@ export default defineComponent({
   },
   emits: ["update:modelValue", "search"],
   setup(props, { emit, slots }) {
-    const {  label, labelWidth, width, itemKey, type, placeholder, tips, show, showLabel,  dateType, valueFormat, format, pickerOptions } = props;
+    const { label, labelWidth, width, itemKey, type, placeholder, tips, show, showLabel, dateType, valueFormat, format, pickerOptions } = props;
     const { formType, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
     watch(
-      () =>  model.value[itemKey], // 注意这里要用函数
+      () => model.value[itemKey], // 注意这里要用函数
       (newValue) => {
         props?.watch?.(newValue) // 防止 props.watch 未传
       },
@@ -58,7 +59,7 @@ export default defineComponent({
         <el-input
           clearable
           modelValue={value}
-          placeholder={ placeholder || "请输入" + label}
+          placeholder={placeholder || "请输入" + label}
           disabled={isDisabled()}
           onUpdate:modelValue={onChange}
           onClear={() => emit("search")} // ✅ 点击时才执行
@@ -68,15 +69,15 @@ export default defineComponent({
     };
 
     // 渲染switch
-    const renderSwitch = ({value,onChange}:{
+    const renderSwitch = ({ value, onChange }: {
       value: boolean
       onChange: (val: string) => void,
     }) => {
-      return(
-        <el-switch 
-        modelValue={value}
+      return (
+        <el-switch
+          modelValue={value}
           onUpdate:modelValue={onChange}
-         ></el-switch>
+        ></el-switch>
       )
     }
 
@@ -91,7 +92,7 @@ export default defineComponent({
         <el-input
           clearable
           modelValue={value}
-          placeholder={ placeholder || "请输入" + label}
+          placeholder={placeholder || "请输入" + label}
           type='textarea'
           disabled={isDisabled()}
           onUpdate:modelValue={onChange}
@@ -101,10 +102,107 @@ export default defineComponent({
       );
     };
 
+    // 渲染可变数组子表单 字符串类型
+    const renderArrayString = ({ value, onChange }) => {
+      // 确保 value 是数组
+      const arrayValue = Array.isArray(value) ? value : []
+
+      // 处理输入更新
+      const handleInputUpdate = (index, newValue) => {
+        const newArray = [...arrayValue]
+        newArray[index] = newValue
+        onChange(newArray)
+      }
+
+      // 处理删除
+      const handleRemove = (index) => {
+        const newArray = arrayValue.filter((_, i) => i !== index)
+        onChange(newArray)
+      }
+      
+      // 处理新增
+      const handleAdd = () => {
+        onChange([...arrayValue, ''])
+      }
+
+      const handleClear = () => {
+        onChange([])
+      }
+      return (
+        <div class='flex flex-col gap-[15px]'>
+          {arrayValue.map((item, index) => (
+            <div key={index} >
+              <el-input
+                modelValue={item}
+                onUpdate:modelValue={(val) => handleInputUpdate(index, val)}
+                placeholder="请输入内容"
+                v-slots={{
+                  append: () => (
+                    <div
+                      className="cursor-pointer "
+                      onClick={() => handleRemove(index)}
+                      class='box-content px-[20px] mx-[-20px] cursor-pointer'
+                    >
+                      <ElIcon >
+                        <RemoveFilled />
+                      </ElIcon>
+                    </div>
+                  )
+                }}
+              />
+
+            </div>
+          ))}
+
+          {/* 空状态时显示新增按钮 */}
+          {arrayValue.length === 0 && (
+            <div >
+              <el-button
+                type="primary"
+                onClick={handleAdd}
+                icon={<ElIcon><Plus /></ElIcon>}
+              >
+                新增
+              </el-button>
+            </div>
+          )}
+
+          {/* 或者始终显示添加按钮（可选） */}
+          {arrayValue.length > 0 && (
+            <div class='flex gap-[15px]'>
+              <div >
+              <el-button
+                type="primary"
+                onClick={handleAdd}
+              >
+                添加
+              </el-button>
+            </div>
+            <div >
+              <ElPopconfirm
+                onConfirm={handleClear}
+                v-slots={{
+                  reference: () => {
+                    return <el-button
+                      type="danger"
+                    >
+                      清空
+                    </el-button>
+                  }
+                }}>
+              </ElPopconfirm>
+            </div>
+            </div>
+          )}
+
+        </div>
+      )
+    }
+
     // 日期 
-    const renderDate = ({ value, dateType, format, valueFormat, onChange,placeholder }: {
+    const renderDate = ({ value, dateType, format, valueFormat, onChange, placeholder }: {
       value: string | number | Date | null
-      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
+      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month' | 'array<string>'
       format?: string
       valueFormat?: string
       onChange: (val: string | number | Date | null) => void
@@ -117,7 +215,7 @@ export default defineComponent({
           onClear={() => emit("search")} // ✅ 点击时才执行
           type={dateType}
           format={format}
-          placeholder={ placeholder || "请选择" + label}
+          placeholder={placeholder || "请选择" + label}
           disabled={isDisabled()}
           valueFormat={valueFormat}
           style={{ width: realUnitConversion(width) }}
@@ -125,7 +223,7 @@ export default defineComponent({
       )
     }
 
-    const renderDateTimerange = ({ value, dateType, format, valueFormat, onChange,placeholder }: {
+    const renderDateTimerange = ({ value, dateType, format, valueFormat, onChange, placeholder }: {
       value: string | number | Date | null
       dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
       format?: string
@@ -144,11 +242,11 @@ export default defineComponent({
         <el-date-picker
           modelValue={value}
           onUpdate:modelValue={onChange}
-          onChange={()=>emit('search')}
+          onChange={() => emit('search')}
           onClear={() => emit("search")}
           type={dateType}
           format={format}
-          placeholder={ placeholder || "请选择" + label}
+          placeholder={placeholder || "请选择" + label}
           disabled={isDisabled()}
           valueFormat={valueFormat}
           {...pickerOptions}
@@ -160,10 +258,11 @@ export default defineComponent({
     // 不同类型的渲染映射
     const renderMap: Record<string, (params: any) => JSX.Element | null> = {
       text: ({ value, label, onChange, placeholder }) => renderText({ value, label, onChange, placeholder }),
-      switch: ({value,onChange}) => renderSwitch({value,onChange}),
-      textarea:({ value, label, onChange, placeholder }) => renderTextarea({ value, label, onChange, placeholder }),
+      switch: ({ value, onChange }) => renderSwitch({ value, onChange }),
+      textarea: ({ value, label, onChange, placeholder }) => renderTextarea({ value, label, onChange, placeholder }),
       date: ({ value, dateType, format, valueFormat, onChange, placeholder }) => renderDate({ value, dateType, format, valueFormat, onChange, placeholder }),
-      datetimerange: ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, pickerOptions,placeholder }) => renderDateTimerange({ value, dateType, format, valueFormat, onChange, pickerOptions,placeholder })
+      datetimerange: ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, pickerOptions, placeholder }) => renderDateTimerange({ value, dateType, format, valueFormat, onChange, pickerOptions, placeholder }),
+      'array<string>': ({ value, onChange }) => renderArrayString({ value, onChange }),
     };
 
     // 统一渲染
@@ -172,7 +271,7 @@ export default defineComponent({
       return renderer ? (
         <div>
           {renderer(params)}
-          {tips && formType.value !='query' ? <div class="text-[#909399] text-[12px]">{tips}</div> : null}
+          {tips && formType.value != 'query' ? <div class="text-[#909399] text-[12px]">{tips}</div> : null}
         </div>
       ) : (
         <div class="whitespace-nowrap">{params.value}</div>
@@ -180,8 +279,8 @@ export default defineComponent({
     };
 
     const isShow = () => {
-      if(formType.value === 'query') return true
-      if(show === undefined) return true
+      if (formType.value === 'query') return true
+      if (show === undefined) return true
       return show?.includes(formType.value)
     }
 
@@ -207,7 +306,7 @@ export default defineComponent({
     }
 
     const isDisabled = () => {
-       if (typeof disabled.value === 'function') {
+      if (typeof disabled.value === 'function') {
         return !(disabled.value(model.value)) // 调用函数
       }
 
@@ -227,19 +326,19 @@ export default defineComponent({
     return () => {
       return finalShow() ? (
         <el-form-item label={showLabel && label} labelWidth={showLabel ? labelWidth : '0'} prop={itemKey}>
-          <div style={{width:'100%'}}>
+          <div style={{ width: '100%' }}>
             {hasSlot ? slots.default?.() : render({
-            value: model.value[itemKey],
-            label,
-            type,
-            placeholder,
+              value: model.value[itemKey],
+              label,
+              type,
+              placeholder,
 
-            dateType,
-            valueFormat,
-            format,
-            pickerOptions,
-            onChange: (val: string) => (model.value[itemKey] = val),
-          })}
+              dateType,
+              valueFormat,
+              format,
+              pickerOptions,
+              onChange: (val: string) => (model.value[itemKey] = val),
+            })}
           </div>
         </el-form-item>
       ) : null;

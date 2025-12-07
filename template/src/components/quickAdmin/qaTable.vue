@@ -87,11 +87,15 @@
         </div>
 
         <el-dialog v-model="infoDialogVisible" title="详情" width="830" :before-close="infoHandleClose">
+
             <el-table :data="detailData" border :show-header="false" max-height="800">
                 <el-table-column width="200" prop="title" />
                 <el-table-column>
                     <template #default="scope">
                         <!-- scope:{{ scope.row }} -->
+                         <!-- {{ scope.$index }}: -->
+                         <!-- {{ scope.row }} -->
+                         <!-- {{ columns }} -->
                         <qa-detail v-bind="{scope,columns}"/>
                     </template>
                 </el-table-column>
@@ -277,6 +281,7 @@ const btnsDetail = (index: number, row: TableRow) => {
     
     console.log('tableDatas', tableDatas)
     detailData.value = tableDatas
+    console.log('detailData', detailData)
 
     openInfoDialog()
 }
