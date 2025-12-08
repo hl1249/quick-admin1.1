@@ -6,7 +6,10 @@ export const PORT = 3001;
 export const DEBUG = true;
 
 // 数据库连接地址
-export const DB_URL = 'mongodb://127.0.0.1:27017'; 
+export const DB_URL = 'mongodb://127.0.0.1'; 
+
+// 数据库端口
+export const DB_PORT = 27017
 
  // 数据库名称
 export const DB_NAME = 'quickAdmin';
@@ -36,3 +39,15 @@ export const PERMISSION_URLS = [
 
 // 系统管理员role_id标识 对应 qa-roles 表中的 role_id 字段 无视接口鉴权
 export const ADMIN_ROLE_ID = 'admin';
+
+// 缓存驱动 redist 或者内存缓存 memory
+export const CACHE_TYPE: 'memory' | 'redis' = 'memory';
+
+// 缓存redis端口
+export const REDIS_PORT = 6379;
+
+// 缓存redis地址
+export const REDIS_HOST = '127.0.0.1';
+
+// 缓存redis密码
+export const REDIS_PASSWORD = '';

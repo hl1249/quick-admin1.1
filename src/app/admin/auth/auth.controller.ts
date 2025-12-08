@@ -35,8 +35,9 @@ export class AuthController {
     return userInfo
   }
 
+  // @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
   @Get('/getDynamicMenu')
   async getDynamicMenu(@Req() req) {
-        return this.authService.getMenu(req)
+    return this.authService.getMenu(req)
   }
 }

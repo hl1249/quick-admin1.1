@@ -68,6 +68,8 @@ export class authService {
 
     async getMenu(req): Promise<any>{
         const { userInfo, allowedMenus} = req
+
+        console.log('allowedMenus',allowedMenus)
         let whereJson = {}
         if(!userInfo.role.includes(ADMIN_ROLE_ID)){
             whereJson = {
