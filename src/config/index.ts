@@ -41,7 +41,7 @@ export const PERMISSION_URLS = [
 export const ADMIN_ROLE_ID = 'admin';
 
 // 缓存驱动 redist 或者内存缓存 memory
-export const CACHE_TYPE: 'memory' | 'redis' = 'memory';
+export const CACHE_TYPE: 'memory' | 'redis' = 'redis';
 
 // 缓存redis端口
 export const REDIS_PORT = 6379;
