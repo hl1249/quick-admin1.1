@@ -1,4 +1,4 @@
-import { Body, Post, Controller, Get, Request, Req  } from '@nestjs/common';
+import { Body, Post, Controller, Get, Request, Req, SetMetadata  } from '@nestjs/common';
 import { DeleteResult, UpdateResult, Document, InsertManyResult } from 'mongodb'
 import { SelectResult } from '@/common/utils/utils.types';
 import { DbService } from '@/common/utils/db.service';
@@ -6,12 +6,14 @@ import { JwtService } from '@/common/jwt/jwt.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import { Log } from '@/common/logger/logger.decorator';
 import {sleep} from '@/common/utils/utils'
+import { CacheService } from '@/common/cach/cache.service'
 @Log()
 @Controller()
 export class AppController {
   constructor(
     private readonly dbService: DbService,
     private readonly jwtService: JwtService,
+    private readonly cache: CacheService
   ) {
   }
 
@@ -344,5 +346,21 @@ export class AppController {
     // });
     // return token;
     return this.jwtService.generateToken('123')
+  }
+  
+  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
+  @Get('/cacheRead')
+  async cacheRead(){
+    return {
+      value:await this.cache.get("wuhu")
+    }
+    return 'redis'
+  }
+  
+  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
+  @Get('/cacheSet')
+  async cacheSet(){
+   return  await this.cache.set("wuhu",10086)
+    return 'redi set success!'
   }
 }

@@ -1,5 +1,4 @@
 import { Module, OnModuleInit, OnModuleDestroy, Logger  } from '@nestjs/common';
-import { CacheModule } from '@nestjs/cache-manager';
 import { JwtModule } from '@/common/jwt/jwt.module';
 import { APP_PIPE, APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { DbModule } from '@/common/utils/db.module';
@@ -13,13 +12,12 @@ import { PermissionGuard } from '@/common/auth/permission.guard';
 // 数据库配置
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { DB_NAME, DB_PORT, DB_URL, DEBUG, CACHE_TYPE, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD} from './config';
+import { DB_NAME, DB_PORT, DB_URL, DEBUG} from './config';
 // 日志服务
 import {LogModule } from '@/common/logger/logger.module';
 
 // 缓存
-import { redisStore } from 'cache-manager-redis-yet';
-
+import { CacheModule } from '@/common/cach/cache.module'
 // 动态路由
 @Module({
   providers: [{
@@ -40,39 +38,15 @@ import { redisStore } from 'cache-manager-redis-yet';
   }],
   imports: [JwtModule, DbModule,LogModule,
     MongooseModule.forRoot(`${DB_URL}:${DB_PORT}/${DB_NAME}`), // 默认数据库实例
-    CacheModule.registerAsync({
-      isGlobal:true,
-      useFactory:async () => {
-        // ---------- 使用 Redis 缓存 ----------
-        if (CACHE_TYPE == 'redis') {
-          return {
-            store: await redisStore({
-              socket: {
-                host: REDIS_HOST,
-                port: REDIS_PORT,
-              },
-              password: REDIS_PASSWORD,
-              ttl: 60 * 5,
-            }),
-          };
-        }
-
-        // ---------- 使用内存缓存 ----------
-        return {
-          ttl: 60 * 5,
-          max: 1000,
-        };
-      }
-    }), 
+    CacheModule
   ],
-  exports: [JwtModule,LogModule],
+  exports: [JwtModule,LogModule,CacheModule],
 })
 export class Public implements OnModuleInit, OnModuleDestroy {
   logger: Logger;
   constructor(@InjectConnection() private readonly connection: Connection) {
     this.logger = new Logger('PublicModule');
     if(DEBUG) this.logger.debug('公共注入模块初始化');
-    
   }
 
   onModuleInit() {

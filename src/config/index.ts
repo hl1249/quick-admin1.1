@@ -40,14 +40,21 @@ export const PERMISSION_URLS = [
 // 系统管理员role_id标识 对应 qa-roles 表中的 role_id 字段 无视接口鉴权
 export const ADMIN_ROLE_ID = 'admin';
 
-// 缓存驱动 redist 或者内存缓存 memory
-export const CACHE_TYPE: 'memory' | 'redis' = 'redis';
+// 缓存类型
+export const CACHE_TYPE = 'redis';
 
-// 缓存redis端口
+// 缓存时间 单位/秒
+export const CACHE_TTL = 600;
+
+// 缓存最大缓存条目数量
+export const CACHE_MAX = 1000;
+
+// redis端口
 export const REDIS_PORT = 6379;
 
-// 缓存redis地址
+// redis地址
 export const REDIS_HOST = '127.0.0.1';
 
-// 缓存redis密码
+// redis密码
 export const REDIS_PASSWORD = '';
+
