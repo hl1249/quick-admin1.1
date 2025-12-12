@@ -360,7 +360,6 @@ export class AppController {
   @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
   @Get('/cacheSet')
   async cacheSet(){
-   return  await this.cache.set("wuhu",10086)
-    return 'redi set success!'
+   return  await this.cache.set("wuhu",{name:1})
   }
 }

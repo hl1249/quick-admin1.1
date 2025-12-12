@@ -13,6 +13,7 @@ export class CacheService implements ICacheService {
 
   async get<T>(key: string): Promise<T | undefined> {
     try {
+      console.log("我在获取"+key)
       return await this.cache.get(key);
     } catch (error) {
       console.error(`Error getting cache key ${key}:`, error);
