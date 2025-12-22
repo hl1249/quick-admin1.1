@@ -59,40 +59,10 @@ export class authService {
                 token: passTokens, // 保存token到数组
             }
         })
-
-        const permissionsUrlList = await this.dbService.selects({
-            dbName: "qa-roles",
-            getMain: true,
-            whereJson: {
-                role_id: _.in(userInfo.role)
-            },
-            foreignDB: [{
-                dbName: "qa-permissions",
-                localKey: "permission",
-                localKeyType: "array",
-                foreignKey: "permission_id",
-                as: "user_permission",
-                fieldJson: {
-                    url: true,
-                    _id: false,
-                    match_mode: true, //匹配模式 0 完整路径  1 通配符 2 正则
-                }
-            }]
-        })
-
+        
         const userId = userInfo._id.toHexString();
-        console.log('permissionsUrlList',permissionsUrlList[0].user_permission)
-        await this.cache.set(`auth:permission:${userId}`, {
-            allowedMenus: [...new Set(permissionsUrlList.flatMap(item => item.menu))], 
-            permissionConfigs: permissionsUrlList.flatMap(item => 
-                item.user_permission.map((it: any) => ({
-                    url: it.url,
-                    match_mode: it.match_mode !== undefined ? it.match_mode : 1 // 默认通配符模式
-                }))
-            ),
-            role_ids: permissionsUrlList.map(item => item.role_id)
-        })
 
+        await this.buildCacheUserPermission(userInfo);
         return {
             token,
             expired: await this.jwtService.getExpired(await this.jwtService.generateToken(userInfo._id.toHexString())),
@@ -136,5 +106,41 @@ export class authService {
             res,
             menus:arrayToTree(res as Document[],treeProps)
         }
+    }
+
+    // 构建用户权限缓存信息
+    async buildCacheUserPermission(userInfo: any): Promise<any> {
+
+        const permissionsUrlList = await this.dbService.selects({
+            dbName: "qa-roles",
+            getMain: true,
+            whereJson: {
+                role_id: _.in(userInfo.role)
+            },
+            foreignDB: [{
+                dbName: "qa-permissions",
+                localKey: "permission",
+                localKeyType: "array",
+                foreignKey: "permission_id",
+                as: "user_permission",
+                fieldJson: {
+                    url: true,
+                    _id: false,
+                    match_mode: true, //匹配模式 0 完整路径  1 通配符 2 正则
+                }
+            }]
+        })
+
+        const userId = userInfo._id.toHexString();
+        await this.cache.set(`auth:permission:${userId}`, {
+            allowedMenus: [...new Set(permissionsUrlList.flatMap(item => item.menu))], 
+            permissionConfigs: permissionsUrlList.flatMap(item => 
+                item.user_permission.map((it: any) => ({
+                    url: it.url,
+                    match_mode: it.match_mode !== undefined ? it.match_mode : 1 // 默认通配符模式
+                }))
+            ),
+            role_ids: permissionsUrlList.map(item => item.role_id)
+        })
     }
 }

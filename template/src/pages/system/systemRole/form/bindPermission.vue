@@ -11,8 +11,10 @@
             <el-checkbox v-model="isCheckAll">全选/全不选</el-checkbox>
           </div>
           <div class="border border-gray-300 rounded-[4px] overflow-hidden p-[10px]">
-            <el-tree ref="treeRefs" :data="treeData" node-key="permission_id" :default-checked-keys="localSelectItem.permission"
-            check-strictly
+            <el-tree ref="treeRefs" 
+            :data="treeData" 
+            :node-key="nodeKey" 
+            :default-checked-keys="localSelectItem.permission"
             :props="{
               children: 'children',
               label: 'permission_name'
@@ -150,6 +152,8 @@ const filterText = ref("")
 watch(filterText, (val) => {
   treeRefs.value!.filter(val)
 })
+// 节点key
+const nodeKey = "permission_id"
 // 渲染的树形数据
 const treeData = ref()
 const getAllPermissions = async () => {

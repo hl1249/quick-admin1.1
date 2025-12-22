@@ -4,13 +4,15 @@ import { PERMISSION_URLS, ADMIN_ROLE_ID } from '@/config';
 import { DbService } from '@/common/utils/db.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import { CacheService } from '@/common/cach/cache.service'
+import { authService } from '@/app/admin/auth/auth.service';
 // admin端权限守卫 对接口进行权限验证
 @Injectable()
 export class PermissionGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
         private readonly dbService: DbService,
-        private readonly cache: CacheService
+        private readonly cache: CacheService,
+        private readonly authService: authService,
     ) { }
 
     async canActivate(
@@ -35,15 +37,24 @@ export class PermissionGuard implements CanActivate {
             return true; // 忽略认证
         }
 
+
         const userInfo = request.userInfo
         if(!userInfo) throw new ForbiddenException('没有权限访问该接口');
-        
         const userId = userInfo._id.toHexString();
+
         // 先从缓存获取用户角色对应的权限列表
-        const cachedPermissions = await this.cache.get<{allowedMenus: string[],role_ids: string[],  permissionConfigs: Array<{url: string[], match_mode: number}>}>(`auth:permission:${userId}`);
+        let cachedPermissions = await this.cache.get<{allowedMenus: string[],role_ids: string[],  permissionConfigs: Array<{url: string[], match_mode: number}>}>(`auth:permission:${userId}`);
         if(!cachedPermissions){
-            throw new ForbiddenException('权限信息获取失败，请重新登录');
-            return false
+            // 1. 回填缓存
+            await this.authService.buildCacheUserPermission(userInfo);
+
+            // 2. 重新读取
+            cachedPermissions = await this.cache.get(`auth:permission:${userId}`);
+
+            // 3. 仍然没有，说明系统异常
+            if (!cachedPermissions) {
+                throw new ForbiddenException('权限信息初始化失败，请重新登录');
+            }
         }
        
         const {allowedMenus, role_ids, permissionConfigs} = cachedPermissions;
@@ -105,4 +116,6 @@ export class PermissionGuard implements CanActivate {
             }
         });
     }
+
+
 }
