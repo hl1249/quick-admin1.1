@@ -362,4 +362,10 @@ export class AppController {
   async cacheSet(){
    return await this.cache.set("wuhu",{name:1})
   }
+  
+  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
+  @Get('/giao')
+  async giao(){
+   return await this.cache.deleteByPrefix("auth:permission")
+  }
 }

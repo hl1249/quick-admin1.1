@@ -143,4 +143,9 @@ export class authService {
             role_ids: permissionsUrlList.map(item => item.role_id)
         })
     }
+
+    // 修改角色权限后，删除用户权限缓存
+    async clearCacheUserPermissionByRole(): Promise<any> {
+        await this.cache.deleteByPrefix(`auth:permission:`)
+    }
 }

@@ -3,10 +3,12 @@ import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
 
+import { CacheService } from '@/common/cach/cache.service'
 @Controller()
 export class SystemRoleController {
   constructor(
     private readonly dbService: DbService,
+    private readonly cache: CacheService,
   ) {
   }
 

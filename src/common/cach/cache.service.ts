@@ -40,6 +40,11 @@ export class CacheService implements ICacheService {
     }
   }
 
+  // 根据前缀删除缓存
+  async deleteByPrefix(prefix: string): Promise<void> {
+  
+  }
+
   async clear(): Promise<void> {
     try {
       await this.cache.clear();
