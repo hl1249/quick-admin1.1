@@ -51,6 +51,7 @@ interface TreeProps {
     children: string;
 }
 
+// 数组转树函数
 export const arrayToTree = (arrayData: TreeNode[], treeProps: TreeProps): TreeNode[] => {
     const { id, parent_id, children } = treeProps;
 

@@ -3,12 +3,14 @@ import { Reflector } from '@nestjs/core';
 import { PERMISSION_URLS, ADMIN_ROLE_ID } from '@/config';
 import { DbService } from '@/common/utils/db.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
+import { CacheService } from '@/common/cach/cache.service'
 // admin端权限守卫 对接口进行权限验证
 @Injectable()
 export class PermissionGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
         private readonly dbService: DbService,
+        private readonly cache: CacheService
     ) { }
 
     async canActivate(
@@ -35,67 +37,31 @@ export class PermissionGuard implements CanActivate {
 
         const userInfo = request.userInfo
         if(!userInfo) throw new ForbiddenException('没有权限访问该接口');
+        
+        const userId = userInfo._id.toHexString();
+        // 先从缓存获取用户角色对应的权限列表
+        const cachedPermissions = await this.cache.get<{allowedMenus: string[],role_ids: string[],  permissionConfigs: Array<{url: string[], match_mode: number}>}>(`auth:permission:${userId}`);
+        if(!cachedPermissions){
+            throw new ForbiddenException('权限信息获取失败，请重新登录');
+            return false
+        }
+       
+        const {allowedMenus, role_ids, permissionConfigs} = cachedPermissions;
 
-        const role = userInfo?.role;
-
-        const permissionsUrlList = await this.dbService.selects({
-            dbName: "qa-roles",
-            getMain: true,
-            whereJson: {
-                role_id: _.in(role)
-            },
-            foreignDB: [{
-                dbName: "qa-permissions",
-                localKey: "permission",
-                localKeyType: "array",
-                foreignKey: "permission_id",
-                as: "user_permission",
-                fieldJson: {
-                    url: true,
-                    _id: false,
-                    match_mode: true, //匹配模式 0 完整路径  1 通配符 2 正则
-                }
-            }]
-        })
-
-        console.log('url',url)
-        console.log('permissionsUrlList',permissionsUrlList[0]['user_permission'])
-        if (permissionsUrlList && Array.isArray(permissionsUrlList)) {
-
-            const allowedMenus = [...new Set(permissionsUrlList.flatMap(item => item.menu))]
-            request['allowedMenus'] = allowedMenus
-            if (permissionsUrlList.some(item => item.role_id === ADMIN_ROLE_ID)) { // 如果该用户有一个role 包含系统管理员标识那么不进行验证
-                return true
-            }
-
-            // 获取用户所有权限url
-            // const allowedUrls = [...new Set(permissionsUrlList.flatMap(item => item.user_permission.flatMap((it: any) => it.url)))]
-            // console.log('allowedUrls',allowedUrls)
-            // if (!this.matchesPatterns(url, allowedUrls)) {
-            //     throw new ForbiddenException('没有权限访问该接口');
-            // }
-
-            // 获取用户所有权限配置（包含url和match_mode）
-            const permissionConfigs = permissionsUrlList.flatMap(item => 
-                item.user_permission.map((it: any) => ({
-                    url: it.url,
-                    match_mode: it.match_mode !== undefined ? it.match_mode : 1 // 默认通配符模式
-                }))
-            )
-            
-            // 扁平化所有权限URL，同时保留匹配模式信息
-            const allPermissions = permissionConfigs.flatMap(config => 
-                config.url.map(url => ({
-                    pattern: url,
-                    match_mode: config.match_mode
-                }))
-            )
-            
-            console.log('allPermissions', allPermissions)
-            
-            if (!this.matchesPatternsWithMode(url, allPermissions)) {
-                throw new ForbiddenException('没有权限访问该接口');
-            }
+        if (role_ids.some(item => item === ADMIN_ROLE_ID)) { // 如果该用户有一个role 包含系统管理员标识那么不进行验证
+            return true
+        }
+    
+        // 扁平化所有权限URL，同时保留匹配模式信息
+        const allPermissions = permissionConfigs.flatMap(config => 
+            config.url.map(url => ({
+                pattern: url,
+                match_mode: config.match_mode
+            }))
+        )
+        
+         if (!this.matchesPatternsWithMode(url, allPermissions)) {
+            throw new ForbiddenException('没有权限访问该接口');
         }
 
         return true

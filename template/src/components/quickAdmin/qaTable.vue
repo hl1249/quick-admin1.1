@@ -87,7 +87,6 @@
         </div>
 
         <el-dialog v-model="infoDialogVisible" title="详情" width="830" :before-close="infoHandleClose">
-
             <el-table :data="detailData" border :show-header="false" max-height="800">
                 <el-table-column width="200" prop="title" />
                 <el-table-column>

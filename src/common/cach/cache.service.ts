@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import Keyv from 'keyv';
 import { ICacheService } from './cache.interface';
 import { CacheFactory } from './cache.factory';
-
+import { CACHE_PREFIX } from '@/config';
 @Injectable()
 export class CacheService implements ICacheService {
   private cache: Keyv;
@@ -11,10 +11,13 @@ export class CacheService implements ICacheService {
     this.cache = cacheFactory.getCache();
   }
 
+  private withPrefix(key: string) {
+    return `${CACHE_PREFIX}:${key}`;
+  }
+
   async get<T>(key: string): Promise<T | undefined> {
     try {
-      console.log("我在获取"+key)
-      return await this.cache.get(key);
+      return await this.cache.get(this.withPrefix(key));
     } catch (error) {
       console.error(`Error getting cache key ${key}:`, error);
       return undefined;
@@ -23,7 +26,7 @@ export class CacheService implements ICacheService {
 
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     try {
-      await this.cache.set(key, value, ttl);
+      await this.cache.set(this.withPrefix(key), value, ttl);
     } catch (error) {
       console.error(`Error setting cache key ${key}:`, error);
     }
@@ -31,7 +34,7 @@ export class CacheService implements ICacheService {
 
   async delete(key: string): Promise<void> {
     try {
-      await this.cache.delete(key);
+      await this.cache.delete(this.withPrefix(key));
     } catch (error) {
       console.error(`Error deleting cache key ${key}:`, error);
     }
@@ -47,7 +50,7 @@ export class CacheService implements ICacheService {
 
   async has(key: string): Promise<boolean> {
     try {
-      return await this.cache.has(key);
+      return await this.cache.has(this.withPrefix(key));
     } catch (error) {
       console.error(`Error checking cache key ${key}:`, error);
       return false;
@@ -59,14 +62,14 @@ export class CacheService implements ICacheService {
     factory: () => Promise<T>, 
     ttl?: number
   ): Promise<T> {
-    const cached = await this.get<T>(key);
+    const cached = await this.get<T>(this.withPrefix(key));
     
     if (cached !== undefined) {
       return cached;
     }
     
     const value = await factory();
-    await this.set(key, value, ttl);
+    await this.set(this.withPrefix(key), value, ttl);
     
     return value;
   }

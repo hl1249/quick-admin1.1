@@ -5,6 +5,7 @@ import { UserDto } from './auth.dto';
 import { PASSWORD_SECRET, TOKEN_MAX_LIMIT, ADMIN_ROLE_ID } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { arrayToTree,filterObject } from '@/common/utils/utils'
+import { CacheService } from '@/common/cach/cache.service'
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import * as bcrypt from 'bcryptjs';
 @Injectable()
@@ -12,10 +13,10 @@ export class authService {
     constructor(
         private readonly dbService: DbService,
         private readonly jwtService: JwtService,
+        private readonly cache: CacheService
     ) {
     }
 
-    @Post()
     async login(
         userDto: UserDto,
         @Ip() ipAddress: string
@@ -59,6 +60,39 @@ export class authService {
             }
         })
 
+        const permissionsUrlList = await this.dbService.selects({
+            dbName: "qa-roles",
+            getMain: true,
+            whereJson: {
+                role_id: _.in(userInfo.role)
+            },
+            foreignDB: [{
+                dbName: "qa-permissions",
+                localKey: "permission",
+                localKeyType: "array",
+                foreignKey: "permission_id",
+                as: "user_permission",
+                fieldJson: {
+                    url: true,
+                    _id: false,
+                    match_mode: true, //匹配模式 0 完整路径  1 通配符 2 正则
+                }
+            }]
+        })
+
+        const userId = userInfo._id.toHexString();
+        console.log('permissionsUrlList',permissionsUrlList[0].user_permission)
+        await this.cache.set(`auth:permission:${userId}`, {
+            allowedMenus: [...new Set(permissionsUrlList.flatMap(item => item.menu))], 
+            permissionConfigs: permissionsUrlList.flatMap(item => 
+                item.user_permission.map((it: any) => ({
+                    url: it.url,
+                    match_mode: it.match_mode !== undefined ? it.match_mode : 1 // 默认通配符模式
+                }))
+            ),
+            role_ids: permissionsUrlList.map(item => item.role_id)
+        })
+
         return {
             token,
             expired: await this.jwtService.getExpired(await this.jwtService.generateToken(userInfo._id.toHexString())),
@@ -67,13 +101,15 @@ export class authService {
     }
 
     async getMenu(req): Promise<any>{
-        const { userInfo, allowedMenus} = req
+        const { userInfo} = req
+        const userId = userInfo._id.toHexString();
+        const cachedPermissions = (await this.cache.get<{allowedMenus: string[]}>(`auth:permission:${userId}`))!;
 
-        console.log('allowedMenus',allowedMenus)
+        console.log('allowedMenus',cachedPermissions.allowedMenus)
         let whereJson = {}
         if(!userInfo.role.includes(ADMIN_ROLE_ID)){
             whereJson = {
-                menu_id:_.in(allowedMenus)
+                menu_id:_.in(cachedPermissions.allowedMenus)
             }
         }
 

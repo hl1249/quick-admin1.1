@@ -37,7 +37,7 @@ export class DbService {
       cancelAddTimeStr = false,
       db
     } = params;
-    
+
     // 是否包含添加时间戳
     if (!cancelAddTime) {
       dataJson['_add_time'] = Date.now();
@@ -93,7 +93,7 @@ export class DbService {
       db
     } = params;
 
-    if(Object.keys(whereJson).length === 0) {
+    if (Object.keys(whereJson).length === 0) {
       throw new Error('dbSerivce.del whereJson 不能为空')
     }
 
@@ -253,6 +253,12 @@ export class DbService {
     }
   }
 
+  // 重载签名
+  async selects(params: SelectsParams & { getMain: true }): Promise<Document[]>;
+  async selects(params: SelectsParams & { getMain?: false }): Promise<SelectResult>;
+  async selects(params: SelectsParams): Promise<SelectResult | Document[]>;
+
+  // 方法实现（有装饰器）
   @TransformDbParams
   async selects(params: SelectsParams): Promise<SelectResult | Document[]> {
     let {
@@ -276,7 +282,7 @@ export class DbService {
 
     if (data.pageIndex) pageIndex = Number(data.pageIndex);
     if (data.pageSize) pageSize = Number(data.pageSize);
-    if (data.sortRule) sortArr = data.sortRule
+    if (data.sortRule) sortArr = data.sortRule;
 
     const collection = db
       ? db.collection(dbName)
@@ -295,7 +301,6 @@ export class DbService {
       { $skip: pageSize * (pageIndex - 1) },
       { $limit: pageSize }
     ]).toArray();
-
 
     // 如果只需要返回主数据，提前返回
     if (getMain) {
@@ -337,7 +342,7 @@ export class DbService {
 
   // @TransformDbParams
   async getTableData(params: SelectsParams): Promise<SelectResult | Document[]> {
-    return this.selects({...params,getCount:true});
+    return this.selects({ ...params, getCount: true });
   }
 
   @TransformDbParams

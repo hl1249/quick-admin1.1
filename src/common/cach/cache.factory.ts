@@ -15,6 +15,7 @@ export class CacheFactory implements OnModuleDestroy {
       this.cacheInstance = new Keyv({
         store: new KeyvRedis(`redis://${REDIS_PASSWORD}:@${REDIS_HOST}:${REDIS_PORT}`),
         ttl: CACHE_TTL * 1000,
+        namespace: undefined, //关闭 Keyv 默认 namespace
       });
       
     } else {

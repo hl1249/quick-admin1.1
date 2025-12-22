@@ -272,6 +272,7 @@ const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
 }
 
 const bindPermissionBtn = () => {
+  console.log('selectItem',selectItem)
   renderComponent(bindPermission, {
     modelValue: true,
     selectItem: selectItem.value,

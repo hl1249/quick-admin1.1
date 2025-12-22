@@ -12,6 +12,7 @@
           </div>
           <div class="border border-gray-300 rounded-[4px] overflow-hidden p-[10px]">
             <el-tree ref="treeRefs" :data="treeData" node-key="permission_id" :default-checked-keys="localSelectItem.permission"
+            check-strictly
             :props="{
               children: 'children',
               label: 'permission_name'
@@ -121,8 +122,6 @@ const form = ref({
     }]
   }
 })
-
-
 
 // 使用计算属性控制显示状态
 const visible = ref(true)
