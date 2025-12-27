@@ -5,9 +5,14 @@ import { realUnitConversion } from '@/utils'
 import type { JSX } from "vue/jsx-runtime";
 import { RemoveFilled } from '@element-plus/icons-vue'
 
+import qaTreeSelect from "./qaTreeSelect.vue";
+import { renderComponent } from '@/utils'
+import { on } from "events";
 export default defineComponent({
   name: "qaFormItem",
   props: {
+    action: String,
+    props: Object,
     modelValue: { type: Object, required: false, default: () => ({}) },
     formType: String,
     label: String,
@@ -39,7 +44,9 @@ export default defineComponent({
   },
   emits: ["update:modelValue", "search"],
   setup(props, { emit, slots }) {
-    const { label, labelWidth, width, data, itemKey, type, placeholder, tips, show, showLabel, dateType, valueFormat, format, pickerOptions } = props;
+    const { action, label, labelWidth, width, data, itemKey, type, placeholder, tips, show, showLabel, dateType, valueFormat, format, pickerOptions } = props;
+    console.log('props',props)
+    const itemProps = props.props;
     const { formType, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
     watch(
@@ -112,6 +119,63 @@ export default defineComponent({
         />
       );
     };
+
+    // 日期 
+    const renderDate = ({ value, dateType, format, valueFormat, onChange, placeholder }: {
+      value: string | number | Date | null
+      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month' | 'array<string>'
+      format?: string
+      valueFormat?: string
+      onChange: (val: string | number | Date | null) => void
+      placeholder?: string
+    }) => {
+      return (
+        <el-date-picker
+          modelValue={value}
+          onUpdate:modelValue={onChange}
+          onClear={() => emit("search")} // ✅ 点击时才执行
+          type={dateType}
+          format={format}
+          placeholder={placeholder || "请选择" + label}
+          disabled={isDisabled()}
+          valueFormat={valueFormat}
+          style={{ width: realUnitConversion(width) }}
+        ></el-date-picker>
+      )
+    }
+
+    const renderDateTimerange = ({ value, dateType, format, valueFormat, onChange, placeholder }: {
+      value: string | number | Date | null
+      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
+      format?: string
+      valueFormat?: string
+      onChange: (val: string | number | Date | null) => void,
+      pickerOptions?: {
+        defaultTime?: (string | Date)[]
+        shortcuts?: {
+          text: string
+          value: () => void | Date | [Date, Date]
+        }[]
+      },
+      placeholder: String
+    }) => {
+      return (
+        <el-date-picker
+          modelValue={value}
+          onUpdate:modelValue={onChange}
+          onChange={() => emit('search')}
+          onClear={() => emit("search")}
+          type={dateType}
+          format={format}
+          placeholder={placeholder || "请选择" + label}
+          disabled={isDisabled()}
+          valueFormat={valueFormat}
+          {...pickerOptions}
+          style={{ width: realUnitConversion(width) }}
+        ></el-date-picker>
+      )
+    }
+
 
     // 渲染可变数组子表单 字符串类型
     const renderArrayString = ({ value, onChange }) => {
@@ -212,59 +276,43 @@ export default defineComponent({
       )
     }
 
-    // 日期 
-    const renderDate = ({ value, dateType, format, valueFormat, onChange, placeholder }: {
-      value: string | number | Date | null
-      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month' | 'array<string>'
-      format?: string
-      valueFormat?: string
-      onChange: (val: string | number | Date | null) => void
-      placeholder?: string
-    }) => {
-      return (
-        <el-date-picker
-          modelValue={value}
-          onUpdate:modelValue={onChange}
-          onClear={() => emit("search")} // ✅ 点击时才执行
-          type={dateType}
-          format={format}
-          placeholder={placeholder || "请选择" + label}
-          disabled={isDisabled()}
-          valueFormat={valueFormat}
-          style={{ width: realUnitConversion(width) }}
-        ></el-date-picker>
-      )
-    }
-
-    const renderDateTimerange = ({ value, dateType, format, valueFormat, onChange, placeholder }: {
-      value: string | number | Date | null
-      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
-      format?: string
-      valueFormat?: string
-      onChange: (val: string | number | Date | null) => void,
-      pickerOptions?: {
-        defaultTime?: (string | Date)[]
-        shortcuts?: {
-          text: string
-          value: () => void | Date | [Date, Date]
-        }[]
+    const treeSelectData = ref<any>(null)
+    const showTreeSelect = ref(false)
+    // 渲染树形选择表单 
+    const renderTreeSelect = ({ value, onChange, action, treeSelectProps, placeholder }: {
+      value: string | number | null
+      onChange: (val: string | number | null) => void,
+      action: string,
+      treeSelectProps: {
+        list: string
+        value: string
+        label: string
+        children: string
       },
-      placeholder: String
+      placeholder: string
     }) => {
+
       return (
-        <el-date-picker
-          modelValue={value}
-          onUpdate:modelValue={onChange}
-          onChange={() => emit('search')}
-          onClear={() => emit("search")}
-          type={dateType}
-          format={format}
-          placeholder={placeholder || "请选择" + label}
-          disabled={isDisabled()}
-          valueFormat={valueFormat}
-          {...pickerOptions}
-          style={{ width: realUnitConversion(width) }}
-        ></el-date-picker>
+        <>
+          {/* <el-button onClick={() => renderComponent(qaTreeSelect, { 
+            action, 
+            modelValue: value, 
+            defaultProps: 
+            treeSelectProps, 
+            onTreeSelectConfirm:(data)=>{
+              console.log("我执行了 ")
+              treeSelectData.value = data
+              onChange(data ? data[treeSelectProps.value] : null)
+            }
+          })}>{treeSelectData.value?.[treeSelectProps.label] || '选择'}</el-button> */}
+          <el-button onClick={() => (showTreeSelect.value = true)}>选择{showTreeSelect.value ? 'true' : 'false'}</el-button>
+          <qa-tree-select v-model:show={showTreeSelect.value} action={action} modelValue={value} defaultProps={treeSelectProps} 
+            onTreeSelectConfirm={(data) => {
+              treeSelectData.value = data
+              onChange(data ? data[treeSelectProps.value] : null)
+            }}
+          />
+        </>
       )
     }
 
@@ -277,6 +325,7 @@ export default defineComponent({
       date: ({ value, dateType, format, valueFormat, onChange, placeholder }) => renderDate({ value, dateType, format, valueFormat, onChange, placeholder }),
       datetimerange: ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, pickerOptions, placeholder }) => renderDateTimerange({ value, dateType, format, valueFormat, onChange, pickerOptions, placeholder }),
       'array<string>': ({ value, onChange }) => renderArrayString({ value, onChange }),
+      'tree-select': ({ value, onChange, action, itemProps, placeholder }) => renderTreeSelect({ value, onChange, action, treeSelectProps: itemProps, placeholder }),
     };
 
     // 统一渲染
@@ -347,6 +396,8 @@ export default defineComponent({
               type,
               placeholder,
 
+              action,
+              itemProps,
               data,
               dateType,
               valueFormat,

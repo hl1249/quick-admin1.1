@@ -1,7 +1,7 @@
 
 const pagesModule = import.meta.glob('@/pages/**/*.vue')
 // utils/renderComponent.ts
-import { createApp, ref, nextTick} from 'vue'
+import { createApp, ref, nextTick, createVNode, render} from 'vue'
 import type { App, Component, ComponentPublicInstance } from 'vue'
 
 // 后端传来的菜单构建动态路由
@@ -392,52 +392,38 @@ export const getCommonTime = (date: Date = new Date(), targetTimezone: number = 
   };
 }
 
-export interface RenderResult<T = any> {
-  app: ReturnType<typeof createApp>
-  instance: ComponentPublicInstance<T> & { open: () => void; close: () => void }
-  unmount: () => void
-}
+// 动态渲染组件 - show=false 时自动卸载
+export function renderComponent(Component, props = {}, container?) {
+  const el = container || document.createElement('div')
+  if (!container) document.body.appendChild(el)
 
-// 动态渲染组件
-export function renderComponent<T extends Record<string, any>>(
-  Component: Component,
-  props?: T,
-  container?: HTMLElement
-): RenderResult<T> {
-  const mountNode = container || document.createElement('div')
-  document.body.appendChild(mountNode)
-
-  // 内部维护 visible
-  const visible = ref(true)
-
-  // 包装 props，把 modelValue 映射到内部 visible
-  const wrappedProps = {
-    ...(props || {}),
-    modelValue: visible.value
-  }
-
-  const app = createApp(Component, wrappedProps)
-  const instance = app.mount(mountNode) as ComponentPublicInstance<T> & { open: () => void; close: () => void }
-
-  // 给 instance 添加 open / close 方法
-  instance.open = () => { visible.value = true }
-  instance.close = () => { visible.value = false }
-
-  // 自动 watch visible 同步给组件
-  nextTick(() => {
-    if ('$props' in instance) {
-      watch(visible, (val) => {
-        (instance as any).modelValue = val
-      })
-    }
+  const state = reactive({
+    visible: true
   })
 
+  const destroy = () => {
+    render(null, el)
+    if (!container) el.remove()
+  }
+
+  const renderVNode = () => {
+    const vnode = createVNode(Component, {
+      ...props,
+      show: state.visible,
+      'onUpdate:show': (val: boolean) => {
+        state.visible = val
+      },
+      onClosed: destroy
+    })
+    render(vnode, el)
+  }
+
+  // 👇 状态变 → 重新 render
+  watch(() => state.visible, renderVNode, { immediate: true })
+
   return {
-    app,
-    instance,
-    unmount() {
-      app.unmount()
-      mountNode.remove()
+    close: () => {
+      state.visible = false
     }
   }
 }

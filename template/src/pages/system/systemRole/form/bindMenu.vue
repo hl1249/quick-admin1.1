@@ -2,7 +2,7 @@
   <el-dialog v-model="visible" :title="title" width="800" :before-close="handleBeforeClose" @open="getAllMenu" @close="handleClose">
     <div class="dialog-content">
       <!-- 你的弹窗内容 -->
-      <qa-form v-model="selectItem" :columns="form.props.columns" :action="form.props.action" @success="visible = false"
+      <qa-form v-model="selectItem" :columns="form.props.columns" :action="form.props.action" @success="visible = false,refresh()"
         @closeForm="visible = false" :before-action="form.props.beforeAction">
         <template v-slot:menuList>
           <el-input placeholder="输入关键字进行搜索" v-model="filterText"> </el-input>
@@ -38,20 +38,25 @@ type selectItem = {
 }
 
 interface Props {
-  modelValue?: boolean
-  selectItem?: selectItem
+  show?: boolean
+  selectItem?: selectItem,
+  refresh?: () => void,
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: false,
+  show: false,
+  refresh: () => {}
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
+  'update:show': [boolean]
   'close': []
   'confirm': []
   'cancel': []
 }>()
+
+// el-dialog 真正用的值
+const visible = useVModel(props, 'show', emit)
 
 const filterNode = (value: any, data: any) => {
   console.log('data', data)
@@ -79,13 +84,9 @@ watch(isCheckAll, (newValue) => {
 const checkAll = (nodes: any[], isCheckAll: boolean) => {
 
   if(isCheckAll)
-  treeRefs.value.setCheckedNodes(treeData.value);
+   treeRefs.value.setCheckedNodes(treeData.value);
   else
-  treeRefs.value?.setCheckedKeys([])
-  // nodes.forEach(node => {
-    // treeRefs.value!.store.nodesMap[node.menu_id].expanded = open
-    // if (node.children) expandAll(node.children, open)
-  // })
+    treeRefs.value?.setCheckedKeys([])
 }
 
 
@@ -129,15 +130,6 @@ const form = ref({
       type: "text"
     }]
   }
-})
-
-
-
-// 使用计算属性控制显示状态
-const visible = ref(true)
-
-watch(visible, val => {
-  if (!val) emit('close')
 })
 
 // 获取全部菜单

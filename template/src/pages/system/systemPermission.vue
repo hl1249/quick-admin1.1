@@ -7,12 +7,12 @@
     </div>
 
     <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
-      :pagination="false" :right-btns="['detail_auto', 'delete', 'update']"
-      :right-btns-more="table.rightBtnsMore" @update="updateBtn" highlight-current-row
-      @current-change="currentChange" @delete="deleteBtn" />
+      :pagination="false" :right-btns="['detail_auto', 'delete', 'update']" :right-btns-more="table.rightBtnsMore"
+      @update="updateBtn" highlight-current-row @current-change="currentChange" @delete="deleteBtn" />
 
 
     <el-dialog width="700" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+      {{ form.data }}
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()"
@@ -46,43 +46,43 @@ const table = ref<{
   action: '/app/admin/system/systemPermission/systemPermission/getList',
   columns: [
     {
-        "key": "permission_id",
-        "title": "权限标识",
-        "type": "text",
-        "width": 200
+      "key": "permission_id",
+      "title": "权限标识",
+      "type": "text",
+      "width": 200
+    },
+    {
+      "key": "permission_name",
+      "title": "权限名称",
+      "type": "text",
+    },
+    {
+      "key": "comment",
+      "title": "备注",
+      "type": "text",
+    },
+    {
+      "key": "url",
+      "title": "URL",
+      "type": "json",
+      "width": 500
+    },
+    {
+      "key": "match_mode",
+      "title": "匹配模式",
+      "type": "text",
+      formatter: (val: any, row: any, column: any, index: number) => {
+        let str = "";
+        if (row.match_mode == "0") {
+          str = "完整路径";
+        } else if (row.match_mode == "1") {
+          str = "通配符";
+        } else if (row.match_mode == "2") {
+          str = "正则表达式"
+        }
+        return str;
       },
-      {
-        "key": "permission_name",
-        "title": "权限名称",
-        "type": "text",
-      },
-      {
-        "key": "comment",
-        "title": "备注",
-        "type": "text",
-      },
-      {
-        "key": "url",
-        "title": "URL",
-        "type": "json",
-        "width": 500
-      },
-      {
-        "key": "match_mode",
-        "title": "匹配模式",
-        "type": "text",
-         formatter: (val: any, row: any, column: any, index: number) => {
-            let str = "";
-            if (row.match_mode == "0") {
-                str = "完整路径";
-            } else if (row.match_mode == "1") {
-                str = "通配符";
-            } else if (row.match_mode == "2"){
-                str = "正则表达式"
-            }
-            return str;
-        },
-      },
+    },
     {
       key: "enable",
       type: 'switch',
@@ -172,11 +172,19 @@ const form = ref({
         "title": "匹配模式",
         "type": "radio",
         data: [
-        { value: 0, label: "完整路径" },
-        { value: 1, label: "通配符" },
-        { value: 2, label: "正则表达式" },
+          { value: 0, label: "完整路径" },
+          { value: 1, label: "通配符" },
+          { value: 2, label: "正则表达式" },
         ]
       },
+    {
+      "key": "parent_id",
+      "title": "父级权限",
+      "type": "tree-select",
+      "width": 500,
+      action: "app/admin/system/SystemPermission/SystemPermission/getList",
+      props: { list: "rows", value: "permission_id", label: "permission_name", children: "children" },
+    },
       {
         "key": "enable",
         "title": "是否启用",

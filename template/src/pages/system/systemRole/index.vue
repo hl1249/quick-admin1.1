@@ -274,15 +274,15 @@ const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
 const bindPermissionBtn = () => {
   console.log('selectItem',selectItem)
   renderComponent(bindPermission, {
-    modelValue: true,
     selectItem: selectItem.value,
+    refresh
   })
 }
 
 const bindMenuBtn = () => {
   renderComponent(bindMenu, {
-    modelValue: true,
     selectItem: selectItem.value,
+    refresh
   })
   // const row = qaTableRef?.value?.getCurrentRow(true)
 }

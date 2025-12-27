@@ -50,7 +50,8 @@ export class SystemPermissionController {
     
     return {
         ...res,
-        rows:arrayToTree(res.rows as Document[],treeProps)
+        rows:arrayToTree(res.rows as Document[],treeProps),
+        list:res.rows as Document[],
     }
   }
 
