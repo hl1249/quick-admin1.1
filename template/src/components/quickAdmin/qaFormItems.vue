@@ -8,7 +8,7 @@ import { RemoveFilled } from '@element-plus/icons-vue'
 export default defineComponent({
   name: "qaFormItem",
   props: {
-    modelValue: { type: Object, required: true },
+    modelValue: { type: Object, required: false, default: () => ({}) },
     formType: String,
     label: String,
     itemKey: { type: String, required: true },
@@ -43,7 +43,7 @@ export default defineComponent({
     const { formType, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
     watch(
-      () => model.value[itemKey], // 注意这里要用函数
+      () => model.value?.[itemKey], // 注意这里要用函数
       (newValue) => {
         props?.watch?.(newValue) // 防止 props.watch 未传
       },

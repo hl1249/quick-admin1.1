@@ -49,6 +49,7 @@ const table = ref<{
         "key": "permission_id",
         "title": "权限标识",
         "type": "text",
+        "width": 200
       },
       {
         "key": "permission_name",

@@ -2,6 +2,7 @@ import { Controller, Post,Body, Req } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
+import { arrayToTree } from '@/common/utils/utils'
 
 @Controller()
 export class SystemPermissionController {
@@ -29,11 +30,28 @@ export class SystemPermissionController {
   }
 
   @Post('/getList')
-  getList(@Req() req, @Body() data): Promise<Document | null> {
-      return this.dbService.getTableData({
-        dbName: "qa-permissions",
-        data,
-      })
+  async getList(@Req() req, @Body() data): Promise<Document | null> {
+      // return this.dbService.getTableData({
+      //   dbName: "qa-permissions",
+      //   data,
+      // })
+
+    const res = await this.dbService.selects({
+      dbName: "qa-permissions",
+      pageSize:9999,
+    })
+      
+
+    let treeProps = {
+        id:"permission_id",
+        parent_id:"parent_id", 
+        children:"children"
+    };
+    
+    return {
+        ...res,
+        rows:arrayToTree(res.rows as Document[],treeProps)
+    }
   }
 
   @Post('/add')

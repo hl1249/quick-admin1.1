@@ -14,7 +14,7 @@
             <el-tree ref="treeRefs" 
             :data="treeData" 
             :node-key="nodeKey" 
-            :default-checked-keys="localSelectItem.permission"
+            :default-checked-keys="defaultCheckedKeys"
             :props="{
               children: 'children',
               label: 'permission_name'
@@ -81,9 +81,9 @@ watch(isCheckAll, (newValue) => {
 })
 const checkAll = (nodes: any[], isCheckAll: boolean) => {
   if(isCheckAll)
-  treeRefs.value.setCheckedNodes(treeData.value);
+    treeRefs.value.setCheckedNodes(treeData.value);
   else
-  treeRefs.value?.setCheckedKeys([])
+    treeRefs.value?.setCheckedKeys([])
 }
 
 
@@ -94,19 +94,20 @@ const getChecked = () => {
 }
 // 获取顶级选中值
 const getHalfChecked = () => {
-  return treeRefs.value.getHalfCheckedKeys()
+  return []
+  // return treeRefs.value.getHalfCheckedKeys()
 }
 
 // 通过 useVModel 直接拿到响应式 formData（相当于 computed + emit）
 const selectItem = useVModel(props, "selectItem", emit)
 
 // 本地副本，用于 el-tree 渲染
-const localSelectItem = ref<any>({ ...selectItem.value })
-
-// 当外部 selectItem 变化时，同步到本地副本
-watch(selectItem, (val) => {
-  localSelectItem.value = { ...val }
-})
+const defaultCheckedKeys = ref<Array<string>>([])
+const initData = () => {
+  defaultCheckedKeys.value = selectItem.value?.permissionsList.map((item) => {
+    return selectItem.value?.permission.includes(item.permission_id) && item.parent_id ? item.permission_id : null
+  }).filter(Boolean)
+}
 
 const form = ref({
   props: {
@@ -169,6 +170,7 @@ const getAllPermissions = async () => {
   };
   treeData.value = arrayToTree(data, treeProps)
   console.log('treeData', treeData.value)
+  initData()
 }
 
 // 暴露方法给父组件

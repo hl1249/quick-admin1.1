@@ -11,7 +11,7 @@
             <el-checkbox v-model="isCheckAll">全选/全不选</el-checkbox>
           </div>
           <div class="border border-gray-300 rounded-[4px] overflow-hidden p-[10px]">
-          <el-tree ref="treeRefs" :data="treeData" node-key="menu_id" :default-checked-keys="localSelectItem.menu"
+          <el-tree ref="treeRefs" :data="treeData" node-key="menu_id" :default-checked-keys="defaultCheckedKeys"
             :props="{
               children: 'children',
               label: 'title'
@@ -103,7 +103,13 @@ const getHalfChecked = () => {
 const selectItem = useVModel(props, "selectItem", emit)
 
 // 本地副本，用于 el-tree 渲染
-const localSelectItem = ref<any>({ ...selectItem.value })
+const defaultCheckedKeys = ref<Array<string>>([])
+const initData = () => {
+  console.log('selectItem',selectItem)
+  defaultCheckedKeys.value = selectItem.value?.menuList.map((item) => {
+    return selectItem.value?.menu.includes(item.menu_id) && item.parent_id ? item.menu_id : null
+  }).filter(Boolean)
+}
 
 // 当外部 selectItem 变化时，同步到本地副本
 watch(selectItem, (val) => {
@@ -170,6 +176,7 @@ const getAllMenu = async () => {
   };
   treeData.value = arrayToTree(data, treeProps)
   console.log('treeData', treeData.value)
+  initData()
 }
 
 // 暴露方法给父组件

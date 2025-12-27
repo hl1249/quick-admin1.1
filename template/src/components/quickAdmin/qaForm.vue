@@ -49,7 +49,7 @@ interface QaFormColumns {
 }
 const props = withDefaults(
     defineProps<{
-        modelValue: any
+        modelValue?: any
         rules?: any
         action: string | ((value: any) => void)
         formType?: string
