@@ -27,21 +27,24 @@
 <script setup lang="ts">
 import { useVModel } from "@vueuse/core"
 import http from '@/utils/axios'
-const emit = defineEmits(['treeSelectConfirm',['update:show']])
+const emit = defineEmits(['treeSelectConfirm','update:show'])
 
 const props = withDefaults(
   defineProps<{
-    defaultProps?:any;
+    defaultProps?: any;
     action?: string;
     modelValue?: any;
-    show?: {
-      type: Boolean,
-      default: false
-    };
+    show?: boolean;  // 直接使用 boolean 类型
   }>(),
   {
+    show: false,  // 默认值
+    defaultProps: () => ({
+      children: 'children',
+      label: 'label'
+    })
   }
 )
+
 const treeSelectConfirm = () => {
   emit('treeSelectConfirm', treeData.value)
   visible.value = false

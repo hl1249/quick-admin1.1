@@ -61,6 +61,7 @@ export class SystemPermissionController {
     let {
 			permission_id,
 			permission_name,
+      parent_id,
       url,
       match_mode,
 			enable = true,
@@ -72,6 +73,7 @@ export class SystemPermissionController {
       dataJson:{
         permission_id,
         permission_name,
+        parent_id,
         url,
         match_mode,
         enable,

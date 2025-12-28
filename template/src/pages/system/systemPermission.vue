@@ -1,18 +1,15 @@
 <template>
   <div class="flex flex-col h-full">
     <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
-
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
-
     <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
       :pagination="false" :right-btns="['detail_auto', 'delete', 'update']" :right-btns-more="table.rightBtnsMore"
       @update="updateBtn" highlight-current-row @current-change="currentChange" @delete="deleteBtn" />
 
 
     <el-dialog width="700" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
-      {{ form.data }}
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()"
@@ -177,14 +174,14 @@ const form = ref({
           { value: 2, label: "正则表达式" },
         ]
       },
-    {
-      "key": "parent_id",
-      "title": "父级权限",
-      "type": "tree-select",
-      "width": 500,
-      action: "app/admin/system/SystemPermission/SystemPermission/getList",
-      props: { list: "rows", value: "permission_id", label: "permission_name", children: "children" },
-    },
+      {
+        "key": "parent_id",
+        "title": "父级权限",
+        "type": "tree-select",
+        "width": 500,
+        action: "app/admin/system/SystemPermission/SystemPermission/getList",
+        props: { list: "rows", value: "permission_id", label: "permission_name", children: "children" },
+      },
       {
         "key": "enable",
         "title": "是否启用",
@@ -230,7 +227,15 @@ const addBtn = () => {
   resetForm()
   form.value.props.formType = 'add';
   form.value.props.title = '添加'
+  if(selectItem.value){
+    form.value.data = {
+      ...form.value.data,
+      parent_id:selectItem.value.permission_id,
+      permission_id:selectItem.value.permission_id + '-'
+    }
+  }
   form.value.props.show = true
+
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()

@@ -45,7 +45,6 @@ export default defineComponent({
   emits: ["update:modelValue", "search"],
   setup(props, { emit, slots }) {
     const { action, label, labelWidth, width, data, itemKey, type, placeholder, tips, show, showLabel, dateType, valueFormat, format, pickerOptions } = props;
-    console.log('props',props)
     const itemProps = props.props;
     const { formType, showRule, disabled } = toRefs(props)
     const model = useVModel(props, "modelValue", emit);
@@ -291,21 +290,9 @@ export default defineComponent({
       },
       placeholder: string
     }) => {
-
       return (
         <>
-          {/* <el-button onClick={() => renderComponent(qaTreeSelect, { 
-            action, 
-            modelValue: value, 
-            defaultProps: 
-            treeSelectProps, 
-            onTreeSelectConfirm:(data)=>{
-              console.log("我执行了 ")
-              treeSelectData.value = data
-              onChange(data ? data[treeSelectProps.value] : null)
-            }
-          })}>{treeSelectData.value?.[treeSelectProps.label] || '选择'}</el-button> */}
-          <el-button onClick={() => (showTreeSelect.value = true)}>选择{showTreeSelect.value ? 'true' : 'false'}</el-button>
+          <el-button onClick={() => (showTreeSelect.value = true)}>{value || '选择'}</el-button>
           <qa-tree-select v-model:show={showTreeSelect.value} action={action} modelValue={value} defaultProps={treeSelectProps} 
             onTreeSelectConfirm={(data) => {
               treeSelectData.value = data
