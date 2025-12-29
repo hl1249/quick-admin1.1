@@ -1,6 +1,5 @@
 <template>
     <div v-loading="loading" class="flex flex-col flex-auto overflow-hidden pb-[2px]">
- 
         <div class="flex-auto overflow-hidden">
             <el-table :data="tableData" style="width: 100%" 
                 @current-change="(row) => {
@@ -211,10 +210,16 @@ const emits = defineEmits([
 ])
 
 const changeValue = (row: any, key: string, value: string) => {
-    const index = tableData.value.findIndex(item => item._id === row._id);
-    if (index !== -1) {
-        tableData.value[index][key] = value;
-    }
+
+    ElMessage.success("更新成功！")
+    // 直接修改引用
+    row[key] = value
+
+    // 下方要找再到 如果是树形不确定children parent_id 别名不好查找
+    // const index = tableData.value.findIndex(item => item._id === row._id);
+    // if (index !== -1) {
+    //     tableData.value[index][key] = value;
+    // }
 }
 
 interface SortItem {

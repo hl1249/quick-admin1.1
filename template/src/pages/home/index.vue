@@ -1,13 +1,17 @@
 <template>
-    <div class="position-relative">
-       <qa-area-cascader v-model="wuhu" @confirm="confirm" />
-        <div id="lottie_box" class="animation"></div>
+    <div class="flex flex-col h-full">
+        <el-scrollbar>
+            <div class="position-relative">
+                <qa-area-cascader v-model="wuhu" @confirm="confirm" />
+                <div id="lottie_box" class="animation"></div>
+            </div>
+        </el-scrollbar>
     </div>
 </template>
 
 <script setup lang="ts">
 import qaAreaCascader from '@/components/quickAdmin/qaAreaCascader.vue';
-import type {AddrResult} from '@/components/quickAdmin/qaAreaCascader.vue';
+import type { AddrResult } from '@/components/quickAdmin/qaAreaCascader.vue';
 
 const confirm = (value: AddrResult) => {
     console.log(value)
@@ -33,6 +37,6 @@ onMounted(() => {
 .animation {
     width: 500px;
     margin: auto;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 200px);
 }
 </style>

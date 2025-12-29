@@ -101,7 +101,6 @@ export default defineComponent({
 
         const handleChange = (value: any, row: any, prop: any) => {
             if (props.watch) {
-                console.log("我改变了", prop, value)
                 props.watch({
                     value,
                     row,
