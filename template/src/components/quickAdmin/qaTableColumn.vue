@@ -1,5 +1,5 @@
 <script lang="tsx">
-    
+
 import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable, ElButton, ElRadio } from 'element-plus'
 import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
@@ -67,9 +67,9 @@ export default defineComponent({
             type: String as PropType<'circle' | 'square'>,
             default: 'circle'
         },
-        show:{
+        show: {
             type: Array as PropType<Array<'row' | 'detail' | 'expand' | 'none'>>,
-            default: () => ['row','detail','detail'] // 每个组件实例都会生成新的数组
+            default: () => ['row', 'detail', 'detail'] // 每个组件实例都会生成新的数组
         },
         valueFormat: {
             type: String as PropType<string>,
@@ -91,22 +91,20 @@ export default defineComponent({
     },
     emits: ["changeValue"],
     setup(props, { emit }) {
-        
+
         const isDark = useDark()
 
-        const { prop, label, type, width, columns, data, formatter, valueFormat, imageWidth, activeValue, inactiveValue, size, sortable, shape, align,
-        show} = props;
 
-        const changeValue = (row: any, prop:string, value: any) => {
-            emit('changeValue',  row, prop, value)
+        const changeValue = (row: any, prop: string, value: any) => {
+            emit('changeValue', row, prop, value)
         }
 
         const handleChange = (value: any, row: any, prop: any) => {
             if (props.watch) {
-                console.log("我改变了",prop, value)
+                console.log("我改变了", prop, value)
                 props.watch({
-                    value, 
-                    row, 
+                    value,
+                    row,
                     change: (newValue: any) => changeValue(row, prop, newValue)
                 })
             }
@@ -126,7 +124,7 @@ export default defineComponent({
         }
 
         const renderRate = (value: any) => <ElRate v-model={value} disabled />
-        const renderSwitch = (value: any,row: any, prop: any) => <ElSwitch v-model={value} disabled={typeof(value) != 'boolean'} onChange={()=>{ handleChange(value,row,prop) }}/>
+        const renderSwitch = (value: any, row: any, prop: any) => <ElSwitch v-model={value} disabled={typeof (value) != 'boolean'} onChange={() => { handleChange(value, row, prop) }} />
         const renderIcon = (value: any, renderData: Data[]) => {
             const iconName = renderData?.find(item => item.value === value)?.icon ?? value;
             const IconComponent = (Icons as Record<string, any>)[iconName];
@@ -184,7 +182,7 @@ export default defineComponent({
             </div>
         }
         const renderGroup = (columns: Columns[] | undefined, row: any, column: any, index: any) => {
-            
+
             if (!columns) return null; // 防止 undefined 报错
             return <div>{columns.map((item) => {
 
@@ -212,7 +210,7 @@ export default defineComponent({
             </div>
         }
         const renderObject = (value: Record<string, any>, columns: Columns[]) => {
-            console.log("%cvalue",'color:pink;font-weight:bold',value)
+            console.log("%cvalue", 'color:pink;font-weight:bold', value)
             if (!value || Object.keys(value).length === 0 || !columns) return null;
             const tableDatas = columns.map((item) => ({
                 title: item.title,
@@ -227,14 +225,14 @@ export default defineComponent({
         };
         const renderMap: Record<string, (params: any) => JSX.Element | null> = {
             text: ({ value }) => renderText(value),
-            avatar: ({ value }) => renderAvatar(value, shape),
+            avatar: ({ value,shape }) => renderAvatar(value, shape),
             json: ({ value }) => renderJson(value),
             object: ({ value, columns }) => renderObject(value, columns),
             tag: ({ value, data }) => renderTag(value, data),
             image: ({ value }) => renderImage(value),
             rate: ({ value }) => renderRate(value),
-            switch: ({ value,row,prop }) => renderSwitch(value,row,prop),
-            icon: ({ value }) => renderIcon(value, data),
+            switch: ({ value, row, prop }) => renderSwitch(value, row, prop),
+            icon: ({ value,data }) => renderIcon(value, data),
             time: ({ value }) => renderTime(value, valueFormat),
             html: ({ value, row, column, index }) => renderHtml(value, row, column, index, formatter),
             money: ({ value }) => renderMoney(value),
@@ -251,30 +249,62 @@ export default defineComponent({
             const renderer = renderMap[params.type];
             return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
-        return () => (
-                show.includes('row')?
-                <ElTableColumn prop={prop} label={label} width={width} sortable={sortable} align={align}>
-                {{
-                    default: ({ row, column, $index }: { row: any; column: any; $index: number }) => {
-                        let value = row[prop]
-                        if (formatter) {
-                            return type === 'html' ? <div v-html={formatter(value, row, column, $index)} /> : formatter(row[prop], row, column, $index)
+
+        return () => {
+            const {
+                prop,
+                label,
+                type,
+                width,
+                columns,
+                data,
+                formatter,
+                valueFormat,
+                imageWidth,
+                activeValue,
+                inactiveValue,
+                size,
+                sortable,
+                shape,
+                align,
+                show
+            } = props
+
+            if (!show.includes('row')) return null
+
+            return (
+                <ElTableColumn
+                    prop={prop}
+                    label={label}
+                    width={width}
+                    sortable={sortable}
+                    align={align}
+                >
+                    {{
+                        default: ({ row, column, $index }: { row: any; column: any; $index: number }) => {
+                            const value = row[prop]
+
+                            if (formatter) {
+                                return type === 'html'
+                                    ? <div v-html={formatter(value, row, column, $index)} />
+                                    : formatter(value, row, column, $index)
+                            }
+
+                            return render({
+                                value,
+                                type,
+                                row,
+                                prop,
+                                column,
+                                $index,
+                                columns,
+                                data
+                            })
                         }
-                        return render({
-                            value,
-                            type,
-                            row,
-                            prop,
-                            column,
-                            $index,
-                            columns,
-                            data
-                        });
-                    }
-                }}
-            </ElTableColumn>:
-            null
-        )
+                    }}
+                </ElTableColumn>
+            )
+        }
     }
 })
 </script>

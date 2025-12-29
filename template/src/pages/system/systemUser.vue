@@ -78,9 +78,9 @@ const table = ref<{
                   width: 200,
                   show: ['detail'],
                   data: [
-                  { value: "admin", label: "收入", tagType: "success" },
-                  { value: "agent", label: "支出", tagType: "danger" }
-                ]
+                    { value: "admin", label: "收入", tagType: "success" },
+                    { value: "agent", label: "支出", tagType: "danger" }
+                  ]
                 },
                 {
                   "key": "last_login_date",

@@ -1,5 +1,6 @@
 <template>
     <div v-loading="loading" class="flex flex-col flex-auto overflow-hidden pb-[2px]">
+ 
         <div class="flex-auto overflow-hidden">
             <el-table :data="tableData" style="width: 100%" 
                 @current-change="(row) => {
@@ -269,18 +270,18 @@ onMounted(() => {
 
 const btnsDetail = (index: number, row: TableRow) => {
     const tableDatas = props.columns.map((item) => {
-        console.log(item)
+        console.log(`key:${item.key} value:${row[item.key as string]}`)
         return {
             value: row[item.key as string],
-            row,
+            ...row,
             ...item
         }
     })
 
     
-    console.log('tableDatas', tableDatas)
+    // console.log('tableDatas', tableDatas)
     detailData.value = tableDatas
-    console.log('detailData', detailData)
+    // console.log('detailData', detailData)
 
     openInfoDialog()
 }
@@ -340,7 +341,7 @@ const flexColumnWidth = () => {
     else return 0
 }
 
-const detailData = ref()
+const detailData = ref([])
 const openInfoDialog = () => {
     infoDialogVisible.value = true
 }

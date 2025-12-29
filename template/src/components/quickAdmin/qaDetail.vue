@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable} from 'element-plus'
+import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable } from 'element-plus'
 import type { JSX } from 'vue/jsx-runtime';
 import type { Columns, Data } from './qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
@@ -7,14 +7,14 @@ import { useDark } from '@vueuse/core'
 import { timeFormat } from '@/utils'
 
 type Row = {
-    value:object
-    row: Row
+    value: any
     key: string
+    [key: string]: any
 }
 
 interface Scope {
     $index: number
-    row:Row
+    row: Row
     column: Array<any>
 }
 
@@ -31,14 +31,13 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { scope, columns } = props
-        const columnsItem = columns?.find(item => item.key == scope.row.key) as Columns
+        const columnsItem = computed(() => {
+            return props.columns?.find(
+                item => item.key === props.scope.row.key
+            ) as Columns
+        })
+        
         const isDark = useDark()
-        console.log("columnsItem",columnsItem)
-        const { key: prop ,type,data,formatter, valueFormat, shape} = columnsItem
-        const { $index, row:{value,row}, column} = scope
-            // console.log("%c我是scope",'color:red;font-weight:bold',scope)
-            // console.log("%c我是scope.row",'color:red;font-weight:bold',scope.row)
 
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
@@ -54,11 +53,10 @@ export default defineComponent({
         }
 
         const renderRate = (value: any) => <ElRate v-model={value} disabled />
-        const renderSwitch = (value: any,row: any, prop: any) => <ElSwitch v-model={value} disabled={typeof(value) != 'boolean'} />
+        const renderSwitch = (value: any, row: any, prop: any) => <ElSwitch v-model={value} disabled={typeof (value) != 'boolean'} />
         const renderIcon = (value: any, renderData: Data[]) => {
             const iconName = renderData?.find(item => item.value === value)?.icon ?? value;
             const IconComponent = (Icons as Record<string, any>)[iconName];
-
             return IconComponent ? <ElIcon>
                 <IconComponent />
             </ElIcon> : <></>
@@ -140,7 +138,7 @@ export default defineComponent({
             </div>
         }
         const renderObject = (value: Record<string, any>, columns: Columns[]) => {
-            console.log("%cvalue",'color:pink;font-weight:bold',value)
+            console.log("%cvalue", 'color:pink;font-weight:bold', value)
             if (!value || Object.keys(value).length === 0 || !columns) return null;
             const tableDatas = columns.map((item) => ({
                 title: item.title,
@@ -155,14 +153,14 @@ export default defineComponent({
         };
         const renderMap: Record<string, (params: any) => JSX.Element | null> = {
             text: ({ value }) => renderText(value),
-            avatar: ({ value }) => renderAvatar(value, shape),
+            avatar: ({ value, shape }) => renderAvatar(value, shape),
             json: ({ value }) => renderJson(value),
             object: ({ value, columns }) => renderObject(value, columns),
             tag: ({ value, data }) => renderTag(value, data),
             image: ({ value }) => renderImage(value),
             rate: ({ value }) => renderRate(value),
-            switch: ({ value,row,prop }) => renderSwitch(value,row,prop),
-            icon: ({ value }) => renderIcon(value, data),
+            switch: ({ value, row, prop }) => renderSwitch(value, row, prop),
+            icon: ({ value,data }) => renderIcon(value, data),
             time: ({ value }) => renderTime(value, valueFormat),
             html: ({ value, row, column, index }) => renderHtml(value, row, column, index, formatter),
             money: ({ value }) => renderMoney(value),
@@ -180,36 +178,42 @@ export default defineComponent({
             return renderer ? renderer(params) : <div class="whitespace-nowrap">{params.value}</div>;
         };
 
-        // return () => (
-        //     // <>
-        //     // row:{JSON.stringify(row)}<br/>
-        //     // <br/>
-        //     // columnItem：{JSON.stringify(columnsItem)}<br/>
-        //     // <br/>
-        //     // value:{JSON.stringify(value)}<br/>
-        //     // </>
-        //     <>
-        //     </>
-        // )
+        return () => {
+            const scope = props.scope
+            console.log('scope',scope)
+            const col = columnsItem.value
+            if (!col) return null
 
-        return () =>
-            columnsItem.formatter
-            ? (
-                columnsItem.type === 'html'
-                ? <div innerHTML={columnsItem.formatter(value, row, column, $index)}></div>
-                : columnsItem.formatter(row[prop], row, column, $index)
-            )
-            : render({
-                // value: typeof value === 'object' ? JSON.stringify(value) : value,
-                value,
+            const {
+                key: prop,
                 type,
-                row,
-                prop,
-                column,
-                $index,
-                columns:columnsItem?.columns || [],
-                data
-            })
+                data,
+                formatter,
+                valueFormat,
+                shape,
+                columns
+            } = col
+            
+            const { $index, row, column } = scope
+            const value = row.value
+
+            return formatter
+                ? (
+                    type === 'html'
+                        ? <div innerHTML={formatter(value, row, column, $index)}></div>
+                        : formatter(row[prop], row, column, $index)
+                )
+                : render({
+                    value,
+                    type,
+                    row,
+                    prop,
+                    column,
+                    $index,
+                    columns: columns || [],
+                    data,
+                })
+        }
     }
 })
 </script>
