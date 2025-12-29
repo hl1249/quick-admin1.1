@@ -11,24 +11,6 @@ export class SystemMenuController {
   ) {
   }
 
-  @Post('/getAllMenu')
-  getAllMenu(): Promise<Document | null>{
-     return this.dbService.select({
-      dbName:"qa-menus",
-      getMain: true
-     })
-  }
-
-
-  @Post('/getAllPermissions')
-  getAllPermissions(): Promise<Document | null>{
-     return this.dbService.select({
-      dbName:"qa-permissions",
-      getMain: true,
-      pageSize:999
-     })
-  }
-
   @Post('/getList')
   async getList(@Req() req, @Body() data): Promise<Document | null> {
 
@@ -55,23 +37,23 @@ export class SystemMenuController {
   add(@Req() req, @Body() data): Promise<Document | null> {
 
     let {
-			permission_id,
-			permission_name,
+			menu_id,
+			title,
       parent_id,
-      url,
-      match_mode,
+      component,
+      path,
 			enable = true,
 			comment,
 		} = data;
 
     return this.dbService.add({
-      dbName: "qa-permissions",
+      dbName: "menu_id",
       dataJson:{
-        permission_id,
-        permission_name,
+        menu_id,
+        title,
         parent_id,
-        url,
-        match_mode,
+        component,
+        path,
         enable,
         comment,
       }
