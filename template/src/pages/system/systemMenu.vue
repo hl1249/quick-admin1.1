@@ -44,13 +44,13 @@ const table = ref<{
   columns: [
     {
       "key": "menu_id",
-      "title": "权限标识",
+      "title": "菜单标识",
       "type": "text",
       "width": 250
     },
     {
       "key": "title",
-      "title": "权限名称",
+      "title": "菜单名称",
       "type": "text",
       "width": 150
     },
@@ -136,13 +136,13 @@ const form = ref({
     action: '/app/admin/system/systemPermission/systemPermission/add',
     columns: [
       {
-        "key": "permission_id",
-        "title": "权限标识",
+        "key": "menu_id",
+        "title": "菜单标识",
         "type": "text",
       },
       {
-        "key": "permission_name",
-        "title": "权限名称",
+        "key": "title",
+        "title": "菜单名称",
         "type": "text",
       },
       {
@@ -151,18 +151,8 @@ const form = ref({
         "type": "array<string>",
       },
       {
-        "key": "match_mode",
-        "title": "匹配模式",
-        "type": "radio",
-        data: [
-          { value: 0, label: "完整路径" },
-          { value: 1, label: "通配符" },
-          { value: 2, label: "正则表达式" },
-        ]
-      },
-      {
         "key": "parent_id",
-        "title": "父级权限",
+        "title": "父级菜单",
         "type": "tree-select",
         "width": 500,
         action: "app/admin/system/SystemPermission/SystemPermission/getList",
@@ -213,13 +203,19 @@ const addBtn = () => {
   resetForm()
   form.value.props.formType = 'add';
   form.value.props.title = '添加'
+
   if(selectItem.value){
-    form.value.data = {
-      ...form.value.data,
-      parent_id:selectItem.value.permission_id,
-      permission_id:selectItem.value.permission_id + '-'
-    }
+    // form.value.data = {
+    //   ...form.value.data,
+    //   parent_id:selectItem.value.permission_id,
+    //   permission_id:selectItem.value.permission_id + '-'
+    // }
+
+    form.value.data.parent_id = selectItem.value.menu_id
+    form.value.data.menu_id = selectItem.value.menu_id + '-'
+
   }
+  console.log("selectItem",form.value)
   form.value.props.show = true
 
 }
