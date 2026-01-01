@@ -49,8 +49,19 @@ export default defineComponent({
   emits: ['update:modelValue', 'search'],
   setup(props, { emit, slots }) {
     /* ---------------- v-model ---------------- */
-    const model = useVModel(props, 'modelValue', emit)
+    // ✅ 使用 computed 来确保响应式追踪
+    const model = computed(() => props.modelValue)
     const { formType, showRule, disabled } = toRefs(props)
+
+    // ✅ 创建一个 computed 来追踪当前值的变化
+    const currentValue = computed({
+      get: () => model.value?.[props.itemKey],
+      set: (v) => {
+        if (model.value) {
+          model.value[props.itemKey] = v
+        }
+      }
+    })
 
     watch(
       () => model.value?.[props.itemKey],
@@ -250,7 +261,7 @@ export default defineComponent({
         >
           {slots.default?.() ||
             renderer?.({
-              value: model.value[props.itemKey],
+              value: currentValue.value,
               label: props.label,
               placeholder: props.placeholder,
               action: props.action,
@@ -260,7 +271,7 @@ export default defineComponent({
               valueFormat: props.valueFormat,
               format: props.format,
               pickerOptions: props.pickerOptions,
-              onChange: (v) => (model.value[props.itemKey] = v),
+              onChange: (v) => (currentValue.value = v),
             })}
 
           {props.tips && formType.value !== 'query' && (

@@ -127,6 +127,11 @@ const queryForm = ref({
 const form = ref({
   data: {
     enable: true,
+    menu_id: '',
+    title: '',
+    url: [],
+    parent_id: '',
+    comment: '',
   },
   props: {
     // 请求预处理
@@ -205,19 +210,14 @@ const addBtn = () => {
   form.value.props.title = '添加'
 
   if(selectItem.value){
-    // form.value.data = {
-    //   ...form.value.data,
-    //   parent_id:selectItem.value.permission_id,
-    //   permission_id:selectItem.value.permission_id + '-'
-    // }
-
-    form.value.data.parent_id = selectItem.value.menu_id
-    form.value.data.menu_id = selectItem.value.menu_id + '-'
-
+    // ✅ 重新赋值整个对象来触发响应式更新
+    form.value.data = {
+      ...form.value.data,
+      parent_id: selectItem.value.menu_id,
+      menu_id: selectItem.value.menu_id + '-'
+    }
   }
-  console.log("selectItem",form.value)
   form.value.props.show = true
-
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
