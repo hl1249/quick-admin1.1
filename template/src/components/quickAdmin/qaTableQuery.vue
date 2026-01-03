@@ -1,7 +1,7 @@
 <template>
   <div class="qa-table-query">
     <el-form :model="localModel" label-width="auto" class="flex flex-wrap gap-x-1">
-      <qa-form-item v-model="localModel" v-for="item in columns"
+      <qa-form-items v-model="localModel" v-for="item in columns"
         v-bind="{ ...item, key: item.key, itemKey: item.key, label: item.title }"
         form-type="query"
         @search="formItemSearch"
@@ -21,7 +21,7 @@
 <script setup lang="ts">
 const emit = defineEmits(['search', 'update:modelValue'])
 import { Search,Refresh } from '@element-plus/icons-vue'
-import qaFormItem from './qaFormItems.vue'
+import qaFormItems from './qaFormItems.vue'
 import { ref, watch } from 'vue'
 
 const formItemSearch = () => {

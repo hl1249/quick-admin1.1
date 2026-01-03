@@ -167,7 +167,6 @@ const queryForm = ref({
     key: "_add_time",
     type: "datetimerange",
     title: "添加时间",
-    format: 'YYYY-MM-DD',
     width: 230,
     "mode": "[]",
     pickerOptions: {

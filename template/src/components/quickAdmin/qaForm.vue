@@ -105,7 +105,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     ElMessage.success("提交成功!")
                     emit('success')
                 } catch (error: any) {
-                    ElMessage.error(error)
+                    // ElMessage.error(error)
                 } finally {
                     loading.value = false
                 }

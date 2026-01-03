@@ -1,5 +1,4 @@
 <script lang="tsx">
-import { defineComponent, ref, toRefs, watch } from 'vue'
 import { useVModel } from '@vueuse/core'
 import type { JSX } from 'vue/jsx-runtime'
 import { RemoveFilled, Plus } from '@element-plus/icons-vue'
@@ -49,22 +48,19 @@ export default defineComponent({
   emits: ['update:modelValue', 'search'],
   setup(props, { emit, slots }) {
     /* ---------------- v-model ---------------- */
-    // ✅ 使用 computed 来确保响应式追踪
-    const model = computed(() => props.modelValue)
     const { formType, showRule, disabled } = toRefs(props)
 
-    // ✅ 创建一个 computed 来追踪当前值的变化
     const currentValue = computed({
-      get: () => model.value?.[props.itemKey],
+      get: () => props.modelValue?.[props.itemKey],
       set: (v) => {
-        if (model.value) {
-          model.value[props.itemKey] = v
-        }
+        // ⚠️ 关键修复:必须创建新对象并 emit,不能直接修改
+        const newValue = { ...props.modelValue, [props.itemKey]: v }
+        emit('update:modelValue', newValue)
       }
     })
 
     watch(
-      () => model.value?.[props.itemKey],
+      () => props.modelValue?.[props.itemKey],
       (val) => props.watch?.(val),
       { deep: true }
     )
@@ -78,26 +74,26 @@ export default defineComponent({
 
     const isShowRule = () => {
       if (typeof showRule.value === 'function') {
-        return showRule.value(model.value)
+        return showRule.value(props.modelValue)
       }
       if (typeof showRule.value === 'string') {
         const match = showRule.value.match(/^(\w+)\s*==\s*(.+)$/)
         if (!match) return true
         const [, key, value] = match
-        return model.value?.[key] == value
+        return props.modelValue?.[key] == value
       }
       return true
     }
 
     const isDisabled = () => {
       if (typeof disabled.value === 'function') {
-        return disabled.value(model.value) === false
+        return disabled.value(props.modelValue) === false
       }
       if (typeof disabled.value === 'string') {
         const match = disabled.value.match(/^(\w+)\s*==\s*(.+)$/)
         if (!match) return false
         const [, key, value] = match
-        return model.value?.[key] != value
+        return props.modelValue?.[key] != value
       }
       return false
     }
@@ -159,6 +155,38 @@ export default defineComponent({
         onClear={() => emit('search')}
       />
     )
+
+    const renderDateTimerange = ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, placeholder, label, pickerOptions, width }: {
+      value: string | number | Date | null
+      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
+      format?: string
+      valueFormat?: string
+      onChange: (val: string | number | Date | null) => void,
+      pickerOptions?: {
+        defaultTime?: (string | Date)[]
+        shortcuts?: {
+          text: string
+          value: () => void | Date | [Date, Date]
+        }[]
+      },
+      placeholder: String
+    }) => {
+      return (
+          <el-date-picker
+              modelValue={value}
+              onUpdate:modelValue={onChange}
+              onChange={() => emit('search')}
+              onClear={() => emit("search")}
+              type={dateType}
+              format={format}
+              placeholder={placeholder || "请选择" + label}
+              disabled={isDisabled()}
+              valueFormat={valueFormat}
+              {...pickerOptions}
+              style={{ width: realUnitConversion(width) }}
+          ></el-date-picker>
+      )
+    }
 
     const renderArrayString = ({ value = [], onChange }) => {
       const list = Array.isArray(value) ? value : []
@@ -222,7 +250,6 @@ export default defineComponent({
         <el-button onClick={() => (showTreeSelect.value = true)}>
           {value || '选择'}
         </el-button>
-
         <qa-tree-select
           show={showTreeSelect.value}
           action={action}
@@ -243,6 +270,7 @@ export default defineComponent({
       switch: renderSwitch,
       radio: renderRadio,
       date: renderDate,
+      datetimerange: renderDateTimerange,
       'array<string>': renderArrayString,
       'tree-select': renderTreeSelect,
     }
@@ -250,15 +278,14 @@ export default defineComponent({
     /* ---------------- render ---------------- */
     return () => {
       if (!(isShow() && isShowRule())) return null
-
       const renderer = renderMap[props.type]
-
       return (
         <el-form-item
           label={props.showLabel ? props.label : ''}
           labelWidth={props.showLabel ? props.labelWidth : '0'}
           prop={props.itemKey}
         >
+          <div class="w-full">
           {slots.default?.() ||
             renderer?.({
               value: currentValue.value,
@@ -273,12 +300,12 @@ export default defineComponent({
               pickerOptions: props.pickerOptions,
               onChange: (v) => (currentValue.value = v),
             })}
-
           {props.tips && formType.value !== 'query' && (
             <div class="text-[#909399] text-[12px] mt-[4px]">
               {props.tips}
             </div>
           )}
+          </div>
         </el-form-item>
       )
     }

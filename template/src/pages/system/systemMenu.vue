@@ -1,10 +1,9 @@
 <template>
   <div class="flex flex-col h-full">
-    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
-    <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
+    <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns"
       :pagination="false" :right-btns="['detail_auto', 'delete', 'update']" :right-btns-more="table.rightBtnsMore"
       @update="updateBtn" highlight-current-row @current-change="currentChange" @delete="deleteBtn" />
 
@@ -71,7 +70,7 @@ const table = ref<{
       type: 'switch',
       title: "是否启用",
       watch: (res) => {
-        let { value, row, change } = res;
+        let {value, row, change} = res;
         http.request({
           method: 'POST',
           url: "/app/admin/system/systemMenu/systemMenu/updateBase",
@@ -80,8 +79,8 @@ const table = ref<{
             enable: value
           }
         }).then((res) => {
-          change(value)
-        })
+          change(value);
+        });
       }
     },
     {
@@ -90,39 +89,14 @@ const table = ref<{
       type: 'text',
       width: 240,
     },
-  ]
+  ],
+  rightBtnsMore: []
 })
 const search = () => {
   if (qaTableRef.value) {
     qaTableRef.value.search()
   }
 }
-
-const queryForm = ref({
-  formData: {
-  },
-  columns: [{
-    key: "role_id",
-    type: "text",
-    title: "角色标识",
-    width: 230,
-    "mode": "=",
-  },
-  {
-    key: "role_name",
-    type: "text",
-    title: "角色名称",
-    mode: "=",
-    width: 230,
-  },
-  {
-    key: "_add_time",
-    type: "datetimerange",
-    title: "添加时间",
-    "mode": "[]",
-    width: 230,
-  }]
-})
 
 const form = ref({
   data: {
@@ -138,7 +112,7 @@ const form = ref({
     beforeAction: (formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemPermission/systemPermission/add',
+    action: '/app/admin/system/systemMenu/systemMenu/add',
     columns: [
       {
         "key": "menu_id",
@@ -160,8 +134,8 @@ const form = ref({
         "title": "父级菜单",
         "type": "tree-select",
         "width": 500,
-        action: "app/admin/system/SystemPermission/SystemPermission/getList",
-        props: { list: "rows", value: "permission_id", label: "permission_name", children: "children" },
+        action: "app/admin/system/SystemMenu/SystemMenu/getList",
+        props: { list: "rows", value: "menu_id", label: "title", children: "children" },
       },
       {
         "key": "enable",
@@ -210,7 +184,6 @@ const addBtn = () => {
   form.value.props.title = '添加'
 
   if(selectItem.value){
-    // ✅ 重新赋值整个对象来触发响应式更新
     form.value.data = {
       ...form.value.data,
       parent_id: selectItem.value.menu_id,
@@ -221,7 +194,7 @@ const addBtn = () => {
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
-  form.value.props.action = '/app/admin/system/systemPermission/systemPermission/update';
+  form.value.props.action = '/app/admin/system/systemMenu/systemMenu/update';
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
   form.value.props.show = true
@@ -230,7 +203,7 @@ const updateBtn = (index: number, row: any) => {
 }
 const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
   btnsDeleteRequset({
-    action: '/app/admin/system/systemPermission/systemPermission/delete',
+    action: '/app/admin/system/systemMenu/systemMenu/delete',
     data: {
       _id: row._id
     }

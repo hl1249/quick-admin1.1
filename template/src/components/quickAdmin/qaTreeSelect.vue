@@ -10,7 +10,7 @@
       >
       <template #default="{ node, data }">
         <span class="custom-tree-node">
-          <span >{{ data.permission_name }}（{{ data.permission_id }}）</span>
+          <span >{{ data[defaultProps.value] }}（{{ data[defaultProps.label] }}）</span>
         </span>
       </template>
     </el-tree>
