@@ -20,10 +20,10 @@ export class ValidationPipe implements PipeTransform<any> {
     });
 
     const errors = await validate(object, {
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      forbidUnknownValues: true,
-      stopAtFirstError: true,
+      whitelist: false, // 是否只保留 DTO 中定义的字段
+      forbidNonWhitelisted: false, // DTO 外字段是否直接抛错
+      forbidUnknownValues: false, // 是否禁止非法/未知对象值
+      stopAtFirstError: true, // 是否在第一个校验错误时停止
     });
 
     if (errors.length > 0) {

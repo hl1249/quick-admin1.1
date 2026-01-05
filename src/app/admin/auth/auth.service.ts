@@ -84,20 +84,20 @@ export class authService {
         }
 
         const res = await this.dbService.selects({
-            dbName:'qa-menus',
-            whereJson,
-            getMain:true,
-            pageSize:200,
-            sortArr:[
-                {
-                    name:"sort",
-                    type:"asc"
-                }
-            ]
-        })
+          dbName: 'qa-menus',
+          whereJson,
+          getMain: true,
+          pageSize: 200,
+          sortArr: [
+            {
+              name: 'sort',
+              type: 'asc',
+            },
+          ],
+        });
 
         let treeProps = {
-            id:"name",
+            id:"menu_id",
             parent_id:"parent_id", 
             children:"children"
         };

@@ -5,11 +5,11 @@ import {
   Req,
   BadRequestException,
 } from '@nestjs/common';
-import { Document, InsertManyResult, InsertOneResult } from 'mongodb';
+import { Document, InsertOneResult } from 'mongodb';
 import { DbService } from '@/common/utils/db.service';
-import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
 import { arrayToTree } from '@/common/utils/utils'
 import { Promise } from 'mongoose';
+import { AddMenuDto, UpdateMenuDto } from './dto/systemMenu.dto';
 
 @Controller()
 export class SystemMenuController {
@@ -36,10 +36,7 @@ export class SystemMenuController {
   }
 
   @Post('/add')
-  add(
-    @Req() req,
-    @Body() data,
-  ): Promise<InsertOneResult | any> {
+  add(@Req() req, @Body() data: AddMenuDto): Promise<InsertOneResult | any> {
     let {
       menu_id,
       title,
@@ -49,11 +46,6 @@ export class SystemMenuController {
       enable = true,
       comment,
     } = data;
-
-    if (!menu_id) {
-      // 抛出异常，让全局异常过滤器处理
-      throw new BadRequestException('请填写菜单ID');
-    }
 
     return this.dbService.add({
       dbName: 'qa-menus',
@@ -82,8 +74,8 @@ export class SystemMenuController {
   }
 
   @Post('/update')
-  update(@Body() data): Promise<Document | null> {
-    let { _id, menu_id, title, path, enable = true, comment } = data;
+  update(@Body() data: UpdateMenuDto): Promise<Document | null> {
+    let { _id, menu_id, title, path, enable = true, comment, parent_id } = data;
 
     return this.dbService.updateById({
       dbName: 'qa-menus',
@@ -94,6 +86,7 @@ export class SystemMenuController {
         path,
         enable,
         comment,
+        parent_id,
       },
     });
   }
