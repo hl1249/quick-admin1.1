@@ -1,7 +1,7 @@
 <template>
     <div class="left-silder">
         <el-menu :default-openeds="menuStore.openeds" popper-effect="dark" :default-active="menuStore.activeName" class="el-menu-vertical-demo theme-bg" :collapse="menuStore.isCollapse">
-            <silder-item v-for="route,index in menuStore.menuList" :key="route._id" :item="route"/>
+            <silder-item v-for="route in menuStore.menuList" :key="route._id" :item="route"/>
         </el-menu>
     </div>
 </template>

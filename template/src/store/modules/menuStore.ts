@@ -5,6 +5,7 @@ import type { Routers } from '@/router/staticRouter'
 import router from '@/router'
 import { buildAsyncMenus, getHomeRoute, getBreadCrumbList } from '@/utils/index'
 
+import templateRouter from '@/router/templateRouter'
 
 export interface TabItem {
   name: string
@@ -63,15 +64,27 @@ export const useMenuStore = defineStore(
 
     // 身份动态菜单
     const menuList: MenuState['menuList'] = ref([])
-    const initMenu: MenuState['initMenu'] = (newMenuList) => {
-      menuList.value = newMenuList
-
+    const initMenu: MenuState['initMenu'] = (newMenuList: MenuList[]) => {
+      menuList.value = [...newMenuList,...templateRouter as unknown as MenuList[]]
       router.addRoute({
         path: '/',
         component: () => import('@/layout/main.vue'),
         children: buildAsyncMenus(menuList.value),
       })
     }
+
+    // 动态添加菜单
+      const addMnes:(staticMenuList:any) => void = (staticMenuList) => {
+        menuList.value = [
+            ...menuList.value,
+            ...staticMenuList
+        ]
+        //   menuList.value = staticMenuList
+        // console.log('staticMenuList',staticMenuList)
+        // router.addRoute(staticMenuList)
+        //   console.log('原格式',staticMenuList)
+      }
+
     const clearMenuList: MenuState['clearMenuList'] = () => {
       menuList.value = []
     }
@@ -174,6 +187,7 @@ export const useMenuStore = defineStore(
 
     return {
       menuList, initMenu,clearMenuList,
+        addMnes,
       isCollapse, changeIsCollapse, 
       openeds,
       initOpends,

@@ -1,4 +1,4 @@
-import { createRouter, createMemoryHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import staticRouter from './staticRouter'
 import { getDynamicMenu } from '@/api/auth'
 import { useStore } from '@/store'
@@ -7,7 +7,7 @@ import type { TabItem } from '@/store/modules/menuStore'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    ...staticRouter
+    ...staticRouter,
   ],
 })
 
@@ -21,6 +21,7 @@ let firstLoad = true
 
 router.beforeEach(async (to, from, next) => {
   const { menuStore, authStore } = useStore()
+
   if (to.path === '/login') {
     const isLogin = await authStore.checkLogin()
     if (isLogin) {

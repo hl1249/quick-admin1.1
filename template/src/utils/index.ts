@@ -1,12 +1,11 @@
 
 const pagesModule = import.meta.glob('@/pages/**/*.vue')
 // utils/renderComponent.ts
-import { createApp, ref, nextTick, createVNode, render} from 'vue'
-import type { App, Component, ComponentPublicInstance } from 'vue'
+import { createVNode, render} from 'vue'
 
 // 后端传来的菜单构建动态路由
 export const buildAsyncMenus = (menus: any) => {
-    const routeMenu = menus.map((menu: any) => {
+    return menus.map((menu: any) => {
         // 如果有子菜单（无论数量多少）
         if (menu.children && menu.children.length > 0) {
             return {
@@ -33,8 +32,6 @@ export const buildAsyncMenus = (menus: any) => {
             }
         }
     })
-
-    return routeMenu
 }
 
 
@@ -114,13 +111,11 @@ export const getBreadCrumbList = (route: any, homeRoute: any) => {
         })
         .map((item: { meta: { icon: any }; name: any }) => {
             let meta = { ...item.meta }
-            let obj = {
+            return {
                 icon: (item.meta && item.meta.icon) || '',
                 name: item.name,
                 meta: meta,
             }
-
-            return obj
         })
     return [{ ...homeItem, to: homeRoute.path }, ...res]
 }
@@ -393,7 +388,7 @@ export const getCommonTime = (date: Date = new Date(), targetTimezone: number = 
 }
 
 // 动态渲染组件 - show=false 时自动卸载
-export function renderComponent(Component, props = {}, container?) {
+export function renderComponent(Component :any, props = {}, container?:any) {
   const el = container || document.createElement('div')
   if (!container) document.body.appendChild(el)
 
