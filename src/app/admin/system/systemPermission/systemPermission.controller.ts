@@ -1,13 +1,14 @@
 import { Controller, Post,Body, Req } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
-import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
 import { arrayToTree } from '@/common/utils/utils'
+import { authService } from '@/app/admin/auth/auth.service';
 
 @Controller()
 export class SystemPermissionController {
   constructor(
     private readonly dbService: DbService,
+    private readonly authService: authService,
   ) {
   }
 
@@ -83,21 +84,26 @@ export class SystemPermissionController {
   }
 
   @Post('/delete')
-  delete(@Body() data): Promise<Document | null> {
+  async delete(@Body() data): Promise<Document | null> {
     let {
       _id
 		} = data
 
-    return this.dbService.del({
-      dbName: "qa-permissions",
-      whereJson:{
-        _id
-      }
-    })
+    const result = await this.dbService.del({
+      dbName: 'qa-permissions',
+      whereJson: {
+        _id,
+      },
+    });
+
+    // 删除权限后，递增版本号使所有用户权限缓存失效
+    await this.authService.updateAuthVersion();
+
+    return result;
   }
 
   @Post('/update')
-  update(@Body() data): Promise<Document | null> {
+  async update(@Body() data): Promise<Document | null> {
     console.log("我执行力")
     let {
       _id,
@@ -109,7 +115,7 @@ export class SystemPermissionController {
 			comment,
 		} = data;
 
-    return this.dbService.updateById({
+    const result = await this.dbService.updateById({
       dbName: "qa-permissions",
       id:_id,
       dataJson:{
@@ -121,22 +127,32 @@ export class SystemPermissionController {
         comment,
       }
     })
+
+    // 更新权限后，递增版本号使所有用户权限缓存失效
+    await this.authService.updateAuthVersion();
+
+    return result;
   }
 
   @Post('/updateBase')
-  updateBase(@Body() data): Promise<Document | null> {
+  async updateBase(@Body() data): Promise<Document | null> {
     let {
       _id,
 			enable = true,
 		} = data
 
-    return this.dbService.updateById({
+    const result = await this.dbService.updateById({
       dbName: "qa-permissions",
       id:_id,
       dataJson:{
         enable
       }
     })
+
+    // 更新权限启用状态后，递增版本号使所有用户权限缓存失效
+    await this.authService.updateAuthVersion();
+
+    return result;
   }
 
 }

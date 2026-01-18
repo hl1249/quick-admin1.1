@@ -41,13 +41,13 @@ export const PERMISSION_URLS = [
 export const ADMIN_ROLE_ID = 'admin';
 
 // 缓存类型
-export const CACHE_TYPE: 'redis' | 'memory' = 'memory';
+export const CACHE_TYPE: 'redis' | 'memory' = 'redis';
 
 // 缓存时间 单位/秒
 export const CACHE_TTL = 604800; // 7天
 
 // 缓存命名空间
-export const CACHE_PREFIX = 'quickadmin';
+export const CACHE_PREFIX = 'quickAdmin';
 
 // redis端口
 export const REDIS_PORT = 6379;

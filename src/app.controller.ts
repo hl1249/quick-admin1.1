@@ -1,11 +1,10 @@
-import { Body, Post, Controller, Get, Request, Req, SetMetadata  } from '@nestjs/common';
+import { Post, Controller, Get, Request, SetMetadata  } from '@nestjs/common';
 import { DeleteResult, UpdateResult, Document, InsertManyResult } from 'mongodb'
 import { SelectResult } from '@/common/utils/utils.types';
 import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import { Log } from '@/common/logger/logger.decorator';
-import {sleep} from '@/common/utils/utils'
 import { CacheService } from '@/common/cach/cache.service'
 @Log()
 @Controller()
@@ -13,9 +12,8 @@ export class AppController {
   constructor(
     private readonly dbService: DbService,
     private readonly jwtService: JwtService,
-    private readonly cache: CacheService
-  ) {
-  }
+    private readonly cache: CacheService,
+  ) {}
 
   @Get()
   async getHello(): Promise<DeleteResult> {
@@ -45,18 +43,16 @@ export class AppController {
         { name: '批量添加5', age: 40, arr: [13, 14, 15] },
       ],
     });
-
   }
 
   @Post('/del')
-  del(body: Body): Promise<DeleteResult> {
+  del(): Promise<DeleteResult> {
     return this.dbService.del({
       dbName: 'qa-users',
       whereJson: {
-        age: _.exists(true)
-      }
+        age: _.exists(true),
+      },
     });
-
   }
 
   @Get('/findById')
@@ -69,12 +65,10 @@ export class AppController {
         // _id:false
       },
     });
-
   }
 
   @Get('/findByWhereJson')
   findByWhereJson(@Request() req): Promise<Document | null> {
-
     return this.dbService.findByWhereJson({
       dbName: 'qa-users',
       whereJson: {
@@ -90,11 +84,9 @@ export class AppController {
         //   ]
         // })
       },
-
     });
-
   }
-  
+
   @Get('/selects')
   async selects(): Promise<Document[] | SelectResult> {
     return await this.dbService.selects({
@@ -117,30 +109,30 @@ export class AppController {
       //   role: _.eq('admin')
       // },
       addFields: {
-        role_name: "$roles.role_id",
-        comment: "$roles.comment",
+        role_name: '$roles.role_id',
+        comment: '$roles.comment',
         andSex: {
           $anyElementTrue: {
             $map: {
-              input: "$roles",
-              as: "r",
-              in: { $gte: ["$$r.no", 1] } // 判断每个 sex 是否 > 0
-            }
-          }
-        }
+              input: '$roles',
+              as: 'r',
+              in: { $gte: ['$$r.no', 1] }, // 判断每个 sex 是否 > 0
+            },
+          },
+        },
       },
       foreignDB: [
         {
           // limit:1,
-          dbName: "qa-roles",
+          dbName: 'qa-roles',
           // localKey: "_id",
           localKey: $.arrayElemAt(['$role', 0]),
-          foreignKey: "role_id",
-          as: "roles",
+          foreignKey: 'role_id',
+          as: 'roles',
           fieldJson: {
             // sex: true,
           },
-        }
+        },
         //   whereJson: {
         //     txt: _.eq('我是roles表数据1')
         //   },
@@ -182,22 +174,22 @@ export class AppController {
 
         //   limit: 10 // limit>1则以数组形式返回
         // }
-
       ],
-      
+
       lastWhereJson: {
         // _id: _.lte(20)
       },
-      fieldJson: { // 代表只显示_id和money字段 会影响副表的查询
+      fieldJson: {
+        // 代表只显示_id和money字段 会影响副表的查询
         // _id: true,
         // age: false,
         // _id: true
       },
-      sortArr: [ // 按_id降序 asc 升序 desc 降序 
-        { name: "_id", type: "asc" }
+      sortArr: [
+        // 按_id降序 asc 升序 desc 降序
+        { name: '_id', type: 'asc' },
       ],
     });
-
   }
 
   @Get('/getTableData')
@@ -211,18 +203,21 @@ export class AppController {
           // _add_time: [0, Date.now()] // datetimerange 对应 mode []
         },
         columns: [
-          { key: "name", title: "昵称", type: "text", width: 160, mode: "%%" },
-          { key: "_add_time", title: "添加时间", type: "datetimerange", width: 400, mode: "[]" },
+          { key: 'name', title: '昵称', type: 'text', width: 160, mode: '%%' },
+          {
+            key: '_add_time',
+            title: '添加时间',
+            type: 'datetimerange',
+            width: 400,
+            mode: '[]',
+          },
         ],
-        sortRule: [
-          { name: "no", type: "desc" }
-        ]
+        sortRule: [{ name: 'no', type: 'desc' }],
       },
       dbName: 'qa-users',
       pageIndex: 1, // 当前第几页
       pageSize: 2, // 每页条数
     });
-
   }
 
   @Get('/select')
@@ -256,61 +251,57 @@ export class AppController {
       // // 代表只显示_id和money字段
       // fieldJson: {
       //   _id: true,
-      //   money: true, 
+      //   money: true,
       // },
-      // // 按_id降序 asc 升序 desc 降序 
+      // // 按_id降序 asc 升序 desc 降序
       // sortArr: [
       //   { name: "_id", type: "desc" }
       // ],
     });
-
   }
 
   @Get('/count')
   count(): Promise<number> {
     return this.dbService.count({
-      dbName: "qa-users",// 表名
+      dbName: 'qa-users', // 表名
       whereJson: {
         age: _.gte(30),
-      }
+      },
     });
   }
 
   @Get('/sum')
   sum(): Promise<number> {
     return this.dbService.sum({
-      dbName: "qa-users",// 表名
-      fieldName: "age",// 求和字段
+      dbName: 'qa-users', // 表名
+      fieldName: 'age', // 求和字段
     });
   }
-
 
   @Get('/update')
   update(): Promise<UpdateResult> {
     return this.dbService.update({
       dbName: 'qa-users',
       whereJson: {
-        _id:"672b901c0fcabce5e29faef5"
+        _id: '672b901c0fcabce5e29faef5',
       },
       dataJson: {
         // 'arr.0': 10086,
         // giao:"维护"
         // token:[]
-      }
+      },
     });
-
   }
 
   @Get('/updateById')
   updateById(): Promise<UpdateResult> {
     return this.dbService.updateById({
       dbName: 'qa-users',
-      id: "689beb65a0556c810061751f",
+      id: '689beb65a0556c810061751f',
       dataJson: {
-        age: 10086
-      }
+        age: 10086,
+      },
     });
-
   }
 
   @Get('/updateAndReturn')
@@ -321,8 +312,8 @@ export class AppController {
         age: 10086,
       },
       dataJson: {
-        fuck: _.remove()
-      }
+        fuck: _.remove(),
+      },
     });
   }
 
@@ -330,10 +321,10 @@ export class AppController {
   setById(): Promise<UpdateResult> {
     return this.dbService.setById({
       dbName: 'qa-users',
-      id: "123456123456123456123456",
+      id: '123456123456123456123456',
       dataJson: {
-        fuck: '我曹牛吗'
-      }
+        fuck: '我曹牛吗',
+      },
     });
   }
 
@@ -345,27 +336,31 @@ export class AppController {
     //   role: 'admin',
     // });
     // return token;
-    return this.jwtService.generateToken('123')
+    return this.jwtService.generateToken('123');
   }
-  
+
   @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
   @Get('/cacheRead')
-  async cacheRead(){
+  async cacheRead() {
     return {
-      value:await this.cache.get("wuhu")
-    }
-    return 'redis'
+      value: await this.cache.get('wuhu'),
+    };
   }
-  
+
   @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
   @Get('/cacheSet')
-  async cacheSet(){
-   return await this.cache.set("wuhu",{name:1})
+  async cacheSet() {
+    return await this.cache.set('wuhu', { name: 1 });
   }
-  
+
   @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
   @Get('/giao')
-  async giao(){
-   return await this.cache.deleteByPrefix("auth:permission")
+  async giao() {
+    return await this.cache.deleteByPrefix('auth');
+  }
+  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
+  @Get('/incr')
+  async incr() {
+    return await this.cache.incr('authVersion');
   }
 }
