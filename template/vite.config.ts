@@ -31,7 +31,7 @@ export default defineConfig(async ({ mode }) => {
       open: Boolean(VITE_OPEN),
       proxy: {
         '/api': {
-          target: 'http://localhost:3001',
+          target: 'http://localhost:3000',
           secure: false,
           changeOrigin: true,
           rewrite: (path:string) => path.replace(/^\/api/, ''),
@@ -50,7 +50,7 @@ export default defineConfig(async ({ mode }) => {
           manualChunks: {
             // 分包配置，配置完成自动按需加载
             vue: ['vue', 'vue-router', 'pinia', 'element-plus'],
-            echarts: ['echarts'],
+            // echarts: ['echarts'],
           },
         },
       },

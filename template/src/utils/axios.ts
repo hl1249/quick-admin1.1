@@ -7,7 +7,7 @@ import router from '@/router'
 
 export const getUrl = (): string => {
   const value: string = import.meta.env.VITE_AXIOS_BASE_URL as string
-  return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host : value
+  return value == 'getCurrentDomain' ? window.location.protocol + '//' + window.location.host + '/api' : value
 }
 
 class HttpRequest {
