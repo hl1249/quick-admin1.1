@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, Ip } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  Ip,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DbService } from '@/common/utils/db.service';
 import { Document } from 'mongodb'
 import { UserDto } from './auth.dto';
@@ -81,7 +87,8 @@ export class authService {
       `auth:${userId}`,
     ))!;
 
-    console.log('allowedMenus', cachedPermissions.allowedMenus);
+    if(!cachedPermissions) throw new UnauthorizedException('身份认证失败');
+    console.log('allowedMenus', cachedPermissions);
     let whereJson = {};
     if (!userInfo.role.includes(ADMIN_ROLE_ID)) {
       whereJson = {

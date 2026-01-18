@@ -19,7 +19,6 @@ export class PermissionGuard implements CanActivate {
     ): Promise<boolean> {
       const request = context.switchToHttp().getRequest();
       const url = request.url;
-
       // 只对 PERMISSION_URLS配置的路由开头的接口进行权限验证
       if (!PERMISSION_URLS.some((item) => url.startsWith(item))) return true;
       // throw new ForbiddenException('没有权限访问该接口');
@@ -57,6 +56,7 @@ export class PermissionGuard implements CanActivate {
         permissionConfigs: Array<{ url: string[]; match_mode: number }>;
         authVersion: number;
       }>(`auth:${userId}`);
+
 
       // 检查缓存是否存在或版本是否过期
       const needRebuild = cachedPermissions && cachedPermissions.authVersion !== currentAuthVersion;

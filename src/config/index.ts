@@ -41,7 +41,7 @@ export const PERMISSION_URLS = [
 export const ADMIN_ROLE_ID = 'admin';
 
 // 缓存类型
-export const CACHE_TYPE: 'redis' | 'memory' = 'redis';
+export const CACHE_TYPE: 'redis' | 'memory' = 'memory';
 
 // 缓存时间 单位/秒
 export const CACHE_TTL = 604800; // 7天
