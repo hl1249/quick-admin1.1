@@ -1,4 +1,4 @@
-<p align="center" style="display:flex;align-items:center;justify-content:space-around">
+<p style="display:flex;align-items:center;justify-content:space-around">
   <a href="#" target="blank"><img src="https://gitee.com/hr1249412130/quick-admin/raw/master/logo.png" width="250" alt="Nest Logo" />
   </a>
 </p>
@@ -36,13 +36,15 @@ quick
 │   │   ├── client        # 客户端接口模块
 │   ├── common
 │   │   ├── auth          # 鉴权
+│   │   ├── cach          # 缓存模块（支持Redis/内存缓存）
 │   │   ├── utils         # 工具类
 │   │   ├── exception     # 错误过滤
 │   │   ├── jwt           # JWT工具类
 │   │   ├── logger        # 日志拦截
-│   │   ├── response      # 统一响应  
+│   │   ├── response      # 统一响应
 │   │   ├── validator     # 字段验证器
-│─── quickAdmin.sql       # 数据库文件
+│   ├── db
+│   │   ├── quickAdmin.sql       # 数据库文件
 └─────────────────────────
 ```
 ```bash
