@@ -1,4 +1,4 @@
-<p style="display:flex;align-items:center;justify-content: center">
+<p style="text-align: center" >
   <a href="#" target="blank"><img src="https://gitee.com/hr1249412130/quick-admin/raw/master/logo.png" width="250" alt="Nest Logo" />
   </a>
 </p>
