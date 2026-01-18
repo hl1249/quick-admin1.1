@@ -1,4 +1,4 @@
-import { Controller, Post,Body, Req } from '@nestjs/common';
+import { Controller, Post,Body } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 import { arrayToTree } from '@/common/utils/utils'
@@ -9,69 +9,65 @@ export class SystemPermissionController {
   constructor(
     private readonly dbService: DbService,
     private readonly authService: authService,
-  ) {
-  }
+  ) {}
 
   @Post('/getAllMenu')
-  getAllMenu(): Promise<Document | null>{
-     return this.dbService.select({
-      dbName:"qa-menus",
-      getMain: true
-     })
+  getAllMenu(): Promise<Document | null> {
+    return this.dbService.select({
+      dbName: 'qa-menus',
+      getMain: true,
+    });
   }
 
-
   @Post('/getAllPermissions')
-  getAllPermissions(): Promise<Document | null>{
-     return this.dbService.select({
-      dbName:"qa-permissions",
+  getAllPermissions(): Promise<Document | null> {
+    return this.dbService.select({
+      dbName: 'qa-permissions',
       getMain: true,
-      pageSize:999
-     })
+      pageSize: 999,
+    });
   }
 
   @Post('/getList')
-  async getList(@Req() req, @Body() data): Promise<Document | null> {
-      // return this.dbService.getTableData({
-      //   dbName: "qa-permissions",
-      //   data,
-      // })
+  async getList(): Promise<Document | null> {
+    // return this.dbService.getTableData({
+    //   dbName: "qa-permissions",
+    //   data,
+    // })
 
     const res = await this.dbService.selects({
-      dbName: "qa-permissions",
-      pageSize:9999,
-    })
-      
+      dbName: 'qa-permissions',
+      pageSize: 9999,
+    });
 
     let treeProps = {
-        id:"permission_id",
-        parent_id:"parent_id", 
-        children:"children"
+      id: 'permission_id',
+      parent_id: 'parent_id',
+      children: 'children',
     };
-    
+
     return {
-        ...res,
-        rows:arrayToTree(res.rows as Document[],treeProps),
-        list:res.rows as Document[],
-    }
+      ...res,
+      rows: arrayToTree(res.rows as Document[], treeProps),
+      list: res.rows as Document[],
+    };
   }
 
   @Post('/add')
-  add(@Req() req, @Body() data): Promise<Document | null> {
-
+  add(@Body() data: any): Promise<Document | null> {
     let {
-			permission_id,
-			permission_name,
+      permission_id,
+      permission_name,
       parent_id,
       url,
       match_mode,
-			enable = true,
-			comment,
-		} = data;
+      enable = true,
+      comment,
+    } = data;
 
     return this.dbService.add({
-      dbName: "qa-permissions",
-      dataJson:{
+      dbName: 'qa-permissions',
+      dataJson: {
         permission_id,
         permission_name,
         parent_id,
@@ -79,15 +75,13 @@ export class SystemPermissionController {
         match_mode,
         enable,
         comment,
-      }
-    })
+      },
+    });
   }
 
   @Post('/delete')
-  async delete(@Body() data): Promise<Document | null> {
-    let {
-      _id
-		} = data
+  async delete(@Body() data: any): Promise<Document | null> {
+    let { _id } = data;
 
     const result = await this.dbService.del({
       dbName: 'qa-permissions',
@@ -103,30 +97,30 @@ export class SystemPermissionController {
   }
 
   @Post('/update')
-  async update(@Body() data): Promise<Document | null> {
-    console.log("我执行力")
+  async update(@Body() data: any): Promise<Document | null> {
+    console.log('我执行力');
     let {
       _id,
-			permission_id,
-			permission_name,
+      permission_id,
+      permission_name,
       url,
       match_mode,
-			enable = true,
-			comment,
-		} = data;
+      enable = true,
+      comment,
+    } = data;
 
     const result = await this.dbService.updateById({
-      dbName: "qa-permissions",
-      id:_id,
-      dataJson:{
+      dbName: 'qa-permissions',
+      id: _id,
+      dataJson: {
         permission_id,
         permission_name,
         url,
         match_mode,
         enable,
         comment,
-      }
-    })
+      },
+    });
 
     // 更新权限后，递增版本号使所有用户权限缓存失效
     await this.authService.updateAuthVersion();
@@ -135,24 +129,20 @@ export class SystemPermissionController {
   }
 
   @Post('/updateBase')
-  async updateBase(@Body() data): Promise<Document | null> {
-    let {
-      _id,
-			enable = true,
-		} = data
+  async updateBase(@Body() data: any): Promise<Document | null> {
+    let { _id, enable = true } = data;
 
     const result = await this.dbService.updateById({
-      dbName: "qa-permissions",
-      id:_id,
-      dataJson:{
-        enable
-      }
-    })
+      dbName: 'qa-permissions',
+      id: _id,
+      dataJson: {
+        enable,
+      },
+    });
 
     // 更新权限启用状态后，递增版本号使所有用户权限缓存失效
     await this.authService.updateAuthVersion();
 
     return result;
   }
-
 }

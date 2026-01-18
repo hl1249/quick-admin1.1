@@ -1,14 +1,13 @@
-import { Controller, Post,Body, Req } from '@nestjs/common';
-import { Document } from 'mongodb'
+import { Controller, Post,Body } from '@nestjs/common';
+import { Document, UpdateResult } from 'mongodb';
 import { DbService } from '@/common/utils/db.service';
-import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
+import { authService } from '@/app/admin/auth/auth.service';
 
-import { CacheService } from '@/common/cach/cache.service'
 @Controller()
 export class SystemRoleController {
   constructor(
     private readonly dbService: DbService,
-    private readonly cache: CacheService,
+    private readonly authService: authService,
   ) {
   }
 
@@ -31,7 +30,7 @@ export class SystemRoleController {
   }
 
   @Post('/getList')
-  getList(@Req() req, @Body() data): Promise<Document | null> {
+  getList(@Body() data: any): Promise<Document | null> {
       return this.dbService.getTableData({
         dbName: "qa-roles",
         data,
@@ -43,7 +42,7 @@ export class SystemRoleController {
             foreignKey:"menu_id",
             as:'menuList'
           },
-          
+
           {
             dbName:"qa-permissions",
             localKey:"permission",
@@ -56,7 +55,7 @@ export class SystemRoleController {
   }
 
   @Post('/add')
-  add(@Req() req, @Body() data): Promise<Document | null> {
+  add( @Body() data: any): Promise<Document | null> {
 
     let {
 			role_id,
@@ -71,92 +70,103 @@ export class SystemRoleController {
         role_id,
         role_name,
         comment,
-        enable 
+        enable
       }
     })
   }
 
   @Post('/delete')
-  delete(@Body() data): Promise<Document | null> {
-    let {
-      _id
-		} = data
+  async delete(@Body() data: any): Promise<Document | null> {
+    let { _id } = data;
 
-    return this.dbService.del({
-      dbName: "qa-roles",
-      whereJson:{
-        _id
-      }
-    })
+    const result = await this.dbService.del({
+      dbName: 'qa-roles',
+      whereJson: {
+        _id,
+      },
+    });
+
+    // 删除权限后，递增版本号使所有用户权限缓存失效
+    await this.authService.updateAuthVersion();
+
+    return result;
   }
 
   @Post('/update')
-  update(@Body() data): Promise<Document | null> {
-    let {
-      _id,
-			role_id,
-			role_name,
-			comment,
-			enable = true,
-		} = data
+  async update(@Body() data: any): Promise<Document | null> {
+    let { _id, role_id, role_name, comment, enable = true } = data;
 
-    return this.dbService.updateById({
-      dbName: "qa-roles",
-      id:_id,
-      dataJson:{
+    const result: UpdateResult = await this.dbService.updateById({
+      dbName: 'qa-roles',
+      id: _id,
+      dataJson: {
         role_id,
         role_name,
         comment,
-        enable
-      }
-    })
+        enable,
+      },
+    });
+
+    // 删除权限后，递增版本号使所有用户权限缓存失效
+    await this.authService.updateAuthVersion();
+    return result;
   }
 
   @Post('/updateBase')
-  updateBase(@Body() data): Promise<Document | null> {
+  async updateBase(@Body() data: any): Promise<Document | null> {
     let {
       _id,
 			enable = true,
 		} = data
 
-    return this.dbService.updateById({
+    const result = await this.dbService.updateById({
       dbName: "qa-roles",
       id:_id,
       dataJson:{
         enable
       }
     })
+
+    await this.authService.updateAuthVersion();
+    return result;
+
   }
 
   @Post('/bindMenu')
-  bindMenu(@Body() data): Promise<Document | null> {
+  async bindMenu(@Body() data: any): Promise<Document | null> {
     let {
       _id,
 			menu
 		} = data
 
-    return this.dbService.updateById({
-      dbName: "qa-roles",
-      id:_id,
-      dataJson:{
-        menu
-      }
-    })
+    const result = await this.dbService.updateById({
+      dbName: 'qa-roles',
+      id: _id,
+      dataJson: {
+        menu,
+      },
+    });
+
+    await this.authService.updateAuthVersion();
+    return result;
   }
 
   @Post('/bindPermissions')
-  bindPermissions(@Body() data): Promise<Document | null> {
+  async bindPermissions(@Body() data: any): Promise<Document | null> {
     let {
       _id,
 			permission
 		} = data
 
-    return this.dbService.updateById({
+    const result = await this.dbService.updateById({
       dbName: "qa-roles",
       id:_id,
       dataJson:{
         permission
       }
     })
+
+    await this.authService.updateAuthVersion();
+    return result;
   }
 }

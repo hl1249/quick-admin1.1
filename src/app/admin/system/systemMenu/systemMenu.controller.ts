@@ -2,21 +2,23 @@ import {
   Controller,
   Post,
   Body,
-  Req,
-  BadRequestException,
 } from '@nestjs/common';
 import { Document, InsertOneResult } from 'mongodb';
 import { DbService } from '@/common/utils/db.service';
 import { arrayToTree } from '@/common/utils/utils'
 import { Promise } from 'mongoose';
 import { AddMenuDto, UpdateMenuDto } from './dto/systemMenu.dto';
+import { authService } from '@/app/admin/auth/auth.service';
 
 @Controller()
 export class SystemMenuController {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly dbService: DbService,
+    private  readonly authService: authService,
+  ) {}
 
   @Post('/getList')
-  async getList(@Req() req, @Body() data): Promise<Document | null> {
+  async getList(): Promise<Document | null> {
     const res = await this.dbService.selects({
       dbName: 'qa-menus',
       pageSize: 9999,
@@ -36,7 +38,7 @@ export class SystemMenuController {
   }
 
   @Post('/add')
-  add(@Req() req, @Body() data: AddMenuDto): Promise<InsertOneResult | any> {
+  add(@Body() data: AddMenuDto): Promise<InsertOneResult | any> {
     let {
       menu_id,
       title,
@@ -62,22 +64,25 @@ export class SystemMenuController {
   }
 
   @Post('/delete')
-  delete(@Body() data): Promise<Document | null> {
+  async delete(@Body() data: any): Promise<Document | null> {
     let { _id } = data;
 
-    return this.dbService.del({
+    const result = await this.dbService.del({
       dbName: 'qa-menus',
       whereJson: {
         _id,
       },
     });
+
+    await this.authService.updateAuthVersion();
+    return result;
   }
 
   @Post('/update')
-  update(@Body() data: UpdateMenuDto): Promise<Document | null> {
+  async update(@Body() data: UpdateMenuDto): Promise<Document | null> {
     let { _id, menu_id, title, path, enable = true, comment, parent_id } = data;
 
-    return this.dbService.updateById({
+    const result = await this.dbService.updateById({
       dbName: 'qa-menus',
       id: _id,
       dataJson: {
@@ -89,18 +94,24 @@ export class SystemMenuController {
         parent_id,
       },
     });
+
+    await this.authService.updateAuthVersion();
+    return result;
   }
 
   @Post('/updateBase')
-  updateBase(@Body() data): Promise<Document | null> {
+  async updateBase(@Body() data: any): Promise<Document | null> {
     let { _id, enable = true } = data;
 
-    return this.dbService.updateById({
+    const result = await this.dbService.updateById({
       dbName: 'qa-menus',
       id: _id,
       dataJson: {
         enable,
       },
     });
+
+    await this.authService.updateAuthVersion();
+    return result;
   }
 }
