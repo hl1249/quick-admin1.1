@@ -1,6 +1,6 @@
 
 // 服务运行端口
-export const PORT = 3001;
+export const PORT = 3000;
 
 // debug 模式
 export const DEBUG = true;

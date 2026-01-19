@@ -133,14 +133,15 @@ export class DbService {
     if (db) {
       return await db.collection(dbName).findOne({ _id: new ObjectId(id) }, { projection: fieldJson })
     } else {
-      return await this.connection.collection(dbName).findOne({ _id: new ObjectId(id) }, { projection: fieldJson })
+      return await this.connection
+        .collection(dbName)
+        .findOne({ _id: new ObjectId(id) }, { projection: fieldJson });
     }
   }
 
 
   @TransformDbParams
   async findByWhereJson(params: FindByWhereJsonParams): Promise<Document | null> {
-
     const {
       dbName,
       whereJson,

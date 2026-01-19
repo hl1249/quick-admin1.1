@@ -1,4 +1,4 @@
-import { Post, Controller, Get, Request, SetMetadata  } from '@nestjs/common';
+import { Post, Controller, Get, SetMetadata  } from '@nestjs/common';
 import { DeleteResult, UpdateResult, Document, InsertManyResult } from 'mongodb'
 import { SelectResult } from '@/common/utils/utils.types';
 import { DbService } from '@/common/utils/db.service';
@@ -8,6 +8,7 @@ import { Log } from '@/common/logger/logger.decorator';
 import { CacheService } from '@/common/cach/cache.service'
 @Log()
 @Controller()
+@SetMetadata('skipAuth', true) // 设置该路由不需要验证token
 export class AppController {
   constructor(
     private readonly dbService: DbService,
@@ -68,10 +69,11 @@ export class AppController {
   }
 
   @Get('/findByWhereJson')
-  findByWhereJson(@Request() req): Promise<Document | null> {
+  findByWhereJson(): Promise<Document | null> {
     return this.dbService.findByWhereJson({
       dbName: 'qa-users',
       whereJson: {
+        'userInfo.name': '王德发',
         // _id: "689beb65a0556c810061751f",
         // age: _.and(_.gte(10085), _.lte(10086)),
         // "arr.0": 1,
@@ -339,27 +341,23 @@ export class AppController {
     return this.jwtService.generateToken('123');
   }
 
-  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
-  @Get('/cacheRead')
+   @Get('/cacheRead')
   async cacheRead() {
     return {
       value: await this.cache.get('wuhu'),
     };
   }
 
-  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
-  @Get('/cacheSet')
+ @Get('/cacheSet')
   async cacheSet() {
     return await this.cache.set('wuhu', { name: 1 });
   }
 
-  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
   @Get('/giao')
   async giao() {
     return await this.cache.deleteByPrefix('auth');
   }
-  @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
-  @Get('/incr')
+ @Get('/incr')
   async incr() {
     return await this.cache.incr('authVersion');
   }
