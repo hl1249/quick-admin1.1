@@ -12,7 +12,7 @@ export const getDynamicMenu = () => {
     return http.request({
         url:'/app/admin/auth/auth/getDynamicMenu',
         method: 'get',
-        openMessage: true
+        openMessage: false
     })
 }
 export const checkLogin = () => {
