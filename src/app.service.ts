@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { Connection } from 'mongoose';
-import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult, ReturnDocument } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
 
 import { DbService } from '@/common/utils/db.service';

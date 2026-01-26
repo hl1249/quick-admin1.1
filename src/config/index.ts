@@ -1,4 +1,3 @@
-
 // 服务运行端口
 export const PORT = 3000;
 
@@ -6,12 +5,12 @@ export const PORT = 3000;
 export const DEBUG = true;
 
 // 数据库连接地址
-export const DB_URL = 'mongodb://127.0.0.1'; 
+export const DB_URL = 'mongodb://43.139.63.227';
 
 // 数据库端口
-export const DB_PORT = 27017
+export const DB_PORT = 27017;
 
- // 数据库名称
+// 数据库名称
 export const DB_NAME = 'quickAdmin';
 
 // TOKEN请求头验证字段
@@ -41,7 +40,7 @@ export const PERMISSION_URLS = [
 export const ADMIN_ROLE_ID = 'admin';
 
 // 缓存类型
-export const CACHE_TYPE: 'redis' | 'memory' = 'memory';
+export const CACHE_TYPE: 'redis' | 'memory' = 'redis';
 
 // 缓存时间 单位/秒
 export const CACHE_TTL = 604800; // 7天
@@ -53,7 +52,7 @@ export const CACHE_PREFIX = 'quickAdmin';
 export const REDIS_PORT = 6379;
 
 // redis地址
-export const REDIS_HOST = '127.0.0.1';
+export const REDIS_HOST = '43.139.63.227';
 
 // redis密码
 export const REDIS_PASSWORD = '';
