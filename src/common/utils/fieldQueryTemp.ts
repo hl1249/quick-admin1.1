@@ -1,4 +1,9 @@
 import { MongoAggBuilder , CondExpr} from './utils.types'
+
+// 常量定义
+const COMPARISON_OPERATORS = ['gte', 'lte', 'gt', 'lt', 'eq', 'ne'] as const;
+const LOGICAL_OPERATORS = ['and', 'or', 'not'] as const;
+
 export class FieldQueryTemp {
   private ops: Record<string, any> = {};
 
@@ -8,63 +13,22 @@ export class FieldQueryTemp {
     }
   }
 
-  eq(value: any) {
-    return new FieldQueryTemp('$eq', value);
-  }
-  neq(value: any) {
-    return new FieldQueryTemp('$ne', value);
-  }
-  gt(value: any) {
-    return new FieldQueryTemp('$gt', value);
-  }
-  gte(value: any) {
-    return new FieldQueryTemp('$gte', value);
-  }
-  lt(value: any) {
-    return new FieldQueryTemp('$lt', value);
-  }
-  lte(value: any) {
-    return new FieldQueryTemp('$lte', value);
-  }
-  in(values: any[]) {
-    return new FieldQueryTemp('$in', values);
-  }
-  nin(values: any[]) {
-    return new FieldQueryTemp('$nin', values);
-  }
-  expr(value: any) {
-    return new FieldQueryTemp('$expr', value);
-  }
-  exists(value: boolean) {
-    return new FieldQueryTemp('$exists', value);
-  }
-
-  // dataJson 中的 _.remove() 操作
-  remove() {
-    return new FieldQueryTemp('$unset', '');
-  }
-
-  // dataJson 中的 _.push() 操作
-  push(value: any) {
-    return new FieldQueryTemp('$push', value);
+  // Helper method to get the first operator and its value
+  private getOperator(): { operator: string; value: any } {
+    const operator = Object.keys(this.ops)[0];
+    return { operator, value: this.ops[operator] };
   }
 
 
   /**
-   * and 支持两种用法：
-   * 1. 同字段多条件合并，参数是多个 FieldQueryTemp 实例
-   * 2. 跨字段条件组合，参数是数组，数组里可以是普通对象或 FieldQueryTemp
+   * and 用于同字段多条件合并
+   * 参数是多个 FieldQueryTemp 实例
    */
   and(...args: FieldQueryTemp[]) {
-    // 如果所有参数都是 FieldQueryTemp，合并ops（单字段多个条件）
-    if (args.every(arg => arg instanceof FieldQueryTemp)) {
-      for (const arg of args) {
-        Object.assign(this.ops, arg.getOps());
-      }
-      return this;
+    for (const arg of args) {
+      Object.assign(this.ops, arg.getOps());
     }
-    // 否则返回逻辑组合
-    return LogicQuery.and(args);
+    return this;
   }
 
   or(...args: FieldQueryTemp[]) {
@@ -99,10 +63,7 @@ export class FieldQueryTemp {
 
   // 对于selects第一层里面AddFields转换
   buildAddFieldsWithField(field: string) {
-    
-    // 获取操作符和值
-    const operator = Object.keys(this.ops)[0];
-    const value = this.ops[operator];
+    const { operator, value } = this.getOperator();
 
     // 处理带点号的路径（如 'roles.sex'）
     if (field.includes('.')) {
@@ -134,11 +95,7 @@ export class FieldQueryTemp {
 
   // 对于selects里Foreign层里面AddFields转换
   buildForeignAddFieldsWithField(field: string) {
-    // For comparison operators, transform to array format with field reference
-    const operator = Object.keys(this.ops)[0];
-    const value = this.ops[operator];
-
-    // 关键修改：直接返回操作符表达式
+    const { operator, value } = this.getOperator();
     return {
       [operator]: [`$${field}`, value]
     };
@@ -146,16 +103,11 @@ export class FieldQueryTemp {
 
   // 对于selects里Foreign层里面WhereJson转换
   buildForeignWhereJsonWithField(field: string) {
-    // Special handling for $expr - keep as is
     if ('$expr' in this.ops) {
       return { $expr: this.ops['$expr'] };
     }
 
-    // For comparison operators, transform to array format with field reference
-    const operator = Object.keys(this.ops)[0];
-    const value = this.ops[operator];
-
-    // 关键修改：直接返回操作符表达式
+    const { operator, value } = this.getOperator();
     return {
       [operator]: [`$${field}`, value]
     };
@@ -163,27 +115,19 @@ export class FieldQueryTemp {
 }
 
 class LogicQuery {
-  static and(...args: any[]) {
-    // 参数只有一个且是数组，直接用它
+  // 提取公共逻辑，减少代码重复
+  private static buildLogicQuery(operator: '$and' | '$or', ...args: any[]) {
     const arr = args.length === 1 && Array.isArray(args[0]) ? args[0] : args;
-
-    // 如果数组里有纯对象（非 FieldQueryTemp），说明是跨字段条件，生成 $and 包裹数组
-    const hasPlainObject = arr.some(
-      item => !(item instanceof FieldQueryTemp)
-    );
+    const hasPlainObject = arr.some(item => !(item instanceof FieldQueryTemp));
 
     if (hasPlainObject) {
       return {
-        $and: arr.map(item => {
-          if (item instanceof FieldQueryTemp) {
-            return item.getOps();
-          }
-          return item;
-        }),
+        [operator]: arr.map(item =>
+          item instanceof FieldQueryTemp ? item.getOps() : item
+        ),
       };
     }
 
-    // 如果全是 FieldQueryTemp，合并成一个对象（单字段多条件）
     const mergedOps: Record<string, any> = {};
     for (const item of arr) {
       Object.assign(mergedOps, item.getOps());
@@ -191,32 +135,12 @@ class LogicQuery {
     return mergedOps;
   }
 
+  static and(...args: any[]) {
+    return this.buildLogicQuery('$and', ...args);
+  }
+
   static or(...args: any[]) {
-    // 参数只有一个且是数组，直接用它
-    const arr = args.length === 1 && Array.isArray(args[0]) ? args[0] : args;
-
-    // 如果数组里有纯对象（非 FieldQueryTemp），说明是跨字段条件，生成 $or 包裹数组
-    const hasPlainObject = arr.some(
-      item => !(item instanceof FieldQueryTemp)
-    );
-
-    if (hasPlainObject) {
-      return {
-        $or: arr.map(item => {
-          if (item instanceof FieldQueryTemp) {
-            return item.getOps();
-          }
-          return item;
-        }),
-      };
-    }
-
-    // 如果全是 FieldQueryTemp，合并成一个对象（单字段多条件）
-    const mergedOps: Record<string, any> = {};
-    for (const item of arr) {
-      Object.assign(mergedOps, item.getOps());
-    }
-    return mergedOps;
+    return this.buildLogicQuery('$or', ...args);
   }
 }
 
@@ -267,8 +191,7 @@ export const $: MongoAggBuilder = new Proxy({} as MongoAggBuilder, {
 
 
     // 处理比较操作符（如 gte, lte 等）
-    const comparisonOperators = ['gte', 'lte', 'gt', 'lt', 'eq', 'ne'];
-    if (comparisonOperators.includes(prop)) {
+    if (COMPARISON_OPERATORS.includes(prop as any)) {
       return (expr: unknown | unknown[]) => {
         // 如果传入的是数组，直接使用；否则包装成数组
         const args = Array.isArray(expr) ? expr : [expr];
@@ -277,8 +200,7 @@ export const $: MongoAggBuilder = new Proxy({} as MongoAggBuilder, {
     }
 
     // 处理逻辑操作符（如 and, or, not）
-    const logicalOperators = ['and', 'or', 'not'];
-    if (logicalOperators.includes(prop)) {
+    if (LOGICAL_OPERATORS.includes(prop as any)) {
       return (expr: unknown) => ({ [`$${prop}`]: expr });
     }
 
