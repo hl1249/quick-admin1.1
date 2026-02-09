@@ -4,7 +4,7 @@ import { DbModule } from '@/common/utils/db.module';
 // 数据库配置
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { DB_NAME, DB_PORT, DB_URL, DEBUG} from './config';
+import { DB_NAME, DB_USER, DB_PASSWOR, DB_PORT, DB_URL, DEBUG} from './config';
 // 日志服务
 import {LogModule } from '@/common/logger/logger.module';
 
@@ -12,18 +12,24 @@ import {LogModule } from '@/common/logger/logger.module';
 import { CacheModule } from '@/common/cach/cache.module'
 // 动态路由
 @Module({
- 
-  imports: [JwtModule, DbModule,LogModule,
-    MongooseModule.forRoot(`${DB_URL}:${DB_PORT}/${DB_NAME}`), // 默认数据库实例
-    CacheModule
+  imports: [
+    JwtModule,
+    DbModule,
+    LogModule,
+    MongooseModule.forRoot(`${DB_URL}:${DB_PORT}/${DB_NAME}`, {
+      user: DB_USER,
+      pass: DB_PASSWOR,
+      authSource: 'admin',
+    }), // 默认数据库实例
+    CacheModule,
   ],
-  exports: [JwtModule,LogModule,CacheModule],
+  exports: [JwtModule, LogModule, CacheModule],
 })
 export class Public implements OnModuleInit, OnModuleDestroy {
   logger: Logger;
   constructor(@InjectConnection() private readonly connection: Connection) {
     this.logger = new Logger('PublicModule');
-    if(DEBUG) this.logger.debug('公共注入模块初始化');
+    if (DEBUG) this.logger.debug('公共注入模块初始化');
   }
 
   onModuleInit() {

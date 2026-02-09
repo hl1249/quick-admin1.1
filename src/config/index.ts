@@ -13,6 +13,13 @@ export const DB_PORT = 27017;
 // 数据库名称
 export const DB_NAME = 'quickAdmin';
 
+// 数据库名称
+export const DB_USER = 'admin';
+
+// 数据库名称
+export const DB_PASSWOR = 'admin123';
+
+
 // TOKEN请求头验证字段
 export const AUTHORIZATION = 'authorization'
 
