@@ -1,13 +1,13 @@
 import { Controller, Post,Body } from '@nestjs/common';
 import { Document, UpdateResult } from 'mongodb';
 import { DbService } from '@/common/utils/db.service';
-import { authService } from '@/app/admin/auth/auth.service';
+import { AuthService } from '@/app/admin/auth/auth.service';
 
 @Controller()
 export class SystemRoleController {
   constructor(
     private readonly dbService: DbService,
-    private readonly authService: authService,
+    private readonly authService: AuthService,
   ) {
   }
 

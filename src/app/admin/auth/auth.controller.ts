@@ -1,12 +1,11 @@
 import { Controller, Get, Post, Body, Req, SetMetadata, Ip } from '@nestjs/common';
 import { Document } from 'mongodb'
-import { authService } from './auth.service';
+import { AuthService } from './auth.service';
 import { UserDto } from './auth.dto';
-import { Log } from '@/common/logger/logger.decorator'
 @Controller()
 export class AuthController {
   constructor(
-    private readonly authService: authService,
+    private readonly authService: AuthService,
   ) {
   }
   // @Log() 是否对该接口记录日志

@@ -1,21 +1,26 @@
-import { Module, DynamicModule as NestDynamicModule, Type } from '@nestjs/common';
+import { Type } from '@nestjs/common';
 import { join, relative } from 'path';
 import { readdirSync, statSync } from 'fs';
 import { PATH_METADATA } from '@nestjs/common/constants';
 import { DEBUG } from '@/config';
 
-// 递归获取所有 controller 或 service 文件
-function getFiles(dir: string, suffix: string[] = []): string[] {
+// 递归获取所有 controller 或 service 文件，可排除指定目录名（如 template）
+function getFiles(
+  dir: string,
+  suffix: string[] = [],
+  ignoreDirs: string[] = ['template'],
+): string[] {
   const files = readdirSync(dir);
   const result: string[] = [];
 
   files.forEach((file) => {
+    if (ignoreDirs.includes(file)) return;
     const fullPath = join(dir, file);
     const stat = statSync(fullPath);
 
     if (stat.isDirectory()) {
-      result.push(...getFiles(fullPath, suffix));
-    } else if (suffix.some(s => file.endsWith(s))) {
+      result.push(...getFiles(fullPath, suffix, ignoreDirs));
+    } else if (suffix.some((s) => file.endsWith(s))) {
       result.push(fullPath);
     }
   });

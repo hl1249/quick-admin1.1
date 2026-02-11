@@ -8,6 +8,7 @@ import type {
   MinParams,
   AvgParams,
   SampleParams,
+  SortRule,
 } from './utils.types';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
@@ -15,6 +16,17 @@ import { Connection } from 'mongoose';
 import { DEBUG } from '@/config';
 import { formatTimestamp } from '@/common/utils/utils'
 import { TransformDbParams } from './db.decorator';
+
+/** 将 SortRule[] 或已有 sort 对象转为 MongoDB $sort 格式 */
+function toMongoSort(sortArr: SortRule[] | Record<string, 1 | -1> | undefined): Record<string, 1 | -1> {
+  if (!sortArr) return {};
+  if (!Array.isArray(sortArr)) return sortArr as Record<string, 1 | -1>;
+  const obj: Record<string, 1 | -1> = {};
+  for (const r of sortArr) {
+    obj[r.name] = r.type === 'asc' ? 1 : -1;
+  }
+  return obj;
+}
 
 @Injectable()
 export class DbService {
@@ -49,7 +61,7 @@ export class DbService {
     // 判断是否有传入数据库实例
     if (db) {
       // 用传入的数据库实例执行添加
-      return await db.collection(dbName).add(dataJson);
+      return await db.collection(dbName).insertOne(dataJson);
     } else {
       //插入到默认数据库
       return await this.connection.collection(dbName).insertOne(dataJson); // 示例
@@ -298,7 +310,7 @@ export class DbService {
       { $match: lastWhereJson },
       ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
       ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),
-      ...(sortArr && Object.keys(sortArr).length > 0 ? [{ $sort: sortArr }] : []),
+      ...(Object.keys(toMongoSort(sortArr as SortRule[])).length > 0 ? [{ $sort: toMongoSort(sortArr as SortRule[]) }] : []),
       { $skip: pageSize * (pageIndex - 1) },
       { $limit: pageSize }
     ]).toArray();
@@ -369,7 +381,7 @@ export class DbService {
 
     // 执行查询
     const cursor = collection.find(whereJson, { projection: fieldJson })
-      .sort(sortArr)
+      .sort(toMongoSort(sortArr as SortRule[]))
       .skip((pageIndex - 1) * pageSize)
       .limit(pageSize);
 
@@ -557,7 +569,7 @@ export class DbService {
   }
 
   @TransformDbParams
-  async sample(params: SampleParams): Promise<number> {
+  async sample(params: SampleParams): Promise<Document[]> {
     const {
       dbName,
       whereJson = {},
@@ -566,20 +578,20 @@ export class DbService {
       db
     } = params;
 
-
-    // 统一获取集合引用
     const collection = db
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    // 执行查询
-    const result = await collection.aggregate([
+    const pipeline: object[] = [
       { $match: whereJson },
       { $sample: { size } },
-      { projection: fieldJson }
-    ]).toArray();
-    const totalAmount = result.length > 0 ? result[0].totalAmount : 0;
-    return totalAmount;
+    ];
+    if (fieldJson && Object.keys(fieldJson).length > 0) {
+      pipeline.push({ $project: fieldJson });
+    }
+
+    const result = await collection.aggregate(pipeline).toArray();
+    return result;
   }
 
 

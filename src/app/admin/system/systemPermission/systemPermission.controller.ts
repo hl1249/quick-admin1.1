@@ -2,13 +2,13 @@ import { Controller, Post,Body } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 import { arrayToTree } from '@/common/utils/utils'
-import { authService } from '@/app/admin/auth/auth.service';
+import { AuthService } from '@/app/admin/auth/auth.service';
 
 @Controller()
 export class SystemPermissionController {
   constructor(
     private readonly dbService: DbService,
-    private readonly authService: authService,
+    private readonly authService: AuthService,
   ) {}
 
   @Post('/getAllMenu')
@@ -98,7 +98,6 @@ export class SystemPermissionController {
 
   @Post('/update')
   async update(@Body() data: any): Promise<Document | null> {
-    console.log('我执行力');
     let {
       _id,
       permission_id,

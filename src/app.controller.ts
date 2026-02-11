@@ -5,7 +5,7 @@ import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { _, $ } from '@/common/utils/fieldQueryTemp';
 import { Log } from '@/common/logger/logger.decorator';
-import { CacheService } from '@/common/cach/cache.service'
+import { CacheService } from '@/common/cache/cache.service'
 @Log()
 @Controller()
 @SetMetadata('skipAuth', true) // 设置该路由不需要验证token

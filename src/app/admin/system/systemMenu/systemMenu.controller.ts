@@ -8,13 +8,13 @@ import { DbService } from '@/common/utils/db.service';
 import { arrayToTree } from '@/common/utils/utils'
 import { Promise } from 'mongoose';
 import { AddMenuDto, UpdateMenuDto } from './dto/systemMenu.dto';
-import { authService } from '@/app/admin/auth/auth.service';
+import { AuthService } from '@/app/admin/auth/auth.service';
 
 @Controller()
 export class SystemMenuController {
   constructor(
     private readonly dbService: DbService,
-    private  readonly authService: authService,
+    private readonly authService: AuthService,
   ) {}
 
   @Post('/getList')

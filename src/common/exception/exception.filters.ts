@@ -67,7 +67,7 @@ export class ExceptionsFilter implements ExceptionFilter {
               stack: err?.stack,
             },
           }
-        : []),
+        : {}),
     };
 
     response.status(status).json(responseData);

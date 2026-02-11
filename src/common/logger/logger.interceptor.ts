@@ -1,13 +1,14 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
 import { Observable, from } from 'rxjs';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { AsyncStorageService } from './asyncStorage.service';
 import { LOG_DB_NAME } from '@/config';
-import { _ } from '@/common/utils/fieldQueryTemp';
 import { DbService } from '@/common/utils/db.service';
 
 @Injectable()
 export class LogInterceptor implements NestInterceptor {
+    private readonly logger = new Logger(LogInterceptor.name);
+
     constructor(
         private readonly asyncStorageService: AsyncStorageService,
         private readonly dbService: DbService,
@@ -21,7 +22,7 @@ export class LogInterceptor implements NestInterceptor {
         const url = req.url;
         const body = req.body;
 
-        console.log(`[Log] Incoming Request: ${method} ${url}`);
+        this.logger.debug(`Incoming Request: ${method} ${url}`);
 
         // 在 AsyncLocalStorage 里创建上下文
         return new Observable(observer => {
@@ -60,12 +61,12 @@ export class LogInterceptor implements NestInterceptor {
                     mergeMap((data) => {
                         // 返回值分支做异步记录
                         return from(saveDb(requestId, data)).pipe(
-                            tap(() => console.log('日志入库完成')),
+                            tap(() => this.logger.debug('日志入库完成')),
                             mergeMap(() => [data]) // 继续传递返回值
                         );
                     }),
                     catchError(async (err) => {
-                        console.log('异步记录异常', JSON.stringify(err));
+                        this.logger.warn('异步记录异常', err);
                         await saveDb(requestId, err); // 异步记录异常
                         throw err; // 继续抛出异常
                     })
@@ -77,7 +78,7 @@ export class LogInterceptor implements NestInterceptor {
                         observer.error(err)
                     },
                     complete: () => {
-                        console.log(`[${requestId}] Request ${method} ${url} completed`);
+                        this.logger.debug(`[${requestId}] Request ${method} ${url} completed`);
                         observer.complete();
                     }
                 });

@@ -4,12 +4,12 @@ import { DbModule } from '@/common/utils/db.module';
 // 数据库配置
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { DB_NAME, DB_USER, DB_PASSWOR, DB_PORT, DB_URL, DEBUG} from './config';
+import { DB_NAME, DB_USER, DB_PASSWORD, DB_AUTH_SOURCE, DB_PORT, DB_URL, DEBUG } from './config';
 // 日志服务
 import {LogModule } from '@/common/logger/logger.module';
 
 // 缓存
-import { CacheModule } from '@/common/cach/cache.module'
+import { CacheModule } from '@/common/cache/cache.module'
 // 动态路由
 @Module({
   imports: [
@@ -17,9 +17,9 @@ import { CacheModule } from '@/common/cach/cache.module'
     DbModule,
     LogModule,
     MongooseModule.forRoot(`${DB_URL}:${DB_PORT}/${DB_NAME}`, {
-      user: DB_USER,
-      pass: DB_PASSWOR,
-      authSource: 'admin',
+      user: DB_USER || undefined,
+      pass: DB_PASSWORD || undefined,
+      authSource: DB_AUTH_SOURCE || undefined,
     }), // 默认数据库实例
     CacheModule,
   ],

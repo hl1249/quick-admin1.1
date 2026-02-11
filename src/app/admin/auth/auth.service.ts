@@ -1,8 +1,6 @@
 import {
   Injectable,
   BadRequestException,
-  Ip,
-  ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { DbService } from '@/common/utils/db.service';
@@ -10,12 +8,15 @@ import { Document } from 'mongodb'
 import { UserDto } from './auth.dto';
 import { PASSWORD_SECRET, TOKEN_MAX_LIMIT, ADMIN_ROLE_ID } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
-import { arrayToTree,filterObject } from '@/common/utils/utils'
-import { CacheService } from '@/common/cach/cache.service'
+import { arrayToTree, filterObject } from '@/common/utils/utils'
+import { CacheService } from '@/common/cache/cache.service'
 import { _ } from '@/common/utils/fieldQueryTemp';
 import * as bcrypt from 'bcryptjs';
+
 @Injectable()
-export class authService {
+export class AuthService {
+  // private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly dbService: DbService,
     private readonly jwtService: JwtService,
@@ -24,7 +25,7 @@ export class authService {
 
   async login(
     userDto: UserDto,
-    @Ip() ipAddress: string,
+    ipAddress: string,
   ): Promise<Document | null> {
     const { username, password } = userDto;
     const userInfo = await this.dbService.findByWhereJson({
@@ -87,8 +88,7 @@ export class authService {
       `auth:${userId}`,
     ))!;
 
-    if(!cachedPermissions) throw new UnauthorizedException('身份认证失败');
-    console.log('allowedMenus', cachedPermissions);
+    if (!cachedPermissions) throw new UnauthorizedException('身份认证失败');
     let whereJson = {};
     if (!userInfo.role.includes(ADMIN_ROLE_ID)) {
       whereJson = {

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -6,7 +7,7 @@ import { APP_PIPE, APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 
 // TOKEN守卫、响应拦截器、异常过滤器、全局验证管道、后台接口鉴权
 import { AuthGuard } from '@/common/auth/auth.guard';
-import { ResponseInterceptor } from '@/common/response/respones.interceptors';
+import { ResponseInterceptor } from '@/common/response/response.interceptors';
 import { ExceptionsFilter } from '@/common/exception/exception.filters';
 import { ValidationPipe } from '@/common/validation/validation.pipe';
 import { PermissionGuard } from '@/common/auth/permission.guard';
@@ -15,9 +16,12 @@ import { PermissionGuard } from '@/common/auth/permission.guard';
 import { DynamicModule } from '@/app/dynamic.module';
 
 import { Public } from '@/public.module';
+
 @Module({
-  imports: [Public,
-    DynamicModule.register()
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    Public,
+    DynamicModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService,

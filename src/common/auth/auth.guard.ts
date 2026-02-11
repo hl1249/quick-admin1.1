@@ -3,7 +3,6 @@ import { AUTHORIZATION } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { Reflector } from '@nestjs/core';
 import { DbService } from '@/common/utils/db.service';
-import { _ } from '@/common/utils/fieldQueryTemp';
 import { filterObject } from '@/common/utils/utils'
 
 @Injectable()
@@ -38,15 +37,15 @@ export class AuthGuard implements CanActivate {
                 id: this.jwtService.verifyToken(token)?.userId
             })
 
-            if (token && !userInfo?.token?.includes(token)) throw new UnauthorizedException('身份认证已过期'!);
+            if (token && !userInfo?.token?.includes(token)) throw new UnauthorizedException('身份认证已过期!');
 
-            if (!userInfo) throw new UnauthorizedException('身份认证已过期'!);
+            if (!userInfo) throw new UnauthorizedException('身份认证已过期!');
             
             request['userInfo'] = filterObject(userInfo, ['password', 'token'], false);
 
             return true
         } catch (e) {
-            throw new UnauthorizedException('身份认证已过期'!);
+            throw new UnauthorizedException('身份认证已过期!');
         }
 
     }

@@ -1,17 +1,19 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSION_URLS, ADMIN_ROLE_ID } from '@/config';
 import { DbService } from '@/common/utils/db.service';
-import { CacheService } from '@/common/cach/cache.service'
-import { authService } from '@/app/admin/auth/auth.service';
+import { CacheService } from '@/common/cache/cache.service'
+import { AuthService } from '@/app/admin/auth/auth.service';
 // admin端权限守卫 对接口进行权限验证
 @Injectable()
 export class PermissionGuard implements CanActivate {
+    private readonly logger = new Logger(PermissionGuard.name);
+
     constructor(
         private readonly reflector: Reflector,
         private readonly dbService: DbService,
         private readonly cache: CacheService,
-        private readonly authService: authService,
+        private readonly authService: AuthService,
     ) { }
 
     async canActivate(
@@ -98,7 +100,6 @@ export class PermissionGuard implements CanActivate {
 
     // 修改后的匹配方法，支持三种匹配模式
     private matchesPatternsWithMode(url: string, permissions: Array<{pattern: string, match_mode: number}>): boolean {
-        console.log("权限验证",url,permissions)
         return permissions.some(permission => {
             const { pattern, match_mode } = permission;
             
@@ -128,8 +129,7 @@ export class PermissionGuard implements CanActivate {
                         return defaultRegex.test(url);
                 }
             } catch (error) {
-                // 如果正则表达式有误，记录错误并返回false
-                console.error(`匹配模式错误: pattern=${pattern}, match_mode=${match_mode}, error=${error}`);
+                this.logger.warn(`权限匹配模式错误: pattern=${pattern}, match_mode=${match_mode}`, error);
                 return false;
             }
         });
