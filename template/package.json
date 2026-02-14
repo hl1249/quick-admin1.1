@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "builds": "set VITE_SKIP_TS=true && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

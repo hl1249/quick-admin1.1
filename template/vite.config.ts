@@ -31,7 +31,7 @@ export default defineConfig(async ({ mode }) => {
       open: Boolean(VITE_OPEN),
       proxy: {
         '/api': {
-          target: 'http://localhost:3000',
+          target: 'http://localhost:3000/api',
           secure: false,
           changeOrigin: true,
           rewrite: (path:string) => path.replace(/^\/api/, ''),
