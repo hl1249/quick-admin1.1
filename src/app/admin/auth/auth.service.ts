@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { DbService } from '@/common/utils/db.service';
 import { Document } from 'mongodb'
-import { UserDto } from './auth.dto';
+import { UserDto, RegisterDto } from './auth.dto';
 import { PASSWORD_SECRET, TOKEN_MAX_LIMIT, ADMIN_ROLE_ID } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { arrayToTree, filterObject } from '@/common/utils/utils'
@@ -22,6 +22,65 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly cache: CacheService,
   ) {}
+
+  async register(
+    registerDto: RegisterDto,
+    ipAddress: string,
+  ): Promise<Document | null> {
+    const { username, password } = registerDto;
+    const existUser = await this.dbService.findByWhereJson({
+      dbName: 'qa-users',
+      whereJson: { username },
+    });
+    if (existUser) {
+      throw new BadRequestException('用户名已存在');
+    }
+    const hashedPassword = await bcrypt.hash(
+      password + PASSWORD_SECRET,
+      10,
+    );
+    const { insertedId } = await this.dbService.add({
+      dbName: 'qa-users',
+      dataJson: {
+        username,
+        password: hashedPassword,
+        role: [],
+        token: [],
+      },
+    });
+    const userInfo = await this.dbService.findById({
+      dbName: 'qa-users',
+      id: insertedId.toHexString(),
+    });
+    if (!userInfo) {
+      throw new BadRequestException('注册失败，请重试');
+    }
+    // 注册成功后自动登录，返回与 login 一致的结构
+    const token = await this.jwtService.generateToken(userInfo._id.toHexString());
+    const passTokens = [
+      ...this.jwtService.verifyTokens(userInfo.token || []),
+      token,
+    ].slice(-TOKEN_MAX_LIMIT);
+    await this.dbService.update({
+      dbName: 'qa-users',
+      whereJson: { _id: userInfo._id },
+      dataJson: {
+        last_login_date: Date.now(),
+        last_login_ip: ipAddress?.startsWith('::ffff:')
+          ? ipAddress.substring(7)
+          : '未知IP',
+        token: passTokens,
+      },
+    });
+    await this.buildCacheUserPermission(userInfo);
+    return {
+      token,
+      expired: this.jwtService.getExpired(
+        await this.jwtService.generateToken(userInfo._id.toHexString()),
+      ),
+      userInfo: filterObject(userInfo, ['password', 'token'], false),
+    };
+  }
 
   async login(
     userDto: UserDto,

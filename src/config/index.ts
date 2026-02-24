@@ -1,18 +1,20 @@
-// 从环境变量读取配置，需配合 ConfigModule.forRoot() 加载 .env
+// 从环境变量读取配置，需配合 dotenv/config 或 ConfigModule.forRoot() 加载 .env
 // 敏感项使用占位默认值，生产环境必须通过环境变量覆盖
 
-const env = (key: string, fallback: string = '') =>
-  process.env[key] ?? fallback;
-
-const envNum = (key: string, fallback: number) => {
+/** 取环境变量原始值，空字符串视为未设置 */
+const get = (key: string): string | undefined => {
   const v = process.env[key];
-  return v !== undefined && v !== '' ? Number(v) : fallback;
+  return v !== undefined && v !== '' ? v : undefined;
 };
 
+const env = (key: string, fallback = '') => get(key) ?? fallback;
+const envNum = (key: string, fallback: number) => {
+  const v = get(key);
+  return v !== undefined ? Number(v) : fallback;
+};
 const envBool = (key: string, fallback: boolean) => {
-  const v = process.env[key];
-  if (v === undefined || v === '') return fallback;
-  return v === '1' || v.toLowerCase() === 'true';
+  const v = get(key);
+  return v === undefined ? fallback : v === '1' || v.toLowerCase() === 'true';
 };
 
 // 服务运行端口

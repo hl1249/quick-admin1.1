@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Req, SetMetadata, Ip } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { AuthService } from './auth.service';
-import { UserDto } from './auth.dto';
+import { UserDto, RegisterDto } from './auth.dto';
 @Controller()
 export class AuthController {
   constructor(
@@ -18,6 +18,17 @@ export class AuthController {
   ): Promise<Document | null> {
     return await this.authService.login(userDto, ipAddress);
   }
+
+  @SetMetadata('skipPermission', true)
+  @SetMetadata('skipAuth', true)
+  @Post('/register')
+  async register(
+    @Body() registerDto: RegisterDto,
+    @Ip() ipAddress: string,
+  ): Promise<Document | null> {
+    return await this.authService.register(registerDto, ipAddress);
+  }
+
 
   @Get('/checkLogin')
   async checkLogin(@Req() req) {

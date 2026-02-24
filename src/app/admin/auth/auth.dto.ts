@@ -1,4 +1,4 @@
-import { IsString, Matches, IsNotEmpty, Length } from 'class-validator';
+import { IsString, IsNotEmpty, Length } from 'class-validator';
 
 export class UserDto {
   @IsString()
@@ -8,6 +8,9 @@ export class UserDto {
 
   @IsString()
   @IsNotEmpty()
-  @Length(6, 20, { message: '密码长度必须在6到15之间' })
+  @Length(6, 20, { message: '密码长度必须在6到20之间' })
   password: string;
 }
+
+/** 注册 DTO，与登录共用校验规则 */
+export class RegisterDto extends UserDto {}
