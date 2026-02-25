@@ -229,4 +229,21 @@ export class AuthService {
   async updateAuthVersion(): Promise<any> {
     await this.cache.incr('authVersion');
   }
+
+  /**
+   * 校验用户权限缓存是否有效（存在且 authVersion 与当前一致）
+   * 用于 checkLogin：缓存版本不一致时视为未登录，返回 isLogin: false
+   */
+  async isUserPermissionCacheValid(userInfo: any): Promise<boolean> {
+    if (!userInfo) return false;
+    const userId = userInfo._id.toHexString();
+    const currentAuthVersion =
+      (await this.cache.get<number>('authVersion')) ?? 1;
+    const cachedPermissions = await this.cache.get<{
+      authVersion: number;
+    }>(`auth:${userId}`);
+    return (
+      !!cachedPermissions && cachedPermissions.authVersion === currentAuthVersion
+    );
+  }
 }

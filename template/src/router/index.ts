@@ -23,12 +23,18 @@ router.beforeEach(async (to, from, next) => {
   const { menuStore, authStore } = useStore()
 
   if (to.path === '/login') {
-    const isLogin = await authStore.checkLogin()
-    if (isLogin) {
-      // 已登录，重定向到首页
-      next({path:'/'})
-    } else {
-      // 未登录，允许访问登录页
+    try {
+      const isLogin = await authStore.checkLogin()
+      consle.log('fucnking',isLogin)
+      if (isLogin) {
+        // 已登录，重定向到首页
+        next({ path: '/' })
+      } else {
+        // 未登录，允许访问登录页
+        next()
+      }
+    } catch (e) {
+      // checkLogin 抛错（如 401）时仍放行到登录页，避免登录页被卡住
       next()
     }
     return

@@ -32,10 +32,14 @@ export class AuthController {
 
   @Get('/checkLogin')
   async checkLogin(@Req() req) {
-      const {userInfo} = req
-      return {
-        isLogin:!!userInfo
-      }
+    const { userInfo } = req;
+    // 无用户信息或权限缓存版本不一致（已失效）时视为未登录，返回 false
+    const cacheValid = userInfo
+      ? await this.authService.isUserPermissionCacheValid(userInfo)
+      : false;
+    return {
+      isLogin: !!userInfo && cacheValid,
+    };
   }
 
   // @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
