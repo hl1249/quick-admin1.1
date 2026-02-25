@@ -292,7 +292,7 @@ export class DbService {
       fieldJson = {},
       db
     } = params;
-
+    console.log('params', JSON.stringify(params));
     if (data.pageIndex) pageIndex = Number(data.pageIndex);
     if (data.pageSize) pageSize = Number(data.pageSize);
     if (data.sortRule) sortArr = data.sortRule;

@@ -520,8 +520,8 @@ function transTableData(data: any) {
         case ">=": match[col.key] = { $gte: value }; break;
         case "<": match[col.key] = { $lt: value }; break;
         case "<=": match[col.key] = { $lte: value }; break;
-        case "in": match[col.key] = { $in: value }; break;
-        case "nin": match[col.key] = { $nin: value }; break;
+        case "in": match[col.key] = { $in: Array.isArray(value) ? value : [value] }; break;
+        case "nin": match[col.key] = { $nin: Array.isArray(value) ? value : [value] }; break;
         case "[]": match[col.key] = { $gte: value[0], $lte: value[1] }; break;
         case "[)": match[col.key] = { $gte: value[0], $lt: value[1] }; break;
         case "(]": match[col.key] = { $gt: value[0], $lte: value[1] }; break;

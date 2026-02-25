@@ -1,8 +1,15 @@
 <template>
   <div class="flex flex-col h-full">
+    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
+
+    <div>
+      <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
+      <el-button type="primary" :icon="Tools" :disabled="!selectItem" @click="">角色绑定</el-button>
+      <el-button type="danger" :icon="Tools" :disabled="!selectItem" @click="">重置密码</el-button>
+    </div>
     <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm" :pagination="false"
       :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true"
-      @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" />
+      @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" @current-change="currentChange"   highlight-current-row row-no/>
     
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
@@ -16,6 +23,13 @@
 <script setup lang="ts">
 import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
 import qaDataTable from '@/components/quickAdmin/qaTable.vue';
+import {CirclePlus, Tools} from "@element-plus/icons-vue";
+
+const currentChange = (row: any) => {
+  selectItem.value = row
+}
+
+const selectItem = ref()
 
 const table = ref<{
   action: string,
@@ -161,7 +175,7 @@ const table = ref<{
   ],
   rightBtnsMore: [{
     title: "按钮1",
-    disabled: (row) => {
+    disabled: () => {
       return false
     },
     onClick: (row) => {
@@ -169,7 +183,6 @@ const table = ref<{
     }
   }]
 })
-
 
 const qaTableRef = ref()
 // 表格数据刷新
@@ -182,13 +195,33 @@ const queryForm = ref({
 
   },
   columns: [{
-    "key": "_id",
-    "title": "ID，系统自动生成",
-    "type": "text",
-    "width": 200,
-    "mode": "="
-  }]
+    key: "role",
+    type: "text",
+    title: "角色标识",
+    width: 230,
+    "mode": "in",
+  },
+    {
+      key: "role_name",
+      type: "text",
+      title: "角色名称",
+      mode: "=",
+      width: 230,
+    },
+    {
+      key: "_add_time",
+      type: "datetimerange",
+      title: "添加时间",
+      "mode": "[]",
+      width: 230,
+    }]
 })
+
+const search = () => {
+  if (qaTableRef.value) {
+    qaTableRef.value.search()
+  }
+}
 
 const form = ref({
   data: {
