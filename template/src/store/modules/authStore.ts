@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { login as loginApi, getDynamicMenu, checkLogin as checkLoginApi } from '@/api/auth'
+import { login as loginApi, checkLogin as checkLoginApi } from '@/api/auth'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 import { useMenuStore } from './menuStore'
@@ -53,8 +53,8 @@ export const useAuthStore = defineStore(
             if (!token.value) return false
 
             try {
-                await checkLoginApi()
-                return true
+                const res = await checkLoginApi() 
+                return res.data.data
             } catch (err) {
                 logout()
                 return false

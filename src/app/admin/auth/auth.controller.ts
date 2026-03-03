@@ -37,9 +37,10 @@ export class AuthController {
     const cacheValid = userInfo
       ? await this.authService.isUserPermissionCacheValid(userInfo)
       : false;
-    return {
-      isLogin: !!userInfo && cacheValid,
-    };
+    // return {
+    //   isLogin:,
+    // };
+    return  !!userInfo && cacheValid;
   }
 
   // @SetMetadata("skipPermission", true) // 设置该路由不需要权限验证
