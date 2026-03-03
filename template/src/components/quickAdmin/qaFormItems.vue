@@ -132,6 +132,14 @@ export default defineComponent({
       />
     )
 
+    const renderRate = ({ value, onChange }) => (
+      <el-rate
+        modelValue={value}
+        disabled={isDisabled()}
+        onUpdate:modelValue={onChange}
+      />
+    )
+
     const renderRadio = ({ value, onChange, data = [] }) => (
       <el-radio-group modelValue={value} onUpdate:modelValue={onChange}>
         {data.map((item) => (
@@ -268,6 +276,7 @@ export default defineComponent({
       text: renderText,
       textarea: renderTextarea,
       switch: renderSwitch,
+      rate: renderRate,
       radio: renderRadio,
       date: renderDate,
       datetimerange: renderDateTimerange,

@@ -14,7 +14,7 @@
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
+        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()" @closeForm="form.props.show = false">
       </qa-form>
     </el-dialog>
   </div>
@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
 import qaDataTable from '@/components/quickAdmin/qaTable.vue';
+import { cloneDeep } from '@/utils'
 import {CirclePlus, Tools} from "@element-plus/icons-vue";
 
 const currentChange = (row: any) => {
@@ -231,7 +232,7 @@ const form = ref({
     beforeAction: (formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemLog/systemLog/add',
+    action: '/app/admin/system/systemUser/systemUser/add',
     // action:  ({data}:{
     //   data: any
     // })=>{
@@ -243,34 +244,29 @@ const form = ref({
     //   })
     // },
     columns: [
+      { key: "username", title: "用户名", type: "text", width: 250, show: ['add'] },
+      { key: "nickname", title: "昵称", type: "text", width: 250, show: ['add', 'edit'] },
+      { key: "password", title: "密码", type: "text", width: 250, show: ['add'] },
+      { key: "avatar", title: "头像", type: "text", width: 250, show: ['add', 'edit'], placeholder: "头像URL" },
+      { key: "is_login", title: "允许登陆", type: "switch", width: 250, show: ['add', 'edit'] },
+      { key: "rate", title: "评分", type: "rate", width: 250, show: ['add', 'edit'], placeholder: "1-5" },
       {
-        "key": "user_id",
-        "title": "用户ID",
-        "type": "text",
-        width: 250,
-        showLabel: true,
-        show: ['add', 'edit'],
-        watch: (res: any) => {
-          console.log("watch", res)
-        }
-      },
-      {
-        key: "date1", title: "日期", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
+        key: "last_login_date",
+        title: "添加时间",
+        type: "date",
+        valueFormat: "x",
+        dateType: "datetime",
         format: "YYYY-MM-DD HH:mm:ss",
         width: 250,
         show: ['add', 'edit'],
-        // showRule:"user_id==自定义文案",
-        // showRule:(formData: any)=>{
-        //   console.log('带就不',formData)
-        //   if(formData.user_id === "123456") return true
-        //   else return false
-        // },
-        disabled: "user_id==自定义文案"
-      }
+      },
     ],
     rules: {
-      user_id: [
-        { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
+      username: [
+        { required: true, message: '请输入用户名', trigger: 'blur' },
+      ],
+      nickname: [
+        { required: true, message: '请输入昵称', trigger: 'blur' },
       ],
     },
     formType: "",
@@ -283,7 +279,7 @@ const formRefs = ref()
 
 // 表单重置
 const resetForm = () => {
-  formRefs.value?.refresh()
+  formRefs.value?.resetForm?.()
 }
 
 
@@ -294,14 +290,30 @@ const selectionChange = (row: any) => {
   multipleSelection.value = row
 }
 
+const ADD_ACTION = '/app/admin/system/systemUser/systemUser/add'
+
+const addBtn = () => {
+  resetForm()
+  form.value.data = {}
+  form.value.props.action = ADD_ACTION
+  form.value.props.formType = 'add'
+  form.value.props.title = '添加'
+  form.value.props.show = true
+  nextTick(() => {
+    formRefs.value?.setResetFormData?.({})
+  })
+}
 
 const updateBtn = (index: number, row: any) => {
-  console.log("调用编辑", index, row)
   resetForm()
-  form.value.props.formType = 'edit';
+  form.value.data = cloneDeep(row)
+  form.value.props.action = '/app/admin/system/systemUser/systemUser/update'
+  form.value.props.formType = 'edit'
   form.value.props.title = '编辑'
   form.value.props.show = true
-  console.log("调用编辑", index, row)
+  nextTick(() => {
+    formRefs.value?.setResetFormData?.(form.value.data)
+  })
 }
 const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
   btnsDeleteRequset({
