@@ -25,7 +25,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.path === '/login') {
     try {
       const isLogin = await authStore.checkLogin()
-      consle.log('fucnking',isLogin)
+      console.log('fucnking', isLogin)
       if (isLogin) {
         // 已登录，重定向到首页
         next({ path: '/' })

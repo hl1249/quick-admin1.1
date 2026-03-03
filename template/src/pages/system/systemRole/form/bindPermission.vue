@@ -35,9 +35,11 @@ import { arrayToTree } from '@/utils'
 
 
 type selectItem = {
-  _id: String
-  role_id:String,
-  role_name: String
+  _id: string
+  role_id: string
+  role_name: string
+  permissionsList?: { permission_id: string; parent_id?: string; permission_name?: string; [key: string]: unknown }[]
+  permission?: string[]
 }
 
 interface Props {
@@ -107,9 +109,12 @@ const selectItem = useVModel(props, "selectItem", emit)
 // 本地副本，用于 el-tree 渲染
 const defaultCheckedKeys = ref<Array<string>>([])
 const initData = () => {
-  defaultCheckedKeys.value = selectItem.value?.permissionsList.map((item) => {
-    return selectItem.value?.permission.includes(item.permission_id) && item.parent_id ? item.permission_id : null
-  }).filter(Boolean)
+  const list = selectItem.value?.permissionsList ?? []
+  defaultCheckedKeys.value = list
+    .map((item: { permission_id: string; parent_id?: string }) =>
+      selectItem.value?.permission?.includes(item.permission_id) && item.parent_id ? item.permission_id : null
+    )
+    .filter((id): id is string => id != null)
 }
 
 const form = ref({
