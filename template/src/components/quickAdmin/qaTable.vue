@@ -80,7 +80,11 @@
         </div>
 
         <div class="qa-pagination flex items-center justify-center pt-[12px] flex-unset ">
-            <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
+            <el-pagination
+                :current-page="currentPage"
+                :page-size="pageSize"
+                @update:current-page="currentPage = $event"
+                @update:page-size="pageSize = $event"
                 :page-sizes="[1, 5, 10, 20, 50, 100, 500]" :size="size" :disabled="disabled" :background="background"
                 layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
                 @current-change="handleCurrentChange" />
@@ -152,12 +156,32 @@ export interface DeleteRequset {
 }
 export interface RightBtnMoreItem {
     title: string
-    disabled: (item: any) => boolean  // 可选函数
-    onClick: (item: any) => void      // 可选函数
+    disabled?: ((item: any) => boolean) | boolean
+    onClick: (item: any) => void
 }
 
-const tableProps = computed(() => {
-  const { rowNo, rowKey, selection, height, border, highlightCurrentRow, size, selectable, stripe, } = props;
+/** 表格详情弹窗中每一行的数据：列配置 + 行数据 + 当前单元格 value */
+export type DetailDataItem = Columns & TableRow & { value?: unknown }
+
+/** Element Plus 表格排序变化回调参数 */
+export interface TableSortChangeData {
+    prop: string
+    order: 'ascending' | 'descending' | null
+    column: unknown
+}
+
+const tableProps = computed((): {
+  rowNo?: boolean
+  rowKey?: string
+  selection?: boolean
+  height?: string | number
+  border?: boolean
+  highlightCurrentRow?: boolean
+  size?: '' | 'large' | 'default' | 'small'
+  selectable?: (row: TableRow, index: number) => boolean
+  stripe?: boolean
+} => {
+  const { rowNo, rowKey, selection, height, border, highlightCurrentRow, size, selectable, stripe } = props;
   return { rowNo, rowKey, selection, height, border, highlightCurrentRow, size, selectable, stripe };
 });
 
@@ -177,7 +201,7 @@ const props = withDefaults(
         border?: boolean,
         highlightCurrentRow?: boolean,
         size?: '' | 'large' | 'default' | 'small'
-        selectable?: (row:any,index: number) => boolean
+        selectable?: (row: TableRow, index: number) => boolean
         stripe?: boolean
     }>(),
     {
@@ -189,27 +213,27 @@ const props = withDefaults(
     }
 )
 
-const emits = defineEmits([
-  'delete',
-  'update',
-  'current-change',
-  'row-click',
-  'row-dblclick',
-  'row-contextmenu',
-  'cell-mouse-enter',
-  'cell-mouse-leave',
-  'cell-click',
-  'cell-dblclick',
-  'header-click',
-  'header-contextmenu',
-  'header-dragend',
-  'select',
-  'select-all',
-  'selection-change',
-  'pagination-change'
-])
+const emits = defineEmits<{
+  'delete': [row: TableRow, deleteRequset: DeleteRequset]
+  'update': [index: number, row: TableRow]
+  'current-change': [row: TableRow | null]
+  'row-click': [row: TableRow, column: unknown, event: MouseEvent]
+  'row-dblclick': [row: TableRow, column: unknown, event: MouseEvent]
+  'row-contextmenu': [row: TableRow, column: unknown, event: MouseEvent]
+  'cell-mouse-enter': [row: TableRow, column: unknown, cell: unknown, event: MouseEvent]
+  'cell-mouse-leave': [row: TableRow, column: unknown, cell: unknown, event: MouseEvent]
+  'cell-click': [row: TableRow, column: unknown, cell: unknown, event: MouseEvent]
+  'cell-dblclick': [row: TableRow, column: unknown, cell: unknown, event: MouseEvent]
+  'header-click': [column: unknown, event: MouseEvent]
+  'header-contextmenu': [column: unknown, event: MouseEvent]
+  'header-dragend': [newWidth: number, oldWidth: number, column: unknown, event: MouseEvent]
+  'select': [selection: TableRow[], row: TableRow]
+  'select-all': [selection: TableRow[]]
+  'selection-change': [selection: TableRow[]]
+  'pagination-change': [page: number, pageSize: number]
+}>()
 
-const changeValue = (row: any, key: string, value: string) => {
+const changeValue = (row: TableRow, key: string, value: string): void => {
 
     ElMessage.success("更新成功！")
     // 直接修改引用
@@ -228,7 +252,7 @@ interface SortItem {
 }
 
 const sortRule = ref<SortItem[]>([]);
-const columnSort = (data: any) => {
+const columnSort = (data: TableSortChangeData): void => {
     sortRule.value = sortRule.value.filter(item => item.name != data.prop)
 
     if (data.order) {
@@ -241,10 +265,10 @@ const columnSort = (data: any) => {
     getTableData()
 }
 
-const loading = ref(false)
-const tableData = ref<{ _id: string;[key: string]: any }[]>([]);
+const loading = ref<boolean>(false)
+const tableData = ref<TableRow[]>([]);
 
-const getTableData = async () => {
+const getTableData = async (): Promise<void> => {
     loading.value = true
 
     try {
@@ -273,8 +297,8 @@ onMounted(() => {
 })
 
 
-const btnsDetail = (index: number, row: TableRow) => {
-    const tableDatas = props.columns.map((item) => {
+const btnsDetail = (index: number, row: TableRow): void => {
+    const tableDatas: DetailDataItem[] = props.columns.map((item) => {
         console.log(`key:${item.key} value:${row[item.key as string]}`)
         return {
             value: row[item.key as string],
@@ -290,16 +314,16 @@ const btnsDetail = (index: number, row: TableRow) => {
 
     openInfoDialog()
 }
-const btnsUpdate = (index: number, row: TableRow) => {
+const btnsUpdate = (index: number, row: TableRow): void => {
     console.log("编辑", row)
     emits('update', index, cloneDeep(row))
 }
 
-const confirmDelete = (row: TableRow, deleteRequset: DeleteRequset) => {
+const confirmDelete = (row: TableRow, deleteRequset: DeleteRequset): void => {
 
     emits('delete', row, deleteRequset)
 }
-const btnsDeleteRequset = async ({ action, data }: { action: string; data: any }) => {
+const btnsDeleteRequset = async ({ action, data }: { action: string; data: any }): Promise<void> => {
     console.log("请求删除接口", action, data)
     try {
         const res = await http.request({
@@ -316,53 +340,54 @@ const btnsDeleteRequset = async ({ action, data }: { action: string; data: any }
 }
 
 
-const total = ref(0)
-const currentPage = ref(1)
-const pageSize = ref(10)
-const disabled = ref(false)
-const background = ref(true)
-const handleSizeChange = (val: number) => {
+const total = ref<number>(0)
+const currentPage = ref<number>(1)
+const pageSize = ref<number>(10)
+const disabled = ref<boolean>(false)
+const background = ref<boolean>(true)
+const handleSizeChange = (val: number): void => {
     console.log(`${val} items per page`)
     getTableData()
 }
-const handleCurrentChange = (val: number) => {
+const handleCurrentChange = (val: number): void => {
     console.log(`current page: ${val}`)
     getTableData()
 }
 
-const computeIndex = (index: number) => {
+const computeIndex = (index: number): number => {
   return (currentPage.value - 1) * pageSize.value + index + 1;
 };
 
 
 // 如果布尔值 返回布尔值 如果是函数调用
-const checkRightBtnsMoreDisabled = (disabled: any, row: TableRow) => {
+const checkRightBtnsMoreDisabled = (disabled: ((item: any) => boolean) | boolean | undefined, row: TableRow): boolean => {
     if (typeof disabled === 'boolean') return disabled
     if (typeof disabled === 'function') return disabled(row)
+    return false
 }
 
-const flexColumnWidth = () => {
+const flexColumnWidth = (): number => {
     if (props.rightBtns) return 100 * (props.rightBtns.length) + 5
     else return 0
 }
 
-const detailData = ref([])
-const openInfoDialog = () => {
+const detailData = ref<DetailDataItem[]>([])
+const openInfoDialog = (): void => {
     infoDialogVisible.value = true
 }
-const infoDialogVisible = ref(false)
-const infoHandleClose = () => {
+const infoDialogVisible = ref<boolean>(false)
+const infoHandleClose = (): void => {
     infoDialogVisible.value = false
 }
 
-const getCurrentRow = (isOrigin?: boolean) => {
-    if(isOrigin) return currentRow.value
-    else return cloneDeep(currentRow.value)
+const getCurrentRow = (isOrigin?: boolean): TableRow | undefined => {
+    if (isOrigin) return currentRow.value
+    return currentRow.value != null ? cloneDeep(currentRow.value) : undefined
 }
 
-const currentRow = ref()
-const setCurrentRow = (row: any) =>{
-    currentRow.value = row
+const currentRow = ref<TableRow | undefined>(undefined)
+const setCurrentRow = (row: TableRow | null): void => {
+    currentRow.value = row ?? undefined
 }
 
 defineExpose({

@@ -196,16 +196,16 @@ const queryForm = ref({
 
   },
   columns: [{
-    key: "role",
+    key: "username",
     type: "text",
-    title: "角色标识",
+    title: "用户名",
     width: 230,
     "mode": "in",
   },
     {
-      key: "role_name",
+      key: "nickname",
       type: "text",
-      title: "角色名称",
+      title: "用户昵称",
       mode: "=",
       width: 230,
     },

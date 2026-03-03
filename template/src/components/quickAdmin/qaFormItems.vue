@@ -1,17 +1,54 @@
 <script lang="tsx">
+import { defineComponent, type PropType } from 'vue'
 import { useVModel } from '@vueuse/core'
 import type { JSX } from 'vue/jsx-runtime'
 import { RemoveFilled, Plus } from '@element-plus/icons-vue'
 import qaTreeSelect from './qaTreeSelect.vue'
 import { realUnitConversion } from '@/utils'
 
+/** 日期选择器 pickerOptions */
+interface DatePickerOptions {
+  defaultTime?: (string | Date)[]
+  shortcuts?: { text: string; value: () => void | Date | [Date, Date] }[]
+}
+
+/** 选项项（radio/select/tag 等） */
+interface OptionItem {
+  value: any
+  label: string
+  [key: string]: any
+}
+
+/** 树 defaultProps */
+interface TreeDefaultProps {
+  value?: string
+  label?: string
+  children?: string
+}
+
+/** 渲染器入参 */
+interface RendererParams {
+  value: any
+  label?: string
+  placeholder?: string
+  onChange: (val: any) => void
+  width?: string | number
+  data?: OptionItem[]
+  dateType?: string
+  format?: string
+  valueFormat?: string
+  pickerOptions?: DatePickerOptions
+  action?: string
+  itemProps?: TreeDefaultProps
+}
+
 export default defineComponent({
   name: 'qaFormItem',
   props: {
     action: String,
-    props: Object,
+    props: Object as PropType<TreeDefaultProps>,
     modelValue: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
     },
     formType: String,
@@ -35,17 +72,20 @@ export default defineComponent({
       type: [String, Number],
       default: '100%',
     },
-    data: Array,
+    data: Array as PropType<OptionItem[]>,
     dateType: String,
     valueFormat: String,
     format: String,
-    pickerOptions: Object,
-    show: Array,
-    showRule: [Function, String],
-    disabled: [Function, String],
-    watch: Function,
+    pickerOptions: Object as PropType<DatePickerOptions>,
+    show: Array as PropType<string[]>,
+    showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
+    disabled: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
+    watch: Function as PropType<(val: any) => void>,
   },
-  emits: ['update:modelValue', 'search'],
+  emits: {
+    'update:modelValue': (val: Record<string, unknown>) => true,
+    'search': () => true,
+  },
   setup(props, { emit, slots }) {
     /* ---------------- v-model ---------------- */
     const { formType, showRule, disabled } = toRefs(props)
@@ -69,7 +109,7 @@ export default defineComponent({
     const isShow = () => {
       if (formType.value === 'query') return true
       if (!props.show) return true
-      return props.show.includes(formType.value)
+      return formType.value != null && props.show.includes(formType.value)
     }
 
     const isShowRule = () => {
@@ -80,7 +120,7 @@ export default defineComponent({
         const match = showRule.value.match(/^(\w+)\s*==\s*(.+)$/)
         if (!match) return true
         const [, key, value] = match
-        return props.modelValue?.[key] == value
+        return key != null && props.modelValue?.[key] == value
       }
       return true
     }
@@ -100,49 +140,49 @@ export default defineComponent({
 
     /* ---------------- renderers ---------------- */
 
-    const renderText = ({ value, label, onChange, placeholder }) => (
+    const renderText = (p: RendererParams) => (
       <el-input
-        modelValue={value}
+        modelValue={p.value}
         clearable
         disabled={isDisabled()}
-        placeholder={placeholder || `请输入${label}`}
+        placeholder={p.placeholder || `请输入${p.label}`}
         style={{ width: realUnitConversion(props.width) }}
-        onUpdate:modelValue={onChange}
+        onUpdate:modelValue={p.onChange}
         onClear={() => emit('search')}
       />
     )
 
-    const renderTextarea = ({ value, label, onChange, placeholder }) => (
+    const renderTextarea = (p: RendererParams) => (
       <el-input
         type="textarea"
-        modelValue={value}
+        modelValue={p.value}
         clearable
         disabled={isDisabled()}
-        placeholder={placeholder || `请输入${label}`}
+        placeholder={p.placeholder || `请输入${p.label}`}
         style={{ width: realUnitConversion(props.width) }}
-        onUpdate:modelValue={onChange}
+        onUpdate:modelValue={p.onChange}
       />
     )
 
-    const renderSwitch = ({ value, onChange }) => (
+    const renderSwitch = (p: RendererParams) => (
       <el-switch
-        modelValue={value}
+        modelValue={p.value}
         disabled={isDisabled()}
-        onUpdate:modelValue={onChange}
+        onUpdate:modelValue={p.onChange}
       />
     )
 
-    const renderRate = ({ value, onChange }) => (
+    const renderRate = (p: RendererParams) => (
       <el-rate
-        modelValue={value}
+        modelValue={p.value}
         disabled={isDisabled()}
-        onUpdate:modelValue={onChange}
+        onUpdate:modelValue={p.onChange}
       />
     )
 
-    const renderRadio = ({ value, onChange, data = [] }) => (
-      <el-radio-group modelValue={value} onUpdate:modelValue={onChange}>
-        {data.map((item) => (
+    const renderRadio = (p: RendererParams) => (
+      <el-radio-group modelValue={p.value} onUpdate:modelValue={p.onChange}>
+        {(p.data ?? []).map((item) => (
           <el-radio key={item.value} value={item.value}>
             {item.label}
           </el-radio>
@@ -150,64 +190,54 @@ export default defineComponent({
       </el-radio-group>
     )
 
-    const renderDate = ({ value, dateType, format, valueFormat, onChange, placeholder }) => (
+    const renderDate = (p: RendererParams) => (
       <el-date-picker
-        modelValue={value}
-        type={dateType}
-        format={format}
-        valueFormat={valueFormat}
+        modelValue={p.value}
+        type={p.dateType}
+        format={p.format}
+        valueFormat={p.valueFormat}
         disabled={isDisabled()}
-        placeholder={placeholder}
+        placeholder={p.placeholder}
         style={{ width: realUnitConversion(props.width) }}
-        onUpdate:modelValue={onChange}
+        onUpdate:modelValue={p.onChange}
         onClear={() => emit('search')}
       />
     )
 
-    const renderDateTimerange = ({ value, dateType = 'datetimerange', format, valueFormat = 'x', onChange, placeholder, label, pickerOptions, width }: {
-      value: string | number | Date | null
-      dateType: 'date' | 'daterange' | 'datetime' | 'datetimerange' | 'year' | 'month'
-      format?: string
-      valueFormat?: string
-      onChange: (val: string | number | Date | null) => void,
-      pickerOptions?: {
-        defaultTime?: (string | Date)[]
-        shortcuts?: {
-          text: string
-          value: () => void | Date | [Date, Date]
-        }[]
-      },
-      placeholder: String
-    }) => {
+    const renderDateTimerange = (p: RendererParams) => {
+      const dateType = p.dateType ?? 'datetimerange'
+      const valueFormat = p.valueFormat ?? 'x'
+      const width = p.width ?? props.width
       return (
-          <el-date-picker
-              modelValue={value}
-              onUpdate:modelValue={onChange}
-              onChange={() => emit('search')}
-              onClear={() => emit("search")}
-              type={dateType}
-              format={format}
-              placeholder={placeholder || "请选择" + label}
-              disabled={isDisabled()}
-              valueFormat={valueFormat}
-              {...pickerOptions}
-              style={{ width: realUnitConversion(width) }}
-          ></el-date-picker>
+        <el-date-picker
+          modelValue={p.value}
+          onUpdate:modelValue={p.onChange}
+          onChange={() => emit('search')}
+          onClear={() => emit('search')}
+          type={dateType}
+          format={p.format}
+          placeholder={p.placeholder || '请选择' + p.label}
+          disabled={isDisabled()}
+          valueFormat={valueFormat}
+          {...p.pickerOptions}
+          style={{ width: realUnitConversion(width) }}
+        />
       )
     }
 
-    const renderArrayString = ({ value = [], onChange }) => {
-      const list = Array.isArray(value) ? value : []
+    const renderArrayString = (p: RendererParams) => {
+      const value = p.value
+      const list: string[] = Array.isArray(value) ? value : []
 
-      const update = (i, v) => {
+      const update = (i: number, v: string) => {
         const arr = [...list]
         arr[i] = v
-        onChange(arr)
+        p.onChange(arr)
       }
 
-      const remove = (i) => onChange(list.filter((_, idx) => idx !== i))
-      const add = () => onChange([...list, ''])
-      const clear = () => onChange([])
+      const remove = (i: number) => p.onChange(list.filter((_, idx) => idx !== i))
+      const add = () => p.onChange([...list, ''])
+      const clear = () => p.onChange([])
 
       return (
         <div class="flex flex-col gap-[12px] w-full">
@@ -215,7 +245,7 @@ export default defineComponent({
             <el-input
               key={index}
               modelValue={item}
-              onUpdate:modelValue={(v) => update(index, v)}
+              onUpdate:modelValue={(v: string) => update(index, v)}
               v-slots={{
                 append: () => (
                   <div
@@ -253,26 +283,26 @@ export default defineComponent({
 
     const showTreeSelect = ref(false)
 
-    const renderTreeSelect = ({ value, onChange, action, itemProps }) => (
+    const renderTreeSelect = (p: RendererParams) => (
       <>
         <el-button onClick={() => (showTreeSelect.value = true)}>
-          {value || '选择'}
+          {p.value || '选择'}
         </el-button>
         <qa-tree-select
           show={showTreeSelect.value}
-          action={action}
-          modelValue={value}
-          defaultProps={itemProps}
-          onUpdate:show={(v) => (showTreeSelect.value = v)}
-          onTreeSelectConfirm={(data) => {
-            onChange(data ? data[itemProps.value] : null)
+          action={p.action}
+          modelValue={p.value}
+          defaultProps={p.itemProps}
+          onUpdate:show={(v: boolean) => (showTreeSelect.value = v)}
+          onTreeSelectConfirm={(data: Record<string, any>) => {
+            p.onChange(data ? data[p.itemProps?.value ?? 'value'] : null)
           }}
         />
       </>
     )
 
     /* ---------------- 映射表 ---------------- */
-    const renderMap: Record<string, (p: any) => JSX.Element> = {
+    const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
       textarea: renderTextarea,
       switch: renderSwitch,
@@ -287,7 +317,7 @@ export default defineComponent({
     /* ---------------- render ---------------- */
     return () => {
       if (!(isShow() && isShowRule())) return null
-      const renderer = renderMap[props.type]
+      const renderer = props.type != null ? renderMap[props.type] : undefined
       return (
         <el-form-item
           label={props.showLabel ? props.label : ''}
@@ -307,7 +337,8 @@ export default defineComponent({
               valueFormat: props.valueFormat,
               format: props.format,
               pickerOptions: props.pickerOptions,
-              onChange: (v) => (currentValue.value = v),
+              width: props.width,
+              onChange: (v: any) => (currentValue.value = v),
             })}
           {props.tips && formType.value !== 'query' && (
             <div class="text-[#909399] text-[12px] mt-[4px]">
