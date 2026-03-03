@@ -8,7 +8,7 @@
         :props="defaultProps"
         @node-click="handleNodeClick"
       >
-      <template #default="{ node, data }">
+      <template #default="{ data }">
         <span class="custom-tree-node">
           <span >{{ data[defaultProps.value] }}（{{ data[defaultProps.label] }}）</span>
         </span>

@@ -1,8 +1,8 @@
 <template>
   <div class="qa-table-query">
     <el-form :model="localModel" label-width="auto" class="flex flex-wrap gap-x-1">
-      <qa-form-items v-model="localModel" v-for="item in columns"
-        v-bind="{ ...item, key: item.key, itemKey: item.key, label: item.title }"
+      <qa-form-item v-for="item in columns" :key="item.key" v-model="localModel"
+        v-bind="getFormItemBind(item)"
         form-type="query"
         @search="formItemSearch"
         />
@@ -21,7 +21,7 @@
 <script setup lang="ts">
 const emit = defineEmits(['search', 'update:modelValue'])
 import { Search,Refresh } from '@element-plus/icons-vue'
-import qaFormItems from './qaFormItems.vue'
+import qaFormItem from './qaFormItem.vue'
 import { ref, watch } from 'vue'
 
 const formItemSearch = () => {
@@ -50,6 +50,12 @@ const props = withDefaults(
   {
   }
 )
+
+/** 表单项绑定 props（排除 key，避免与 v-for 的 :key 冲突） */
+function getFormItemBind(item: QueryColumns) {
+  const { key: _key, ...rest } = item
+  return { ...rest, itemKey: item.key, label: item.title }
+}
 
 // 创建本地响应式数据
 const localModel = ref({ ...props.modelValue })

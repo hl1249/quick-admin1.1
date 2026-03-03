@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-form :rules="rules" ref="ruleFormRef" :model="model" :label-width="labelWidth">
-            <qa-form-item v-model="model" v-for="item in columns"
-                v-bind="{ ...item, key: item.key, itemKey: item.key, label: item.title }" :form-type="formType">
+            <qa-form-item v-for="item in columns" :key="item.key" v-model="model"
+                v-bind="getFormItemBind(item)" :form-type="formType">
                 <template v-if="$slots[item.key]" #default>
                     <slot :form="model" :keyName="item.key" :name="item.key" />
                 </template>
@@ -33,7 +33,7 @@
 import { ElMessage, type FormInstance } from 'element-plus'
 import { useVModel } from "@vueuse/core"
 import { cloneDeep } from '@/utils'
-import qaFormItem from './qaFormItems.vue';
+import qaFormItem from './qaFormItem.vue';
 import http from '@/utils/axios'
 const emit = defineEmits(["update:modelValue", "success","closeForm"])
 
@@ -60,6 +60,13 @@ const props = withDefaults(
     {
     }
 )
+
+/** 表单项绑定 props（排除 key，避免与 v-for 的 :key 冲突） */
+function getFormItemBind(item: QaFormColumns) {
+    const { key: _key, ...rest } = item
+    return { ...rest, itemKey: item.key, label: item.title }
+}
+
 // 通过 useVModel 直接拿到响应式 formData（相当于 computed + emit）
 const model = useVModel(props, "modelValue", emit)
 

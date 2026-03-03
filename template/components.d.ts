@@ -43,7 +43,6 @@ declare module 'vue' {
     QaDetail: typeof import('./src/components/quickAdmin/qaDetail.vue')['default']
     QaForm: typeof import('./src/components/quickAdmin/qaForm.vue')['default']
     QaFormItem: typeof import('./src/components/quickAdmin/qaFormItem.vue')['default']
-    QaFormItems: typeof import('./src/components/quickAdmin/qaFormItems.vue')['default']
     QaTable: typeof import('./src/components/quickAdmin/qaTable.vue')['default']
     QaTableColumn: typeof import('./src/components/quickAdmin/qaTableColumn.vue')['default']
     QaTableQuery: typeof import('./src/components/quickAdmin/qaTableQuery.vue')['default']

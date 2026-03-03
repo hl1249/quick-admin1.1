@@ -32,10 +32,13 @@
                     v-if="rowNo"
                 ></el-table-column>
 
+                <!-- eslint-disable-next-line vue/no-v-for-template-key -- Vue 3 单根时 key 放 template 上 -->
+                <!-- eslint-disable-next-line vue/no-v-for-template-key -->
                 <template v-for="item in columns" :key="item.key">
                     <qa-table-column v-bind="{ ...item, prop: item.key, label: item.title }"
                       @changeValue="changeValue" />
                 </template>
+                
                 <el-table-column align="center" :width="flexColumnWidth()" v-if="rightBtns" fixed="right">
                     <template #header>
                         操作

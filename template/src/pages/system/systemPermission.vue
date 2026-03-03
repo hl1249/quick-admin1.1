@@ -36,7 +36,7 @@ const currentChange = (row: any) => {
 const selectItem = ref()
 const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null);
 const table = ref<{
-  action: string,
+  action: string
   columns: Columns[]
   rightBtnsMore: RightBtnMoreItem[]
 }>({
@@ -104,7 +104,8 @@ const table = ref<{
       type: 'text',
       width: 240,
     },
-  ]
+  ],
+  rightBtnsMore: [],
 })
 const search = () => {
   if (qaTableRef.value) {
@@ -138,10 +139,18 @@ const queryForm = ref({
   }]
 })
 
+/** 表单 data 类型，支持 enable、parent_id、permission_id 等字段 */
+interface PermissionFormData {
+  enable?: boolean
+  parent_id?: string
+  permission_id?: string
+  [key: string]: unknown
+}
+
 const form = ref({
   data: {
     enable: true,
-  },
+  } as PermissionFormData,
   props: {
     // 请求预处理
     beforeAction: (formData: any) => {

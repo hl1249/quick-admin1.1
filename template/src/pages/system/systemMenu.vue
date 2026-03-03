@@ -210,20 +210,6 @@ const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
   })
 }
 
-const bindPermissionBtn = () => {
-  renderComponent(bindPermission, {
-    modelValue: true,
-    selectItem: selectItem.value,
-  })
-}
-
-const bindMenuBtn = () => {
-  renderComponent(bindMenu, {
-    modelValue: true,
-    selectItem: selectItem.value,
-  })
-  // const row = qaTableRef?.value?.getCurrentRow(true)
-}
 
 </script>
 

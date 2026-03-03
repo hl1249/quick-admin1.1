@@ -32,9 +32,11 @@ import { arrayToTree } from '@/utils'
 
 
 type selectItem = {
-  _id: String
-  role_id:String,
-  role_name: String
+  _id: string
+  role_id: string
+  role_name: string
+  menuList?: { menu_id: string; parent_id?: string; [key: string]: unknown }[]
+  menu?: string[]
 }
 
 interface Props {
@@ -106,15 +108,20 @@ const selectItem = useVModel(props, "selectItem", emit)
 // 本地副本，用于 el-tree 渲染
 const defaultCheckedKeys = ref<Array<string>>([])
 const initData = () => {
-  console.log('selectItem',selectItem)
-  defaultCheckedKeys.value = selectItem.value?.menuList.map((item) => {
-    return selectItem.value?.menu.includes(item.menu_id) && item.parent_id ? item.menu_id : null
-  }).filter(Boolean)
+  console.log('selectItem', selectItem)
+  const list = selectItem.value?.menuList ?? []
+  defaultCheckedKeys.value = list
+    .map((item: { menu_id: string; parent_id?: string }) =>
+      selectItem.value?.menu?.includes(item.menu_id) && item.parent_id ? item.menu_id : null
+    )
+    .filter((id): id is string => id != null)
 }
 
-// 当外部 selectItem 变化时，同步到本地副本
+// 当外部 selectItem 变化时，同步到本地副本并刷新勾选
+const localSelectItem = ref<selectItem | undefined>(undefined)
 watch(selectItem, (val) => {
-  localSelectItem.value = { ...val }
+  localSelectItem.value = val != null ? { ...val } : undefined
+  initData()
 })
 
 const form = ref({

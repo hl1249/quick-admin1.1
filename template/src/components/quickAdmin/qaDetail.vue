@@ -196,12 +196,13 @@ export default defineComponent({
             
             const { $index, row, column } = scope
             const value = row.value
+            const cellValue = prop !== undefined && prop !== null ? row[prop] : value
 
             return formatter
                 ? (
                     type === 'html'
-                        ? <div innerHTML={formatter(value, row, column, $index)}></div>
-                        : formatter(row[prop], row, column, $index)
+                        ? <div innerHTML={String(formatter(value, row, column, $index))}></div>
+                        : formatter(cellValue, row, column, $index)
                 )
                 : render({
                     value,
