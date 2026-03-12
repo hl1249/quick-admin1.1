@@ -84,7 +84,7 @@ class HttpRequest {
             return Promise.reject('token已过期')
           }
         }
-        config.headers[AUTHORIZATION] = token;
+        config.headers[AUTHORIZATION] = `Bearer ${token}`;
         config.headers['Content-Type'] = 'application/json';
         return config
       },

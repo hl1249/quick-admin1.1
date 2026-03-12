@@ -125,9 +125,9 @@ const form = ref({
         "type": "text",
       },
       {
-        "key": "url",
+        "key": "component",
         "title": "URL",
-        "type": "array<string>",
+        "type": "text",
       },
       {
         "key": "parent_id",
