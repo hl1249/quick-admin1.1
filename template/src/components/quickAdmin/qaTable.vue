@@ -25,11 +25,25 @@
         v-bind="{ ...tableProps }"
       >
         <el-table-column
-          v-if="selection"
+          v-if="selection && multiple"
           type="selection"
           :selectable="selectable"
           width="55"
         />
+
+        <el-table-column
+          v-if="selection && !multiple"
+          label="选择"
+          width="55"
+          align="center"
+        >
+          <template #default="{ row }">
+            <el-radio
+              v-model="singleSelectionId"
+              :value="row[rowKey]"
+            />
+          </template>
+        </el-table-column>
 
         <el-table-column
           type="index"
@@ -241,6 +255,7 @@ const tableProps = computed(
     rowNo?: boolean;
     rowKey?: string;
     selection?: boolean;
+    multiple?: boolean;
     height?: string | number;
     border?: boolean;
     highlightCurrentRow?: boolean;
@@ -283,6 +298,7 @@ const props = withDefaults(
     rowNo?: boolean;
     rowKey?: string;
     selection?: boolean;
+    multiple?: boolean;
     renderNode?: 'detail' | 'row'; // 渲染位置
     height?: string | number;
     border?: boolean;
@@ -429,6 +445,19 @@ const columnSort = (data: TableSortChangeData): void => {
 const loading = ref<boolean>(false);
 const tableData = ref<TableRow[]>([]);
 
+/** 单选模式下的选中项（rowKey 对应的值），与多选 selection-change 语义一致 */
+const singleSelectionId = ref<string | number | undefined>(undefined);
+const rowKey = computed(() => props.rowKey ?? '_id');
+
+watch(singleSelectionId, (id) => {
+  if (id === undefined) {
+    emits('selection-change', []);
+    return;
+  }
+  const row = tableData.value.find((r) => r[rowKey.value] === id);
+  emits('selection-change', row ? [row] : []);
+}, { immediate: true });
+
 const getTableData = async (): Promise<void> => {
   loading.value = true;
 
@@ -446,6 +475,9 @@ const getTableData = async (): Promise<void> => {
 
     tableData.value = res.data.data.rows;
     total.value = res.data.data.total;
+    if (!props.multiple && props.selection) {
+      singleSelectionId.value = undefined;
+    }
   } catch (err) {
     console.log(err);
   } finally {
@@ -546,6 +578,14 @@ const getCurrentRow = (isOrigin?: boolean): TableRow | undefined => {
   return currentRow.value != null ? cloneDeep(currentRow.value) : undefined;
 };
 
+/** 单选模式下返回当前选中的行，多选请用 selection-change 事件 */
+const getSelectedRow = (): TableRow | undefined => {
+  if (props.multiple || !props.selection) return undefined;
+  const id = singleSelectionId.value;
+  if (id === undefined) return undefined;
+  return tableData.value.find((r) => r[rowKey.value] === id);
+};
+
 const currentRow = ref<TableRow | undefined>(undefined);
 const setCurrentRow = (row: TableRow | null): void => {
   currentRow.value = row ?? undefined;
@@ -555,5 +595,6 @@ defineExpose({
   search: getTableData,
   refresh: getTableData,
   getCurrentRow,
+  getSelectedRow,
 });
 </script>

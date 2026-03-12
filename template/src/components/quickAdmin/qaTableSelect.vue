@@ -1,10 +1,14 @@
 <template>
   <div>
     <el-dialog title="选择" v-model="visible" :width="720">
-      <el-divider />
-
       <qa-table-query :columns="queryColumns" v-model="formData" />
-      <qa-table :action="props.action" :columns="props.columns" />
+      <qa-table :action="props.action" :columns="props.columns" selection border :filter-multiple="false"  :multiple="false">
+        <template #default="{row}">
+          <el-checkbox v-model="treeData" @change="handleNodeClick(row)" v-if="props.multiple" :value="row[props.idKey]">{{ row[props.nameKey] }}</el-checkbox>
+          <el-radio v-model="treeData" @change="handleNodeClick(row)" v-else :value="row[props.idKey]">{{ row[props.nameKey] }}</el-radio>
+        </template>
+      </qa-table>
+
 
       <template #footer>
         <div class="dialog-footer flex justify-end">
@@ -20,7 +24,6 @@
 import { useVModel } from "@vueuse/core"
 import type { QueryColumns } from './qaTableQuery.vue'
 import type { Columns } from './qaTable.vue'
-import http from '@/utils/axios'
 const emit = defineEmits(['treeSelectConfirm','update:show','update:formData'])
 
 const props = withDefaults(
@@ -36,6 +39,9 @@ const props = withDefaults(
       queryColumns: QueryColumns[]
       multiple: boolean
       pageSize: number;
+
+      idKey: string;
+      nameKey: string;
     }>(),
     {
       show: false,  // 默认值
