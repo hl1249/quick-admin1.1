@@ -130,7 +130,7 @@ const form = ref({
         { key: "role_name", title: "角色昵称", type: "text", width: 150, mode: "%%" },
         { key: "role_id", title: "角色标识", type: "text", width: 150, mode: "%%" },
       ],
-      multiple:true,
+      multiple:false,
       pageSize:10, // 只有5和10可以选
     }]
   }

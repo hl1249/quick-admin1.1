@@ -2,12 +2,7 @@
   <div>
     <el-dialog title="选择" v-model="visible" :width="720">
       <qa-table-query :columns="queryColumns" v-model="formData" />
-      <qa-table :action="props.action" :columns="props.columns" selection border :filter-multiple="false"  :multiple="false">
-        <template #default="{row}">
-          <el-checkbox v-model="treeData" @change="handleNodeClick(row)" v-if="props.multiple" :value="row[props.idKey]">{{ row[props.nameKey] }}</el-checkbox>
-          <el-radio v-model="treeData" @change="handleNodeClick(row)" v-else :value="row[props.idKey]">{{ row[props.nameKey] }}</el-radio>
-        </template>
-      </qa-table>
+      <qa-table :action="props.action" :columns="props.columns" selection border :multiple="props.multiple" @selection-change="handleSelectionChange" />
 
 
       <template #footer>
@@ -34,17 +29,24 @@ const props = withDefaults(
       show?: boolean;
 
       columns: Columns[]
-      enable: boolean
-      formData: Record<string, any>
-      queryColumns: QueryColumns[]
-      multiple: boolean
-      pageSize: number;
+      enable?: boolean
+      formData?: Record<string, any>
+      queryColumns?: QueryColumns[]
+      multiple?: boolean
+      pageSize?: number;
 
-      idKey: string;
-      nameKey: string;
+      idKey?: string;
+      nameKey?: string;
     }>(),
     {
-      show: false,  // 默认值
+      show: false,
+      enable: false,
+      formData: () => ({}),
+      queryColumns: () => [],
+      multiple: false,
+      pageSize: 10,
+      idKey: '_id',
+      nameKey: 'name',
       defaultProps: () => ({
         children: 'children',
         label: 'label'
@@ -81,10 +83,14 @@ const getData = async () => {
   // if(findData) emit('treeSelectConfirm', findData)
 }
 
-const treeData = ref(null)
+const treeData = ref<any>(props.multiple ? [] : null)
 
-const handleNodeClick = (data: any) => {
-  treeData.value = data
+const handleSelectionChange = (selection: any[]) => {
+  if (props.multiple) {
+    treeData.value = selection
+  } else {
+    treeData.value = selection.length ? selection[0] : null
+  }
 }
 
 getData()

@@ -5,6 +5,7 @@
   >
     <div class="flex-auto overflow-hidden">
       <el-table
+        ref="elTableRef"
         :data="tableData"
         style="width: 100%"
         @current-change="onCurrentChange"
@@ -167,7 +168,7 @@
 import qaDetail from './qaDetail.vue';
 import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue';
 import http from '@/utils/axios';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElTable } from 'element-plus';
 import qaTableColumn from './qaTableColumn.vue';
 import { cloneDeep } from '@/utils';
 
@@ -361,12 +362,20 @@ const emits = defineEmits<{
   'pagination-change': [page: number, pageSize: number];
 }>();
 
+const elTableRef = ref<InstanceType<typeof ElTable>>();
+
 const onCurrentChange = (row: TableRow | null) => {
   emits('current-change', row);
   setCurrentRow(row);
 };
-const onRowClick = (row: TableRow, column: unknown, event: MouseEvent) =>
+const onRowClick = (row: TableRow, column: unknown, event: MouseEvent) => {
+  if (props.selection && !props.multiple) {
+    singleSelectionId.value = row[rowKey.value];
+  } else if (props.selection && props.multiple) {
+    elTableRef.value?.toggleRowSelection(row, undefined);
+  }
   emits('row-click', row, column, event);
+};
 const onRowDblclick = (row: TableRow, column: unknown, event: MouseEvent) =>
   emits('row-dblclick', row, column, event);
 const onRowContextmenu = (row: TableRow, column: unknown, event: MouseEvent) =>
