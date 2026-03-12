@@ -49,4 +49,16 @@ export class SystemUserController {
       whereJson
     })
   }
+
+  @Post('/bindRole')
+  bindRole(@Body() data): Promise<Document | null> {
+    const { _id, role} = data
+    return this.dbService.updateById({
+      id: _id,
+      dbName: "qa-users",
+      dataJson: {
+        role
+      }
+    })
+  }
 }
