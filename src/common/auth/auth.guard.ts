@@ -16,19 +16,26 @@ export class AuthGuard implements CanActivate {
     async canActivate(
         context: ExecutionContext,
     ): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const token = request.headers[AUTHORIZATION];
-
         const handler = context.getHandler();
         const controller = context.getClass();
 
-        // 获取方法的元数据，优先级高于控制器的元数据
+        // 优先验证是否跳过认证（方法元数据优先于控制器）
         const isPublicMethod = this.reflector.get<boolean>('skipAuth', handler);
         const isPublicController = this.reflector.get<boolean>('skipAuth', controller);
+        const isSkipAuth = isPublicMethod !== undefined ? isPublicMethod : isPublicController;
+        if (isSkipAuth) {
+            return true; // 忽略认证，不再校验 token
+        }
 
-        // 如果装饰带有skipAuth 那么可以忽略token认证
-        if (isPublicMethod || isPublicController) {
-            return true; // 忽略认证
+        const request = context.switchToHttp().getRequest();
+        const source = request.headers[AUTHORIZATION];
+        if (!source || typeof source !== 'string') {
+            throw new UnauthorizedException('缺少身份认证信息');
+        }
+        // 严格按照 RFC 规范检查：Authorization: Bearer <token>
+        const [scheme, token] = source.split(' ');
+        if (scheme !== 'Bearer' || !token) {
+            throw new UnauthorizedException('身份认证格式错误');
         }
 
         try {

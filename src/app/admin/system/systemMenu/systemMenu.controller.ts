@@ -80,7 +80,7 @@ export class SystemMenuController {
 
   @Post('/update')
   async update(@Body() data: UpdateMenuDto): Promise<Document | null> {
-    let { _id, menu_id, title, path, enable = true, comment, parent_id } = data;
+    let { _id, menu_id, title, enable = true, comment, parent_id, component } = data;
 
     const result = await this.dbService.updateById({
       dbName: 'qa-menus',
@@ -88,7 +88,7 @@ export class SystemMenuController {
       dataJson: {
         menu_id,
         title,
-        path,
+        component,
         enable,
         comment,
         parent_id,
