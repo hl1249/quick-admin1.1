@@ -46,6 +46,7 @@ declare module 'vue' {
     QaTable: typeof import('./src/components/quickAdmin/qaTable.vue')['default']
     QaTableColumn: typeof import('./src/components/quickAdmin/qaTableColumn.vue')['default']
     QaTableQuery: typeof import('./src/components/quickAdmin/qaTableQuery.vue')['default']
+    QaTableSelect: typeof import('./src/components/quickAdmin/qaTableSelect.vue')['default']
     QaTreeSelect: typeof import('./src/components/quickAdmin/qaTreeSelect.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

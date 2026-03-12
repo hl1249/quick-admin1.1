@@ -30,7 +30,7 @@ const formItemSearch = () => {
   emit('search')
 }
 
-interface QueryColumns {
+export interface QueryColumns {
   key: string;
   title: string;
   type: string;

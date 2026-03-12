@@ -1,9 +1,10 @@
 <script lang="tsx">
 import { defineComponent, type PropType } from 'vue'
-import { useVModel } from '@vueuse/core'
 import type { JSX } from 'vue/jsx-runtime'
 import { RemoveFilled, Plus } from '@element-plus/icons-vue'
-import qaTreeSelect from './qaTreeSelect.vue'
+
+import type { QueryColumns } from './qaTableQuery.vue'
+import type { Columns } from './qaTable.vue'
 import { realUnitConversion } from '@/utils'
 
 /** 日期选择器 pickerOptions */
@@ -38,6 +39,17 @@ interface RendererParams {
   format?: string
   valueFormat?: string
   pickerOptions?: DatePickerOptions
+
+  columns: Columns[]
+  enable: boolean
+  formData: Record<string, any>
+  queryColumns: QueryColumns[]
+  multiple: boolean
+  pageSize: number
+
+  nameKey: string,
+  idKey: string,
+
   action?: string
   itemProps?: TreeDefaultProps
 }
@@ -77,6 +89,15 @@ export default defineComponent({
     valueFormat: String,
     format: String,
     pickerOptions: Object as PropType<DatePickerOptions>,
+
+    columns: Array as PropType<Columns[]>,
+    enable: Boolean,
+    queryColumns: Array as PropType<QueryColumns[]>,
+    multiple: Boolean,
+    pageSize: Number,
+    nameKey: String,
+    idKey: String,
+
     show: Array as PropType<string[]>,
     showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
     disabled: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
@@ -301,6 +322,36 @@ export default defineComponent({
       </>
     )
 
+    const showTableSelect = ref(false)
+
+    const renderTableSelect = (p: RendererParams) => (
+      <>
+        <el-button onClick={() => (showTableSelect.value = true)}>
+          {p.value || '选择'}
+        </el-button>
+        <qa-table-select
+            show={showTableSelect.value}
+            action={p.action}
+            modelValue={p.value}
+            defaultProps={p.itemProps}
+
+            columns={p.columns}
+            formData={p.formData}
+            queryColumns={p.queryColumns}
+            multiple={p.multiple}
+            pageSize={p.pageSize}
+
+            nameKey={p.nameKey}
+            idKey={p.idKey}
+
+            onUpdate:show={(v: boolean) => (showTableSelect.value = v)}
+            onTreeSelectConfirm={(data: Record<string, any>) => {
+              p.onChange(data ? data[p.itemProps?.value ?? 'value'] : null)
+            }}
+        />
+      </>
+    )
+
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -312,6 +363,7 @@ export default defineComponent({
       datetimerange: renderDateTimerange,
       'array<string>': renderArrayString,
       'tree-select': renderTreeSelect,
+      'table-select': renderTableSelect,
     }
 
     /* ---------------- render ---------------- */
@@ -333,6 +385,16 @@ export default defineComponent({
               action: props.action,
               itemProps: props.props,
               data: props.data,
+
+              columns: props.columns ?? [],
+              enable: props.enable ?? false,
+              formData: props.modelValue ?? {},
+              queryColumns: props.queryColumns ?? [],
+              multiple: props.multiple ?? false,
+              pageSize: props.pageSize ?? 0,
+              nameKey: props.nameKey ?? '',
+              idKey: props.idKey ?? '',
+
               dateType: props.dateType,
               valueFormat: props.valueFormat,
               format: props.format,
