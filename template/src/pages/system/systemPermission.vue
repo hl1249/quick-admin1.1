@@ -12,7 +12,10 @@
     <el-dialog width="700" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()"
+        :before-action="form.props.beforeAction" @success="()=>{
+          form.props.show = false
+          refresh()
+        }"
         @closeForm="form.props.show = false">
       </qa-form>
     </el-dialog>
@@ -20,13 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
-import { CirclePlus, Tools } from '@element-plus/icons-vue'
-import { renderComponent } from '@/utils'
+import { CirclePlus } from '@element-plus/icons-vue'
 import http from '@/utils/axios'
-import { title } from 'process';
 
 
 const currentChange = (row: any) => {
@@ -68,7 +69,7 @@ const table = ref<{
       "key": "match_mode",
       "title": "匹配模式",
       "type": "text",
-      formatter: (val: any, row: any, column: any, index: number) => {
+      formatter: (_val: any, row: any, _column: any, _index: number) => {
         let str = "";
         if (row.match_mode == "0") {
           str = "完整路径";
@@ -93,7 +94,7 @@ const table = ref<{
             _id: row._id,
             enable: value
           }
-        }).then((res) => {
+        }).then((_res) => {
           change(value)
         })
       }
@@ -153,7 +154,7 @@ const form = ref({
   } as PermissionFormData,
   props: {
     // 请求预处理
-    beforeAction: (formData: any) => {
+    beforeAction: (_formData: any) => {
       return true
     },
     action: '/app/admin/system/systemPermission/systemPermission/add',
@@ -255,8 +256,8 @@ const updateBtn = (index: number, row: any) => {
   form.value.data = row;
   console.log("调用编辑", index, row)
 }
-const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
-  btnsDeleteRequset({
+const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
+  btnsDeleteRequest({
     action: '/app/admin/system/systemPermission/systemPermission/delete',
     data: {
       _id: row._id

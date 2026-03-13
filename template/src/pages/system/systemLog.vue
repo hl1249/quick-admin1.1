@@ -13,18 +13,21 @@
       <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
         <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
           :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-          :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()">
+          :before-action="form.props.beforeAction" @success="()=>{
+            form.props.show = false
+            refresh()
+          }">
             <template v-slot:user_id="{ form, keyName }">
-            <view style="height: 36px;display: flex;align-items: center;">
+            <div style="height: 36px;display: flex;align-items: center;">
               <br/>
               <el-input v-model="form[keyName]" placeholder="插槽输入框" />
-            </view>
+            </div>
           </template>
             <template v-slot:footer="{ loading }">
-              <view style="text-align: center;" >
+              <div style="text-align: center;" >
                 <el-button :loading="loading" type="danger"  size="small" style="padding: 10px 40px;margin-right: 30px; " @click="adopt(-1)"> 拒绝 </el-button>
                 <el-button :loading="loading" type="success" size="small" style="padding: 10px 40px; " @click="adopt(1)"> 通过 </el-button>
-              </view>
+              </div>
             </template>
         </qa-form>
         <el-button @click="fromDefalut">表单默认值</el-button>
@@ -33,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
@@ -46,11 +49,11 @@ const adopt = (status: number) => {
     data: {
       status: status
     },
-    success: (data:any) => {
+    success: (_data:any) => {
       // 提交成功
       
     },
-    fail: (data:any) => {
+    fail: (_data:any) => {
       // 提交失败
       
     }
@@ -143,7 +146,7 @@ const table = ref<{
   ],
   rightBtnsMore: [{
     title: "按钮1",
-    disabled: (row) => {
+    disabled: (_row) => {
       return false
     },
     onClick: (row) => {
@@ -215,7 +218,7 @@ const form = ref({
   },
   props: {
     // 请求预处理
-    beforeAction: (formData: any) => {
+    beforeAction: (_formData: any) => {
       return true
     },
     action: '/app/admin/system/systemLog/systemLog/add',
@@ -288,8 +291,8 @@ const updateBtn = (index: number, row: any) => {
   form.value.props.show = true
   console.log("调用编辑", index, row)
 }
-const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
-  btnsDeleteRequset({
+const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
+  btnsDeleteRequest({
     action: '/app/admin/system/systemLog/systemLog/delete',
     data: {
       _id: row._id

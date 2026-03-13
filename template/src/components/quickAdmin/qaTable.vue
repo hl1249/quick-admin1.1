@@ -90,7 +90,7 @@
             <el-popconfirm
               title="确定删除吗？"
               v-if="rightBtns.includes('delete')"
-              @confirm="confirmDelete(scope.row, btnsDeleteRequset)"
+              @confirm="confirmDelete(scope.row, btnsDeleteRequest)"
             >
               <template #reference>
                 <el-button type="danger" :icon="Delete"> 删除 </el-button>
@@ -232,7 +232,7 @@ export interface Columns {
   rowHeight?: string | number;
   watch?: (value: any) => void;
 }
-export interface DeleteRequset {
+export interface DeleteRequest {
   (params: { action: string; data: any }): void;
 }
 export interface RightBtnMoreItem {
@@ -318,7 +318,7 @@ const props = withDefaults(
 );
 
 const emits = defineEmits<{
-  delete: [row: TableRow, deleteRequset: DeleteRequset];
+  delete: [row: TableRow, deleteRequest: DeleteRequest];
   update: [index: number, row: TableRow];
   'current-change': [row: TableRow | null];
   'row-click': [row: TableRow, column: unknown, event: MouseEvent];
@@ -498,7 +498,7 @@ onMounted(() => {
   getTableData();
 });
 
-const btnsDetail = (index: number, row: TableRow): void => {
+const btnsDetail = (_index: number, row: TableRow): void => {
     // console.log('tableDatas', tableDatas)
     (detailData.value = props.columns.map((item) => {
       console.log(`key:${item.key} value:${row[item.key as string]}`);
@@ -517,10 +517,10 @@ const btnsUpdate = (index: number, row: TableRow): void => {
   emits('update', index, cloneDeep(row));
 };
 
-const confirmDelete = (row: TableRow, deleteRequset: DeleteRequset): void => {
-  emits('delete', row, deleteRequset);
+const confirmDelete = (row: TableRow, deleteRequest: DeleteRequest): void => {
+  emits('delete', row, deleteRequest);
 };
-const btnsDeleteRequset = async ({
+const btnsDeleteRequest = async ({
   action,
   data,
 }: {
@@ -536,7 +536,7 @@ const btnsDeleteRequset = async ({
     });
 
     ElMessage.success('删除成功');
-    getTableData();
+    void getTableData();
   } catch (err) {}
 };
 

@@ -11,7 +11,10 @@
     <el-dialog width="700" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()"
+        :before-action="form.props.beforeAction" @success="()=>{
+          form.props.show = false
+          refresh()
+        }"
         @closeForm="form.props.show = false">
       </qa-form>
     </el-dialog>
@@ -19,13 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
-import { CirclePlus, Tools } from '@element-plus/icons-vue'
-import { renderComponent } from '@/utils'
+import { CirclePlus } from '@element-plus/icons-vue'
 import http from '@/utils/axios'
-import { title } from 'process';
 
 
 const currentChange = (row: any) => {
@@ -78,7 +79,7 @@ const table = ref<{
             _id: row._id,
             enable: value
           }
-        }).then((res) => {
+        }).then((_res) => {
           change(value);
         });
       }
@@ -109,7 +110,7 @@ const form = ref({
   },
   props: {
     // 请求预处理
-    beforeAction: (formData: any) => {
+    beforeAction: (_formData: any) => {
       return true
     },
     action: '/app/admin/system/systemMenu/systemMenu/add',
@@ -201,8 +202,8 @@ const updateBtn = (index: number, row: any) => {
   form.value.data = row;
   console.log("调用编辑", index, row)
 }
-const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
-  btnsDeleteRequset({
+const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
+  btnsDeleteRequest({
     action: '/app/admin/system/systemMenu/systemMenu/delete',
     data: {
       _id: row._id

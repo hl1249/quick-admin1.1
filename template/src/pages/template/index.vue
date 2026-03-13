@@ -15,8 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
-import qaDataTable from '@/components/quickAdmin/qaTable.vue';
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
 
 const table = ref<{
   action: string,
@@ -162,7 +161,7 @@ const table = ref<{
   ],
   rightBtnsMore: [{
     title: "按钮1",
-    disabled: (row) => {
+    disabled: (_row) => {
       return false
     },
     onClick: (row) => {
@@ -196,7 +195,7 @@ const form = ref({
   },
   props: {
     // 请求预处理
-    beforeAction: (formData: any) => {
+    beforeAction: (_formData: any) => {
       return true
     },
     action: '/app/admin/system/systemLog/systemLog/add',
@@ -271,8 +270,8 @@ const updateBtn = (index: number, row: any) => {
   form.value.props.show = true
   console.log("调用编辑", index, row)
 }
-const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
-  btnsDeleteRequset({
+const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
+  btnsDeleteRequest({
     action: '/app/admin/system/systemUser/systemUser/delete',
     data: {
       _id: row._id

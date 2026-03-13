@@ -14,14 +14,17 @@
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-        :before-action="form.props.beforeAction" @success="form.props.show = false, refresh()" @closeForm="form.props.show = false">
+        :before-action="form.props.beforeAction" @success="()=>{
+          form.props.show = false
+          refresh()
+        }" @closeForm="form.props.show = false">
       </qa-form>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequset } from '@/components/quickAdmin/qaTable.vue'
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
 import qaDataTable from '@/components/quickAdmin/qaTable.vue';
 import {cloneDeep, renderComponent} from '@/utils'
 import {CirclePlus, Tools} from "@element-plus/icons-vue";
@@ -240,7 +243,7 @@ const form = ref({
   },
   props: {
     // 请求预处理
-    beforeAction: (formData: any) => {
+    beforeAction: (_formData: any) => {
       return true
     },
     action: '/app/admin/system/systemUser/systemUser/add',
@@ -326,8 +329,8 @@ const updateBtn = (index: number, row: any) => {
     formRefs.value?.setResetFormData?.(form.value.data)
   })
 }
-const deleteBtn = (row: any, btnsDeleteRequset: DeleteRequset) => {
-  btnsDeleteRequset({
+const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
+  btnsDeleteRequest({
     action: '/app/admin/system/systemUser/systemUser/delete',
     data: {
       _id: row._id
