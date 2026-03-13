@@ -6,6 +6,7 @@ import { RemoveFilled, Plus } from '@element-plus/icons-vue'
 import type { QueryColumns } from './qaTableQuery.vue'
 import type { Columns } from './qaTable.vue'
 import { realUnitConversion } from '@/utils'
+import http from '@/utils/axios';
 
 /** 日期选择器 pickerOptions */
 interface DatePickerOptions {
@@ -32,6 +33,7 @@ interface RendererParams {
   value: any
   label?: string
   placeholder?: string
+  title?: string
   onChange: (val: any) => void
   width?: string | number
   data?: OptionItem[]
@@ -65,6 +67,7 @@ export default defineComponent({
     },
     formType: String,
     label: String,
+    title: String,
     itemKey: {
       type: String,
       required: true,
@@ -324,12 +327,57 @@ export default defineComponent({
 
     const showTableSelect = ref(false)
 
-    const renderTableSelect = (p: RendererParams) => (
-      <>
-        <el-button onClick={() => (showTableSelect.value = true)}>
-          {p.value || '选择'}
-        </el-button>
-        <qa-table-select
+    const loaded = ref(false) // 是否已经请求过
+    const renderList: Ref<any[]> = ref([])
+
+    const renderTableSelect = (p: RendererParams) => {
+      const nameKey = p.columns.find((item) => item.nameKey)?.key || '_id'
+      const idKey = p.columns.find((item) => item.idKey)?.key || '_id'
+
+      const value = p.value
+      const list: string[] = Array.isArray(value) ? value : []
+
+      if (!loaded.value) {
+        loaded.value = true
+
+        http.request({
+          method: "POST",
+          url: p.action,
+          data: {
+            pageIndex: 1,
+            pageSize: list.length,
+            [idKey]: p.value
+          }
+        }).then((res) => {
+          renderList.value = res.data?.data?.rows || []
+          console.log("表单渲染", renderList)
+        })
+      } const remove = (i: number) => p.onChange(list.filter((_, idx) => idx !== i))
+      return (
+        <>
+        
+          <div class="flex items-center gap-[12px]">
+            {renderList.value?.map((item, index) => (
+            <el-tag
+              key={index}
+              size="large"
+            >
+            <div 
+            class="flex items-center">
+            
+            <span>{item[nameKey]}</span>
+              <el-icon onClick={() => remove(index)} class="ml-[4px]">
+                <RemoveFilled />
+              </el-icon>
+            </div>
+            </el-tag>
+          ))}
+
+          <el-button onClick={() => (showTableSelect.value = true)}>
+            {p.placeholder || '请选择'+p.title}
+          </el-button>
+          </div>
+          <qa-table-select
             show={showTableSelect.value}
             action={p.action}
             modelValue={p.value}
@@ -341,16 +389,18 @@ export default defineComponent({
             multiple={p.multiple}
             pageSize={p.pageSize}
 
-            nameKey={p.nameKey}
-            idKey={p.idKey}
+            nameKey={nameKey}
+            idKey={idKey}
 
             onUpdate:show={(v: boolean) => (showTableSelect.value = v)}
-            onTreeSelectConfirm={(data: Record<string, any>) => {
+            onTableSelectConfirm={(data: Record<string, any>) => {
+              console.log("我选择了表格值", data)
               p.onChange(data ? data[p.itemProps?.value ?? 'value'] : null)
             }}
-        />
-      </>
-    )
+          />
+        </>
+      )
+    }
 
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
@@ -377,36 +427,37 @@ export default defineComponent({
           prop={props.itemKey}
         >
           <div class="w-full">
-          {slots.default?.() ||
-            renderer?.({
-              value: currentValue.value,
-              label: props.label,
-              placeholder: props.placeholder,
-              action: props.action,
-              itemProps: props.props,
-              data: props.data,
+            {slots.default?.() ||
+              renderer?.({
+                value: currentValue.value,
+                title: props.title,
+                label: props.label,
+                placeholder: props.placeholder,
+                action: props.action,
+                itemProps: props.props,
+                data: props.data,
 
-              columns: props.columns ?? [],
-              enable: props.enable ?? false,
-              formData: props.modelValue ?? {},
-              queryColumns: props.queryColumns ?? [],
-              multiple: props.multiple ?? false,
-              pageSize: props.pageSize ?? 0,
-              nameKey: props.nameKey ?? '',
-              idKey: props.idKey ?? '',
+                columns: props.columns ?? [],
+                enable: props.enable ?? false,
+                formData: props.modelValue ?? {},
+                queryColumns: props.queryColumns ?? [],
+                multiple: props.multiple ?? false,
+                pageSize: props.pageSize ?? 0,
+                nameKey: props.nameKey ?? '',
+                idKey: props.idKey ?? '',
 
-              dateType: props.dateType,
-              valueFormat: props.valueFormat,
-              format: props.format,
-              pickerOptions: props.pickerOptions,
-              width: props.width,
-              onChange: (v: any) => (currentValue.value = v),
-            })}
-          {props.tips && formType.value !== 'query' && (
-            <div class="text-[#909399] text-[12px] mt-[4px]">
-              {props.tips}
-            </div>
-          )}
+                dateType: props.dateType,
+                valueFormat: props.valueFormat,
+                format: props.format,
+                pickerOptions: props.pickerOptions,
+                width: props.width,
+                onChange: (v: any) => (currentValue.value = v),
+              })}
+            {props.tips && formType.value !== 'query' && (
+              <div class="text-[#909399] text-[12px] mt-[4px]">
+                {props.tips}
+              </div>
+            )}
           </div>
         </el-form-item>
       )

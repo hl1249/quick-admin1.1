@@ -2,9 +2,9 @@
   <div>
     <el-dialog title="选择" v-model="visible" :width="720">
       <qa-table-query :columns="queryColumns" v-model="formData" />
-      <qa-table :action="props.action" :columns="props.columns" selection border :multiple="props.multiple" @selection-change="handleSelectionChange" />
+      <qa-table :action="action" :columns="columns" selection border :multiple="multiple" :pageSize="pageSize" @selection-change="handleSelectionChange" />
 
-
+      namekey:{{ nameKey }}
       <template #footer>
         <div class="dialog-footer flex justify-end">
           <el-button type="primary" @click="tableSelectConfirm">确定</el-button>
