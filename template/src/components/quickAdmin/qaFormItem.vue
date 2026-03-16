@@ -355,16 +355,24 @@ export default defineComponent({
           }
         }).then((res) => {
           renderList.value = res.data?.data?.rows || []
+          const ids = renderList.value.map((item) => item[idKey])
+          p.onChange(ids)
+          if (p.formData && typeof p.formData === 'object') {
+            p.formData[props.itemKey] = ids
+          }
           console.log("表单渲染", renderList)
         })
       } 
       
       const remove = (i: number) => {
-        console.log('已处于',p)
-        // p.onChange(['我是新书预计'])
-        let newList = renderList.value.filter((_, idx) => idx !== i)
+        const newList = renderList.value.filter((_, idx) => idx !== i)
         renderList.value = newList
-        p.formData[props.itemKey] = newList.map((item) => item[idKey])
+        const newIds = newList.map((item) => item[idKey])
+        p.onChange(newIds)
+        // p.formData 与父组件 model 同一引用，同步写入保证父组件 selectItem.roleList 立即更新（emit 链可能未触发视图更新）
+        if (p.formData && typeof p.formData === 'object') {
+          p.formData[props.itemKey] = newIds
+        }
       }
       return (
         <>
