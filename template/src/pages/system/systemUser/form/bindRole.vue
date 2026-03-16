@@ -10,7 +10,8 @@
     <div class="dialog-content">
       <!-- 你的弹窗内容 -->
       <qa-form
-        v-model="selectItem"
+        :modelValue="selectItem"
+        @update:modelValue="setSelectItem"
         :columns="form.props.columns"
         :action="form.props.action"
         @success="
@@ -64,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   'update:show': [boolean];
+  'update:selectItem': [selectItem | undefined];
   close: [];
   confirm: [];
   cancel: [];
@@ -106,6 +108,11 @@ const getHalfChecked = () => {
 
 // 通过 useVModel 直接拿到响应式 formData（相当于 computed + emit）
 const selectItem = useVModel(props, 'selectItem', emit);
+
+/** 表单 emit 时显式写 ref，保证 selectItem（含 roleList）更新并继续向父组件 emit */
+function setSelectItem(v: selectItem | undefined) {
+  selectItem.value = v;
+}
 
 const initData = () => {
   console.log('selectItem', selectItem);

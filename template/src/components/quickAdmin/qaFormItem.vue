@@ -335,6 +335,13 @@ export default defineComponent({
     const loaded = ref(false) // 是否已经请求过
     const renderList: Ref<any[]> = ref([])
 
+    /** 同步写入父组件传入的 model 引用，保证父组件（如 bindRole 的 selectItem.roleList）立即更新 */
+    const syncFormDataField = (p: RendererParams, itemKey: string, value: any) => {
+      if (p.formData && typeof p.formData === 'object') {
+        p.formData[itemKey] = value
+      }
+    }
+
     const renderTableSelect = (p: RendererParams) => {
       const nameKey = p.columns.find((item) => item.nameKey)?.key || '_id'
       const idKey = p.columns.find((item) => item.idKey)?.key || '_id'
@@ -357,9 +364,7 @@ export default defineComponent({
           renderList.value = res.data?.data?.rows || []
           const ids = renderList.value.map((item) => item[idKey])
           p.onChange(ids)
-          if (p.formData && typeof p.formData === 'object') {
-            p.formData[props.itemKey] = ids
-          }
+          syncFormDataField(p, props.itemKey, ids)
           console.log("表单渲染", renderList)
         })
       } 
@@ -369,10 +374,7 @@ export default defineComponent({
         renderList.value = newList
         const newIds = newList.map((item) => item[idKey])
         p.onChange(newIds)
-        // p.formData 与父组件 model 同一引用，同步写入保证父组件 selectItem.roleList 立即更新（emit 链可能未触发视图更新）
-        if (p.formData && typeof p.formData === 'object') {
-          p.formData[props.itemKey] = newIds
-        }
+        syncFormDataField(p, props.itemKey, newIds)
       }
       return (
         <>
@@ -414,9 +416,12 @@ export default defineComponent({
             idKey={idKey}
 
             onUpdate:show={(v: boolean) => (showTableSelect.value = v)}
-            onTableSelectConfirm={(data: Record<string, any>) => {
-              console.log("我选择了表格值", data)
-              p.onChange(data ? data[p.itemProps?.value ?? 'value'] : null)
+            onTableSelectConfirm={(data: any) => {
+              const rows = data == null ? [] : (Array.isArray(data) ? data : [data])
+              const ids = rows.map((row: any) => row[idKey])
+              renderList.value = rows
+              p.onChange(ids)
+              syncFormDataField(p, props.itemKey, ids)
             }}
           />
         </>
