@@ -4,6 +4,7 @@
             <qa-form-item v-for="item in columns" :key="item.key" v-model="model"
                 v-bind="getFormItemBind(item)" :form-type="formType">
                 <template v-if="$slots[item.key]" #default>
+                  {{model}}
                     <slot :form="model" :keyName="item.key" :name="item.key" />
                 </template>
             </qa-form-item>

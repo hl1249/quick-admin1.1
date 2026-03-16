@@ -118,7 +118,9 @@ export default defineComponent({
       get: () => props.modelValue?.[props.itemKey],
       set: (v) => {
         // ⚠️ 关键修复:必须创建新对象并 emit,不能直接修改
+        console.log("我在实则",props,v)
         const newValue = { ...props.modelValue, [props.itemKey]: v }
+        console.log("我在实则-2",newValue)
         emit('update:modelValue', newValue)
       }
     })
@@ -171,7 +173,10 @@ export default defineComponent({
         disabled={isDisabled()}
         placeholder={p.placeholder || `请输入${p.label}`}
         style={{ width: realUnitConversion(props.width) }}
-        onUpdate:modelValue={p.onChange}
+        onUpdate:modelValue={(e)=>{
+          p.onChange(e)
+          console.log('文本',p)
+        }}
         onClear={() => emit('search')}
       />
     )
@@ -352,7 +357,12 @@ export default defineComponent({
           renderList.value = res.data?.data?.rows || []
           console.log("表单渲染", renderList)
         })
-      } const remove = (i: number) => p.onChange(list.filter((_, idx) => idx !== i))
+      } 
+      
+      const remove = (i: number) => {
+        console.log('已处于',p)
+        p.onChange(['我是新书预计'])
+      }
       return (
         <>
         

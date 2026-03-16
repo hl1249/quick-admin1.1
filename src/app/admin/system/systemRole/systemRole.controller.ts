@@ -8,71 +8,63 @@ export class SystemRoleController {
   constructor(
     private readonly dbService: DbService,
     private readonly authService: AuthService,
-  ) {
-  }
+  ) {}
 
   @Post('/getAllMenu')
-  getAllMenu(): Promise<Document | null>{
-     return this.dbService.select({
-      dbName:"qa-menus",
-      getMain: true
-     })
+  getAllMenu(): Promise<Document | null> {
+    return this.dbService.select({
+      dbName: 'qa-menus',
+      getMain: true,
+    });
   }
 
-
   @Post('/getAllPermissions')
-  getAllPermissions(): Promise<Document | null>{
-     return this.dbService.select({
-      dbName:"qa-permissions",
+  getAllPermissions(): Promise<Document | null> {
+    return this.dbService.select({
+      dbName: 'qa-permissions',
       getMain: true,
-      pageSize:999
-     })
+      pageSize: 999,
+    });
   }
 
   @Post('/getList')
   getList(@Body() data: any): Promise<Document | null> {
-      return this.dbService.getTableData({
-        dbName: "qa-roles",
-        data,
-        foreignDB:[
-          {
-            dbName:"qa-menus",
-            localKey:"menu",
-            localKeyType: "array",
-            foreignKey:"menu_id",
-            as:'menuList'
-          },
+    return this.dbService.getTableData({
+      dbName: 'qa-roles',
+      data,
+      foreignDB: [
+        {
+          dbName: 'qa-menus',
+          localKey: 'menu',
+          localKeyType: 'array',
+          foreignKey: 'menu_id',
+          as: 'menuList',
+        },
 
-          {
-            dbName:"qa-permissions",
-            localKey:"permission",
-            localKeyType: "array",
-            foreignKey:"permission_id",
-            as:'permissionsList'
-          }
-        ]
-      })
+        {
+          dbName: 'qa-permissions',
+          localKey: 'permission',
+          localKeyType: 'array',
+          foreignKey: 'permission_id',
+          as: 'permissionsList',
+        },
+      ],
+    });
   }
 
   @Post('/add')
-  add( @Body() data: any): Promise<Document | null> {
-
-    let {
-			role_id,
-			role_name,
-			comment,
-			enable = true,
-		} = data;
+  add(@Body() data: any): Promise<Document | null> {
+    let { role_id, role_name, comment, enable = true } = data;
 
     return this.dbService.add({
-      dbName: "qa-roles",
-      dataJson:{
+      dbName: 'qa-roles',
+      dataJson: {
         role_id,
         role_name,
         comment,
-        enable
-      }
-    })
+        enable,
+      },
+    });
   }
 
   @Post('/delete')
@@ -114,30 +106,23 @@ export class SystemRoleController {
 
   @Post('/updateBase')
   async updateBase(@Body() data: any): Promise<Document | null> {
-    let {
-      _id,
-			enable = true,
-		} = data
+    let { _id, enable = true } = data;
 
     const result = await this.dbService.updateById({
-      dbName: "qa-roles",
-      id:_id,
-      dataJson:{
-        enable
-      }
-    })
+      dbName: 'qa-roles',
+      id: _id,
+      dataJson: {
+        enable,
+      },
+    });
 
     await this.authService.updateAuthVersion();
     return result;
-
   }
 
   @Post('/bindMenu')
   async bindMenu(@Body() data: any): Promise<Document | null> {
-    let {
-      _id,
-			menu
-		} = data
+    let { _id, menu } = data;
 
     const result = await this.dbService.updateById({
       dbName: 'qa-roles',
@@ -153,18 +138,15 @@ export class SystemRoleController {
 
   @Post('/bindPermissions')
   async bindPermissions(@Body() data: any): Promise<Document | null> {
-    let {
-      _id,
-			permission
-		} = data
+    let { _id, permission } = data;
 
     const result = await this.dbService.updateById({
-      dbName: "qa-roles",
-      id:_id,
-      dataJson:{
-        permission
-      }
-    })
+      dbName: 'qa-roles',
+      id: _id,
+      dataJson: {
+        permission,
+      },
+    });
 
     await this.authService.updateAuthVersion();
     return result;

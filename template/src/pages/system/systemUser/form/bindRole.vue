@@ -20,7 +20,6 @@
           }
         "
         @closeForm="visible = false"
-        :before-action="form.props.beforeAction"
       >
         <template v-slot:user_id>
           <div style="display: flex; align-items: center">
@@ -121,13 +120,7 @@ watch(selectItem, (val) => {
 
 const form = ref({
   props: {
-    beforeAction: (postData: any) => {
-      postData.menu = Array.from(
-        new Set([...getChecked(), ...getHalfChecked()]),
-      );
-      return postData;
-    },
-    action: '/app/admin/system/systemRole/systemRole/bindMenu',
+    action: '/app/admin/system/systemUser/systemUser/bindRole',
     columns: [
       {
         key: 'user_id',
@@ -135,7 +128,7 @@ const form = ref({
         type: 'text',
       },
       {
-        key: 'role',
+        key: 'roleList',
         title: '角色列表',
         type: 'table-select',
         placeholder: '选择角色',
