@@ -361,7 +361,10 @@ export default defineComponent({
       
       const remove = (i: number) => {
         console.log('已处于',p)
-        p.onChange(['我是新书预计'])
+        // p.onChange(['我是新书预计'])
+        let newList = renderList.value.filter((_, idx) => idx !== i)
+        renderList.value = newList
+        p.formData[props.itemKey] = newList.map((item) => item[idKey])
       }
       return (
         <>
