@@ -302,6 +302,8 @@ const props = withDefaults(
     rightBtnsMore?: RightBtnMoreItem[];
     rowNo?: boolean;
     rowKey?: string;
+    /** 默认选中项，用于回显。多选为数组，单选为单个对象或 id */
+    selectionData?: TableRow[] | TableRow | (string | number)[] | string | number | null;
     selection?: boolean;
     multiple?: boolean;
     renderNode?: 'detail' | 'row'; // 渲染位置
@@ -458,9 +460,46 @@ const columnSort = (data: TableSortChangeData): void => {
 const loading = ref<boolean>(false);
 const tableData = ref<TableRow[]>([]);
 
+/** 从 selectionData 解析出单个 id（单选回显用） */
+function getSelectionIdFromProp(
+  selectionData: typeof props.selectionData,
+  key: string,
+): string | number | undefined {
+  if (selectionData == null) return undefined;
+  if (typeof selectionData === 'object' && !Array.isArray(selectionData)) {
+    return (selectionData as TableRow)[key] as string | number | undefined;
+  }
+  return selectionData as string | number;
+}
+
+/** 从 selectionData 解析出 id 数组（多选回显用） */
+function getSelectionIdsFromProp(
+  selectionData: typeof props.selectionData,
+  key: string,
+): (string | number)[] {
+  if (selectionData == null) return [];
+  const arr = Array.isArray(selectionData) ? selectionData : [selectionData];
+  return arr
+    .map((s) =>
+      s != null && typeof s === 'object' && !Array.isArray(s)
+        ? (s as TableRow)[key]
+        : s,
+    )
+    .filter((id) => id !== undefined && id !== null) as (string | number)[];
+}
+
 /** 单选模式下的选中项（rowKey 对应的值），与多选 selection-change 语义一致 */
 const singleSelectionId = ref<string | number | undefined>(undefined);
 const rowKey = computed(() => props.rowKey ?? '_id');
+
+watch(
+  () => props.selectionData,
+  (val) => {
+    if (!props.selection || props.multiple) return;
+    singleSelectionId.value = getSelectionIdFromProp(val, rowKey.value);
+  },
+  { immediate: true },
+);
 
 watch(singleSelectionId, (id) => {
   if (id === undefined) {
@@ -470,6 +509,26 @@ watch(singleSelectionId, (id) => {
   const row = tableData.value.find((r) => r[rowKey.value] === id);
   emits('selection-change', row ? [row] : []);
 }, { immediate: true });
+
+/** 多选时根据 selectionData 回显选中 */
+watch(
+  () => [props.selectionData, tableData.value] as const,
+  () => {
+    if (!props.selection || !props.multiple || !elTableRef.value) return;
+    const ids = getSelectionIdsFromProp(props.selectionData, rowKey.value);
+    if (ids.length === 0) return;
+    nextTick(() => {
+      elTableRef.value?.clearSelection();
+      tableData.value.forEach((row) => {
+        const id = row[rowKey.value];
+        if (id !== undefined && id !== null && ids.includes(id)) {
+          elTableRef.value?.toggleRowSelection(row, true);
+        }
+      });
+    });
+  },
+  { immediate: true, deep: true },
+);
 
 const getTableData = async (): Promise<void> => {
   loading.value = true;
@@ -489,7 +548,8 @@ const getTableData = async (): Promise<void> => {
     tableData.value = res.data.data.rows;
     total.value = res.data.data.total;
     if (!props.multiple && props.selection) {
-      singleSelectionId.value = undefined;
+      const id = getSelectionIdFromProp(props.selectionData, rowKey.value);
+      singleSelectionId.value = id !== undefined ? id : undefined;
     }
   } catch (err) {
     console.log(err);

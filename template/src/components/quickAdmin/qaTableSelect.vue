@@ -3,10 +3,21 @@
     <el-dialog title="选择" v-model="visible" :width="1150">
       <qa-table-query :columns="queryColumns" v-model="formData" />
       <div class="flex  gap-[20px] mt-[20px]">
-      <qa-table style="flex: 0 0 auto;width: 700px;" :action="action" :columns="columns" selection border :multiple="multiple" :pageSize="pageSize" @selection-change="handleSelectionChange" />
+      <qa-table
+        style="flex: 0 0 auto;width: 700px;"
+        :action="action"
+        :columns="columns"
+        :row-key="idKey"
+        :selection-data="modelValue"
+        selection
+        border
+        :multiple="multiple"
+        :page-size="pageSize"
+        @selection-change="handleSelectionChange"
+      />
 
       <el-table :data="tableSelectData" border>
-        <qa-table-column :width="200" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" width="55" />
+        <qa-table-column :width="200" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" />
         <el-table-column align="center" fixed="right">
           <template #header>
             操作
@@ -80,6 +91,20 @@ const tableSelectConfirm = () => {
 const visible = useVModel(props, 'show', emit)
 const formData = useVModel(props, 'formData', emit)
 
+// 打开弹窗时用 modelValue 初始化右侧已选列表
+watch(visible, (open) => {
+  if (open && props.modelValue != null) {
+    if (props.multiple && Array.isArray(props.modelValue)) {
+      tableSelectData.value = props.modelValue.map((row: any) =>
+        typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row)),
+      )
+    } else if (!props.multiple && !Array.isArray(props.modelValue)) {
+      const row = props.modelValue
+      tableSelectData.value = typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row))
+    }
+  }
+})
+
 watch(()=> props.modelValue,()=>{
   if(!list.value) return
   const findData = props.modelValue ? list.value.find((item:any) => item[props.defaultProps.value] === props.modelValue) : null;
@@ -108,6 +133,14 @@ const handleSelectionChange = (selection: any[]) => {
     tableSelectData.value = selection
   } else {
     tableSelectData.value = selection.length ? selection[0] : null
+  }
+}
+
+const removeSelect = (row: any, index: number) => {
+  if (props.multiple && Array.isArray(tableSelectData.value)) {
+    tableSelectData.value = tableSelectData.value.filter((_, i) => i !== index)
+  } else {
+    tableSelectData.value = null
   }
 }
 
