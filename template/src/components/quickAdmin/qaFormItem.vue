@@ -403,6 +403,8 @@ export default defineComponent({
             nameKey={nameKey}
             idKey={idKey}
 
+            selectionData={renderList.value}
+
             onUpdate:show={(v: boolean) => (showTableSelect.value = v)}
             onUpdate:modelValue={(data: any) => {
               const rows = data == null ? [] : (Array.isArray(data) ? data : [data])

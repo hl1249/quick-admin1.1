@@ -2,15 +2,16 @@
   <div>
     <el-dialog title="选择" v-model="visible" :width="1150">
       <qa-table-query :columns="queryColumns" v-model="formData" />
-      modelValue{{ modelValue }}
-      idKey：{{idKey}}
+      modelValue{{ modelValue }}<br/>
+      idKey：{{idKey}}<br/>
+      selectionData:{{ selectionData }}
       <div class="flex  gap-[20px] mt-[20px]">
       <qa-table
         style="flex: 0 0 auto;width: 700px;"
         :action="action"
         :columns="columns"
         :row-key="idKey"
-        :selection-data="modelValue"
+        :selection-data="selectionData"
         :reserve-selection="true"
         selection
         border
@@ -19,7 +20,7 @@
         @selection-change="handleSelectionChange"
       />
 
-      <el-table :data="tableSelectData" border>
+      <el-table :data="selectionData" border>
         <qa-table-column :width="200" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" />
         <el-table-column align="center" fixed="right">
           <template #header>
@@ -65,6 +66,8 @@ const props = withDefaults(
 
       idKey?: string;
       nameKey?: string;
+
+      selectionData?: any[]
       
     }>(),
     {
