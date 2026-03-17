@@ -510,21 +510,22 @@ watch(singleSelectionId, (id) => {
   emits('selection-change', row ? [row] : []);
 }, { immediate: true });
 
-/** 多选时根据 selectionData 回显选中 */
+/** 多选时根据 selectionData 回显选中；为空时清空左侧勾选 */
 watch(
   () => [props.selectionData, tableData.value] as const,
   () => {
     if (!props.selection || !props.multiple || !elTableRef.value) return;
     const ids = getSelectionIdsFromProp(props.selectionData, rowKey.value);
-    if (ids.length === 0) return;
     nextTick(() => {
       elTableRef.value?.clearSelection();
-      tableData.value.forEach((row) => {
-        const id = row[rowKey.value];
-        if (id !== undefined && id !== null && ids.includes(id)) {
-          elTableRef.value?.toggleRowSelection(row, true);
-        }
-      });
+      if (ids.length > 0) {
+        tableData.value.forEach((row) => {
+          const id = row[rowKey.value];
+          if (id !== undefined && id !== null && ids.includes(id)) {
+            elTableRef.value?.toggleRowSelection(row, true);
+          }
+        });
+      }
     });
   },
   { immediate: true, deep: true },

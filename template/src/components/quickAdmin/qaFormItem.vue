@@ -404,6 +404,12 @@ export default defineComponent({
             idKey={idKey}
 
             onUpdate:show={(v: boolean) => (showTableSelect.value = v)}
+            onUpdate:modelValue={(data: any) => {
+              const rows = data == null ? [] : (Array.isArray(data) ? data : [data])
+              const ids = rows.map((row: any) => row[idKey])
+              renderList.value = rows
+              p.onChange(ids)
+            }}
             onTableSelectConfirm={(data: any) => {
               const rows = data == null ? [] : (Array.isArray(data) ? data : [data])
               const ids = rows.map((row: any) => row[idKey])

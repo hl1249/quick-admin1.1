@@ -2,6 +2,7 @@
   <div>
     <el-dialog title="选择" v-model="visible" :width="1150">
       <qa-table-query :columns="queryColumns" v-model="formData" />
+      modelValue{{ modelValue }}
       <div class="flex  gap-[20px] mt-[20px]">
       <qa-table
         style="flex: 0 0 auto;width: 700px;"
@@ -44,7 +45,7 @@
 import { useVModel } from "@vueuse/core"
 import type { QueryColumns } from './qaTableQuery.vue'
 import type { Columns } from './qaTable.vue'
-const emit = defineEmits(['tableSelectConfirm','update:show','update:formData'])
+const emit = defineEmits(['tableSelectConfirm','update:show','update:formData','update:modelValue'])
 
 const props = withDefaults(
     defineProps<{
@@ -138,9 +139,11 @@ const handleSelectionChange = (selection: any[]) => {
 
 const removeSelect = (row: any, index: number) => {
   if (props.multiple && Array.isArray(tableSelectData.value)) {
-    tableSelectData.value = tableSelectData.value.filter((_, i) => i !== index)
+    tableSelectData.value = tableSelectData.value.filter((_, i) => _._id !== row._id)
+    emit('update:modelValue', tableSelectData.value)
   } else {
     tableSelectData.value = null
+    emit('update:modelValue', null)
   }
 }
 
