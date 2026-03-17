@@ -365,7 +365,7 @@ export default defineComponent({
           const ids = renderList.value.map((item) => item[idKey])
           p.onChange(ids)
           syncFormDataField(p, props.itemKey, ids)
-          console.log("表单渲染", renderList)
+          console.log("表单渲染",p,renderList)
         })
       } 
       

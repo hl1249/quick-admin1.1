@@ -2,8 +2,7 @@
     <div>
         <el-form :rules="rules" ref="ruleFormRef" :model="model" :label-width="labelWidth">
             <qa-form-item v-for="item in columns" :key="item.key"
-                :modelValue="model"
-                @update:modelValue="updateModel"
+                v-model="model"
                 v-bind="getFormItemBind(item)" :form-type="formType">
 
                 <template v-if="$slots[item.key]" #default>
@@ -17,11 +16,12 @@
                     <!-- <el-button @click="resetFormDataDefault(ruleFormRef)">
                         重置
                     </el-button> -->
+                    
                     <el-button @click="closeForm">
-                        关闭
+                        {{cancelText}}
                     </el-button>
                     <el-button type="primary" @click="submitForm(ruleFormRef)">
-                        确定
+                        {{submitText}}
                     </el-button>
                 </div>
             </template>
@@ -60,8 +60,12 @@ const props = withDefaults(
         columns: QaFormColumns[]
         labelWidth?: string | number,
         beforeAction?: (value: any) => boolean | void
+        cancelText?: string
+        submitText?: string
     }>(),
     {
+        cancelText: '取消',
+        submitText: '确认'
     }
 )
 
@@ -73,11 +77,6 @@ function getFormItemBind(item: QaFormColumns) {
 
 // 通过 useVModel 直接拿到响应式 formData（相当于 computed + emit）
 const model = useVModel(props, "modelValue", emit)
-
-/** 子组件 emit 时显式写 ref，保证父组件 model 更新并继续向上 emit */
-function updateModel(v: any) {
-  model.value = v
-}
 
 // 存放重置时的默认值
 const resetCache = ref(cloneDeep(model.value))
