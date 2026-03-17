@@ -1,10 +1,24 @@
 <template>
   <div>
-    <el-dialog title="选择" v-model="visible" :width="720">
+    <el-dialog title="选择" v-model="visible" :width="1150">
       <qa-table-query :columns="queryColumns" v-model="formData" />
-      <qa-table :action="action" :columns="columns" selection border :multiple="multiple" :pageSize="pageSize" @selection-change="handleSelectionChange" />
+      <div class="flex  gap-[20px] mt-[20px]">
+      <qa-table style="flex: 0 0 auto;width: 700px;" :action="action" :columns="columns" selection border :multiple="multiple" :pageSize="pageSize" @selection-change="handleSelectionChange" />
 
-      namekey:{{ nameKey }}
+      <el-table :data="tableSelectData" border>
+        <qa-table-column :width="200" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" width="55" />
+        <el-table-column align="center" fixed="right">
+          <template #header>
+            操作
+          </template>
+          <template #default="scope">
+            <el-button type="danger" @click="removeSelect(scope.row, scope.$index)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      </div>
       <template #footer>
         <div class="dialog-footer flex justify-end">
           <el-button type="primary" @click="tableSelectConfirm">确定</el-button>
@@ -37,6 +51,7 @@ const props = withDefaults(
 
       idKey?: string;
       nameKey?: string;
+      
     }>(),
     {
       show: false,
@@ -54,6 +69,9 @@ const props = withDefaults(
     }
 )
 
+const renderSelectData = computed(() => {
+  return props.columns.filter((item) => item.nameKey)
+})
 const tableSelectConfirm = () => {
   emit('tableSelectConfirm', tableSelectData.value)
   visible.value = false

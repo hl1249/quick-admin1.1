@@ -49,8 +49,8 @@ interface RendererParams {
   multiple: boolean
   pageSize: number
 
-  nameKey: string,
-  idKey: string,
+  nameKey?: string,
+  idKey?: string,
 
   action?: string
   itemProps?: TreeDefaultProps
@@ -173,10 +173,7 @@ export default defineComponent({
         disabled={isDisabled()}
         placeholder={p.placeholder || `请输入${p.label}`}
         style={{ width: realUnitConversion(props.width) }}
-        onUpdate:modelValue={(e)=>{
-          p.onChange(e)
-          console.log('文本',p)
-        }}
+        onUpdate:modelValue={p.onChange}
         onClear={() => emit('search')}
       />
     )
@@ -335,13 +332,6 @@ export default defineComponent({
     const loaded = ref(false) // 是否已经请求过
     const renderList: Ref<any[]> = ref([])
 
-    /** 同步写入父组件传入的 model 引用，保证父组件（如 bindRole 的 selectItem.roleList）立即更新 */
-    const syncFormDataField = (p: RendererParams, itemKey: string, value: any) => {
-      if (p.formData && typeof p.formData === 'object') {
-        p.formData[itemKey] = value
-      }
-    }
-
     const renderTableSelect = (p: RendererParams) => {
       const nameKey = p.columns.find((item) => item.nameKey)?.key || '_id'
       const idKey = p.columns.find((item) => item.idKey)?.key || '_id'
@@ -364,7 +354,6 @@ export default defineComponent({
           renderList.value = res.data?.data?.rows || []
           const ids = renderList.value.map((item) => item[idKey])
           p.onChange(ids)
-          syncFormDataField(p, props.itemKey, ids)
           console.log("表单渲染",p,renderList)
         })
       } 
@@ -374,7 +363,6 @@ export default defineComponent({
         renderList.value = newList
         const newIds = newList.map((item) => item[idKey])
         p.onChange(newIds)
-        syncFormDataField(p, props.itemKey, newIds)
       }
       return (
         <>
@@ -421,7 +409,6 @@ export default defineComponent({
               const ids = rows.map((row: any) => row[idKey])
               renderList.value = rows
               p.onChange(ids)
-              syncFormDataField(p, props.itemKey, ids)
             }}
           />
         </>

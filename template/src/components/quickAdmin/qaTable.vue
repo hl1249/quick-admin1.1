@@ -231,6 +231,10 @@ export interface Columns {
   valueFormat?: string;
   rowHeight?: string | number;
   watch?: (value: any) => void;
+  /** 表单项/表格选择中作为展示名的列 */
+  nameKey?: boolean;
+  /** 表单项/表格选择中作为值的列 */
+  idKey?: boolean;
 }
 export interface DeleteRequest {
   (params: { action: string; data: any }): void;
