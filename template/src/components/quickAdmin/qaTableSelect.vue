@@ -3,6 +3,7 @@
     <el-dialog title="选择" v-model="visible" :width="1150">
       <qa-table-query :columns="queryColumns" v-model="formData" />
       modelValue{{ modelValue }}
+      idKey：{{idKey}}
       <div class="flex  gap-[20px] mt-[20px]">
       <qa-table
         style="flex: 0 0 auto;width: 700px;"
@@ -10,6 +11,7 @@
         :columns="columns"
         :row-key="idKey"
         :selection-data="modelValue"
+        :reserve-selection="true"
         selection
         border
         :multiple="multiple"
@@ -95,14 +97,15 @@ const formData = useVModel(props, 'formData', emit)
 // 打开弹窗时用 modelValue 初始化右侧已选列表
 watch(visible, (open) => {
   if (open && props.modelValue != null) {
-    if (props.multiple && Array.isArray(props.modelValue)) {
-      tableSelectData.value = props.modelValue.map((row: any) =>
-        typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row)),
-      )
-    } else if (!props.multiple && !Array.isArray(props.modelValue)) {
-      const row = props.modelValue
-      tableSelectData.value = typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row))
-    }
+    // if (props.multiple && Array.isArray(props.modelValue)) {
+    //   tableSelectData.value = props.modelValue.map((row: any) =>
+    //     typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row)),
+    //   )
+    // } else if (!props.multiple && !Array.isArray(props.modelValue)) {
+    //   const row = props.modelValue
+    //   tableSelectData.value = typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row))
+    // }
+    
   }
 })
 
@@ -130,10 +133,11 @@ const getData = async () => {
 const tableSelectData = ref<any>(props.multiple ? [] : null)
 
 const handleSelectionChange = (selection: any[]) => {
+  console.log('selection',selection)
   if (props.multiple) {
-    tableSelectData.value = selection
+    // tableSelectData.value = selection
   } else {
-    tableSelectData.value = selection.length ? selection[0] : null
+    // tableSelectData.value = selection.length ? selection[0] : null
   }
 }
 
