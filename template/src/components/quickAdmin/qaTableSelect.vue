@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-dialog title="选择" v-model="visible" :width="1150">
+    <el-dialog title="选择" v-model="visible" :width="multiple ? 1140 : 750">
       <qa-table-query :columns="queryColumns" v-model="formData" />
-      <div class="flex  gap-[20px] mt-[20px]">
+      <div class="flex mt-[20px] w-full">
       <qa-table
-        style="flex: 0 0 auto;width: 700px;"
+        style="width: 100%;"
         :action="action"
         :columns="columns"
         :row-key="idKey"
@@ -17,9 +17,9 @@
         @selection-change="handleSelectionChange"
       />
 
-      <el-table :data="selectionData" border>
-        <qa-table-column :width="200" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" />
-        <el-table-column align="center" fixed="right">
+      <el-table :data="selectionData" border v-if="multiple" class="ml-[20px]" style="width:386px;flex:0 0 auto">
+        <qa-table-column align="center" :width="250" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" />
+        <el-table-column  align="center" fixed="right">
           <template #header>
             操作
           </template>

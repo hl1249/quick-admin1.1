@@ -5,18 +5,14 @@ import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
 
 @Controller()
 export class SystemUserController {
-  constructor(
-    private readonly dbService: DbService,
-  ) {
-  }
+  constructor(private readonly dbService: DbService) {}
 
   @Post('/getList')
   getList(@Req() req, @Body() data): Promise<Document | null> {
-
     return this.dbService.getTableData({
-      dbName: "qa-users",
-      data
-    })
+      dbName: 'qa-users',
+      data,
+    });
   }
 
   @Post('/update')
@@ -27,7 +23,9 @@ export class SystemUserController {
       dbName: 'qa-users',
       id: _id,
       dataJson: {
-        nickname, avatar, rate,
+        nickname,
+        avatar,
+        rate,
         enable,
       },
     });
@@ -37,28 +35,28 @@ export class SystemUserController {
   @Post('/add')
   add(@Body() data): Promise<Document | null> {
     return this.dbService.add({
-      dbName: "qa-users",
-      dataJson: data
-    })
+      dbName: 'qa-users',
+      dataJson: data,
+    });
   }
 
   @Post('/delete')
   delete(@Body() whereJson): Promise<Document | null> {
     return this.dbService.del({
-      dbName: "qa-users",
-      whereJson
-    })
+      dbName: 'qa-users',
+      whereJson,
+    });
   }
 
   @Post('/bindRole')
   bindRole(@Body() data): Promise<Document | null> {
-    const { _id, role} = data
+    const { user_id, roleList } = data;
     return this.dbService.updateById({
-      id: _id,
-      dbName: "qa-users",
+      id: user_id,
+      dbName: 'qa-users',
       dataJson: {
-        role
-      }
-    })
+        role: roleList,
+      },
+    });
   }
 }
