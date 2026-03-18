@@ -5,7 +5,7 @@
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
       <el-button type="primary" :icon="Tools" :disabled="!selectItem" @click="bindPermissionBtn">角色绑定</el-button>
-      <el-button type="danger" :icon="Tools" :disabled="!selectItem">重置密码</el-button>
+      <el-button type="danger" :icon="Tools" :disabled="!selectItem" @click="resetPasswordBtn">重置密码</el-button>
     </div>
     <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm" :pagination="false"
       :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true"
@@ -29,11 +29,19 @@ import qaDataTable from '@/components/quickAdmin/qaTable.vue';
 import {cloneDeep, renderComponent} from '@/utils'
 import {CirclePlus, Tools} from "@element-plus/icons-vue";
 import bindRole from "./form/bindRole.vue";
+import resetPassword from "./form/resetPassword.vue"
 
 
 const bindPermissionBtn = () => {
   console.log('selectItem',selectItem)
   renderComponent(bindRole, {
+    selectItem: selectItem.value,
+    refresh
+  })
+}
+
+const resetPasswordBtn = () => {
+  renderComponent(resetPassword, {
     selectItem: selectItem.value,
     refresh
   })

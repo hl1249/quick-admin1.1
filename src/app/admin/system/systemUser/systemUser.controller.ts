@@ -12,6 +12,9 @@ export class SystemUserController {
     return this.dbService.getTableData({
       dbName: 'qa-users',
       data,
+      fieldJson:{
+        password: 0,
+      }
     });
   }
 
@@ -56,6 +59,18 @@ export class SystemUserController {
       dbName: 'qa-users',
       dataJson: {
         role: roleList,
+      },
+    });
+  }
+
+  @Post('/resetPassword')
+  resetPassword(@Body() data): Promise<Document | null> {
+    const { user_id, password } = data;
+    return this.dbService.updateById({
+      id: user_id,
+      dbName: 'qa-users',
+      dataJson: {
+        password,
       },
     });
   }

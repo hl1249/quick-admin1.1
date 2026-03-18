@@ -178,6 +178,20 @@ export default defineComponent({
       />
     )
 
+    const renderPassword = (p: RendererParams) => (
+        <el-input
+            modelValue={p.value}
+            clearable
+            disabled={isDisabled()}
+            show-password
+            placeholder={p.placeholder || `请输入${p.label}`}
+            style={{ width: realUnitConversion(props.width) }}
+            onUpdate:modelValue={p.onChange}
+            onClear={() => emit('search')}
+            autocomplete="off"
+        />
+    )
+
     const renderTextarea = (p: RendererParams) => (
       <el-input
         type="textarea"
@@ -431,6 +445,7 @@ export default defineComponent({
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
+      password: renderPassword,
       textarea: renderTextarea,
       switch: renderSwitch,
       rate: renderRate,

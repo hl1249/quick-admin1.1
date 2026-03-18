@@ -387,7 +387,10 @@ export const getCommonTime = (date: Date = new Date(), targetTimezone: number = 
   };
 }
 
-// 动态渲染组件 - show=false 时自动卸载
+// 动态渲染组件 - show=false 时自动卸载（挂载到 body，需包一层 ConfigProvider 才能拿到中文等全局配置）
+import { ElConfigProvider } from 'element-plus'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+
 export function renderComponent(Component :any, props = {}, container?:any) {
   const el = container || document.createElement('div')
   if (!container) document.body.appendChild(el)
@@ -402,14 +405,16 @@ export function renderComponent(Component :any, props = {}, container?:any) {
   }
 
   const renderVNode = () => {
-    const vnode = createVNode(Component, {
-      ...props,
-      show: state.visible,
-      'onUpdate:show': (val: boolean) => {
-        state.visible = val
-      },
-      onClosed: destroy
-    })
+    const vnode = createVNode(ElConfigProvider, { locale: zhCn }, () =>
+      createVNode(Component, {
+        ...props,
+        show: state.visible,
+        'onUpdate:show': (val: boolean) => {
+          state.visible = val
+        },
+        onClosed: destroy
+      })
+    )
     render(vnode, el)
   }
 
