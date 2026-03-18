@@ -2,9 +2,6 @@
   <div>
     <el-dialog title="选择" v-model="visible" :width="1150">
       <qa-table-query :columns="queryColumns" v-model="formData" />
-      modelValue{{ modelValue }}<br/>
-      idKey：{{idKey}}<br/>
-      selectionData:{{ selectionData }}
       <div class="flex  gap-[20px] mt-[20px]">
       <qa-table
         style="flex: 0 0 auto;width: 700px;"
@@ -68,7 +65,6 @@ const props = withDefaults(
       nameKey?: string;
 
       selectionData?: any[]
-      
     }>(),
     {
       show: false,
@@ -79,6 +75,7 @@ const props = withDefaults(
       pageSize: 10,
       idKey: '_id',
       nameKey: 'name',
+      selectionData: () => [],
       defaultProps: () => ({
         children: 'children',
         label: 'label'
@@ -90,7 +87,7 @@ const renderSelectData = computed(() => {
   return props.columns.filter((item) => item.nameKey)
 })
 const tableSelectConfirm = () => {
-  emit('tableSelectConfirm', tableSelectData.value)
+  emit('tableSelectConfirm', props.selectionData ?? [])
   visible.value = false
 }
 
@@ -133,23 +130,20 @@ const getData = async () => {
   // if(findData) emit('tableSelectConfirm', findData)
 }
 
-const tableSelectData = ref<any>(props.multiple ? [] : null)
-
+/** 左侧表格 selection-change：多选为手动 toggle 后传来的完整选中项，直接更新父组件；单选为当前选中行 */
 const handleSelectionChange = (selection: any[]) => {
-  console.log('selection',selection)
   if (props.multiple) {
-    // tableSelectData.value = selection
+    emit('update:modelValue', Array.isArray(selection) ? selection : [])
   } else {
-    // tableSelectData.value = selection.length ? selection[0] : null
+    emit('update:modelValue', selection?.length ? selection[0] : null)
   }
 }
 
-const removeSelect = (row: any, index: number) => {
-  if (props.multiple && Array.isArray(tableSelectData.value)) {
-    tableSelectData.value = tableSelectData.value.filter((_, i) => _._id !== row._id)
-    emit('update:modelValue', tableSelectData.value)
+const removeSelect = (_row: any, index: number) => {
+  if (props.multiple && Array.isArray(props.selectionData)) {
+    const next = props.selectionData.filter((_: any, i: number) => i !== index)
+    emit('update:modelValue', next)
   } else {
-    tableSelectData.value = null
     emit('update:modelValue', null)
   }
 }

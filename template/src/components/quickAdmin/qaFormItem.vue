@@ -329,7 +329,8 @@ export default defineComponent({
 
     const showTableSelect = ref(false)
 
-    const loaded = ref(false) // 是否已经请求过
+    const tableSelectRequestLoaded = ref(false) // 是否已经请求过
+    const tableSelectRequestComplete = ref(false)
     const renderList: Ref<any[]> = ref([])
 
     const renderTableSelect = (p: RendererParams) => {
@@ -339,9 +340,12 @@ export default defineComponent({
       const value = p.value
       const list: string[] = Array.isArray(value) ? value : []
 
-      if (!loaded.value) {
-        loaded.value = true
-
+      if (list.length === 0) {
+        tableSelectRequestLoaded.value = false
+      }
+      if (!tableSelectRequestLoaded.value && list.length > 0) {
+        tableSelectRequestLoaded.value = true
+        tableSelectRequestComplete.value = true
         http.request({
           method: "POST",
           url: p.action,
@@ -354,7 +358,8 @@ export default defineComponent({
           renderList.value = res.data?.data?.rows || []
           const ids = renderList.value.map((item) => item[idKey])
           p.onChange(ids)
-          console.log("表单渲染",p,renderList)
+        }).finally(()=>{
+          tableSelectRequestComplete.value = false
         })
       } 
       
@@ -370,7 +375,7 @@ export default defineComponent({
           <div class="flex items-center gap-[12px]">
             {renderList.value?.map((item, index) => (
             <el-tag
-              key={index}
+              key={item[idKey] ?? index}
               size="large"
             >
             <div 
@@ -384,7 +389,7 @@ export default defineComponent({
             </el-tag>
           ))}
 
-          <el-button onClick={() => (showTableSelect.value = true)}>
+          <el-button onClick={() => (showTableSelect.value = true)} loading={tableSelectRequestComplete.value}>
             {p.placeholder || '请选择'+p.title}
           </el-button>
           </div>

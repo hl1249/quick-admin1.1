@@ -10,7 +10,10 @@
 
     <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
       :pagination="false" :right-btns="['detail_auto', 'delete', 'update', 'more']"
-      :right-btns-more="table.rightBtnsMore" @update="updateBtn" highlight-current-row row-no
+      :right-btns-more="table.rightBtnsMore" @update="updateBtn" highlight-current-row row-no selection :multiple="true"
+        @selection-change="($event)=>{
+          console.log('选中值',$event)
+        }"
       @current-change="currentChange" @delete="deleteBtn" />
 
 

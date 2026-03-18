@@ -27,10 +27,27 @@
       >
         <el-table-column
           v-if="selection && multiple"
-          type="selection"
-          :selectable="selectable"
+          label=""
           width="55"
-        />
+          align="center"
+        >
+          <template #header>
+            <el-checkbox
+              :model-value="isAllCurrentPageSelected"
+              :indeterminate="isIndeterminate"
+              @change="onToggleSelectAll"
+            />
+          </template>
+          <template #default="{ row, $index }">
+            <div @click.stop>
+              <el-checkbox
+                :model-value="isRowSelected(row)"
+                :disabled="selectable && !selectable(row, $index)"
+                @change="(val) => onToggleRow(row, val === true)"
+              />
+            </div>
+          </template>
+        </el-table-column>
 
         <el-table-column
           v-if="selection && !multiple"
@@ -318,8 +335,8 @@ const props = withDefaults(
     renderNode: 'row', // 默认值
     rowNo: false, // 其他可选默认值
     rowKey: '_id',
-    selection: false,
     height: '100%',
+    multiple: true
   },
 );
 
@@ -364,7 +381,7 @@ const emits = defineEmits<{
   ];
   select: [selection: TableRow[], row: TableRow];
   'select-all': [selection: TableRow[]];
-  'selection-change': [selection: TableRow[]];
+  'selection-change': [selection: TableRow[], currentPageRowIds?: (string | number)[]];
   'pagination-change': [page: number, pageSize: number];
 }>();
 
@@ -378,7 +395,7 @@ const onRowClick = (row: TableRow, column: unknown, event: MouseEvent) => {
   if (props.selection && !props.multiple) {
     singleSelectionId.value = row[rowKey.value];
   } else if (props.selection && props.multiple) {
-    elTableRef.value?.toggleRowSelection(row, undefined);
+    onToggleRow(row, !isRowSelected(row));
   }
   emits('row-click', row, column, event);
 };
@@ -420,8 +437,10 @@ const onHeaderDragend = (
   column: unknown,
   event: MouseEvent,
 ) => emits('header-dragend', newWidth, oldWidth, column, event);
-const onSelectionChange = (selection: TableRow[]) =>
-  emits('selection-change', selection);
+const onSelectionChange = (selection: TableRow[]) => {
+  const currentPageRowIds = tableData.value.map((r) => r[rowKey.value]);
+  emits('selection-change', selection, currentPageRowIds);
+};
 const onSelect = (selection: TableRow[], row: TableRow) =>
   emits('select', selection, row);
 const onSelectAll = (selection: TableRow[]) => emits('select-all', selection);
@@ -466,7 +485,14 @@ function getSelectionIdFromProp(
   key: string,
 ): string | number | undefined {
   if (selectionData == null) return undefined;
-  if (typeof selectionData === 'object' && !Array.isArray(selectionData)) {
+  if (Array.isArray(selectionData)) {
+    if (selectionData.length === 0) return undefined;
+    const first = selectionData[0];
+    return first != null && typeof first === 'object'
+      ? (first as TableRow)[key] as string | number | undefined
+      : (first as string | number);
+  }
+  if (typeof selectionData === 'object') {
     return (selectionData as TableRow)[key] as string | number | undefined;
   }
   return selectionData as string | number;
@@ -491,45 +517,116 @@ function getSelectionIdsFromProp(
 /** 单选模式下的选中项（rowKey 对应的值），与多选 selection-change 语义一致 */
 const singleSelectionId = ref<string | number | undefined>(undefined);
 const rowKey = computed(() => props.rowKey ?? '_id');
+const isSyncingSingleFromProp = ref(false);
 
 watch(
   () => props.selectionData,
   (val) => {
     if (!props.selection || props.multiple) return;
+    isSyncingSingleFromProp.value = true;
     singleSelectionId.value = getSelectionIdFromProp(val, rowKey.value);
+    nextTick(() => {
+      isSyncingSingleFromProp.value = false;
+    });
   },
   { immediate: true },
 );
 
 watch(singleSelectionId, (id) => {
+  if (props.multiple || isSyncingSingleFromProp.value) return;
   if (id === undefined) {
+    const currentId = getSelectionIdFromProp(props.selectionData, rowKey.value);
+    if (currentId === undefined) return;
     emits('selection-change', []);
     return;
   }
   const row = tableData.value.find((r) => r[rowKey.value] === id);
+  const currentId = getSelectionIdFromProp(props.selectionData, rowKey.value);
+  if (currentId === id && row) return;
   emits('selection-change', row ? [row] : []);
 }, { immediate: true });
 
-/** 多选时根据 selectionData 回显选中；为空时清空左侧勾选 */
-watch(
-  () => [props.selectionData, tableData.value] as const,
-  () => {
-    if (!props.selection || !props.multiple || !elTableRef.value) return;
-    const ids = getSelectionIdsFromProp(props.selectionData, rowKey.value);
-    nextTick(() => {
-      elTableRef.value?.clearSelection();
-      if (ids.length > 0) {
-        tableData.value.forEach((row) => {
-          const id = row[rowKey.value];
-          if (id !== undefined && id !== null && ids.includes(id)) {
-            elTableRef.value?.toggleRowSelection(row, true);
-          }
-        });
-      }
-    });
-  },
-  { immediate: true, deep: true },
-);
+/** 多选：是否由 selectionData 控制（传了 selectionData 则为受控，否则用内部状态） */
+const hasSelectionData = computed(() => props.selectionData != null);
+
+/** 多选：未传 selectionData 时的内部选中行（仅内部使用） */
+const multiSelectionInternal = ref<TableRow[]>([]);
+
+/** 多选：当前页某行是否选中（受控用 selectionData，非受控用内部状态） */
+function isRowSelected(row: TableRow): boolean {
+  const key = rowKey.value;
+  const id = row[key];
+  if (id === undefined || id === null) return false;
+  if (hasSelectionData.value) {
+    const ids = getSelectionIdsFromProp(props.selectionData, key);
+    return ids.includes(id);
+  }
+  return multiSelectionInternal.value.some((r) => r[key] === id);
+}
+
+/** 多选：当前页是否全选 */
+const isAllCurrentPageSelected = computed(() => {
+  if (!props.selection || !props.multiple || !tableData.value.length) return false;
+  return tableData.value.every((r) => isRowSelected(r));
+});
+
+/** 多选：当前页半选（部分选中） */
+const isIndeterminate = computed(() => {
+  if (!props.selection || !props.multiple || !tableData.value.length) return false;
+  const selectedCount = tableData.value.filter((r) => isRowSelected(r)).length;
+  return selectedCount > 0 && selectedCount < tableData.value.length;
+});
+
+/** 多选：受控时把 selectionData 转为对象数组 */
+function getSelectionAsRows(): TableRow[] {
+  const raw = props.selectionData;
+  if (raw == null) return [];
+  const arr = Array.isArray(raw) ? raw : [raw];
+  return arr.map((s) =>
+    s != null && typeof s === 'object' && !Array.isArray(s) ? (s as TableRow) : ({ [rowKey.value]: s } as TableRow),
+  );
+}
+
+/** 多选：手动切换某行选中（受控时 emit 给父组件，非受控时改内部状态并 emit） */
+function onToggleRow(row: TableRow, checked: boolean | unknown) {
+  const isChecked = checked === true;
+  const key = rowKey.value;
+  const id = row[key];
+  let newSelection: TableRow[];
+  if (hasSelectionData.value) {
+    const current = getSelectionAsRows();
+    newSelection = isChecked
+      ? [...current.filter((r) => r[key] !== id), row]
+      : current.filter((r) => r[key] !== id);
+  } else {
+    const current = multiSelectionInternal.value;
+    if (isChecked) {
+      newSelection = [...current.filter((r) => r[key] !== id), row];
+    } else {
+      newSelection = current.filter((r) => r[key] !== id);
+    }
+    multiSelectionInternal.value = newSelection;
+  }
+  emits('selection-change', newSelection);
+}
+
+/** 多选：手动切换当前页全选（受控时 emit 给父组件，非受控时改内部状态并 emit） */
+function onToggleSelectAll(checked: boolean | unknown) {
+  const isChecked = checked === true;
+  const key = rowKey.value;
+  const currentPageIds = tableData.value.map((r) => r[key]);
+  let newSelection: TableRow[];
+  if (hasSelectionData.value) {
+    const current = getSelectionAsRows();
+    const rest = current.filter((r) => !currentPageIds.includes(r[key]));
+    newSelection = isChecked ? [...rest, ...tableData.value] : rest;
+  } else {
+    const rest = multiSelectionInternal.value.filter((r) => !currentPageIds.includes(r[key]));
+    newSelection = isChecked ? [...rest, ...tableData.value] : rest;
+    multiSelectionInternal.value = newSelection;
+  }
+  emits('selection-change', newSelection);
+}
 
 const getTableData = async (): Promise<void> => {
   loading.value = true;
