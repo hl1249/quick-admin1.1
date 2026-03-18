@@ -630,7 +630,7 @@ function onToggleSelectAll(checked: boolean | unknown) {
 
 const getTableData = async (): Promise<void> => {
   loading.value = true;
-
+  console.log("请求参数",props.queryFormParam)
   try {
     const res = await http.request({
       url: props.action,

@@ -1,9 +1,10 @@
 <template>
   <div>
     <el-dialog title="选择" v-model="visible" :width="multiple ? 1140 : 750">
-      <qa-table-query :columns="queryColumns" v-model="formData" />
+      <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
       <div class="flex mt-[20px] w-full">
       <qa-table
+        ref="qaTableRef"
         style="width: 100%;"
         :action="action"
         :columns="columns"
@@ -14,6 +15,7 @@
         border
         :multiple="multiple"
         :page-size="pageSize"
+        :query-form-param="queryForm"
         @selection-change="handleSelectionChange"
       />
 
@@ -83,6 +85,19 @@ const props = withDefaults(
     }
 )
 
+const queryForm = ref({
+  formData: props.formData,
+  columns:props.queryColumns
+})
+
+const qaTableRef = ref()
+
+const search = () => {
+  if (qaTableRef.value) {
+    qaTableRef.value.search()
+  }
+}
+
 const renderSelectData = computed(() => {
   return props.columns.filter((item) => item.nameKey)
 })
@@ -115,21 +130,7 @@ watch(()=> props.modelValue,()=>{
   if(findData) emit('tableSelectConfirm', findData)
 })
 
-const data = ref([])
 const list = ref([])
-const getData = async () => {
-  // const res = await http.request({
-  //   url: props.action,
-  //   method: 'post',
-  // })
-  //
-  // console.log('res',res)
-  // data.value = res.data.data.rows
-  // list.value = res.data.data.list
-  // const findData = props.modelValue ? res.data.data.list.find((item:any) => item[props.defaultProps.value] === props.modelValue) : null;
-  // if(findData) emit('tableSelectConfirm', findData)
-}
-
 /** 左侧表格 selection-change：多选为手动 toggle 后传来的完整选中项，直接更新父组件；单选为当前选中行 */
 const handleSelectionChange = (selection: any[]) => {
   if (props.multiple) {
@@ -147,9 +148,6 @@ const removeSelect = (_row: any, index: number) => {
     emit('update:modelValue', null)
   }
 }
-
-getData()
-
 // 暴露方法给父组件
 defineExpose({
   open: () => visible.value = true,

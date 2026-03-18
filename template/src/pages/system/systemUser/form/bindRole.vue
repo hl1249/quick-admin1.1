@@ -51,6 +51,8 @@ interface Props {
   show?: boolean;
   selectItem: selectItem;
   refresh?: () => void;
+  /** 由 renderComponent 注入，弹窗关闭后调用以卸载实例 */
+  onClosed?: () => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -154,6 +156,7 @@ onMounted(() => {
 
 const handleClose = () => {
   emit('close');
+  props.onClosed?.();
 };
 
 const handleBeforeClose = (done: () => void) => {

@@ -6,7 +6,6 @@
                 v-bind="getFormItemBind(item)" :form-type="formType">
 
                 <template v-if="$slots[item.key]" #default>
-                  model:{{model}}
                     <slot :form="model" :keyName="item.key" :name="item.key" />
                 </template>
             </qa-form-item>
