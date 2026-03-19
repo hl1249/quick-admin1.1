@@ -9,3 +9,10 @@
     box-sizing: border-box;
 }
 
+.table-button-box {
+    @apply flex gap-[15px] flex-wrap;
+
+    .el-button+.el-button {
+        margin-left: 0;
+    }
+}

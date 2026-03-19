@@ -1,20 +1,26 @@
 import { Controller, Get, Req, Post, Body } from '@nestjs/common';
 import { Document, UpdateResult } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
+import { AuthService } from '@/app/admin/auth/auth.service';
 import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
+import { _ } from '@/common/utils/fieldQueryTemp';
+import * as bcrypt from 'bcryptjs';
 
 @Controller()
 export class SystemUserController {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly dbService: DbService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('/getList')
   getList(@Req() req, @Body() data): Promise<Document | null> {
     return this.dbService.getTableData({
       dbName: 'qa-users',
       data,
-      fieldJson:{
+      fieldJson: {
         password: 0,
-      }
+      },
     });
   }
 
@@ -64,14 +70,39 @@ export class SystemUserController {
   }
 
   @Post('/resetPassword')
-  resetPassword(@Body() data): Promise<Document | null> {
+  async resetPassword(@Body() data): Promise<Document | null> {
     const { user_id, password } = data;
-    return this.dbService.updateById({
+    const hashedPassword = await bcrypt.hash(password + PASSWORD_SECRET, 10);
+    const result = await this.dbService.updateById({
       id: user_id,
       dbName: 'qa-users',
       dataJson: {
-        password,
+        password: hashedPassword,
+        token: [], // 清空该用户所有 token，强制重新登录
       },
     });
+    await this.authService.updateAuthVersion();
+    return result;
+  }
+
+  @Post('/batchUpdateStatus')
+  async batchUpdateStatus(
+    @Body() data: { user_ids: string | string[]; status: number },
+  ): Promise<Document | null> {
+    const { status } = data;
+    // 统一为字符串数组，便于后续 _id 转 ObjectId（FieldQueryTemp.buildWithField('_id')）
+    const user_ids = Array.isArray(data.user_ids) ? data.user_ids : [data.user_ids].filter(Boolean);
+    const result = await this.dbService.update({
+      dbName: 'qa-users',
+      whereJson: {
+        name: "武汉",
+        _id: _.in(user_ids),
+      },
+      dataJson: {
+        status,
+      },
+    });
+
+    return result;
   }
 }
