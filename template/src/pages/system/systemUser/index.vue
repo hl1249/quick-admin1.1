@@ -2,13 +2,27 @@
   <div class="flex flex-col h-full">
     <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
 
-    <div>
+    <div class="table-button-box">
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
+      <el-dropdown v-if="multipleSelection" :split-button="false"	trigger="click" @command="batchBtn">
+        <el-button type="danger"
+                   :disabled="multipleSelection.length === 0"
+        >
+          批量操作<el-icon class="ml-[8px]"><ArrowDownBold /></el-icon>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item :command="1">账号批量解冻</el-dropdown-item>
+            <el-dropdown-item :command="2">账号批量冻结</el-dropdown-item>
+            <el-dropdown-item :command="3">批量设置可登录的应用</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
       <el-button type="primary" :icon="Tools" :disabled="!selectItem" @click="bindPermissionBtn">角色绑定</el-button>
       <el-button type="danger" :icon="Tools" :disabled="!selectItem" @click="resetPasswordBtn">重置密码</el-button>
     </div>
     <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm" :pagination="false"
-      :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true"
+      :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true" selection
       @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" @current-change="currentChange"   highlight-current-row/>
     
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
@@ -27,10 +41,39 @@
 import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
 import qaDataTable from '@/components/quickAdmin/qaTable.vue';
 import {cloneDeep, renderComponent} from '@/utils'
-import {CirclePlus, Tools} from "@element-plus/icons-vue";
+import {ArrowDownBold, CirclePlus, Tools} from "@element-plus/icons-vue";
 import bindRole from "./form/bindRole.vue";
 import resetPassword from "./form/resetPassword.vue"
+import http from '@/utils/axios'
 
+const batchBtn = (index: number) =>{
+  console.log('为什',index)
+  switch(index){
+    case 1: frozen(0);  break;
+    case 2: frozen(1); break;
+    case 3:  break;
+    default: break;
+  }
+}
+
+const frozen = (status: number) => {
+  let user_ids:string[] = [];
+  multipleSelection.value.map((item:{_id:string},index)=>{
+    user_ids.push(item._id);
+  });
+
+  console.log('multipleSelection',multipleSelection,user_ids)
+  http.request({
+    method: 'POST',
+    url: '/app/admin/system/systemUser/systemUser/batchUpdateStatus',
+    data: {
+      user_ids,
+      status
+    }
+  }).then(()=>{
+    refresh()
+  })
+}
 
 const bindPermissionBtn = () => {
   console.log('selectItem',selectItem)
@@ -347,6 +390,6 @@ const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
 }
 </script>
 
-<style lang="vue" scoped>
+<style lang="scss" scoped>
 
 </style>

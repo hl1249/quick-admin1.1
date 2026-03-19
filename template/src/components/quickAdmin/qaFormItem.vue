@@ -188,6 +188,7 @@ export default defineComponent({
             style={{ width: realUnitConversion(props.width) }}
             onUpdate:modelValue={p.onChange}
             onClear={() => emit('search')}
+            name="resetPassword"
             autocomplete="off"
         />
     )
