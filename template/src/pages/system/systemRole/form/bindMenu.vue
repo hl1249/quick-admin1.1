@@ -11,7 +11,7 @@
             <el-checkbox v-model="isCheckAll">全选/全不选</el-checkbox>
           </div>
           <div class="border border-gray-300 rounded-[4px] overflow-hidden p-[10px]">
-          <el-tree ref="treeRefs" :data="treeData" node-key="menu_id" :default-checked-keys="defaultCheckedKeys"
+          <el-tree v-loading="isTreeLoading" ref="treeRefs" :data="treeData" node-key="menu_id" :default-checked-keys="defaultCheckedKeys"
             :props="{
               children: 'children',
               label: 'title'
@@ -160,22 +160,28 @@ watch(filterText, (val) => {
   treeRefs.value!.filter(val)
 })
 // 渲染的树形数据
-const treeData = ref()
+const treeData = ref<any[]>([])
+const isTreeLoading = ref(false)
 const getAllMenu = async () => {
   console.log("我有没有执行")
-  const { data: { data } } = await http.request({
-    method: "POST",
-    url: "/app/admin/system/systemRole/systemRole/getAllMenu",
-  })
+  isTreeLoading.value = true
+  try {
+    const { data: { data } } = await http.request({
+      method: "POST",
+      url: "/app/admin/system/systemRole/systemRole/getAllMenu",
+    })
 
-  let treeProps = {
-    id: "name",
-    parent_id: "parent_id",
-    children: "children"
-  };
-  treeData.value = arrayToTree(data, treeProps)
-  console.log('treeData', treeData.value)
-  initData()
+    let treeProps = {
+      id: "name",
+      parent_id: "parent_id",
+      children: "children"
+    };
+    treeData.value = arrayToTree(data, treeProps)
+    console.log('treeData', treeData.value)
+    initData()
+  } finally {
+    isTreeLoading.value = false
+  }
 }
 
 // 暴露方法给父组件

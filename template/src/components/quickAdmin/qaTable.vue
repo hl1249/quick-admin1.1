@@ -392,9 +392,11 @@ const onCurrentChange = (row: TableRow | null) => {
   setCurrentRow(row);
 };
 const onRowClick = (row: TableRow, column: unknown, event: MouseEvent) => {
+  console.log("点击选中的值",row,props)
   if (props.selection && !props.multiple) {
     singleSelectionId.value = row[rowKey.value];
-  } else if (props.selection && props.multiple) {
+  } else if (props.selection && props.multiple && hasSelectionData.value) {
+    // 仅受控时点击行才切换勾选；非受控时仅通过复选框操作，不触发勾选
     onToggleRow(row, !isRowSelected(row));
   }
   emits('row-click', row, column, event);
@@ -589,6 +591,8 @@ function getSelectionAsRows(): TableRow[] {
 
 /** 多选：手动切换某行选中（受控时 emit 给父组件，非受控时改内部状态并 emit） */
 function onToggleRow(row: TableRow, checked: boolean | unknown) {
+  console.log('row',row)
+  console.log('rowKey',rowKey)
   const isChecked = checked === true;
   const key = rowKey.value;
   const id = row[key];

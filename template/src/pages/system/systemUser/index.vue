@@ -14,7 +14,6 @@
           <el-dropdown-menu>
             <el-dropdown-item :command="1">账号批量解冻</el-dropdown-item>
             <el-dropdown-item :command="2">账号批量冻结</el-dropdown-item>
-            <el-dropdown-item :command="3">批量设置可登录的应用</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -51,7 +50,6 @@ const batchBtn = (index: number) =>{
   switch(index){
     case 1: frozen(0);  break;
     case 2: frozen(1); break;
-    case 3:  break;
     default: break;
   }
 }

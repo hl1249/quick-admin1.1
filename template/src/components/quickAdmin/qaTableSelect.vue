@@ -9,7 +9,7 @@
         :action="action"
         :columns="columns"
         :row-key="idKey"
-        :selection-data="selectionData"
+        :selection-data="pendingSelection"
         :reserve-selection="true"
         selection
         border
@@ -19,7 +19,7 @@
         @selection-change="handleSelectionChange"
       />
 
-      <el-table :data="selectionData" border v-if="multiple" class="ml-[20px]" style="width:386px;flex:0 0 auto">
+      <el-table :data="pendingSelection" border v-if="multiple" class="ml-[20px]" style="width:386px;flex:0 0 auto">
         <qa-table-column align="center" :width="250" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" />
         <el-table-column  align="center" fixed="right">
           <template #header>
@@ -92,6 +92,9 @@ const queryForm = ref({
 
 const qaTableRef = ref()
 
+/** 弹窗内待确认的选中项，仅点击「确定」时才同步到父组件 */
+const pendingSelection = ref<any[]>([])
+
 const search = () => {
   if (qaTableRef.value) {
     qaTableRef.value.search()
@@ -102,25 +105,28 @@ const renderSelectData = computed(() => {
   return props.columns.filter((item) => item.nameKey)
 })
 const tableSelectConfirm = () => {
-  emit('tableSelectConfirm', props.selectionData ?? [])
+  const raw = pendingSelection.value ?? []
+  try {
+    emit('tableSelectConfirm', JSON.parse(JSON.stringify(raw)))
+  } catch {
+    emit('tableSelectConfirm', raw.map((item: any) => ({ ...item })))
+  }
   visible.value = false
 }
 
 const visible = useVModel(props, 'show', emit)
 const formData = useVModel(props, 'formData', emit)
 
-// 打开弹窗时用 modelValue 初始化右侧已选列表
+// 打开弹窗时用父组件当前已选（selectionData）初始化待确认列表（用 JSON 克隆避免 structuredClone 对代理/函数等报错）
 watch(visible, (open) => {
-  if (open && props.modelValue != null) {
-    // if (props.multiple && Array.isArray(props.modelValue)) {
-    //   tableSelectData.value = props.modelValue.map((row: any) =>
-    //     typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row)),
-    //   )
-    // } else if (!props.multiple && !Array.isArray(props.modelValue)) {
-    //   const row = props.modelValue
-    //   tableSelectData.value = typeof structuredClone === 'function' ? structuredClone(row) : JSON.parse(JSON.stringify(row))
-    // }
-    
+  if (open) {
+    const raw = props.selectionData
+    const arr = Array.isArray(raw) ? raw : raw != null ? [raw] : []
+    try {
+      pendingSelection.value = JSON.parse(JSON.stringify(arr))
+    } catch {
+      pendingSelection.value = arr.map((item: any) => ({ ...item }))
+    }
   }
 })
 
@@ -131,22 +137,13 @@ watch(()=> props.modelValue,()=>{
 })
 
 const list = ref([])
-/** 左侧表格 selection-change：多选为手动 toggle 后传来的完整选中项，直接更新父组件；单选为当前选中行 */
+/** 左侧表格 selection-change：只更新弹窗内待确认列表，不通知父组件；点击「确定」时才通过 tableSelectConfirm 同步 */
 const handleSelectionChange = (selection: any[]) => {
-  if (props.multiple) {
-    emit('update:modelValue', Array.isArray(selection) ? selection : [])
-  } else {
-    emit('update:modelValue', selection?.length ? selection[0] : null)
-  }
+  pendingSelection.value = Array.isArray(selection) ? selection : []
 }
 
 const removeSelect = (_row: any, index: number) => {
-  if (props.multiple && Array.isArray(props.selectionData)) {
-    const next = props.selectionData.filter((_: any, i: number) => i !== index)
-    emit('update:modelValue', next)
-  } else {
-    emit('update:modelValue', null)
-  }
+  pendingSelection.value = pendingSelection.value.filter((_: any, i: number) => i !== index)
 }
 // 暴露方法给父组件
 defineExpose({

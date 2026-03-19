@@ -11,7 +11,8 @@
             <el-checkbox v-model="isCheckAll">全选/全不选</el-checkbox>
           </div>
           <div class="border border-gray-300 rounded-[4px] overflow-hidden p-[10px]">
-            <el-tree ref="treeRefs" 
+            <el-tree ref="treeRefs"
+            v-loading="isTreeLoading" 
             :data="treeData" 
             :node-key="nodeKey" 
             :default-checked-keys="defaultCheckedKeys"
@@ -157,8 +158,11 @@ watch(filterText, (val) => {
 // 节点key
 const nodeKey = "permission_id"
 // 渲染的树形数据
-const treeData = ref()
+const treeData = ref<any[]>([])
+const isTreeLoading = ref(false)
 const getAllPermissions = async () => {
+  isTreeLoading.value = true
+  try {
   const { data: { data } } = await http.request({
     method: "POST",
     url: "/app/admin/system/systemRole/systemRole/getAllPermissions",
@@ -169,9 +173,12 @@ const getAllPermissions = async () => {
     parent_id: "parent_id",
     children: "children"
   };
-  treeData.value = arrayToTree(data, treeProps)
-  console.log('treeData', treeData.value)
-  initData()
+    treeData.value = arrayToTree(data, treeProps)
+    console.log('treeData', treeData.value)
+    initData()
+  } finally {
+    isTreeLoading.value = false
+  }
 }
 
 // 暴露方法给父组件
