@@ -63,7 +63,19 @@ function transformWhereJson(whereJson: Record<string, any>): Record<string, any>
 
     // 对于 FieldQueryTemp 实例，直接调用 buildWithField 方法
     if (value instanceof FieldQueryTemp) {
-      Object.assign(result, value.buildWithField(key));
+      const built = value.buildWithField(key);
+      Object.assign(result, built);
+      // _id 使用 FieldQueryTemp（如 _.in(ids)）时，将 $in/$nin 数组中的字符串转为 ObjectId
+      if (key === '_id' && typeof built[key] === 'object' && built[key] !== null) {
+        const idObj = built[key];
+        for (const op of ['$in', '$nin']) {
+          if (Array.isArray(idObj[op])) {
+            idObj[op] = idObj[op].map((item: any) =>
+              typeof item === 'string' && ObjectId.isValid(item) ? new ObjectId(item) : item
+            );
+          }
+        }
+      }
     }
     // 对于普通对象，递归转换
     else if (typeof value === 'object' && value.__field_placeholder__) {

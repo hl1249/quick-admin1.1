@@ -87,15 +87,12 @@ export class SystemUserController {
 
   @Post('/batchUpdateStatus')
   async batchUpdateStatus(
-    @Body() data: { user_ids: string | string[]; status: number },
+    @Body() data: { user_ids: string[]; status: number },
   ): Promise<Document | null> {
-    const { status } = data;
-    // 统一为字符串数组，便于后续 _id 转 ObjectId（FieldQueryTemp.buildWithField('_id')）
-    const user_ids = Array.isArray(data.user_ids) ? data.user_ids : [data.user_ids].filter(Boolean);
+    const { status, user_ids } = data;
     const result = await this.dbService.update({
       dbName: 'qa-users',
       whereJson: {
-        name: "武汉",
         _id: _.in(user_ids),
       },
       dataJson: {
