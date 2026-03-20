@@ -26,14 +26,14 @@
                 <p>第三步（可选）： 选择云存储空间列表上的修改【空间域名操作】</p>
                 <p>第四步（可选）： 选择云存储空间列表上的修改【CNAME配置】，打开后复制记录值到对应的平台解析</p>
               </el-alert>
-              <space-list :provider="activeName" class="space-list-grow" />
+              <space-list v-if="activeName === 'tencent'" :provider="activeName" class="space-list-grow" />
             </div>
           </el-tab-pane>
           <el-tab-pane label="阿里云" name="aliyun">
-            <space-list :provider="activeName" class="space-list-grow" />
+            <space-list v-if="activeName === 'aliyun'" :provider="activeName" class="space-list-grow" />
           </el-tab-pane>
           <el-tab-pane label="七牛云" name="qiniu">
-            <space-list :provider="activeName" class="space-list-grow" />
+            <space-list v-if="activeName === 'qiniu'" :provider="activeName" class="space-list-grow" />
           </el-tab-pane>
         </el-tabs>
       </el-tab-pane>

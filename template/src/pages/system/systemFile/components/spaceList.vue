@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col h-full">
-    provider:{{provider}}
     <div class="flex justify-between my-[8px]">
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
       <el-button :icon="Setting">修改配置信息</el-button>
@@ -123,7 +122,11 @@ const queryForm = ref({
   formData: {
     provider: props.provider,
   },
-  columns: []
+  columns: [{
+    key: "provider",
+    title: "空间名称",
+    mode: "="
+  }]
 })
 
 // 多选逻辑
