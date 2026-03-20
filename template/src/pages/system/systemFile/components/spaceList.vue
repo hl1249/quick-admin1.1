@@ -1,10 +1,11 @@
 <template>
   <div class="flex flex-col h-full">
+    provider:{{provider}}
     <div class="flex justify-between my-[8px]">
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
       <el-button :icon="Setting">修改配置信息</el-button>
     </div>
-    <qa-table  ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
+    <qa-table size="small"  ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
               :pagination="false" :right-btns="['delete', 'update']"
                @selection-change="selectionChange" @update="updateBtn"
               @delete="deleteBtn" />
@@ -16,7 +17,7 @@
                :before-action="form.props.beforeAction" @success="()=>{
             form.props.show = false
             refresh()
-          }">
+          }" @closeForm="form.props.show = false">
         <template v-slot:user_id="{ form, keyName }">
           <div style="height: 36px;display: flex;align-items: center;">
             <br/>
@@ -33,6 +34,10 @@ import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quic
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus, Setting } from '@element-plus/icons-vue'
+
+const props = defineProps<{
+  provider: string
+}>()
 
 const adopt = (status: number) => {
   formRefs.value.submitForm({
@@ -64,26 +69,27 @@ const table = ref<{
   columns: Columns[]
   rightBtnsMore: RightBtnMoreItem[]
 }>({
-  action: '/app/admin/system/systemLog/systemLog/getList',
+  action: '/app/admin/system/systemFile/systemFile/getSpaceList',
   columns: [
     {
-      key: "_id",
+      key: "name",
       type: 'text',
       title: "存储空间名称",
     },
     {
-      key: "_id",
+      key: "region",
       type: 'text',
       title: "区域",
     },
     {
-      key: "_id",
+      key: "domain",
       type: 'text',
       title: "空间域名",
+      width: 500
     },
     {
-      key: "_id",
-      type: 'text',
+      key: "status",
+      type: 'switch',
       title: "使用状态",
     },
     {
@@ -136,7 +142,7 @@ const form = ref({
     beforeAction: (_formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemLog/systemLog/add',
+    action: '/app/admin/system/systemFile/systemFile/addSpace',
     columns: [
       {
         "key": "name",
@@ -208,6 +214,8 @@ const addBtn = () => {
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
+  form.value.props.action = '/app/admin/system/systemFile/systemFile/updateSpace';
+  form.value.data = row;
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
   form.value.props.show = true
@@ -215,7 +223,7 @@ const updateBtn = (index: number, row: any) => {
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
   btnsDeleteRequest({
-    action: '/app/admin/system/systemLog/systemLog/delete',
+    action: '/app/admin/system/systemFile/systemFile/deleteSpace',
     data: {
       _id: row._id
     }

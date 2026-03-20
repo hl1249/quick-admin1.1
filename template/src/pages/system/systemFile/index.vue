@@ -6,14 +6,14 @@
         <el-tabs v-model="activeName" class="config-inner-tabs demo-tabs" @tab-click="handleClick">
           <el-tab-pane label="存储配置" name="config">
            <div class="flex flex-col gap-[20px]">
-             <el-radio-group v-model="radio">
-               <el-radio :value="0">本地</el-radio>
-               <el-radio :value="1">腾讯云</el-radio>
-               <el-radio :value="2">阿里云</el-radio>
-               <el-radio :value="3">七牛云</el-radio>
+             <el-radio-group v-model="provider">
+               <el-radio value="local">本地</el-radio>
+               <el-radio value="tencent">腾讯云</el-radio>
+               <el-radio value="aliyun">阿里云</el-radio>
+               <el-radio value="qiniu">七牛云</el-radio>
              </el-radio-group>
              <div>
-               <el-button type="primary">保存</el-button>
+               <el-button type="primary" @click="saveConfig()" :loading="saveLoading">保存</el-button>
              </div>
            </div>
           </el-tab-pane>
@@ -26,7 +26,7 @@
                 <p>第三步（可选）： 选择云存储空间列表上的修改【空间域名操作】</p>
                 <p>第四步（可选）： 选择云存储空间列表上的修改【CNAME配置】，打开后复制记录值到对应的平台解析</p>
               </el-alert>
-              <space-list class="space-list-grow" />
+              <space-list :provider="provider" class="space-list-grow" />
             </div>
           </el-tab-pane>
           <el-tab-pane label="阿里云" name="third">
@@ -42,15 +42,43 @@
 </template>
 
 <script setup lang="ts">
-import type { TabsPaneContext } from 'element-plus'
+import {ElMessage, type TabsPaneContext} from 'element-plus'
 import spaceList from './components/spaceList.vue'
-const activeName = ref('first')
+import { saveStorageConfig, getStorageConfig } from '@/api/file'
 
-const radio: Ref<number> = ref(0)
+const activeName = ref('config')
+
+
+const provider: Ref<string> = ref('')
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event)
 }
+
+const saveLoading:Ref<boolean> = ref( false)
+const saveConfig = async () => {
+  saveLoading.value = true
+  try{
+    await saveStorageConfig({
+      provider: provider.value
+    })
+    ElMessage.success('保存成功')
+  }catch (err){
+    ElMessage.error(JSON.stringify(err))
+  }finally {
+    saveLoading.value = false
+  }
+
+}
+
+const getConfig = async () => {
+  const res = await getStorageConfig()
+  provider.value = res.data.data.provider
+}
+
+onMounted(() => {
+  getConfig()
+})
 </script>
 
 <style lang="scss" scoped>
