@@ -17,7 +17,7 @@
              </div>
            </div>
           </el-tab-pane>
-          <el-tab-pane label="腾讯云" name="second">
+          <el-tab-pane label="腾讯云" name="tencent">
             <div class="tab-pane-fill">
               <el-alert type="info" class="flex-shrink-0">
                 <p>腾讯云cos开通方法：点击查看</p>
@@ -26,13 +26,15 @@
                 <p>第三步（可选）： 选择云存储空间列表上的修改【空间域名操作】</p>
                 <p>第四步（可选）： 选择云存储空间列表上的修改【CNAME配置】，打开后复制记录值到对应的平台解析</p>
               </el-alert>
-              <space-list :provider="provider" class="space-list-grow" />
+              <space-list :provider="activeName" class="space-list-grow" />
             </div>
           </el-tab-pane>
-          <el-tab-pane label="阿里云" name="third">
-            <div class="h-full bg-[red]"></div>
+          <el-tab-pane label="阿里云" name="aliyun">
+            <space-list :provider="activeName" class="space-list-grow" />
           </el-tab-pane>
-          <el-tab-pane label="七牛云" name="fourth">七牛云</el-tab-pane>
+          <el-tab-pane label="七牛云" name="qiniu">
+            <space-list :provider="activeName" class="space-list-grow" />
+          </el-tab-pane>
         </el-tabs>
       </el-tab-pane>
     </el-tabs>
@@ -47,7 +49,6 @@ import spaceList from './components/spaceList.vue'
 import { saveStorageConfig, getStorageConfig } from '@/api/file'
 
 const activeName = ref('config')
-
 
 const provider: Ref<string> = ref('')
 
