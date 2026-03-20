@@ -7,11 +7,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { OssService } from '@/common/oss/oss.service';
+import { UploadService } from '@/common/upload/upload.service';
 
 @Controller()
 export class SystemFileController {
-  constructor(private readonly ossService: OssService) {}
+  constructor(private readonly uploadService: UploadService) {}
 
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
@@ -23,9 +23,7 @@ export class SystemFileController {
       throw new BadRequestException('请上传 file 文件');
     }
 
-    const result = await this.ossService.upload(file.buffer, {
-      filename: file.originalname,
-      contentType: file.mimetype,
+    const result = await this.uploadService.uploadFile(file, {
       folder: data?.folder,
       provider: data?.provider,
     });

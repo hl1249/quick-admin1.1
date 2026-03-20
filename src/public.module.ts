@@ -11,6 +11,7 @@ import {LogModule } from '@/common/logger/logger.module';
 // 缓存
 import { CacheModule } from '@/common/cache/cache.module'
 import { OssModule } from '@/common/oss/oss.module';
+import { UploadModule } from '@/common/upload/upload.module';
 // 动态路由
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import { OssModule } from '@/common/oss/oss.module';
     }), // 默认数据库实例
     CacheModule,
     OssModule,
+    UploadModule,
   ],
-  exports: [JwtModule, LogModule, CacheModule, OssModule],
+  exports: [JwtModule, LogModule, CacheModule, OssModule, UploadModule],
 })
 export class Public implements OnModuleInit, OnModuleDestroy {
   logger: Logger;

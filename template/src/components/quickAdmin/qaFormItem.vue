@@ -231,6 +231,25 @@ export default defineComponent({
       </el-radio-group>
     )
 
+    const renderCheckbox = (p: RendererParams) => (
+      <el-checkbox-group modelValue={p.value} onUpdate:modelValue={p.onChange}  style={{ width: realUnitConversion(props.width) }}>
+        {(p.data ?? []).map((item) => (
+          <el-checkbox key={item.value} value={item.value}>
+            {item.label}
+          </el-checkbox>
+        ))}
+      </el-checkbox-group>
+    )
+    const renderSelect = (p: RendererParams) => (
+      <el-select modelValue={p.value} onUpdate:modelValue={p.onChange} style={{ width: realUnitConversion(props.width) }}>
+        {(p.data ?? []).map((item) => (
+          <el-option key={item.value} value={item.value}>
+            {item.label}
+          </el-option>
+        ))}
+      </el-select>
+    )
+
     const renderDate = (p: RendererParams) => (
       <el-date-picker
         modelValue={p.value}
@@ -451,6 +470,8 @@ export default defineComponent({
       switch: renderSwitch,
       rate: renderRate,
       radio: renderRadio,
+      checkout: renderCheckbox,
+      select: renderSelect,
       date: renderDate,
       datetimerange: renderDateTimerange,
       'array<string>': renderArrayString,

@@ -12,7 +12,7 @@ const parseProvider = (value: string): OssProvider => {
 
 export const OSS_CONFIG = {
   // 当前启用的存储平台
-  provider: parseProvider(env('OSS_PROVIDER', 'local')),
+  provider: parseProvider(env('OSS_PROVIDER', 'tencent')),
 
   // 本地存储配置
   local: {
