@@ -1,13 +1,15 @@
-// 必须在 Nest 启动前加载 .env，与 ConfigModule.forRoot 一致
-import 'dotenv/config';
+// 必须最先加载：在其他模块读环境变量之前解析项目根 .env
+import './load-env';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const appConfig = app.get(AppConfigService);
-  app.setGlobalPrefix('api');
+  if (appConfig.globalPrefix) {
+    app.setGlobalPrefix(appConfig.globalPrefix);
+  }
   app.enableCors({
     origin: appConfig.corsOrigin,
     credentials: true,

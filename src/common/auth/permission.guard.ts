@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 import { DbService } from '@/common/utils/db.service';
 import { CacheService } from '@/common/cache/cache.service'
 import { AuthService } from '@/app/admin/auth/auth.service';
@@ -21,9 +21,16 @@ export class PermissionGuard implements CanActivate {
         context: ExecutionContext,
     ): Promise<boolean> {
       const request = context.switchToHttp().getRequest();
-      const url = request.url;
+      // 与 main 中 setGlobalPrefix(GLOBAL_PREFIX) 对齐；业务权限路径多为 /app/admin/... 无全局前缀
+      const url = this.normalizePathForPermission(request.url);
       // 只对 PERMISSION_URLS配置的路由开头的接口进行权限验证
-      if (!this.appConfig.permissionUrls.some((item) => url.startsWith(item))) return true;
+      if (
+        !this.appConfig.permissionUrls.some((item) =>
+          url.startsWith(this.normalizePathForPermission(item)),
+        )
+      ) {
+        return true;
+      }
       // throw new ForbiddenException('没有权限访问该接口');
 
       const handler = context.getHandler();
@@ -63,7 +70,7 @@ export class PermissionGuard implements CanActivate {
 
       // 检查缓存是否存在或版本是否过期
       const needRebuild = cachedPermissions && cachedPermissions.authVersion !== currentAuthVersion;
-
+      console.log("有没有进权限验证")
       if (!cachedPermissions || needRebuild) {
         // 1. 回填缓存
         await this.authService.buildCacheUserPermission(userInfo);
@@ -92,11 +99,29 @@ export class PermissionGuard implements CanActivate {
         })),
       );
 
+      console.log('allPermissionsallPermissions',allPermissions)
+
       if (!this.matchesPatternsWithMode(url, allPermissions)) {
         throw new ForbiddenException('没有权限访问该接口');
       }
 
       return true;
+    }
+
+    /** 去掉查询串，并去掉与 GLOBAL_PREFIX 对应的路径前缀，便于与 PERMISSION_URLS、菜单权限里的路径一致 */
+    private normalizePathForPermission(raw: string): string {
+      let path = (raw.split('?')[0] ?? '').trim();
+      const p = this.appConfig.globalPrefix;
+      if (!p) {
+        return path;
+      }
+      const lead = `/${p}`;
+      if (path.startsWith(`${lead}/`)) {
+        path = path.slice(lead.length);
+      } else if (path === lead) {
+        path = '/';
+      }
+      return path;
     }
 
     // 修改后的匹配方法，支持三种匹配模式

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'node:path';
+import configuration from '@/config/configuration';
 import { AppConfigModule } from '@/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -20,7 +22,14 @@ import { Public } from '@/public.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      envFilePath: [
+        join(__dirname, '..', '.env'),
+        join(__dirname, '..', '.env.local'),
+      ],
+    }),
     AppConfigModule,
     Public,
     DynamicModule.register(),

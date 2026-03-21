@@ -27,6 +27,7 @@ export class CacheFactory implements OnModuleDestroy {
         host: this.appConfig.redisHost,
         port: this.appConfig.redisPort,
         password: this.appConfig.redisPassword || undefined,
+        db: this.appConfig.redisDb,
         retryStrategy: (times) => {
           return Math.min(times * 50, 2000);
         },
