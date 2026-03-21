@@ -1,16 +1,17 @@
-// 必须在任何读取 @/config 的 import 之前加载 .env，否则 CACHE_TYPE 等会使用默认值
+// 必须在 Nest 启动前加载 .env，与 ConfigModule.forRoot 一致
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { PORT } from '@/config';
+import { AppConfigService } from '@/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const appConfig = app.get(AppConfigService);
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',').map((s) => s.trim()) ?? true,
+    origin: appConfig.corsOrigin,
     credentials: true,
   });
-  await app.listen(PORT ?? 3000);
+  await app.listen(appConfig.port);
 }
 bootstrap();

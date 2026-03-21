@@ -2,7 +2,7 @@ import { Controller, Get, Req, Post, Body } from '@nestjs/common';
 import { Document, UpdateResult } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 import { AuthService } from '@/app/admin/auth/auth.service';
-import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
+import { AppConfigService } from '@/config';
 import { _ } from '@/common/utils/fieldQueryTemp';
 import * as bcrypt from 'bcryptjs';
 
@@ -11,6 +11,7 @@ export class SystemUserController {
   constructor(
     private readonly dbService: DbService,
     private readonly authService: AuthService,
+    private readonly appConfig: AppConfigService,
   ) {}
 
   @Post('/getList')
@@ -72,7 +73,7 @@ export class SystemUserController {
   @Post('/resetPassword')
   async resetPassword(@Body() data): Promise<Document | null> {
     const { user_id, password } = data;
-    const hashedPassword = await bcrypt.hash(password + PASSWORD_SECRET, 10);
+    const hashedPassword = await bcrypt.hash(password + this.appConfig.passwordSecret, 10);
     const result = await this.dbService.updateById({
       id: user_id,
       dbName: 'qa-users',

@@ -4,13 +4,14 @@ import { UserDto } from './user.dto';
 import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { filterObject } from '@/common/utils/utils'
-import { TOKEN_MAX_LIMIT, PASSWORD_SECRET } from '@/config';
+import { AppConfigService } from '@/config';
 import * as bcrypt from 'bcryptjs';
 @Controller()
 export class UserController {
     constructor(
         private readonly dbService: DbService,
         private readonly jwtService: JwtService,
+        private readonly appConfig: AppConfigService,
     ) {
     }
 
@@ -32,7 +33,7 @@ export class UserController {
             throw new BadRequestException('账号或密码错误');
         }
 
-        const isMatch = await bcrypt.compare(password + PASSWORD_SECRET, userInfo.password); // 使用密钥解密密码
+        const isMatch = await bcrypt.compare(password + this.appConfig.passwordSecret, userInfo.password); // 使用密钥解密密码
 
         if (!isMatch) {
             throw new BadRequestException('账号或密码错误');
@@ -44,7 +45,7 @@ export class UserController {
         const passTokens = [
             ...this.jwtService.verifyTokens(userInfo.token || []), // 过滤掉过期 token
             token, // 添加新 token
-        ].slice(-TOKEN_MAX_LIMIT); // 保留最后 TOKEN_MAX_LIMIT 个
+        ].slice(-this.appConfig.tokenMaxLimit); // 保留最后 N 个 token
 
         await this.dbService.update({
             dbName: "qa-users",

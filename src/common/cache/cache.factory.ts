@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy, Logger } from '@nestjs/common';
 import Redis from 'ioredis';
-import { CACHE_TYPE, CACHE_TTL, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } from '@/config';
+import { AppConfigService } from '@/config';
 
 export interface MemoryCacheItem {
   value: any;
@@ -15,18 +15,18 @@ export class CacheFactory implements OnModuleDestroy {
   public readonly defaultTTL: number;
   public readonly cacheType: string;
 
-  constructor() {
-    this.defaultTTL = CACHE_TTL * 1000;
-    this.cacheType = CACHE_TYPE;
+  constructor(private readonly appConfig: AppConfigService) {
+    this.defaultTTL = this.appConfig.cacheTtl * 1000;
+    this.cacheType = this.appConfig.cacheType;
     this.initCache();
   }
 
   private initCache() {
-    if (CACHE_TYPE === 'redis') {
+    if (this.appConfig.cacheType === 'redis') {
       this.redisClient = new Redis({
-        host: REDIS_HOST,
-        port: REDIS_PORT,
-        password: REDIS_PASSWORD || undefined,
+        host: this.appConfig.redisHost,
+        port: this.appConfig.redisPort,
+        password: this.appConfig.redisPassword || undefined,
         retryStrategy: (times) => {
           return Math.min(times * 50, 2000);
         },

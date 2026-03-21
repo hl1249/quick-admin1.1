@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
-import { DEBUG } from '@/config';
+import { AppConfigService } from '@/config';
 
 interface HttpExceptionResponse {
   message?: string | string[];
@@ -19,6 +19,8 @@ interface HttpExceptionResponse {
 @Catch()
 export class ExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(ExceptionsFilter.name);
+
+  constructor(private readonly appConfig: AppConfigService) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -60,7 +62,7 @@ export class ExceptionsFilter implements ExceptionFilter {
       message,
       path: request.url,
       requestId: (request as any).requestId || null,
-      ...(DEBUG
+      ...(this.appConfig.debug
         ? {
             err: {
               message: err?.message || JSON.stringify(exception),

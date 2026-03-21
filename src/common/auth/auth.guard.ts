@@ -1,5 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { AUTHORIZATION } from '@/config';
+import { AppConfigService } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { Reflector } from '@nestjs/core';
 import { DbService } from '@/common/utils/db.service';
@@ -11,6 +11,7 @@ export class AuthGuard implements CanActivate {
         private readonly reflector: Reflector,
         private readonly jwtService: JwtService,
         private readonly dbService: DbService,
+        private readonly appConfig: AppConfigService,
     ) { }
 
     async canActivate(
@@ -28,7 +29,8 @@ export class AuthGuard implements CanActivate {
         }
 
         const request = context.switchToHttp().getRequest();
-        const source = request.headers[AUTHORIZATION];
+        const authHeader = this.appConfig.authorizationHeader.toLowerCase();
+        const source = request.headers[authHeader];
         if (!source || typeof source !== 'string') {
             throw new UnauthorizedException('缺少身份认证信息');
         }

@@ -2,7 +2,7 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } fr
 import { Observable, from } from 'rxjs';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { AsyncStorageService } from './asyncStorage.service';
-import { LOG_DB_NAME } from '@/config';
+import { AppConfigService } from '@/config';
 import { DbService } from '@/common/utils/db.service';
 
 @Injectable()
@@ -12,6 +12,7 @@ export class LogInterceptor implements NestInterceptor {
     constructor(
         private readonly asyncStorageService: AsyncStorageService,
         private readonly dbService: DbService,
+        private readonly appConfig: AppConfigService,
     ) { }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -31,7 +32,7 @@ export class LogInterceptor implements NestInterceptor {
                 req.requestId = requestId;
 
                 await this.dbService.add({
-                    dbName: LOG_DB_NAME,
+                    dbName: this.appConfig.logDbName,
                     dataJson: {
                         url,
                         method,
@@ -46,7 +47,7 @@ export class LogInterceptor implements NestInterceptor {
                 res.on('finish', async () => {
                     const statusCode = res.statusCode;
                     await this.dbService.update({
-                        dbName: LOG_DB_NAME,
+                        dbName: this.appConfig.logDbName,
                         whereJson: {
                             requestId
                         },
@@ -85,7 +86,7 @@ export class LogInterceptor implements NestInterceptor {
 
                 const saveDb = (requestId, data) => {
                     return this.dbService.update({
-                        dbName: LOG_DB_NAME,
+                        dbName: this.appConfig.logDbName,
                         whereJson: {
                             requestId: requestId
                         },

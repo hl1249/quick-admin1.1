@@ -1,7 +1,9 @@
 import { Module, DynamicModule as NestDynamicModule } from '@nestjs/common';
-import { loadControllers,loadProviders } from './dynamic.loader';
+import { ConfigService } from '@nestjs/config';
+import { loadControllers, loadProviders } from './dynamic.loader';
 import { join } from 'path';
 import { Public } from '@/public.module';
+import { AppConfigService } from '@/config';
 
 @Module({
   imports: [Public],
@@ -10,9 +12,10 @@ export class DynamicModule {
   static register(): NestDynamicModule {
     const basePath = join(__dirname);
     const rootDir = join(__dirname, '..');
+    const debug = new AppConfigService(new ConfigService()).debug;
 
-    const controllers = loadControllers(basePath, rootDir);
-    const providers = loadProviders(basePath);
+    const controllers = loadControllers(basePath, rootDir, debug);
+    const providers = loadProviders(basePath, debug);
 
     return {
       module: DynamicModule,
@@ -25,9 +28,10 @@ export class DynamicModule {
   static registerAdmin(): NestDynamicModule {
     const adminPath = join(__dirname, 'admin');
     const rootDir = join(__dirname, '..');
+    const debug = new AppConfigService(new ConfigService()).debug;
 
-    const controllers = loadControllers(adminPath, rootDir);
-    const providers = loadProviders(adminPath);
+    const controllers = loadControllers(adminPath, rootDir, debug);
+    const providers = loadProviders(adminPath, debug);
 
     return {
       module: DynamicModule,
@@ -40,9 +44,10 @@ export class DynamicModule {
   static registerClient(): NestDynamicModule {
     const clientPath = join(__dirname, 'client');
     const rootDir = join(__dirname, '..');
+    const debug = new AppConfigService(new ConfigService()).debug;
 
-    const controllers = loadControllers(clientPath, rootDir);
-    const providers = loadProviders(clientPath);
+    const controllers = loadControllers(clientPath, rootDir, debug);
+    const providers = loadProviders(clientPath, debug);
 
     return {
       module: DynamicModule,

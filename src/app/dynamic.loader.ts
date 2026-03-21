@@ -2,8 +2,6 @@ import { Type } from '@nestjs/common';
 import { join, relative } from 'path';
 import { readdirSync, statSync } from 'fs';
 import { PATH_METADATA } from '@nestjs/common/constants';
-import { DEBUG } from '@/config';
-
 // 递归获取所有 controller 或 service 文件，可排除指定目录名（如 template）
 function getFiles(
   dir: string,
@@ -29,7 +27,11 @@ function getFiles(
 }
 
 // 动态加载 controller 并设置路由前缀 加载的 controller 必须以 Controller 结尾
-export function loadControllers(basePath: string, rootDir: string): Type<any>[] {
+export function loadControllers(
+  basePath: string,
+  rootDir: string,
+  debug: boolean,
+): Type<any>[] {
   const files = getFiles(basePath, ['.controller.ts', '.controller.js']);
   const controllers: Type<any>[] = [];
 
@@ -52,11 +54,11 @@ export function loadControllers(basePath: string, rootDir: string): Type<any>[] 
         Reflect.defineMetadata(PATH_METADATA, routePrefix, controllerClass);
         controllers.push(controllerClass);
 
-         DEBUG ? console.log(`动态加载控制器: ${controllerClass.name} 控制器路由前缀: ${routePrefix}`) : null;
+         debug ? console.log(`动态加载控制器: ${controllerClass.name} 控制器路由前缀: ${routePrefix}`) : null;
        
       }
     } catch (err) {
-      DEBUG ? console.warn(`动态加载控制器失败 ${file}:`, err) : null;
+      debug ? console.warn(`动态加载控制器失败 ${file}:`, err) : null;
     }
   });
 
@@ -64,7 +66,7 @@ export function loadControllers(basePath: string, rootDir: string): Type<any>[] 
 }
 
 // 动态加载 service 加载的 service 必须以 Service 结尾
-export function loadProviders(basePath: string): Type<any>[] {
+export function loadProviders(basePath: string, debug: boolean): Type<any>[] {
   const files = getFiles(basePath, ['.service.ts', '.service.js']);
   const providers: Type<any>[] = [];
 
@@ -77,10 +79,10 @@ export function loadProviders(basePath: string): Type<any>[] {
 
       if (serviceClass) {
         providers.push(serviceClass);
-        DEBUG ? console.log(`动态加载服务层模块: ${serviceClass.name}`) : null;
+        debug ? console.log(`动态加载服务层模块: ${serviceClass.name}`) : null;
       }
     } catch (err) {
-      DEBUG ? console.warn(`动态加载服务层模块失败 ${file}:`, err) : null;
+      debug ? console.warn(`动态加载服务层模块失败 ${file}:`, err) : null;
     }
   });
 

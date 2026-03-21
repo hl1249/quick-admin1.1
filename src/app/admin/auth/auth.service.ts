@@ -6,7 +6,7 @@ import {
 import { DbService } from '@/common/utils/db.service';
 import { Document } from 'mongodb'
 import { UserDto, RegisterDto } from './auth.dto';
-import { PASSWORD_SECRET, TOKEN_MAX_LIMIT, ADMIN_ROLE_ID } from '@/config';
+import { AppConfigService } from '@/config';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { arrayToTree, filterObject } from '@/common/utils/utils'
 import { CacheService } from '@/common/cache/cache.service'
@@ -21,6 +21,7 @@ export class AuthService {
     private readonly dbService: DbService,
     private readonly jwtService: JwtService,
     private readonly cache: CacheService,
+    private readonly appConfig: AppConfigService,
   ) {}
 
   async register(
@@ -36,7 +37,7 @@ export class AuthService {
       throw new BadRequestException('用户名已存在');
     }
     const hashedPassword = await bcrypt.hash(
-      password + PASSWORD_SECRET,
+      password + this.appConfig.passwordSecret,
       10,
     );
     const { insertedId } = await this.dbService.add({
@@ -60,7 +61,7 @@ export class AuthService {
     const passTokens = [
       ...this.jwtService.verifyTokens(userInfo.token || []),
       token,
-    ].slice(-TOKEN_MAX_LIMIT);
+    ].slice(-this.appConfig.tokenMaxLimit);
     await this.dbService.update({
       dbName: 'qa-users',
       whereJson: { _id: userInfo._id },
@@ -99,7 +100,7 @@ export class AuthService {
     }
 
     const isMatch = await bcrypt.compare(
-      password + PASSWORD_SECRET,
+      password + this.appConfig.passwordSecret,
       userInfo.password,
     ); // 使用密钥解密密码
 
@@ -114,7 +115,7 @@ export class AuthService {
     const passTokens = [
       ...this.jwtService.verifyTokens(userInfo.token || []), // 过滤掉过期 token
       token, // 添加新 token
-    ].slice(-TOKEN_MAX_LIMIT); // 保留最后 TOKEN_MAX_LIMIT 个
+    ].slice(-this.appConfig.tokenMaxLimit); // 保留最后 N 个 token
 
     await this.dbService.update({
       dbName: 'qa-users',
@@ -149,7 +150,7 @@ export class AuthService {
 
     if (!cachedPermissions) throw new UnauthorizedException('身份认证失败');
     let whereJson = {};
-    if (!userInfo.role.includes(ADMIN_ROLE_ID)) {
+    if (!userInfo.role.includes(this.appConfig.adminRoleId)) {
       whereJson = {
         menu_id: _.in(cachedPermissions.allowedMenus),
       };

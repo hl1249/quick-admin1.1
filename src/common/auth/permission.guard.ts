@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PERMISSION_URLS, ADMIN_ROLE_ID } from '@/config';
+import { AppConfigService } from '@/config';
 import { DbService } from '@/common/utils/db.service';
 import { CacheService } from '@/common/cache/cache.service'
 import { AuthService } from '@/app/admin/auth/auth.service';
@@ -14,6 +14,7 @@ export class PermissionGuard implements CanActivate {
         private readonly dbService: DbService,
         private readonly cache: CacheService,
         private readonly authService: AuthService,
+        private readonly appConfig: AppConfigService,
     ) { }
 
     async canActivate(
@@ -22,7 +23,7 @@ export class PermissionGuard implements CanActivate {
       const request = context.switchToHttp().getRequest();
       const url = request.url;
       // 只对 PERMISSION_URLS配置的路由开头的接口进行权限验证
-      if (!PERMISSION_URLS.some((item) => url.startsWith(item))) return true;
+      if (!this.appConfig.permissionUrls.some((item) => url.startsWith(item))) return true;
       // throw new ForbiddenException('没有权限访问该接口');
 
       const handler = context.getHandler();
@@ -78,7 +79,7 @@ export class PermissionGuard implements CanActivate {
 
       const { role_ids, permissionConfigs } = cachedPermissions;
 
-      if (role_ids.some((item) => item === ADMIN_ROLE_ID)) {
+      if (role_ids.some((item) => item === this.appConfig.adminRoleId)) {
         // 如果该用户有一个role 包含系统管理员标识那么不进行验证
         return true;
       }

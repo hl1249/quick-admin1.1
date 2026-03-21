@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OSS_CONFIG } from '@/config/oss.config';
+import { AppConfigService } from '@/config';
 import { IOssProvider, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, ensureRequired, joinUrl } from '@/common/oss/oss.utils';
 
@@ -16,8 +16,13 @@ const resolveQiniuZone = (qiniu: any, region: string) => {
 
 @Injectable()
 export class QiniuOssProvider implements IOssProvider {
-  private readonly cfg = OSS_CONFIG.qiniu;
   private qiniu: any = null;
+
+  constructor(private readonly appConfig: AppConfigService) {}
+
+  private get cfg() {
+    return this.appConfig.ossConfig.qiniu;
+  }
   private mac: any = null;
   private uploader: any = null;
   private bucketManager: any = null;

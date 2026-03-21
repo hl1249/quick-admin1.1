@@ -1,14 +1,20 @@
 import { promises as fs } from 'fs';
 import { dirname, resolve } from 'path';
 import { Injectable } from '@nestjs/common';
-import { OSS_CONFIG } from '@/config/oss.config';
+import { AppConfigService } from '@/config';
 import { IOssProvider, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, joinUrl } from '@/common/oss/oss.utils';
 
 @Injectable()
 export class LocalOssProvider implements IOssProvider {
-  private readonly rootDir = resolve(process.cwd(), OSS_CONFIG.local.rootDir || 'uploads');
-  private readonly publicBaseUrl = OSS_CONFIG.local.publicBaseUrl || '';
+  private readonly rootDir: string;
+  private readonly publicBaseUrl: string;
+
+  constructor(private readonly appConfig: AppConfigService) {
+    const local = this.appConfig.ossConfig.local;
+    this.rootDir = resolve(process.cwd(), local.rootDir || 'uploads');
+    this.publicBaseUrl = local.publicBaseUrl || '';
+  }
 
   async upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult> {
     const key = buildObjectKey(options?.folder ?? '', options?.filename);

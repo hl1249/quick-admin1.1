@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { OSS_CONFIG } from '@/config/oss.config';
+import { AppConfigService } from '@/config';
 import { IOssProvider, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, ensureRequired, joinUrl } from '@/common/oss/oss.utils';
 
 @Injectable()
 export class AliyunOssProvider implements IOssProvider {
-  private readonly cfg = OSS_CONFIG.aliyun;
   private client: any = null;
+
+  constructor(private readonly appConfig: AppConfigService) {}
+
+  private get cfg() {
+    return this.appConfig.ossConfig.aliyun;
+  }
 
   private ensureClient() {
     if (this.client) return;

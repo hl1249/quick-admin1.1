@@ -13,7 +13,7 @@ import type {
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { DEBUG } from '@/config';
+import { AppConfigService } from '@/config';
 import { formatTimestamp } from '@/common/utils/utils'
 import { TransformDbParams } from './db.decorator';
 
@@ -33,8 +33,9 @@ export class DbService {
 
   constructor(
     @InjectConnection() private readonly connection: Connection,
+    private readonly appConfig: AppConfigService,
   ) {
-    if (DEBUG) {
+    if (this.appConfig.debug) {
       let logger = new Logger('DbService');
       logger.debug('默认DB操作数据库', this.connection.name);
     }

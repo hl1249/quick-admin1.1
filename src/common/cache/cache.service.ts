@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import Redis from 'ioredis';
 import { ICacheService } from './cache.interface';
 import { CacheFactory, MemoryCacheItem } from './cache.factory';
-import { CACHE_PREFIX } from '@/config';
+import { AppConfigService } from '@/config';
 
 @Injectable()
 export class CacheService implements ICacheService {
@@ -10,15 +10,20 @@ export class CacheService implements ICacheService {
   private readonly redisClient: Redis | null;
   private readonly memoryCache: Map<string, MemoryCacheItem> | null;
   private readonly defaultTTL: number;
+  private readonly cachePrefix: string;
 
-  constructor(private readonly cacheFactory: CacheFactory) {
+  constructor(
+    private readonly cacheFactory: CacheFactory,
+    private readonly appConfig: AppConfigService,
+  ) {
     this.redisClient = cacheFactory.getRedisClient();
     this.memoryCache = cacheFactory.getMemoryCache();
     this.defaultTTL = cacheFactory.defaultTTL;
+    this.cachePrefix = this.appConfig.cachePrefix;
   }
 
   private withPrefix(key: string) {
-    return `${CACHE_PREFIX}:${key}`;
+    return `${this.cachePrefix}:${key}`;
   }
 
   async get<T>(key: string): Promise<T | undefined> {
@@ -85,7 +90,7 @@ export class CacheService implements ICacheService {
   // 根据前缀删除缓存
   async deleteByPrefix(prefix: string): Promise<void> {
     try {
-      const fullPrefix = `${CACHE_PREFIX}:${prefix}`;
+      const fullPrefix = `${this.cachePrefix}:${prefix}`;
 
       if (this.redisClient) {
         let cursor = '0';
@@ -95,7 +100,7 @@ export class CacheService implements ICacheService {
             'MATCH',
             `${fullPrefix}*`,
             'COUNT',
-            100
+            100,
           );
           cursor = newCursor;
 
@@ -156,7 +161,7 @@ export class CacheService implements ICacheService {
   async getOrSet<T>(
     key: string,
     factory: () => Promise<T>,
-    ttl?: number
+    ttl?: number,
   ): Promise<T> {
     const cached = await this.get<T>(key);
 

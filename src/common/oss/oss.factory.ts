@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { OSS_CONFIG, OssProvider } from '@/config/oss.config';
+import { AppConfigService } from '@/config';
+import type { OssProvider } from '@/config/oss.config';
 import { IOssProvider } from '@/common/oss/oss.interface';
 import { LocalOssProvider } from '@/common/oss/providers/local.oss';
 import { TencentOssProvider } from '@/common/oss/providers/tencent.oss';
@@ -12,11 +13,12 @@ export class OssFactory {
     private readonly localProvider: LocalOssProvider,
     private readonly tencentProvider: TencentOssProvider,
     private readonly aliyunProvider: AliyunOssProvider,
-    private readonly qiniuProvider: QiniuOssProvider
+    private readonly qiniuProvider: QiniuOssProvider,
+    private readonly appConfig: AppConfigService,
   ) {}
 
   getProvider(provider?: OssProvider): IOssProvider {
-    const currentProvider = provider ?? OSS_CONFIG.provider;
+    const currentProvider = provider ?? this.appConfig.ossConfig.provider;
     switch (currentProvider) {
       case 'local':
         return this.localProvider;
