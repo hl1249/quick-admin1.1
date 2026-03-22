@@ -11,12 +11,12 @@ export class OssService {
     buffer: Buffer,
     options?: OssUploadOptions & { provider?: OssProvider }
   ): Promise<OssUploadResult> {
-    const provider = this.ossFactory.getProvider(options?.provider);
+    const provider = await this.ossFactory.getProvider(options?.provider);
     return provider.upload(buffer, options);
   }
 
   async delete(key: string, provider?: OssProvider): Promise<void> {
-    const p = this.ossFactory.getProvider(provider);
+    const p = await this.ossFactory.getProvider(provider);
     await p.delete(key);
   }
 }

@@ -16,6 +16,28 @@ export class AppController {
     private readonly cache: CacheService,
   ) {}
 
+  @Get('/ossProvider')
+  async ossProvider(): Promise<Document | null> {
+    return await this.dbService.selects({
+      dbName:'qa-app-config',
+      whereJson:{
+        _id: "69bcbb2e0c34b64800565ec6"
+      },
+      getMain: true,
+      pageSize: 1,
+      foreignDB:[{
+        limit:1,
+        dbName: 'qa-storage-space',
+        localKey: "oss_provider",
+        foreignKey: 'provider',
+        as: 'space',
+        whereJson: {
+          status: 1
+        },
+      },]
+    })
+  }
+
   @Get()
   async getHello(): Promise<DeleteResult> {
     console.time('getHello 执行时间');
@@ -230,7 +252,7 @@ export class AppController {
       },
       foreignDB: [
         {
-          // limit:1,
+          limit:1,
           dbName: 'qa-roles',
           // localKey: "_id",
           localKey: $.arrayElemAt(['$role', 0]),
