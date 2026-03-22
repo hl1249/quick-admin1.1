@@ -7,114 +7,121 @@ export class AppConfigService {
   constructor(private readonly config: ConfigService) {}
 
   get port(): number {
-    return this.config.get<number>('app.port') ?? 3000;
+    return this.config.getOrThrow<number>('app.port');
   }
 
   get globalPrefix(): string {
-    return (this.config.get<string>('app.globalPrefix') ?? 'api').trim();
-  }
-
-  get nodeEnv(): string {
-    return this.config.get<string>('app.nodeEnv') ?? 'development';
+    return this.config.getOrThrow<string>('app.globalPrefix').trim();
   }
 
   get debug(): boolean {
-    return this.config.get<boolean>('app.debug') ?? false;
+    return this.config.getOrThrow<boolean>('app.debug');
   }
 
   get dbUrl(): string {
-    return this.config.get<string>('database.url') ?? 'mongodb://127.0.0.1';
+    return this.config.getOrThrow<string>('database.url');
   }
 
   get dbPort(): number {
-    return this.config.get<number>('database.port') ?? 27017;
+    return this.config.getOrThrow<number>('database.port');
   }
 
   get dbName(): string {
-    return this.config.get<string>('database.name') ?? 'quickAdmin';
+    return this.config.getOrThrow<string>('database.name');
   }
 
   get dbUser(): string {
-    return this.config.get<string>('database.user') ?? '';
+    return this.config.getOrThrow<string>('database.user');
   }
 
   get dbPassword(): string {
-    return this.config.get<string>('database.password') ?? '';
+    return this.config.getOrThrow<string>('database.password');
   }
 
   get dbAuthSource(): string {
-    return this.config.get<string>('database.authSource') ?? 'admin';
+    return this.config.getOrThrow<string>('database.authSource');
   }
 
   get authorizationHeader(): string {
-    return this.config.get<string>('auth.authorizationHeader') ?? 'authorization';
+    return this.config.getOrThrow<string>('auth.authorizationHeader');
   }
 
   get jwtSecret(): string {
-    return this.config.get<string>('auth.jwtSecret') ?? '';
+    return this.config.getOrThrow<string>('auth.jwtSecret');
   }
 
   get jwtExpiresIn(): string {
-    return this.config.get<string>('auth.jwtExpiresIn') ?? '7d';
+    return this.config.getOrThrow<string>('auth.jwtExpiresIn');
   }
 
   get tokenMaxLimit(): number {
-    return this.config.get<number>('auth.tokenMaxLimit') ?? 3;
+    return this.config.getOrThrow<number>('auth.tokenMaxLimit');
   }
 
   get passwordSecret(): string {
-    return this.config.get<string>('auth.passwordSecret') ?? 'passwordSecret-demo';
+    return this.config.getOrThrow<string>('auth.passwordSecret');
   }
 
   get logDbName(): string {
-    return this.config.get<string>('log.dbName') ?? 'qa-logs';
+    return this.config.getOrThrow<string>('log.dbName');
   }
 
   get logLevel(): string {
-    return this.config.get<string>('log.level') ?? 'debug';
+    return this.config.getOrThrow<string>('log.level');
   }
 
   get permissionUrls(): string[] {
-    return this.config.get<string[]>('auth.permissionUrls') ?? ['/app/admin/'];
+    return this.config
+      .getOrThrow<string[]>('auth.permissionUrls')
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => {
+        if (item === '/') {
+          return item;
+        }
+
+        const normalized = item.startsWith('/') ? item : `/${item}`;
+        return normalized.endsWith('/') ? normalized.slice(0, -1) : normalized;
+      });
   }
 
   get adminRoleId(): string {
-    return this.config.get<string>('auth.adminRoleId') ?? 'admin';
+    return this.config.getOrThrow<string>('auth.adminRoleId');
   }
 
   get cacheType(): 'redis' | 'memory' {
-    const t = this.config.get<string>('cache.type') ?? 'redis';
+    const t = this.config.getOrThrow<string>('cache.type');
     return t === 'memory' ? 'memory' : 'redis';
   }
 
   get cacheTtl(): number {
-    return this.config.get<number>('cache.ttl') ?? 604800;
+    return this.config.getOrThrow<number>('cache.ttl');
   }
 
   get cachePrefix(): string {
-    return this.config.get<string>('cache.prefix') ?? 'quickAdmin';
+    return this.config.getOrThrow<string>('cache.prefix');
   }
 
   get redisPort(): number {
-    return this.config.get<number>('redis.port') ?? 6379;
+    return this.config.getOrThrow<number>('redis.port');
   }
 
   get redisHost(): string {
-    return this.config.get<string>('redis.host') ?? '127.0.0.1';
+    return this.config.getOrThrow<string>('redis.host');
   }
 
   get redisPassword(): string {
-    return this.config.get<string>('redis.password') ?? '';
+    return this.config.getOrThrow<string>('redis.password');
   }
 
   get redisDb(): number {
-    return this.config.get<number>('redis.db') ?? 0;
+    return this.config.getOrThrow<number>('redis.db');
   }
 
   /** CORS：未配置或为空时为 true（允许任意源，与原先一致） */
   get corsOrigin(): string[] | true {
-    const raw = this.config.get<string>('cors.origin');
-    if (raw === undefined || raw.trim() === '') {
+    const raw = this.config.getOrThrow<string>('cors.origin');
+    if (raw.trim() === '') {
       return true;
     }
     const list = raw

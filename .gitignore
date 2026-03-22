@@ -1,10 +1,11 @@
-# compiled output
+# 编译输出
 /dist
 /node_modules
 /build
 dist.*
+/deploy
 
-# Logs
+# 日志
 logs
 *.log
 npm-debug.log*
@@ -13,14 +14,14 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# OS
+# 操作系统文件
 .DS_Store
 
-# Tests
+# 测试产物
 /coverage
 /.nyc_output
 
-# IDEs and editors
+# IDE 和编辑器
 /.idea
 .project
 .classpath
@@ -36,22 +37,24 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# dotenv environment variable files
+# dotenv 环境变量文件
 .env
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+.env.production
 
-# temp directory
+# 临时目录
 .temp
 .tmp
+/uploads/
 
-# Runtime data
+# 运行时数据
 pids
 *.pid
 *.seed
 *.pid.lock
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
+# 诊断报告 (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
