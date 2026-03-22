@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import {ElMessage, type TabsPaneContext} from 'element-plus'
 import spaceList from './components/spaceList.vue'
-import { saveStorageConfig, getStorageConfig } from '@/api/file'
+import { saveAppConfig, getAppConfig } from '@/api/file'
 
 const activeName = ref('config')
 
@@ -60,8 +60,8 @@ const saveLoading:Ref<boolean> = ref( false)
 const saveConfig = async () => {
   saveLoading.value = true
   try{
-    await saveStorageConfig({
-      provider: provider.value
+    await saveAppConfig({
+      oss_provider: provider.value
     })
     ElMessage.success('保存成功')
   }catch (err){
@@ -73,8 +73,8 @@ const saveConfig = async () => {
 }
 
 const getConfig = async () => {
-  const res = await getStorageConfig()
-  provider.value = res.data.data.provider
+  const res = await getAppConfig()
+  provider.value = res.data.data.oss_provider
 }
 
 onMounted(() => {

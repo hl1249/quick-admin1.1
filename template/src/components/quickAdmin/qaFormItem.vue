@@ -26,6 +26,8 @@ interface TreeDefaultProps {
   value?: string
   label?: string
   children?: string
+  list?: string
+  desc?: 'asc' | 'desc'
 }
 
 /** 渲染器入参 */
@@ -37,6 +39,7 @@ interface RendererParams {
   onChange: (val: any) => void
   width?: string | number
   data?: OptionItem[]
+  actionData?: Record<string, any>
   dateType?: string
   format?: string
   valueFormat?: string
@@ -49,11 +52,28 @@ interface RendererParams {
   multiple: boolean
   pageSize: number
 
+
   nameKey?: string,
   idKey?: string,
 
   action?: string
   itemProps?: TreeDefaultProps
+}
+
+type RemoteSelectPropsParams = RendererParams & {
+  list: string
+  value:string
+  label: string
+  desc: 'asc' | 'desc'
+}
+
+interface RemoteSelectParams extends RendererParams{
+  actionData?: Record<string, any>
+  itemProps: RemoteSelectPropsParams
+  dataPreprocess?: (data: any) => any,
+  showAll?: boolean
+  showRefresh?: boolean
+  limit?: number
 }
 
 export default defineComponent({
@@ -100,6 +120,7 @@ export default defineComponent({
     pageSize: Number,
     nameKey: String,
     idKey: String,
+    actionData: Object as PropType<Record<string, any>>,
 
     show: Array as PropType<string[]>,
     showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
@@ -250,6 +271,71 @@ export default defineComponent({
       </el-select>
     )
 
+    const renderList: Ref<any[]> = ref([])
+    const remoteSelectRequestLoading = ref(false)
+    const remoteSelectRequestKey = computed(() =>
+      JSON.stringify({
+        type: props.type,
+        action: props.action ?? '',
+        actionData: props.actionData ?? null,
+        itemProps: props.props ?? null,
+      })
+    )
+
+    const loadRemoteSelectOptions = async () => {
+      if (props.type !== 'remote-select') return
+      if (!props.action) {
+        renderList.value = []
+        return
+      }
+
+      remoteSelectRequestLoading.value = true
+
+      try {
+        const res = await http.request({
+          method: 'POST',
+          url: props.action,
+          data: props.actionData,
+        })
+
+        const listKey = props.props?.list ?? 'rows'
+        const valueKey = props.props?.value ?? 'value'
+        const labelKey = props.props?.label ?? 'label'
+        const options = res.data?.data?.[listKey] ?? []
+
+        renderList.value = Array.isArray(options)
+          ? options.map((item: any) => ({
+              key: item[valueKey],
+              label: item[labelKey],
+              value: item[valueKey],
+            }))
+          : []
+      } finally {
+        remoteSelectRequestLoading.value = false
+      }
+    }
+
+    watch(remoteSelectRequestKey, () => {
+      void loadRemoteSelectOptions()
+    }, { immediate: true })
+
+    const renderRemoteSelect = (p: RendererParams) => {
+      return (
+        <el-select
+          modelValue={p.value}
+          loading={remoteSelectRequestLoading.value}
+          onUpdate:modelValue={p.onChange}
+          style={{ width: realUnitConversion(props.width) }}
+        >
+          {renderList.value.map((item) => (
+              <el-option key={item.key} value={item.value} label={item.label}>
+                {item.label}
+              </el-option>
+          ))}
+        </el-select>
+      )
+    }
+
     const renderDate = (p: RendererParams) => (
       <el-date-picker
         modelValue={p.value}
@@ -365,7 +451,6 @@ export default defineComponent({
 
     const tableSelectRequestLoaded = ref(false) // 是否已经请求过
     const tableSelectRequestComplete = ref(false)
-    const renderList: Ref<any[]> = ref([])
 
     const renderTableSelect = (p: RendererParams) => {
       const nameKey = p.columns.find((item) => item.nameKey)?.key || '_id'
@@ -472,6 +557,7 @@ export default defineComponent({
       radio: renderRadio,
       checkout: renderCheckbox,
       select: renderSelect,
+      'remote-select': renderRemoteSelect,
       date: renderDate,
       datetimerange: renderDateTimerange,
       'array<string>': renderArrayString,
@@ -497,6 +583,7 @@ export default defineComponent({
                 label: props.label,
                 placeholder: props.placeholder,
                 action: props.action,
+                actionData: props.actionData,
                 itemProps: props.props,
                 data: props.data,
 

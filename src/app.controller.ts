@@ -35,13 +35,118 @@ export class AppController {
   @Get('/adds')
   test(): Promise<InsertManyResult> {
     return this.dbService.adds({
-      dbName: 'qa-users',
+      dbName: 'qa-storage-region',
       dataJson: [
-        { name: '批量添加1', age: 20, arr: [1, 2, 3], fuck: 25 },
-        { name: '批量添加2', age: 25, arr: [4, 5, 6] },
-        { name: '批量添加3', age: 30, arr: [7, 8, 9] },
-        { name: '批量添加4', age: 35, arr: [10, 11, 12] },
-        { name: '批量添加5', age: 40, arr: [13, 14, 15] },
+        {
+          value: 'ap-chengdu',
+          label: '成都',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-shanghai',
+          label: '上海',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-guangzhou',
+          label: '广州',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-nanjing',
+          label: '南京',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-beijing',
+          label: '北京',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-chongqing',
+          label: '重庆',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-shenzhen-fsi',
+          label: '深圳金融',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-shanghai-fsi',
+          label: '上海金融',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-beijing-fsi',
+          label: '北京金融',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-hongkong',
+          label: '中国香港',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-singapore',
+          label: '新加坡',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-mumbai',
+          label: '孟买',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-jakarta',
+          label: '雅加达',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-seoul',
+          label: '首尔',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-bangkok',
+          label: '曼谷',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'ap-tokyo',
+          label: '东京',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'na-siliconvalley',
+          label: '硅谷（美西）',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'na-ashburn',
+          label: '弗吉尼亚（美东）',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'na-toronto',
+          label: '多伦多',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'sa-saopaulo',
+          label: '圣保罗',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'eu-frankfurt',
+          label: '法兰克福',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
+        {
+          value: 'eu-moscow',
+          label: '莫斯科',
+          storage_id: '69bcba3b0c34b64800565ea7',
+        },
       ],
     });
   }
@@ -283,14 +388,15 @@ export class AppController {
   @Get('/update')
   update(): Promise<UpdateResult> {
     return this.dbService.update({
-      dbName: 'qa-users',
+      dbName: 'qa-storage-region',
       whereJson: {
-        _id: '672b901c0fcabce5e29faef5',
+        _add_time: _.gt(0)
       },
       dataJson: {
         // 'arr.0': 10086,
         // giao:"维护"
-        // token:[]
+        // token:[],
+        provider:'tencent'
       },
     });
   }

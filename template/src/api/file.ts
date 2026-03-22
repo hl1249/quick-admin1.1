@@ -1,16 +1,24 @@
 import http from '@/utils/axios'
 
-export const saveStorageConfig = (data: any) => {
+export const saveAppConfig = (data: any) => {
     return http.request({
-        url: '/app/admin/system/systemFile/systemfile/updateStorageConfig',
+        url: '/app/admin/system/systemFile/systemfile/appConfig/update',
         method: 'post',
         data,
     })
 }
 
-export const getStorageConfig = () => {
+export const getAppConfig = () => {
     return http.request({
-        url: '/app/admin/system/systemFile/systemfile/getStorageConfig',
+        url: '/app/admin/system/systemFile/systemfile/appConfig/get',
         method: 'post',
+    })
+}
+
+export const getStorageConfig = (data: any) => {
+    return http.request({
+        url: '/app/admin/system/systemFile/systemfile/storageConfig/get',
+        method: 'post',
+        data,
     })
 }

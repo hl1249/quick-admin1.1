@@ -2,12 +2,13 @@
   <div class="flex flex-col h-full">
     <div class="flex justify-between my-[8px]">
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
-      <el-button :icon="Setting">修改配置信息</el-button>
+      <el-button :icon="Setting" @click="storageConfigForm.props.show = true">修改配置信息</el-button>
     </div>
-    <qa-table size="small"  ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
+    <qa-table size="small" ref="qaTableRef" :action="table.action" :columns="table.columns"
+              :query-form-param="queryForm"
               :pagination="false" :right-btns="['delete', 'update']"
-               @selection-change="selectionChange" @update="updateBtn"
-              @delete="deleteBtn" />
+              @selection-change="selectionChange" @update="updateBtn"
+              @delete="deleteBtn"/>
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
                :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
@@ -18,7 +19,25 @@
         <template v-slot:user_id="{ form, keyName }">
           <div style="height: 36px;display: flex;align-items: center;">
             <br/>
-            <el-input v-model="form[keyName]" placeholder="插槽输入框" />
+            <el-input v-model="form[keyName]" placeholder="插槽输入框"/>
+          </div>
+        </template>
+      </qa-form>
+    </el-dialog>
+    <el-dialog width="500" v-model="storageConfigForm.props.show" :title="storageConfigForm.props.title"
+               :close-on-click-modal="false">
+      <qa-form v-model="storageConfigForm.data" ref="formRefs" :rules="storageConfigForm.props.rules"
+               :action="storageConfigForm.props.action"
+               :form-type="storageConfigForm.props.formType" :columns='storageConfigForm.props.columns'
+               label-width="80px"
+              @success="()=>{
+            storageConfigForm.props.show = false
+            refresh()
+          }" @closeForm="storageConfigForm.props.show = false">
+        <template v-slot:user_id="{ form, keyName }">
+          <div style="height: 36px;display: flex;align-items: center;">
+            <br/>
+            <el-input v-model="form[keyName]" placeholder="插槽输入框"/>
           </div>
         </template>
       </qa-form>
@@ -27,10 +46,12 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
+import type {Columns, RightBtnMoreItem, DeleteRequest} from '@/components/quickAdmin/qaTable.vue'
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
-import { CirclePlus, Setting } from '@element-plus/icons-vue'
+import {CirclePlus, Setting} from '@element-plus/icons-vue'
+import {getStorageConfig} from '@/api/file'
+
 
 const props = defineProps<{
   provider: string
@@ -42,11 +63,11 @@ const adopt = (status: number) => {
     data: {
       status: status
     },
-    success: (_data:any) => {
+    success: (_data: any) => {
       // 提交成功
 
     },
-    fail: (_data:any) => {
+    fail: (_data: any) => {
       // 提交失败
 
     }
@@ -55,7 +76,7 @@ const adopt = (status: number) => {
 
 const formRefs = ref()
 const fromDefalut = () => {
-  formRefs.value.setResetFormData({ user_id: '我叼你妈的' })
+  formRefs.value.setResetFormData({user_id: '我叼你妈的'})
   // 还原表单验证并恢复默认数据
   formRefs.value.resetFormDataDefault()
 }
@@ -66,7 +87,7 @@ const table = ref<{
   columns: Columns[]
   rightBtnsMore: RightBtnMoreItem[]
 }>({
-  action: '/app/admin/system/systemFile/systemFile/getSpaceList',
+  action: '/app/admin/system/systemFile/systemFile/space/getList',
   columns: [
     {
       key: "name",
@@ -137,14 +158,14 @@ const selectionChange = (row: any) => {
 }
 
 const form = ref({
-  data: {
-  },
+  data: {},
   props: {
     // 请求预处理
     beforeAction: (_formData: any) => {
+      _formData.provider = props.provider
       return true
     },
-    action: '/app/admin/system/systemFile/systemFile/addSpace',
+    action: '/app/admin/system/systemFile/systemFile/space/add',
     columns: [
       {
         "key": "name",
@@ -160,15 +181,14 @@ const form = ref({
       {
         "key": "region",
         "title": "空间区域",
-        "type": "select",
-        data: [
-          { value: 0, label: "中国大陆" },
-          { value: 1, label: "中国香港" },
-          { value: 2, label: "中国澳门" },
-          { value: 3, label: "中国台湾" },
-        ],
+        "type": "remote-select",
+        action: "/app/admin/system/systemFile/systemfile/region/getList",
         width: 250,
-        showLabel: true,
+        props: {list: "rows", value: "value", label: "label", desc: "desc"},
+        actionData: {
+          pageSize: 1000,
+          provider: props.provider
+        },
         show: ['add', 'edit'],
         watch: (res: any) => {
           console.log("watch", res)
@@ -179,18 +199,18 @@ const form = ref({
         "title": "读写权限",
         "type": "radio",
         data: [
-          { value: 0, label: "读写" },
-          { value: 1, label: "只读" },
+          {value: 0, label: "读写"},
+          {value: 1, label: "只读"},
         ],
         width: 250,
         showLabel: true,
         show: ['add', 'edit'],
       },
-     
+
     ],
     rules: {
       user_id: [
-        { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
+        {min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true,},
       ],
     },
     formType: "",
@@ -199,6 +219,67 @@ const form = ref({
   }
 })
 
+const currentStorageConfig = ref()
+const getCurrentStorageConfig = async () => {
+  const res = await getStorageConfig({
+    provider: props.provider
+  })
+
+  storageConfigForm.value.data = {...res.data.data}
+}
+
+onMounted(() => {
+  getCurrentStorageConfig()
+})
+
+const storageConfigForm = ref({
+  data: {},
+  props: {
+    action: '/app/admin/system/systemFile/systemFile/storageConfig/update',
+    columns: [
+      {
+        "key": "accessKey",
+        "title": "accessKey",
+        "type": "text",
+        labelWidth:100,
+        showLabel: true,
+        show: ['add', 'edit'],
+      },
+
+      {
+        "key": "secretKey",
+        "title": "secretKey",
+        "type": "text",
+        labelWidth:100,
+        showLabel: true,
+        show: ['add', 'edit'],
+      },
+
+      {
+        "key": "appId",
+        "title": "APPID",
+        "type": "text",
+        labelWidth:100,
+        showLabel: true,
+        show: ['add', 'edit'],
+      }
+    ],
+    rules: {
+      accessKey: [
+        {trigger: 'blur', required: true, message: '请输入accessKey',},
+      ],
+      secretKey: [
+        {trigger: 'blur', required: true, message: '请输入secretKey',},
+      ],
+      appId: [
+        {trigger: 'blur', required: true, message: '请输入APPID',},
+      ]
+    },
+    formType: "edit",
+    title: "编辑",
+    show: false
+  }
+})
 // 表格数据刷新
 const refresh = () => {
   qaTableRef.value?.refresh()
@@ -216,7 +297,7 @@ const addBtn = () => {
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
-  form.value.props.action = '/app/admin/system/systemFile/systemFile/updateSpace';
+  form.value.props.action = '/app/admin/system/systemFile/systemFile/space/update';
   form.value.data = row;
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
@@ -225,7 +306,7 @@ const updateBtn = (index: number, row: any) => {
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
   btnsDeleteRequest({
-    action: '/app/admin/system/systemFile/systemFile/deleteSpace',
+    action: '/app/admin/system/systemFile/systemFile/space/delete',
     data: {
       _id: row._id
     }
