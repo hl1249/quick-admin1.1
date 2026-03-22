@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { join } from 'node:path';
 import configuration from '@/config/configuration';
-import { AppConfigModule } from '@/config';
+import { AppConfigModule } from '@/config/app-config.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
