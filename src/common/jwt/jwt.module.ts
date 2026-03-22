@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule as JwtModuleNest } from '@nestjs/jwt';
 import { JwtService } from './jwt.service';
 
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 @Module({
   imports: [
     JwtModuleNest.registerAsync({

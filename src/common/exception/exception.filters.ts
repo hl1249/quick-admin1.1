@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 
 interface HttpExceptionResponse {
   message?: string | string[];

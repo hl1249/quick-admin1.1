@@ -2,7 +2,7 @@
   <div class="flex flex-col h-full">
     <div class="flex justify-between my-[8px]">
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
-      <el-button :icon="Setting" @click="storageConfigForm.props.show = true">修改配置信息</el-button>
+      <el-button :icon="Setting" @click="storageConfigForm.props.show = true">配置存储提供商</el-button>
     </div>
     <qa-table size="small" ref="qaTableRef" :action="table.action" :columns="table.columns"
               :query-form-param="queryForm"
@@ -194,18 +194,18 @@ const form = ref({
           console.log("watch", res)
         }
       },
-      {
-        "key": "acl",
-        "title": "读写权限",
-        "type": "radio",
-        data: [
-          {value: 0, label: "读写"},
-          {value: 1, label: "只读"},
-        ],
-        width: 250,
-        showLabel: true,
-        show: ['add', 'edit'],
-      },
+      // {
+      //   "key": "acl",
+      //   "title": "读写权限",
+      //   "type": "radio",
+      //   data: [
+      //     {value: 0, label: "读写"},
+      //     {value: 1, label: "只读"},
+      //   ],
+      //   width: 250,
+      //   showLabel: true,
+      //   show: ['add', 'edit'],
+      // },
 
     ],
     rules: {

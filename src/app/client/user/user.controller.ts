@@ -4,7 +4,7 @@ import { UserDto } from './user.dto';
 import { DbService } from '@/common/utils/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { filterObject } from '@/common/utils/utils'
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 import * as bcrypt from 'bcryptjs';
 @Controller()
 export class UserController {

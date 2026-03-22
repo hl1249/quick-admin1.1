@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import { dirname, resolve } from 'path';
 import { Injectable } from '@nestjs/common';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 import { IOssProvider, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, joinUrl } from '@/common/oss/oss.utils';
 

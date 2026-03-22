@@ -1,5 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { Reflector } from '@nestjs/core';
 import { DbService } from '@/common/utils/db.service';

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 import type { OssProvider } from '@/config/oss.config';
 import { IOssProvider } from '@/common/oss/oss.interface';
 import { LocalOssProvider } from '@/common/oss/providers/local.oss';

@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy, Logger } from '@nestjs/common';
 import Redis from 'ioredis';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 
 export interface MemoryCacheItem {
   value: any;

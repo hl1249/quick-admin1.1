@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import Redis from 'ioredis';
 import { ICacheService } from './cache.interface';
 import { CacheFactory, MemoryCacheItem } from './cache.factory';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 
 @Injectable()
 export class CacheService implements ICacheService {

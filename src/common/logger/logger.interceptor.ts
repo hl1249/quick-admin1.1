@@ -2,7 +2,7 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } fr
 import { Observable, from } from 'rxjs';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { AsyncStorageService } from './asyncStorage.service';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 import { DbService } from '@/common/utils/db.service';
 
 @Injectable()

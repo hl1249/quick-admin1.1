@@ -4,7 +4,7 @@ import { DbModule } from '@/common/utils/db.module';
 // 数据库配置
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 // 日志服务
 import { LogModule } from '@/common/logger/logger.module';
 

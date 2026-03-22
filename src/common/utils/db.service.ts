@@ -13,7 +13,7 @@ import type {
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { AppConfigService } from '@/config';
+import { AppConfigService } from '@/config/app-config.service';
 import { formatTimestamp } from '@/common/utils/utils'
 import { TransformDbParams } from './db.decorator';
 
