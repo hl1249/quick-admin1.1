@@ -8,6 +8,14 @@ type QiniuBucketListOptions = {
   secretKey: string;
 };
 
+type QiniuCreateBucketOptions = {
+  bucket: string;
+  region: string;
+  accessKey: string;
+  secretKey: string;
+  acl?: string;
+};
+
 const resolveQiniuZone = (qiniu: any, region: string) => {
   const zoneMap: Record<string, any> = {
     z0: qiniu.zone.Zone_z0,
@@ -131,6 +139,38 @@ export class QiniuOssProvider implements IOssProvider {
     );
 
     return { buckets };
+  }
+
+  async createBucket(options: QiniuCreateBucketOptions): Promise<{ bucket: string }> {
+    ensureRequired('QINIU_OSS_ACCESS_KEY', options.accessKey);
+    ensureRequired('QINIU_OSS_SECRET_KEY', options.secretKey);
+    ensureRequired('QINIU_OSS_BUCKET', options.bucket);
+    ensureRequired('QINIU_OSS_REGION', options.region);
+
+    const { bucketManager } = this.createBucketManager(options.accessKey, options.secretKey);
+
+    try {
+      await bucketManager.createBucket(options.bucket, { regionId: options.region });
+
+      if (options.acl) {
+        const privateMode = options.acl === 'private' ? 1 : 0;
+        await bucketManager.putBucketAccessMode(options.bucket, { private: privateMode });
+      }
+
+      return { bucket: options.bucket };
+    } catch (error) {
+      const err = error as { message?: string; resp?: { statusCode?: number; data?: { error?: string } } };
+      const statusCode = err?.resp?.statusCode;
+      const errorMessage = err?.resp?.data?.error || err?.message || '';
+
+      if (statusCode === 614 || /bucket.*exists/i.test(errorMessage)) {
+        throw new Error(`七牛云存储空间已存在: ${options.bucket}`);
+      }
+      if (statusCode === 401 || statusCode === 403) {
+        throw new Error(`无权创建七牛云存储空间: ${options.bucket}，请检查密钥权限`);
+      }
+      throw new Error(errorMessage || `七牛云存储空间创建失败: ${options.bucket}`);
+    }
   }
 
   async upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult> {

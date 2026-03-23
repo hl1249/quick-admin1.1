@@ -118,8 +118,8 @@ export class SystemFileController {
       throw new BadRequestException('请先配置存储提供商');
     }
 
-    if (provider === 'tencent') {
-      try {
+    try {
+      if (provider === 'tencent') {
         const result = await this.tencentOssProvider.createBucket({
           bucket: name,
           region,
@@ -129,18 +129,36 @@ export class SystemFileController {
           acl,
         });
         bucketName = result.bucket;
-      } catch (error) {
-        throw new BadRequestException((error as Error).message);
+      } else if (provider === 'aliyun') {
+        const result = await this.aliyunOssProvider.createBucket({
+          bucket: name,
+          region,
+          accessKeyId: config.accessKey,
+          accessKeySecret: config.secretKey,
+          acl,
+        });
+        bucketName = result.bucket;
+      } else if (provider === 'qiniu') {
+        const result = await this.qiniuOssProvider.createBucket({
+          bucket: name,
+          region,
+          accessKey: config.accessKey,
+          secretKey: config.secretKey,
+          acl,
+        });
+        bucketName = result.bucket;
       }
+    } catch (error) {
+      throw new BadRequestException((error as Error).message);
     }
 
     let domain 
     if(provider === 'tencent'){
       domain =  `https://${bucketName}.cos.${region}.myqcloud.com`
     }else if(provider === 'aliyun'){
-      domain = name + '.oss.' + region + '.aliyuncs.com'
+      domain = `https://${bucketName}.${region}.aliyuncs.com`
     }else if(provider === 'qiniu'){
-      domain = name + '.' + region + '.qiniucdn.com'
+      domain = `https://${bucketName}.${region}.qiniucdn.com`
     }
 
     return await this.dbService.add({

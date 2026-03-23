@@ -9,6 +9,14 @@ type AliyunBucketListOptions = {
   region?: string;
 };
 
+type AliyunCreateBucketOptions = {
+  bucket: string;
+  region: string;
+  accessKeyId: string;
+  accessKeySecret: string;
+  acl?: string;
+};
+
 @Injectable()
 export class AliyunOssProvider implements IOssProvider {
   private client: any = null;
@@ -84,6 +92,29 @@ export class AliyunOssProvider implements IOssProvider {
         throw new Error('无权获取阿里云存储桶列表，请检查密钥权限');
       }
       throw new Error(err?.message || '获取阿里云存储桶列表失败');
+    }
+  }
+
+  async createBucket(options: AliyunCreateBucketOptions): Promise<{ bucket: string }> {
+    ensureRequired('ALIYUN_OSS_ACCESS_KEY_ID', options.accessKeyId);
+    ensureRequired('ALIYUN_OSS_ACCESS_KEY_SECRET', options.accessKeySecret);
+    ensureRequired('ALIYUN_OSS_BUCKET', options.bucket);
+    ensureRequired('ALIYUN_OSS_REGION', options.region);
+
+    const client = this.createClient(options.accessKeyId, options.accessKeySecret, options.region);
+
+    try {
+      await client.putBucket(options.bucket, options.acl ? { acl: options.acl } : undefined);
+      return { bucket: options.bucket };
+    } catch (error) {
+      const err = error as { message?: string; code?: string; status?: number };
+      if (err?.status === 409 || err?.code === 'BucketAlreadyExists') {
+        throw new Error(`阿里云存储桶已存在: ${options.bucket}`);
+      }
+      if (err?.status === 403 || err?.code === 'AccessDenied') {
+        throw new Error(`无权创建阿里云存储桶: ${options.bucket}，请检查密钥权限`);
+      }
+      throw new Error(err?.message || `阿里云存储桶创建失败: ${options.bucket}`);
     }
   }
 
