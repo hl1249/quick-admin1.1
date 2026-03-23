@@ -34,7 +34,7 @@ export class SystemFileController {
   @UseInterceptors(FileInterceptor('file'))
   async upload(
     @UploadedFile() file: { buffer: Buffer; originalname: string; mimetype: string },
-    @Body() data: { folder?: string; provider?: 'local' | 'tencent' | 'aliyun' | 'qiniu' }
+    @Body() data: { folder?: string }
   ) {
     if (!file) {
       throw new BadRequestException('请上传 file 文件');
@@ -42,7 +42,6 @@ export class SystemFileController {
 
     const result = await this.uploadService.uploadFile(file, {
       folder: data?.folder,
-      provider: data?.provider,
     });
 
     return {
@@ -52,12 +51,14 @@ export class SystemFileController {
   }
 
   @Post('/space/getList')
-  async getList(@Req() req, @Body() data): Promise<Document | null>{
+  async getList(@Body() data): Promise<Document | null>{
     return await this.dbService.getTableData({
       dbName: 'qa-storage-space',
       data,
     });
   }
+
+
   @Post('/space/update')
   async updateSpace(@Req() req, @Body() data): Promise<Document | null>{
     const { _id, name, region, accessKey, secretKey, bucketName } = data
@@ -405,12 +406,12 @@ export class SystemFileController {
         accessKey: config.accessKey,
         secretKey: config.secretKey,
         acl: provider === 'tencent' ? this.$cosac : localSpace?.acl,
-        bucketType: bucket.bucketType,
-        ofsType: bucket.ofsType,
-        azType: bucket.azType,
-        storageClass: bucket.storageClass,
-        private: bucket.private,
-        protected: bucket.protected,
+        // bucketType: bucket.bucketType,
+        // ofsType: bucket.ofsType,
+        // azType: bucket.azType,
+        // storageClass: bucket.storageClass,
+        // private: bucket.private,
+        // protected: bucket.protected,
         creationDate: bucket.creationDate,
         _update_time: Date.now(),
         _update_time_str: formatTimestamp(new Date()),

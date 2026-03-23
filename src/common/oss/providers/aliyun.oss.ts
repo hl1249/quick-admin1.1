@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AppConfigService } from '@/config/app-config.service';
 import { IOssProvider, OssRegionOption, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, ensureRequired, joinUrl } from '@/common/oss/oss.utils';
+import { DbService } from '@/common/utils/db.service';
 
 type AliyunBucketListOptions = {
   accessKeyId: string;
@@ -20,37 +20,82 @@ type AliyunCreateBucketOptions = {
 @Injectable()
 export class AliyunOssProvider implements IOssProvider {
   private client: any = null;
+  private activeSpace: {
+    accessKey: string;
+    secretKey: string;
+    name: string;
+    region: string;
+    domain?: string;
+    endpoint?: string;
+  } | null = null;
 
-  constructor(private readonly appConfig: AppConfigService) {}
+  constructor(private readonly dbService: DbService) {}
 
-  private get cfg() {
-    return this.appConfig.ossConfig.aliyun;
-  }
-
-  private createClient(accessKeyId: string, accessKeySecret: string, region?: string, bucket?: string) {
+  private createClient(
+    accessKeyId: string,
+    accessKeySecret: string,
+    region?: string,
+    bucket?: string,
+    endpoint?: string
+  ) {
     const OSS = require('ali-oss');
     return new OSS({
       accessKeyId,
       accessKeySecret,
       region: region || 'oss-cn-hangzhou',
       bucket,
-      endpoint: this.cfg.endpoint || undefined,
+      endpoint: endpoint || undefined,
       authorizationV4: true,
     });
   }
 
-  private ensureClient() {
-    if (this.client) return;
-    ensureRequired('ALIYUN_OSS_ACCESS_KEY_ID', this.cfg.accessKeyId);
-    ensureRequired('ALIYUN_OSS_ACCESS_KEY_SECRET', this.cfg.accessKeySecret);
-    ensureRequired('ALIYUN_OSS_BUCKET', this.cfg.bucket);
-    ensureRequired('ALIYUN_OSS_REGION', this.cfg.region);
+  private async getActiveAliyunSpace() {
+    const space = await this.dbService.findByWhereJson({
+      dbName: 'qa-storage-space',
+      whereJson: {
+        provider: 'aliyun',
+        enable: true,
+      }
+    });
+
+    if (!space) {
+      throw new Error('未找到已启用的阿里云存储空间配置');
+    }
+
+    ensureRequired('qa-storage-space.accessKey', space.accessKey || '');
+    ensureRequired('qa-storage-space.secretKey', space.secretKey || '');
+    ensureRequired('qa-storage-space.name', space.name || '');
+    ensureRequired('qa-storage-space.region', space.region || '');
+
+    return {
+      accessKey: space.accessKey as string,
+      secretKey: space.secretKey as string,
+      name: space.name as string,
+      region: space.region as string,
+      domain: space.domain as string | undefined,
+      endpoint: space.endpoint as string | undefined,
+    };
+  }
+
+  private async ensureClient() {
+    const space = await this.getActiveAliyunSpace();
+    const shouldReuseClient =
+      this.client &&
+      this.activeSpace?.accessKey === space.accessKey &&
+      this.activeSpace?.secretKey === space.secretKey &&
+      this.activeSpace?.name === space.name &&
+      this.activeSpace?.region === space.region &&
+      this.activeSpace?.endpoint === space.endpoint;
+
+    this.activeSpace = space;
+    if (shouldReuseClient) return;
 
     this.client = this.createClient(
-      this.cfg.accessKeyId,
-      this.cfg.accessKeySecret,
-      this.cfg.region,
-      this.cfg.bucket
+      space.accessKey,
+      space.secretKey,
+      space.region,
+      space.name,
+      space.endpoint
     );
   }
 
@@ -119,25 +164,26 @@ export class AliyunOssProvider implements IOssProvider {
   }
 
   async upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult> {
-    this.ensureClient();
+    await this.ensureClient();
+    const space = this.activeSpace as NonNullable<typeof this.activeSpace>;
     const key = buildObjectKey(options?.folder ?? '', options?.filename);
     await this.client.put(key, buffer, {
       headers: options?.contentType ? { 'Content-Type': options.contentType } : undefined,
     });
 
-    const endpoint = this.cfg.endpoint || `oss-${this.cfg.region}.aliyuncs.com`;
+    const endpoint = space.endpoint || `oss-${space.region}.aliyuncs.com`;
     const pureEndpoint = endpoint.replace(/^https?:\/\//, '');
-    const defaultUrl = `https://${this.cfg.bucket}.${pureEndpoint}/${key}`;
+    const defaultUrl = `https://${space.name}.${pureEndpoint}/${key}`;
     return {
       provider: 'aliyun',
       key,
-      bucket: this.cfg.bucket,
-      url: this.cfg.domain ? joinUrl(this.cfg.domain, key) : defaultUrl,
+      bucket: space.name,
+      url: space.domain ? joinUrl(space.domain, key) : defaultUrl,
     };
   }
 
   async delete(key: string): Promise<void> {
-    this.ensureClient();
+    await this.ensureClient();
     await this.client.delete(key);
   }
 

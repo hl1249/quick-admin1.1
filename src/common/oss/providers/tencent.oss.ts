@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AppConfigService } from '@/config/app-config.service';
 import { IOssProvider, OssRegionOption, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, ensureRequired, joinUrl } from '@/common/oss/oss.utils';
+import { DbService } from '@/common/utils/db.service';
 
 type TencentBucketValidationOptions = {
   bucket: string;
@@ -29,12 +29,15 @@ type TencentServiceBucket = {
 @Injectable()
 export class TencentOssProvider implements IOssProvider {
   private client: any = null;
+  private activeSpace: {
+    accessKey: string;
+    secretKey: string;
+    name: string;
+    region: string;
+    domain?: string;
+  } | null = null;
 
-  constructor(private readonly appConfig: AppConfigService) {}
-
-  private get cfg() {
-    return this.appConfig.ossConfig.tencent;
-  }
+  constructor(private readonly dbService: DbService) {}
 
   private createClient(secretId: string, secretKey: string) {
     const COS = require('cos-nodejs-sdk-v5');
@@ -56,15 +59,45 @@ export class TencentOssProvider implements IOssProvider {
     return `${bucketName}-${cleanAppId}`;
   }
 
-  private ensureClient() {
-    if (this.client) return;
-    ensureRequired('SecretId', this.cfg.SecretId);
-    ensureRequired('SecretKey', this.cfg.SecretKey);
-    ensureRequired('TENCENT_OSS_BUCKET', this.cfg.Bucket);
-    ensureRequired('TENCENT_OSS_REGION', this.cfg.Region);
+  private async getActiveTencentSpace() {
+    const space = await this.dbService.findByWhereJson({
+      dbName: 'qa-storage-space',
+      whereJson: {
+        provider: 'tencent',
+        enable: true,
+      }
+    });
+
+    if (!space) {
+      throw new Error('未找到已启用的腾讯云存储空间配置');
+    }
+
+    ensureRequired('qa-storage-space.accessKey', space.accessKey || '');
+    ensureRequired('qa-storage-space.secretKey', space.secretKey || '');
+    ensureRequired('qa-storage-space.name', space.name || '');
+    ensureRequired('qa-storage-space.region', space.region || '');
+
+    return {
+      accessKey: space.accessKey as string,
+      secretKey: space.secretKey as string,
+      name: space.name as string,
+      region: space.region as string,
+      domain: space.domain,
+    };
+  }
+
+  private async ensureClient() {
+    const space = await this.getActiveTencentSpace();
+    const shouldReuseClient =
+      this.client &&
+      this.activeSpace?.accessKey === space.accessKey &&
+      this.activeSpace?.secretKey === space.secretKey;
+
+    this.activeSpace = space;
+    if (shouldReuseClient) return;
 
     // 运行时按需加载，避免未安装依赖时报编译错误
-    this.client = this.createClient(this.cfg.SecretId, this.cfg.SecretKey);
+    this.client = this.createClient(space.accessKey, space.secretKey);
   }
 
   async createBucket(options: TencentBucketValidationOptions): Promise<{ bucket: string }> {
@@ -180,14 +213,15 @@ export class TencentOssProvider implements IOssProvider {
   }
 
   async upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult> {
-    this.ensureClient();
+    await this.ensureClient();
+    const space = this.activeSpace as NonNullable<typeof this.activeSpace>;
     const key = buildObjectKey(options?.folder ?? '', options?.filename);
 
     await new Promise<void>((resolve, reject) => {
       this.client.putObject(
         {
-          Bucket: this.cfg.Bucket,
-          Region: this.cfg.Region,
+          Bucket: space.name,
+          Region: space.region,
           Key: key,
           Body: buffer,
           ContentType: options?.contentType,
@@ -199,22 +233,23 @@ export class TencentOssProvider implements IOssProvider {
       );
     });
 
-    const defaultUrl = `https://${this.cfg.Bucket}.cos.${this.cfg.Region}.myqcloud.com/${key}`;
+    const defaultUrl = `https://${space.name}.cos.${space.region}.myqcloud.com/${key}`;
     return {
       provider: 'tencent',
       key,
-      bucket: this.cfg.Bucket,
-      url: this.cfg.Domain ? joinUrl(this.cfg.Domain, key) : defaultUrl,
+      bucket: space.name,
+      url: space.domain ? joinUrl(space.domain, key) : defaultUrl,
     };
   }
 
   async delete(key: string): Promise<void> {
-    this.ensureClient();
+    await this.ensureClient();
+    const space = this.activeSpace as NonNullable<typeof this.activeSpace>;
     await new Promise<void>((resolve, reject) => {
       this.client.deleteObject(
         {
-          Bucket: this.cfg.Bucket,
-          Region: this.cfg.Region,
+          Bucket: space.name,
+          Region: space.region,
           Key: key,
         },
         (err: Error | null) => {

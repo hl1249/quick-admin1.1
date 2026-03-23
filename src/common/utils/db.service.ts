@@ -302,8 +302,7 @@ export class DbService {
       ? db.collection(dbName)
       : this.connection.collection(dbName);
 
-    // 执行查询
-    const result = await collection.aggregate([
+    const pipeline = [
       ...(data.match && Object.keys(data.match).length > 0 ? [{ $match: data.match }] : []),
       { $match: whereJson },
       ...(groupJson && Object.keys(groupJson).length > 0 ? [{ $group: groupJson }] : []),
@@ -311,7 +310,12 @@ export class DbService {
       { $match: lastWhereJson },
       ...(addFields && Object.keys(addFields).length > 0 ? [{ $addFields: addFields }] : []),
       ...(fieldJson && Object.keys(fieldJson).length > 0 ? [{ $project: fieldJson }] : []),
-      ...(Object.keys(toMongoSort(sortArr as SortRule[])).length > 0 ? [{ $sort: toMongoSort(sortArr as SortRule[]) }] : []),
+      ...(Object.keys(toMongoSort(sortArr as SortRule[])).length > 0 ? [{ $sort: toMongoSort(sortArr as SortRule[]) }] : [])
+    ];
+
+    // 执行查询
+    const result = await collection.aggregate([
+      ...pipeline,
       { $skip: pageSize * (pageIndex - 1) },
       { $limit: pageSize }
     ]).toArray();
@@ -339,7 +343,11 @@ export class DbService {
     let calculatedHasMore = result.length >= pageSize;
 
     if (getCount || hasMore) {
-      total = await collection.countDocuments(whereJson);
+      const countResult = await collection.aggregate([
+        ...pipeline,
+        { $count: 'total' }
+      ]).toArray();
+      total = countResult[0]?.total ?? 0;
       calculatedHasMore = (pageIndex * pageSize) < total;
     }
 
@@ -374,7 +382,7 @@ export class DbService {
       sortArr = {},
       db
     } = params;
-
+    
     // 统一获取集合引用
     const collection = db
       ? db.collection(dbName)

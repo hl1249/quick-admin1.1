@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AppConfigService } from '@/config/app-config.service';
 import { IOssProvider, OssRegionOption, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, ensureRequired, joinUrl } from '@/common/oss/oss.utils';
+import { DbService } from '@/common/utils/db.service';
 
 type QiniuBucketListOptions = {
   accessKey: string;
@@ -30,15 +30,18 @@ const resolveQiniuZone = (qiniu: any, region: string) => {
 @Injectable()
 export class QiniuOssProvider implements IOssProvider {
   private qiniu: any = null;
-
-  constructor(private readonly appConfig: AppConfigService) {}
-
-  private get cfg() {
-    return this.appConfig.ossConfig.qiniu;
-  }
   private mac: any = null;
   private uploader: any = null;
   private bucketManager: any = null;
+  private activeSpace: {
+    accessKey: string;
+    secretKey: string;
+    name: string;
+    region: string;
+    domain?: string;
+  } | null = null;
+
+  constructor(private readonly dbService: DbService) {}
 
   private createBucketManager(accessKey: string, secretKey: string) {
     const qiniu = require('qiniu');
@@ -52,18 +55,55 @@ export class QiniuOssProvider implements IOssProvider {
     };
   }
 
-  private ensureClient() {
-    if (this.qiniu && this.mac && this.uploader && this.bucketManager) return;
-    ensureRequired('QINIU_OSS_ACCESS_KEY', this.cfg.accessKey);
-    ensureRequired('QINIU_OSS_SECRET_KEY', this.cfg.secretKey);
-    ensureRequired('QINIU_OSS_BUCKET', this.cfg.bucket);
-    ensureRequired('QINIU_OSS_DOMAIN', this.cfg.domain);
+  private async getActiveQiniuSpace() {
+    const space = await this.dbService.findByWhereJson({
+      dbName: 'qa-storage-space',
+      whereJson: {
+        provider: 'qiniu',
+        enable: true,
+      }
+    });
+
+    if (!space) {
+      throw new Error('未找到已启用的七牛云存储空间配置');
+    }
+
+    ensureRequired('qa-storage-space.accessKey', space.accessKey || '');
+    ensureRequired('qa-storage-space.secretKey', space.secretKey || '');
+    ensureRequired('qa-storage-space.name', space.name || '');
+    ensureRequired('qa-storage-space.region', space.region || '');
+    ensureRequired('qa-storage-space.domain', space.domain || '');
+
+    return {
+      accessKey: space.accessKey as string,
+      secretKey: space.secretKey as string,
+      name: space.name as string,
+      region: space.region as string,
+      domain: space.domain as string,
+    };
+  }
+
+  private async ensureClient() {
+    const space = await this.getActiveQiniuSpace();
+    const shouldReuseClient =
+      this.qiniu &&
+      this.mac &&
+      this.uploader &&
+      this.bucketManager &&
+      this.activeSpace?.accessKey === space.accessKey &&
+      this.activeSpace?.secretKey === space.secretKey &&
+      this.activeSpace?.name === space.name &&
+      this.activeSpace?.region === space.region &&
+      this.activeSpace?.domain === space.domain;
+
+    this.activeSpace = space;
+    if (shouldReuseClient) return;
 
     this.qiniu = require('qiniu');
-    this.mac = new this.qiniu.auth.digest.Mac(this.cfg.accessKey, this.cfg.secretKey);
+    this.mac = new this.qiniu.auth.digest.Mac(space.accessKey, space.secretKey);
 
     const config = new this.qiniu.conf.Config();
-    config.zone = resolveQiniuZone(this.qiniu, this.cfg.region);
+    config.zone = resolveQiniuZone(this.qiniu, space.region);
     this.uploader = new this.qiniu.form_up.FormUploader(config);
     this.bucketManager = new this.qiniu.rs.BucketManager(this.mac, config);
   }
@@ -96,7 +136,7 @@ export class QiniuOssProvider implements IOssProvider {
 
     const buckets = await Promise.all(
       bucketNames.map(async (name) => {
-        let region = this.cfg.region;
+        let region = '';
         let domain = `https://${name}.${region}.qiniucdn.com`;
         let privateMode: number | undefined;
         let protectedMode: number | undefined;
@@ -174,9 +214,10 @@ export class QiniuOssProvider implements IOssProvider {
   }
 
   async upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult> {
-    this.ensureClient();
+    await this.ensureClient();
+    const space = this.activeSpace as NonNullable<typeof this.activeSpace>;
     const key = buildObjectKey(options?.folder ?? '', options?.filename);
-    const putPolicy = new this.qiniu.rs.PutPolicy({ scope: `${this.cfg.bucket}:${key}` });
+    const putPolicy = new this.qiniu.rs.PutPolicy({ scope: `${space.name}:${key}` });
     const uploadToken = putPolicy.uploadToken(this.mac);
     const putExtra = new this.qiniu.form_up.PutExtra();
     if (options?.contentType) {
@@ -205,15 +246,16 @@ export class QiniuOssProvider implements IOssProvider {
     return {
       provider: 'qiniu',
       key,
-      bucket: this.cfg.bucket,
-      url: joinUrl(this.cfg.domain, key),
+      bucket: space.name,
+      url: joinUrl(space.domain || '', key),
     };
   }
 
   async delete(key: string): Promise<void> {
-    this.ensureClient();
+    await this.ensureClient();
+    const space = this.activeSpace as NonNullable<typeof this.activeSpace>;
     await new Promise<void>((resolve, reject) => {
-      this.bucketManager.delete(this.cfg.bucket, key, (err: Error | null) => {
+      this.bucketManager.delete(space.name, key, (err: Error | null) => {
         if (err) reject(err);
         else resolve();
       });

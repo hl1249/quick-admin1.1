@@ -9,6 +9,6 @@ export interface UploadFileLike {
 
 export interface UploadRequestOptions {
   folder?: string;
-  /** 不传则使用 OSS_CONFIG.provider */
+  /** 不传则使用 qa-app-config.oss_provider */
   provider?: OssProvider;
 }

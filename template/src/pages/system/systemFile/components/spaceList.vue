@@ -148,6 +148,7 @@ const table = ref<{
     }
   }]
 })
+
 const search = () => {
   if (qaTableRef.value) {
     qaTableRef.value.search()
