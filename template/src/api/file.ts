@@ -22,3 +22,11 @@ export const getStorageConfig = (data: any) => {
         data,
     })
 }
+
+export const syncStorageSpace = (data: any) => {
+    return http.request({
+        url: '/app/admin/system/systemFile/systemfile/space/sync',
+        method: 'post',
+        data,
+    })
+}

@@ -298,10 +298,12 @@ export default defineComponent({
           data: props.actionData,
         })
 
-        const listKey = props.props?.list ?? 'rows'
+        const listKey = props.props?.list
         const valueKey = props.props?.value ?? 'value'
         const labelKey = props.props?.label ?? 'label'
-        const options = res.data?.data?.[listKey] ?? []
+        const options = listKey
+            ? res.data?.data?.[listKey] ?? []
+            : res.data?.data ?? []
 
         renderList.value = Array.isArray(options)
           ? options.map((item: any) => ({

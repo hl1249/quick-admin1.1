@@ -32,7 +32,7 @@ export class AppController {
         foreignKey: 'provider',
         as: 'space',
         whereJson: {
-          status: 1
+          enable: true
         },
       },]
     })

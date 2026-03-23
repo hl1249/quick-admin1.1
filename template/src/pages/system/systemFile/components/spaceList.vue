@@ -1,8 +1,9 @@
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex justify-between my-[8px]">
+    <div class="flex my-[8px]">
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
-      <el-button :icon="Setting" @click="storageConfigForm.props.show = true">配置存储提供商</el-button>
+      <el-button type="primary" :icon="Download" @click="syncSpac" :loading="syncSpacLoading">同步存储空间</el-button>
+      <el-button :icon="Setting" @click="storageConfigForm.props.show = true" class="!ml-auto">配置存储提供商</el-button>
     </div>
     <qa-table size="small" ref="qaTableRef" :action="table.action" :columns="table.columns"
               :query-form-param="queryForm"
@@ -26,7 +27,7 @@
     </el-dialog>
     <el-dialog width="500" v-model="storageConfigForm.props.show" :title="storageConfigForm.props.title"
                :close-on-click-modal="false">
-      <qa-form v-model="storageConfigForm.data" ref="formRefs" :rules="storageConfigForm.props.rules"
+      <qa-form v-model="storageConfigForm.data" ref="storageConfigFormRefs" :rules="storageConfigForm.props.rules"
                :action="storageConfigForm.props.action"
                :form-type="storageConfigForm.props.formType" :columns='storageConfigForm.props.columns'
                label-width="80px"
@@ -49,8 +50,10 @@
 import type {Columns, RightBtnMoreItem, DeleteRequest} from '@/components/quickAdmin/qaTable.vue'
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
-import {CirclePlus, Setting} from '@element-plus/icons-vue'
-import {getStorageConfig} from '@/api/file'
+import {CirclePlus, Setting, Download} from '@element-plus/icons-vue'
+import {getStorageConfig, syncStorageSpace} from '@/api/file'
+import http from "@/utils/axios.ts";
+import {ElMessage} from "element-plus";
 
 
 const props = defineProps<{
@@ -76,7 +79,6 @@ const adopt = (status: number) => {
 
 const formRefs = ref()
 const fromDefalut = () => {
-  formRefs.value.setResetFormData({user_id: '我叼你妈的'})
   // 还原表单验证并恢复默认数据
   formRefs.value.resetFormDataDefault()
 }
@@ -106,9 +108,24 @@ const table = ref<{
       width: 500
     },
     {
-      key: "status",
+      key: "enable",
       type: 'switch',
-      title: "使用状态",
+      title: "是否启用",
+      watch: (res) => {
+        let { value, row, change } = res;
+        http.request({
+          method: 'POST',
+          url: "/app/admin/system/systemFile/systemFile/space/updateBase",
+          data: {
+            _id: row._id,
+            enable: value,
+            provider: row.provider
+          }
+        }).then((_res) => {
+          change(value)
+          refresh()
+        })
+      }
     },
     {
       key: "_add_time_str",
@@ -116,7 +133,7 @@ const table = ref<{
       type: 'text',
     },
     {
-      key: "_add_time_str",
+      key: "_update_time_str",
       title: "更新时间",
       type: 'text',
     },
@@ -158,7 +175,9 @@ const selectionChange = (row: any) => {
 }
 
 const form = ref({
-  data: {},
+  data: {
+    acl:"public-read"
+  },
   props: {
     // 请求预处理
     beforeAction: (_formData: any) => {
@@ -184,7 +203,7 @@ const form = ref({
         "type": "remote-select",
         action: "/app/admin/system/systemFile/systemfile/region/getList",
         width: 250,
-        props: {list: "rows", value: "value", label: "label", desc: "desc"},
+        props: {list: "", value: "value", label: "label", desc: "desc"},
         actionData: {
           pageSize: 1000,
           provider: props.provider
@@ -194,18 +213,18 @@ const form = ref({
           console.log("watch", res)
         }
       },
-      // {
-      //   "key": "acl",
-      //   "title": "读写权限",
-      //   "type": "radio",
-      //   data: [
-      //     {value: 0, label: "读写"},
-      //     {value: 1, label: "只读"},
-      //   ],
-      //   width: 250,
-      //   showLabel: true,
-      //   show: ['add', 'edit'],
-      // },
+      {
+        "key": "acl",
+        "title": "读写权限",
+        "type": "radio",
+        data: [
+          {value: "public-read", label: "公共读(推荐)"},
+          {value: "public-read-write", label: "公共读写"},
+        ],
+        width: 250,
+        showLabel: true,
+        show: ['add'],
+      },
 
     ],
     rules: {
@@ -225,7 +244,10 @@ const getCurrentStorageConfig = async () => {
     provider: props.provider
   })
 
-  storageConfigForm.value.data = {...res.data.data}
+  storageConfigForm.value.data = {
+    ...storageConfigForm.value.data,
+    ...res.data.data
+  }
 }
 
 onMounted(() => {
@@ -233,7 +255,9 @@ onMounted(() => {
 })
 
 const storageConfigForm = ref({
-  data: {},
+  data: {
+    provider:props.provider,
+  },
   props: {
     action: '/app/admin/system/systemFile/systemFile/storageConfig/update',
     columns: [
@@ -262,6 +286,9 @@ const storageConfigForm = ref({
         labelWidth:100,
         showLabel: true,
         show: ['add', 'edit'],
+        showRule: (row: any) => {
+          return row.provider == 'tencent'
+        }
       }
     ],
     rules: {
@@ -272,7 +299,7 @@ const storageConfigForm = ref({
         {trigger: 'blur', required: true, message: '请输入secretKey',},
       ],
       appId: [
-        {trigger: 'blur', required: true, message: '请输入APPID',},
+        {trigger: 'blur', required: props.provider == 'tencent', message: '请输入APPID',},
       ]
     },
     formType: "edit",
@@ -311,6 +338,20 @@ const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
       _id: row._id
     }
   })
+}
+
+const syncSpacLoading = ref(false)
+const syncSpac = async () => {
+  syncSpacLoading.value = true
+  try{
+   await syncStorageSpace({
+     provider: props.provider
+   })
+    refresh()
+    ElMessage.success('同步成功')
+ }finally {
+    syncSpacLoading.value = false
+  }
 }
 </script>
 

@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import { dirname, resolve } from 'path';
 import { Injectable } from '@nestjs/common';
 import { AppConfigService } from '@/config/app-config.service';
-import { IOssProvider, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
+import { IOssProvider, OssRegionOption, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, joinUrl } from '@/common/oss/oss.utils';
 
 @Injectable()
@@ -32,5 +32,9 @@ export class LocalOssProvider implements IOssProvider {
   async delete(key: string): Promise<void> {
     const filePath = resolve(this.rootDir, key);
     await fs.unlink(filePath).catch(() => undefined);
+  }
+
+  getRegions(): OssRegionOption[] {
+    return [{ value: 'local', label: '本地存储' }];
   }
 }

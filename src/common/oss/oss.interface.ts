@@ -13,7 +13,13 @@ export interface OssUploadResult {
   bucket?: string;
 }
 
+export interface OssRegionOption {
+  value: string;
+  label: string;
+}
+
 export interface IOssProvider {
   upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult>;
   delete(key: string): Promise<void>;
+  getRegions?(): OssRegionOption[];
 }

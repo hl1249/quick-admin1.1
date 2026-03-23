@@ -11,12 +11,23 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@/common/upload/upload.service';
 import { DbService } from '@/common/utils/db.service';
 import { Document } from 'mongodb';
+import { _, } from '@/common/utils/fieldQueryTemp';
+import { formatTimestamp } from '@/common/utils/utils'
+import { LocalOssProvider } from '@/common/oss/providers/local.oss';
+import { TencentOssProvider } from '@/common/oss/providers/tencent.oss';
+import { AliyunOssProvider } from '@/common/oss/providers/aliyun.oss';
+import { QiniuOssProvider } from '@/common/oss/providers/qiniu.oss';
 
 @Controller()
 export class SystemFileController {
+  private readonly $cosac = "public-read"
   constructor(
     private readonly uploadService: UploadService,
     private readonly dbService: DbService,
+    private readonly localOssProvider: LocalOssProvider,
+    private readonly tencentOssProvider: TencentOssProvider,
+    private readonly aliyunOssProvider: AliyunOssProvider,
+    private readonly qiniuOssProvider: QiniuOssProvider,
   ) {}
 
   @Post('/upload')
@@ -74,6 +85,8 @@ export class SystemFileController {
         name,
         region,
         domain: space.domain,
+        _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
       }
     })
   }
@@ -89,7 +102,8 @@ export class SystemFileController {
 
   @Post('/space/add')
   async addSpace(@Body() data): Promise<Document | null>{
-    const { name, region, provider} = data
+    const { name, region, provider, acl} = data
+    let bucketName = name
 
     const config = await this.dbService.findByWhereJson({
       dbName:'qa-storage-config',
@@ -104,9 +118,25 @@ export class SystemFileController {
       throw new BadRequestException('请先配置存储提供商');
     }
 
+    if (provider === 'tencent') {
+      try {
+        const result = await this.tencentOssProvider.createBucket({
+          bucket: name,
+          region,
+          secretId: config.accessKey,
+          secretKey: config.secretKey,
+          appId: config.appId,
+          acl,
+        });
+        bucketName = result.bucket;
+      } catch (error) {
+        throw new BadRequestException((error as Error).message);
+      }
+    }
+
     let domain 
     if(provider === 'tencent'){
-      domain =  `https://${name}.cos.${region}.myqcloud.com`
+      domain =  `https://${bucketName}.cos.${region}.myqcloud.com`
     }else if(provider === 'aliyun'){
       domain = name + '.oss.' + region + '.aliyuncs.com'
     }else if(provider === 'qiniu'){
@@ -116,12 +146,16 @@ export class SystemFileController {
     return await this.dbService.add({
       dbName:'qa-storage-space',
       dataJson:{
-        name,
+        name: bucketName,
         region,
         domain,
         provider,
+        acl,
         accessKey: config.accessKey,
         secretKey: config.secretKey,
+        enable:false,
+        _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
       }
     })
   }
@@ -133,7 +167,9 @@ export class SystemFileController {
       dbName:'qa-app-config',
       id:'69bcbb2e0c34b64800565ec6',
       dataJson:{
-        oss_provider
+        oss_provider,
+        _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
       }
     })
     return {
@@ -166,14 +202,15 @@ export class SystemFileController {
   @Post('/storageConfig/update')
   async updateStorageConfig(@Body() data): Promise<Document | null>{
     const { _id, provider, accessKey, secretKey, appId } = data
-    return await this.dbService.updateById({
+    
+    return await this.dbService.setById({
       dbName:'qa-storage-config',
       id:_id,
       dataJson:{
         provider,
         accessKey,
         secretKey,
-        appId,
+        appId: provider === 'tencent' ? appId : _.remove()
       }
     })
   }
@@ -181,28 +218,214 @@ export class SystemFileController {
   async addtStorageConfig(@Body() data): Promise<Document | null>{
 
     const { provider, accessKey, secretKey, appId } = data
-
     return await this.dbService.add({
       dbName:'qa-storage-config',
       dataJson:{
         provider,
         accessKey,
         secretKey,
-        appId,
+        ...(provider === 'tencent' ? { appId } : {}),
+        _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
       }
     })
   }
-
-
   @Post('/region/getList')
   async getRegionList(@Body() data): Promise<Document | null>{
     const { provider } = data
-    return await this.dbService.getTableData({
-      dbName:'qa-storage-region',
+
+    switch (provider) {
+      case 'tencent':
+        return this.tencentOssProvider.getRegions()
+      case 'aliyun':
+        return this.aliyunOssProvider.getRegions()
+      case 'qiniu':
+        return this.qiniuOssProvider.getRegions()
+      case 'local':
+      default:
+        return this.localOssProvider.getRegions()
+    }
+  }
+  @Post('/space/updateBase')
+  async updateSpaceBase(@Body() data): Promise<Document | null>{
+    
+    const {_id, enable, provider } = data
+    if(enable){
+      await this.dbService.update({
+        dbName:'qa-storage-space',
+        whereJson:{
+          _id:_.neq(_id),
+          provider
+        },
+        dataJson:{
+          enable:false
+        },
+      })
+    }
+
+    return await this.dbService.update({
+      dbName:'qa-storage-space',
       whereJson:{
+        _id,
         provider
       },
-      data,
+      dataJson:{
+        enable,
+        _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
+      },
     })
+  }
+
+  @Post('/space/getBase')
+  async getSpaceBase(@Body() data): Promise<Document | null>{
+    const { _id } = data
+    return await this.dbService.findById({
+      dbName:'qa-storage-space',
+      id:_id
+    })
+  }
+
+  @Post('/space/sync')
+  async syncSpace(@Body() data: { provider?: 'local' | 'tencent' | 'aliyun' | 'qiniu' }) {
+    const provider = data?.provider ?? 'tencent';
+    if (provider === 'local') {
+      throw new BadRequestException('本地存储无需同步存储空间');
+    }
+
+    const config = await this.dbService.findByWhereJson({
+      dbName: 'qa-storage-config',
+      whereJson: {
+        provider,
+      },
+    });
+
+    if (!config) {
+      throw new BadRequestException('请先配置存储提供商');
+    }
+
+    let serviceData: {
+      owner?: { id?: string; displayName?: string };
+      buckets: Array<{
+        name: string;
+        region: string;
+        domain: string;
+        creationDate?: string;
+        bucketType?: string;
+        ofsType?: string;
+        azType?: string;
+        storageClass?: string;
+        private?: number;
+        protected?: number;
+      }>;
+    };
+
+    switch (provider) {
+      case 'tencent':
+        serviceData = await this.tencentOssProvider.getBucketList({
+          secretId: config.accessKey,
+          secretKey: config.secretKey,
+        });
+        break;
+      case 'aliyun':
+        serviceData = await this.aliyunOssProvider.getBucketList({
+          accessKeyId: config.accessKey,
+          accessKeySecret: config.secretKey,
+          region: config.region,
+        });
+        break;
+      case 'qiniu':
+        serviceData = await this.qiniuOssProvider.getBucketList({
+          accessKey: config.accessKey,
+          secretKey: config.secretKey,
+        });
+        break;
+      default:
+        throw new BadRequestException('不支持的存储提供商');
+    }
+
+    const remoteBuckets = serviceData.buckets;
+    const localSpaces = await this.dbService.selects({
+      dbName: 'qa-storage-space',
+      whereJson: {
+        provider,
+      },
+      pageIndex: 1,
+      pageSize: Math.max(remoteBuckets.length, 1000),
+      getMain: true,
+    });
+
+    const appIdSuffix = config.appId ? `-${config.appId}` : '';
+    const localMap = new Map<string, Document>();
+
+    for (const item of localSpaces) {
+      if (typeof item?.name !== 'string') {
+        continue;
+      }
+
+      localMap.set(item.name, item);
+      if (appIdSuffix && item.name.endsWith(appIdSuffix)) {
+        localMap.set(item.name.slice(0, -appIdSuffix.length), item);
+      }
+    }
+
+    let created = 0;
+    let updated = 0;
+
+    for (const bucket of remoteBuckets) {
+      const localSpace =
+        localMap.get(bucket.name) ??
+        (appIdSuffix && bucket.name.endsWith(appIdSuffix)
+          ? localMap.get(bucket.name.slice(0, -appIdSuffix.length))
+          : undefined);
+
+      const dataJson = {
+        name: bucket.name,
+        region: bucket.region,
+        domain: bucket.domain,
+        provider,
+        accessKey: config.accessKey,
+        secretKey: config.secretKey,
+        acl: provider === 'tencent' ? this.$cosac : localSpace?.acl,
+        bucketType: bucket.bucketType,
+        ofsType: bucket.ofsType,
+        azType: bucket.azType,
+        storageClass: bucket.storageClass,
+        private: bucket.private,
+        protected: bucket.protected,
+        creationDate: bucket.creationDate,
+        _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
+      };
+
+      if (localSpace?._id) {
+        await this.dbService.updateById({
+          dbName: 'qa-storage-space',
+          id: String(localSpace._id),
+          dataJson,
+        });
+        updated += 1;
+        continue;
+      }
+
+      await this.dbService.add({
+        dbName: 'qa-storage-space',
+        dataJson: {
+          ...dataJson,
+          enable: false,
+        },
+      });
+      created += 1;
+    }
+
+    return {
+      message: '同步成功',
+      provider,
+      owner: serviceData.owner,
+      total: remoteBuckets.length,
+      created,
+      updated,
+      buckets: remoteBuckets,
+    };
   }
 }

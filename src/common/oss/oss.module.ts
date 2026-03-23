@@ -16,6 +16,6 @@ import { QiniuOssProvider } from '@/common/oss/providers/qiniu.oss';
     OssFactory,
     OssService,
   ],
-  exports: [OssService],
+  exports: [OssService, LocalOssProvider, TencentOssProvider, AliyunOssProvider, QiniuOssProvider],
 })
 export class OssModule {}

@@ -1,6 +1,7 @@
 <template>
     <div>
         <el-form :rules="rules" ref="ruleFormRef" :model="model" :label-width="labelWidth">
+          data:{{model}}
             <qa-form-item v-for="item in columns" :key="item.key"
                 v-model="model"
                 v-bind="getFormItemBind(item)" :form-type="formType">
@@ -61,6 +62,7 @@ const props = withDefaults(
         beforeAction?: (value: any) => boolean | void
         cancelText?: string
         submitText?: string
+        data?:any
     }>(),
     {
         cancelText: '取消',
