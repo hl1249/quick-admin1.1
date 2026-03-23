@@ -66,6 +66,12 @@ export default () => ({
     dbName: 'qa-logs',
   },
 
+  // 本地文件存储配置
+  file: {
+    localUploadsDirName: 'uploads',
+    localUploadsRoutePrefix: '/uploads',
+  },
+
   // 跨域配置：留空时在上层会被解释为允许任意源 '*' || ['http://localhost:3000','http://localhost:3001']
   cors: {
     origin: "*",

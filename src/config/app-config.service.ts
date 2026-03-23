@@ -135,6 +135,14 @@ export class AppConfigService {
     return `${this.dbUrl}:${this.dbPort}/${this.dbName}`;
   }
 
+  get localUploadsDirName(): string {
+    return this.config.getOrThrow<string>('file.localUploadsDirName');
+  }
+
+  get localUploadsRoutePrefix(): string {
+    return this.config.getOrThrow<string>('file.localUploadsRoutePrefix');
+  }
+
   get ossConfig(): OssConfig {
     return createOssConfig(this.config);
   }
