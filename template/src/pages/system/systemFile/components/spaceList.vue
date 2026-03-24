@@ -193,7 +193,7 @@ const form = ref({
         "type": "text",
         width: 250,
         showLabel: true,
-        show: ['add', 'edit'],
+        show: ['add'],
         watch: (res: any) => {
           console.log("watch", res)
         }
@@ -209,7 +209,7 @@ const form = ref({
           pageSize: 1000,
           provider: props.provider
         },
-        show: ['add', 'edit'],
+        show: ['add'],
         watch: (res: any) => {
           console.log("watch", res)
         }
@@ -225,6 +225,20 @@ const form = ref({
         width: 250,
         showLabel: true,
         show: ['add'],
+      },
+      {
+        "key": "domain",
+        "title": "空间域名",
+        "type": "text",
+        width: 350,
+        show: ['edit']
+      },
+      {
+        "key": "cnd",
+        "title": "cdn域名",
+        "type": "text",
+        width: 350,
+        show: ['edit'],
       },
 
     ],

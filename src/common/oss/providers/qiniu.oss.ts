@@ -121,11 +121,19 @@ export class QiniuOssProvider implements IOssProvider {
     ensureRequired('QINIU_OSS_SECRET_KEY', options.secretKey);
 
     const { bucketManager } = this.createBucketManager(options.accessKey, options.secretKey);
-
     let bucketNames: string[] = [];
     try {
       const result = await bucketManager.listBucket();
-      bucketNames = Array.isArray(result?.data) ? result.data : [];
+      const rawBucketNames = Array.isArray(result)
+        ? result
+        : Array.isArray(result?.data)
+          ? result.data
+          : Array.isArray(result?.resp?.data)
+            ? result.resp.data
+            : [];
+      bucketNames = rawBucketNames
+        .filter((item): item is string => typeof item === 'string' && item.trim() !== '')
+        .map((item) => item.trim());
     } catch (error) {
       const err = error as { message?: string; resp?: { statusCode?: number } };
       if (err?.resp?.statusCode === 401 || err?.resp?.statusCode === 403) {
@@ -137,7 +145,6 @@ export class QiniuOssProvider implements IOssProvider {
     const buckets = await Promise.all(
       bucketNames.map(async (name) => {
         let region = '';
-        let domain = `https://${name}.${region}.qiniucdn.com`;
         let privateMode: number | undefined;
         let protectedMode: number | undefined;
 
@@ -155,23 +162,10 @@ export class QiniuOssProvider implements IOssProvider {
           protectedMode = typeof info.protected === 'number' ? info.protected : undefined;
         } catch {}
 
-        try {
-          const domainResult = await bucketManager.listBucketDomains(name);
-          const domains = Array.isArray(domainResult?.data)
-            ? domainResult.data
-            : Array.isArray(domainResult?.data?.domains)
-              ? domainResult.data.domains
-              : [];
-          const firstDomain = domains[0];
-          if (firstDomain) {
-            domain = String(firstDomain).startsWith('http') ? String(firstDomain) : `https://${firstDomain}`;
-          }
-        } catch {}
-
         return {
           name,
           region,
-          domain,
+          domain: '',
           private: privateMode,
           protected: protectedMode,
         };

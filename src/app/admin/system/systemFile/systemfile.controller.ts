@@ -269,17 +269,13 @@ export class SystemFileController {
   async updateSpaceBase(@Body() data): Promise<Document | null>{
     
     const {_id, enable, provider } = data
-    if(enable){
-      await this.dbService.update({
-        dbName:'qa-storage-space',
-        whereJson:{
-          _id:_.neq(_id),
-          provider
-        },
-        dataJson:{
-          enable:false
-        },
-      })
+    const space = await this.dbService.findById({
+      dbName:'qa-storage-space',
+      id:_id,
+    })
+
+    if(!space?.domain && enable){
+      throw new BadRequestException('请先配置存储空间域名');
     }
 
     return await this.dbService.update({
@@ -289,7 +285,7 @@ export class SystemFileController {
         provider
       },
       dataJson:{
-        enable,
+        enable:!enable,
         _update_time: Date.now(),
         _update_time_str: formatTimestamp(new Date()),
       },
