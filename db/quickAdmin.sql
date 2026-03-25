@@ -11,7 +11,7 @@
  Target Server Version : 80205
  File Encoding         : 65001
 
- Date: 23/03/2026 11:17:37
+ Date: 25/03/2026 18:43:15
 */
 
 
@@ -26,7 +26,9 @@ db.createCollection("qa-app-config");
 // ----------------------------
 db.getCollection("qa-app-config").insert([ {
     _id: ObjectId("69bcbb2e0c34b64800565ec6"),
-    "oss_provider": "tencent"
+    "oss_provider": "qiniu",
+    "_update_time": 1774318837488,
+    "_update_time_str": "2026-03-24 10:20:37"
 } ]);
 
 // ----------------------------
@@ -4302,213 +4304,17 @@ db.getCollection("qa-storage-config").insert([ {
     secretKey: "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
     appId: "1319368598"
 } ]);
-
-// ----------------------------
-// Collection structure for qa-storage-region
-// ----------------------------
-db.getCollection("qa-storage-region").drop();
-db.createCollection("qa-storage-region");
-
-// ----------------------------
-// Documents of qa-storage-region
-// ----------------------------
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dc7"),
-    value: "ap-chengdu",
-    label: "成都",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
+db.getCollection("qa-storage-config").insert([ {
+    _id: ObjectId("69c0b5edd5ae2d553e65b11a"),
+    accessKey: "LTAI5tDN2aw1RKondrswFT3w",
+    provider: "aliyun",
+    secretKey: "iKCzvV1wkhtbiVZuJmzjCDtXNNQcoX"
 } ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dc8"),
-    value: "ap-shanghai",
-    label: "上海",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dc9"),
-    value: "ap-guangzhou",
-    label: "广州",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dca"),
-    value: "ap-nanjing",
-    label: "南京",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dcb"),
-    value: "ap-beijing",
-    label: "北京",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dcc"),
-    value: "ap-chongqing",
-    label: "重庆",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dcd"),
-    value: "ap-shenzhen-fsi",
-    label: "深圳金融",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dce"),
-    value: "ap-shanghai-fsi",
-    label: "上海金融",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dcf"),
-    value: "ap-beijing-fsi",
-    label: "北京金融",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd0"),
-    value: "ap-hongkong",
-    label: "中国香港",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd1"),
-    value: "ap-singapore",
-    label: "新加坡",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd2"),
-    value: "ap-mumbai",
-    label: "孟买",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd3"),
-    value: "ap-jakarta",
-    label: "雅加达",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd4"),
-    value: "ap-seoul",
-    label: "首尔",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd5"),
-    value: "ap-bangkok",
-    label: "曼谷",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd6"),
-    value: "ap-tokyo",
-    label: "东京",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd7"),
-    value: "na-siliconvalley",
-    label: "硅谷（美西）",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd8"),
-    value: "na-ashburn",
-    label: "弗吉尼亚（美东）",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dd9"),
-    value: "na-toronto",
-    label: "多伦多",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000dda"),
-    value: "sa-saopaulo",
-    label: "圣保罗",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000ddb"),
-    value: "eu-frankfurt",
-    label: "法兰克福",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
-} ]);
-db.getCollection("qa-storage-region").insert([ {
-    _id: ObjectId("69bf5ce0e1693723e3000ddc"),
-    value: "eu-moscow",
-    label: "莫斯科",
-    "storage_id": "69bcba3b0c34b64800565ea7",
-    "_add_time": 1774148832197,
-    "_add_time_str": "2026-03-22 11:07:12",
-    provider: "tencent"
+db.getCollection("qa-storage-config").insert([ {
+    _id: ObjectId("69c0b852dff8fe39b542d462"),
+    accessKey: "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
+    provider: "qiniu",
+    secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq"
 } ]);
 
 // ----------------------------
@@ -4521,22 +4327,7 @@ db.createCollection("qa-storage-space");
 // Documents of qa-storage-space
 // ----------------------------
 db.getCollection("qa-storage-space").insert([ {
-    _id: ObjectId("69c0ac6b07807c197dfdb97b"),
-    name: "ggdx-1319368598",
-    region: "ap-shanghai",
-    domain: "https://ggdx-1319368598.cos.ap-shanghai.myqcloud.com",
-    provider: "tencent",
-    accessKey: "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
-    secretKey: "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
-    acl: "public-read",
-    "_update_time": 1774234731656,
-    "_update_time_str": "2026-03-23 10:58:51",
-    enable: false,
-    "_add_time": 1774234731657,
-    "_add_time_str": "2026-03-23 10:58:51"
-} ]);
-db.getCollection("qa-storage-space").insert([ {
-    _id: ObjectId("69c0ac6b07807c197dfdb97d"),
+    _id: ObjectId("69c1661bca511c22ee672e6c"),
     name: "xxsb-1319368598",
     region: "ap-guangzhou",
     domain: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
@@ -4544,11 +4335,79 @@ db.getCollection("qa-storage-space").insert([ {
     accessKey: "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
     secretKey: "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
     acl: "public-read",
-    "_update_time": 1774234731679,
-    "_update_time_str": "2026-03-23 10:58:51",
+    creationDate: "2026-03-19T15:14:38Z",
+    "_update_time": 1774435282283,
+    "_update_time_str": "2026-03-25 18:41:22",
     enable: false,
-    "_add_time": 1774234731679,
-    "_add_time_str": "2026-03-23 10:58:51"
+    "_add_time": 1774282267629,
+    "_add_time_str": "2026-03-24 00:11:07",
+    cdn: "腾讯cdn"
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c1685d783ca4935ad1614a"),
+    name: "xxsb10086",
+    region: "oss-cn-beijing",
+    domain: "https://xxsb10086.oss-cn-beijing.aliyuncs.com",
+    provider: "aliyun",
+    accessKey: "LTAI5tDN2aw1RKondrswFT3w",
+    secretKey: "iKCzvV1wkhtbiVZuJmzjCDtXNNQcoX",
+    acl: null,
+    creationDate: "2026-03-23T03:41:27.000Z",
+    "_update_time": 1774435322747,
+    "_update_time_str": "2026-03-25 18:42:02",
+    enable: false,
+    "_add_time": 1774282845840,
+    "_add_time_str": "2026-03-24 00:20:45",
+    cdn: null
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c1faced5d1d7cc947a98d8"),
+    name: "xxsb",
+    region: "z2",
+    domain: "xxsb.z2.qiniucdn.com",
+    provider: "qiniu",
+    accessKey: "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
+    secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq",
+    acl: null,
+    creationDate: null,
+    "_update_time": 1774435168791,
+    "_update_time_str": "2026-03-25 18:39:28",
+    enable: false,
+    "_add_time": 1774320334864,
+    "_add_time_str": "2026-03-24 10:45:34"
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c1faced5d1d7cc947a98da"),
+    name: "xxsvs",
+    region: "na0",
+    domain: "",
+    provider: "qiniu",
+    accessKey: "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
+    secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq",
+    acl: null,
+    creationDate: null,
+    "_update_time": 1774320334888,
+    "_update_time_str": "2026-03-24 10:45:34",
+    enable: false,
+    "_add_time": 1774320334889,
+    "_add_time_str": "2026-03-24 10:45:34"
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c3bbf6a42b37e1bc3ef287"),
+    name: "testhrssdsa",
+    region: "oss-cn-hangzhou",
+    domain: "https://testhrssdsa.oss-cn-hangzhou.aliyuncs.com",
+    provider: "aliyun",
+    accessKey: "LTAI5tDN2aw1RKondrswFT3w",
+    secretKey: "iKCzvV1wkhtbiVZuJmzjCDtXNNQcoX",
+    acl: null,
+    creationDate: "2026-03-23T03:47:33.000Z",
+    "_update_time": 1774435326431,
+    "_update_time_str": "2026-03-25 18:42:06",
+    enable: false,
+    "_add_time": 1774435318079,
+    "_add_time_str": "2026-03-25 18:41:58",
+    cdn: null
 } ]);
 
 // ----------------------------
@@ -4650,9 +4509,9 @@ db.getCollection("qa-users").insert([ {
     token: [
         null,
         null,
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQyMzAxODMsImV4cCI6MTc3NDgzNDk4M30.oDAdLHlYu--uf-9CHt56S1_0cHdWlUEWP5uQD9GlWMI"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQzMTY2NzEsImV4cCI6MTc3NDkyMTQ3MX0.wv1aimf-wYBeAXEma_BZIzHvRKshzmE6_4KD66ZvvsQ"
     ],
-    "last_login_date": 1774230183324,
+    "last_login_date": 1774316671682,
     "last_login_ip": "未知IP",
     object: {
         name: "小明",
