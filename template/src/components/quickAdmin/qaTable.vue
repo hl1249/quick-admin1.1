@@ -82,59 +82,71 @@
 
         <el-table-column
           align="center"
-          :width="flexColumnWidth()"
-          v-if="rightBtns"
+          :width="actionColumnWidth"
+          v-if="hasActionColumn"
           fixed="right"
         >
           <template #header> 操作 </template>
           <template #default="scope">
-            <el-button
-              :icon="Document"
-              v-if="rightBtns.includes('detail_auto')"
-              @click="btnsDetail(scope.$index, scope.row)"
-            >
-              详情
-            </el-button>
-            <el-button
-              type="primary"
-              :icon="Edit"
-              v-if="rightBtns.includes('update')"
-              @click="btnsUpdate(scope.$index, scope.row)"
-            >
-              编辑
-            </el-button>
+            <div class="qa-action-cell">
+              <el-button
+                  v-for="item in getVisibleCustomRightBtns(scope.row)"
+                  :key="item.title"
+                  :type="item.type"
+                  :icon="item.icon"
+                  :disabled="checkCustomRightBtnDisabled(item.disabled, scope.row)"
+                  @click="item.onClick(scope.row)"
+              >
+                {{ item.title }}
+              </el-button>
 
-            <el-popconfirm
-              title="确定删除吗？"
-              v-if="rightBtns.includes('delete')"
-              @confirm="confirmDelete(scope.row, btnsDeleteRequest)"
-            >
-              <template #reference>
-                <el-button type="danger" :icon="Delete"> 删除 </el-button>
-              </template>
-            </el-popconfirm>
+              <el-button
+                :icon="Document"
+                v-if="rightBtnList.includes('detail_auto')"
+                @click="btnsDetail(scope.$index, scope.row)"
+              >
+                详情
+              </el-button>
+              <el-button
+                type="primary"
+                :icon="Edit"
+                v-if="rightBtnList.includes('update')"
+                @click="btnsUpdate(scope.$index, scope.row)"
+              >
+                编辑
+              </el-button>
 
-            <el-dropdown
-              trigger="click"
-              v-if="rightBtns.includes('more')"
-              class="ml-[12px]"
-            >
-              <el-button type="success" :icon="ArrowDown"> 更多 </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item
-                    v-for="item in rightBtnsMore"
-                    :key="item.title"
-                    @click="item.onClick(scope.row)"
-                    :disabled="
-                      checkRightBtnsMoreDisabled(item.disabled, scope.row)
-                    "
-                  >
-                    {{ item.title }}
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+              <el-popconfirm
+                title="确定删除吗？"
+                v-if="rightBtnList.includes('delete')"
+                @confirm="confirmDelete(scope.row, btnsDeleteRequest)"
+              >
+                <template #reference>
+                  <el-button type="danger" :icon="Delete"> 删除 </el-button>
+                </template>
+              </el-popconfirm>
+
+              <el-dropdown
+                trigger="click"
+                v-if="rightBtnList.includes('more')"
+              >
+                <el-button type="success" :icon="ArrowDown"> 更多 </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item
+                      v-for="item in rightBtnsMore"
+                      :key="item.title"
+                      @click="item.onClick(scope.row)"
+                      :disabled="
+                        checkRightBtnsMoreDisabled(item.disabled, scope.row)
+                      "
+                    >
+                      {{ item.title }}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -190,6 +202,15 @@ import qaTableColumn from './qaTableColumn.vue';
 import { cloneDeep } from '@/utils';
 
 type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more';
+export type CustomRightBtn = {
+  title: string;
+  onClick: (row: any) => void;
+  disabled?: (row: any) => boolean;
+  show?: (row: any) => boolean;
+  type?: '' | 'primary' | 'success' | 'warning' | 'info' | 'danger';
+  icon?: any;
+};
+
 type Type =
   | 'radio'
   | 'select'
@@ -317,6 +338,7 @@ const props = withDefaults(
     queryFormParam?: Record<string, any>;
     rightBtns?: RightBtn[];
     rightBtnsMore?: RightBtnMoreItem[];
+    customRightBtns?: CustomRightBtn[];
     rowNo?: boolean;
     rowKey?: string;
     /** 默认选中项，用于回显。多选为数组，单选为单个对象或 id */
@@ -734,10 +756,83 @@ const checkRightBtnsMoreDisabled = (
   return false;
 };
 
-const flexColumnWidth = (): number => {
-  if (props.rightBtns) return 100 * props.rightBtns.length + 5;
-  else return 0;
+const checkCustomRightBtnDisabled = (
+  disabled: ((item: any) => boolean) | undefined,
+  row: TableRow,
+): boolean => {
+  if (typeof disabled === 'function') return disabled(row);
+  return false;
 };
+
+const getVisibleCustomRightBtns = (row: TableRow): CustomRightBtn[] => {
+  return (props.customRightBtns ?? []).filter((item) => {
+    if (typeof item.show === 'function') return item.show(row);
+    return true;
+  });
+};
+
+const rightBtnList = computed(() => props.rightBtns ?? []);
+
+const hasActionColumn = computed(() => {
+  return rightBtnList.value.length > 0 || (props.customRightBtns?.length ?? 0) > 0;
+});
+
+const estimateButtonWidth = (label: string, hasIcon = true): number => {
+  const textWidth = Array.from(label).length * 14;
+  const baseWidth = hasIcon ? textWidth + 44 : textWidth + 28;
+  return Math.max(baseWidth, 76);
+};
+
+const getBuiltinActionWidth = (): number => {
+  let width = 0;
+
+  if (rightBtnList.value.includes('detail_auto')) {
+    width += estimateButtonWidth('详情');
+  }
+  if (rightBtnList.value.includes('update')) {
+    width += estimateButtonWidth('编辑');
+  }
+  if (rightBtnList.value.includes('delete')) {
+    width += estimateButtonWidth('删除');
+  }
+  if (rightBtnList.value.includes('more')) {
+    width += estimateButtonWidth('更多');
+  }
+
+  return width;
+};
+
+const getCustomActionWidth = (row?: TableRow): number => {
+  const visibleBtns = row
+    ? getVisibleCustomRightBtns(row)
+    : (props.customRightBtns ?? []);
+
+  return visibleBtns.reduce((total, item) => {
+    return total + estimateButtonWidth(item.title, Boolean(item.icon));
+  }, 0);
+};
+
+const getActionCount = (row?: TableRow): number => {
+  const builtinCount = rightBtnList.value.length;
+  const customCount = row
+    ? getVisibleCustomRightBtns(row).length
+    : (props.customRightBtns?.length ?? 0);
+
+  return builtinCount + customCount;
+};
+
+const actionColumnWidth = computed(() => {
+  if (!hasActionColumn.value) return 0;
+
+  const widths = (tableData.value.length ? tableData.value : [undefined as unknown as TableRow]).map((row) => {
+    const actionCount = getActionCount(row);
+    const buttonWidth = getBuiltinActionWidth() + getCustomActionWidth(row);
+    const gaps = Math.max(actionCount - 1, 0) * 12;
+    return buttonWidth + gaps + 24;
+  });
+
+  return Math.max(120, ...widths);
+});
 
 const detailData = ref<DetailDataItem[]>([]);
 const openInfoDialog = (): void => {
@@ -773,3 +868,13 @@ defineExpose({
   getSelectedRow,
 });
 </script>
+
+<style scoped>
+.qa-action-cell {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+  white-space: nowrap;
+}
+</style>
