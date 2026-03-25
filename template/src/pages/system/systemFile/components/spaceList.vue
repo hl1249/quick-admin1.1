@@ -49,18 +49,30 @@
 
     <el-dialog
         v-model="cnameInfoVisible"
-        title="Tips"
-        width="500"
+        title="CNAME详情"
+        width="600"
     >
-      <span>This is a message</span>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="cnameInfoVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="cnameInfoVisible = false">
-            Confirm
-          </el-button>
+        <div class="p-[12px] flex flex-col gap-[12px]">
+          <p>
+            <div class="w-[80px] inline-block text-right">主机记录：</div>
+            <span>  {{  cnameInfo.domain }} </span>
+          </p>
+          <p>
+            <div class="w-[80px] inline-block text-right">记录类型：</div>
+            <span>CNAME</span>
+          </p>
+          <p>
+            <div class="w-[80px] inline-block text-right">记录值：</div>
+            <span>{{cnameInfo.domain.split('https://')[1] }}</span>
+            <span
+                @click="()=>{
+                  copy( cnameInfo.domain.split('https://')[1])
+                  ElMessage.success('复制成功')
+                }"
+                class="py-[3px] px-[5px] border border-gray-300 rounded-[4px] cursor-pointer ml-[12px] hover:border-[#409eff] hover:text-[#409eff]">复制</span>
+          </p>
         </div>
-      </template>
+
     </el-dialog>
   </div>
 </template>
@@ -74,6 +86,8 @@ import {getStorageConfig, syncStorageSpace} from '@/api/file'
 import http from "@/utils/axios.ts";
 import {ElMessage} from "element-plus";
 import { cloneDeep } from '@/utils'
+import { useClipboard } from '@vueuse/core'
+const { copy, copied, isSupported, text } = useClipboard()
 
 
 const props = defineProps<{
@@ -116,16 +130,13 @@ const table = ref<{
       disabled: (item) => {
         return item._id == '002'
       },
-      onClick: (item) => {
-        ElMessageBox({
-          title: 'CNAME配置',
-          message: h('div', {style: 'width: 500px'}, [
-            h('p', null, `主机记录：${item.domain}`),
-            h('p', null, `记录类型：CNAME`),
-            h('p', null, `记录值：${item.domain.split('https://')[1]}`),
-          ]),
-          customClass: 'bg-[red] w-[600px]',
-        })
+      show: (item) => {
+        return ['aliyun','tencent'].includes(item.provider)
+      },
+      onClick: (row) => {
+        cnameInfoVisible.value = true
+        cnameInfo.value = row
+
       }
     },
   ],
@@ -277,7 +288,7 @@ const form = ref({
         show: ['edit']
       },
       {
-        "key": "cnd",
+        "key": "cdn",
         "title": "cdn域名",
         "type": "text",
         width: 350,

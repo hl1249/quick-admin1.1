@@ -61,31 +61,29 @@ export class SystemFileController {
 
   @Post('/space/update')
   async updateSpace(@Req() req, @Body() data): Promise<Document | null>{
-    const { _id, name, region, accessKey, secretKey, bucketName } = data
+    const { _id, domain, cdn  } = data
 
-    const space = await this.dbService.findById({
-      dbName:'qa-storage-space',
-      id:_id
-    })
+    // const space = await this.dbService.findById({
+    //   dbName:'qa-storage-space',
+    //   id:_id
+    // })
     
-    if(!space){
-      throw new BadRequestException('存储空间不存在');
-    }
-    if(space.provider === 'tencent'){
-      space.domain =  `https://${name}.cos.${region}.myqcloud.com`
-    }else if(space.provider === 'aliyun'){
-      space.domain = name + '.oss.' + region + '.aliyuncs.com'
-    }else if(space.provider === 'qiniu'){
-      space.domain = name + '.' + region + '.qiniucdn.com'
-    }
+    // if(!space){
+    //   throw new BadRequestException('存储空间不存在');
+    // }
+    // if(space.provider === 'tencent'){
+    //   space.domain =  `https://${name}.cos.${region}.myqcloud.com`
+    // }else if(space.provider === 'aliyun'){
+    //   space.domain = name + '.oss.' + region + '.aliyuncs.com'
+    // }else if(space.provider === 'qiniu'){
+    //   space.domain = name + '.' + region + '.qiniucdn.com'
+    // }
 
     return await this.dbService.updateById({
       dbName:'qa-storage-space',
       id:_id,
       dataJson:{
-        name,
-        region,
-        domain: space.domain,
+        domain, cdn,
         _update_time: Date.now(),
         _update_time_str: formatTimestamp(new Date()),
       }
