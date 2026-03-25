@@ -41,7 +41,7 @@ import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus } from '@element-plus/icons-vue'
-import { getCommonTime } from '@/utils'
+import { cloneDeep, getCommonTime } from '@/utils'
 
 const adopt = (status: number) => {
   formRefs.value.submitForm({
@@ -213,9 +213,11 @@ const selectionChange = (row: any) => {
   multipleSelection.value = row
 }
 
+const originalFormData = {
+}
+
 const form = ref({
-  data: {
-  },
+  data: cloneDeep(originalFormData),
   props: {
     // 请求预处理
     beforeAction: (_formData: any) => {
@@ -275,8 +277,9 @@ const refresh = () => {
 }
 // 表单数据重置
 const resetForm = async () => {
-  // 弹窗已经显示，子组件应该已经渲染完
-  formRefs.value?.resetForm?.() // 安全调用
+  form.value.data = cloneDeep(originalFormData)
+  await nextTick()
+  formRefs.value?.clearValidate?.()
 }
 const addBtn = () => {
   resetForm()

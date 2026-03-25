@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
+import { cloneDeep } from '@/utils'
 
 const table = ref<{
   action: string,
@@ -190,9 +191,11 @@ const queryForm = ref({
   }]
 })
 
+const originalFormData = {
+}
+
 const form = ref({
-  data: {
-  },
+  data: cloneDeep(originalFormData),
   props: {
     // 请求预处理
     beforeAction: (_formData: any) => {
@@ -249,8 +252,10 @@ const form = ref({
 const formRefs = ref()
 
 // 表单重置
-const resetForm = () => {
-  formRefs.value?.refresh()
+const resetForm = async () => {
+  form.value.data = cloneDeep(originalFormData)
+  await nextTick()
+  formRefs.value?.clearValidate?.()
 }
 
 

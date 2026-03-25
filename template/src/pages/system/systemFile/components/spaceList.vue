@@ -8,6 +8,7 @@
     <qa-table size="small" ref="qaTableRef" :action="table.action" :columns="table.columns"
               :query-form-param="queryForm"
               :pagination="false" :right-btns="['delete', 'update']"
+              :custom-right-btns="table.customRightBtns"
               @selection-change="selectionChange" @update="updateBtn"
               @delete="deleteBtn"/>
     <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
@@ -24,6 +25,14 @@
           </div>
         </template>
       </qa-form>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <el-button size="small" @click="testSubmitForm">测试提交</el-button>
+        <el-button size="small" @click="testResetForm">测试重置</el-button>
+        <el-button size="small" @click="testClearValidate">测试清除校验</el-button>
+        <el-button size="small" @click="testValidate">测试整体验证</el-button>
+        <el-button size="small" @click="testValidateField">测试字段校验</el-button>
+        <el-button size="small" @click="testSetResetFormData">测试设置重置源</el-button>
+      </div>
     </el-dialog>
     <el-dialog width="500" v-model="storageConfigForm.props.show" :title="storageConfigForm.props.title"
                :close-on-click-modal="false">
@@ -35,25 +44,36 @@
             storageConfigForm.props.show = false
             refresh()
           }" @closeForm="storageConfigForm.props.show = false">
-        <template v-slot:user_id="{ form, keyName }">
-          <div style="height: 36px;display: flex;align-items: center;">
-            <br/>
-            <el-input v-model="form[keyName]" placeholder="插槽输入框"/>
-          </div>
-        </template>
       </qa-form>
+    </el-dialog>
+
+    <el-dialog
+        v-model="cnameInfoVisible"
+        title="Tips"
+        width="500"
+    >
+      <span>This is a message</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="cnameInfoVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="cnameInfoVisible = false">
+            Confirm
+          </el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import type {Columns, RightBtnMoreItem, DeleteRequest} from '@/components/quickAdmin/qaTable.vue'
+import type {Columns, RightBtnMoreItem, DeleteRequest, CustomRightBtn} from '@/components/quickAdmin/qaTable.vue'
 import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import {CirclePlus, Setting, Download} from '@element-plus/icons-vue'
 import {getStorageConfig, syncStorageSpace} from '@/api/file'
 import http from "@/utils/axios.ts";
 import {ElMessage} from "element-plus";
+import { cloneDeep } from '@/utils'
 
 
 const props = defineProps<{
@@ -78,17 +98,37 @@ const adopt = (status: number) => {
 }
 
 const formRefs = ref()
-const fromDefalut = () => {
-  // 还原表单验证并恢复默认数据
-  formRefs.value.resetFormDataDefault()
-}
 
+const cnameInfoVisible = ref(false)
+const cnameInfo = ref({})
+
+const storageConfigFormRefs = ref()
 const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null);
 const table = ref<{
   action: string,
   columns: Columns[]
   rightBtnsMore: RightBtnMoreItem[]
+  customRightBtns: CustomRightBtn[]
 }>({
+  customRightBtns: [
+    {
+      title: 'CNAME配置',
+      disabled: (item) => {
+        return item._id == '002'
+      },
+      onClick: (item) => {
+        ElMessageBox({
+          title: 'CNAME配置',
+          message: h('div', {style: 'width: 500px'}, [
+            h('p', null, `主机记录：${item.domain}`),
+            h('p', null, `记录类型：CNAME`),
+            h('p', null, `记录值：${item.domain.split('https://')[1]}`),
+          ]),
+          customClass: 'bg-[red] w-[600px]',
+        })
+      }
+    },
+  ],
   action: '/app/admin/system/systemFile/systemFile/space/getList',
   columns: [
     {
@@ -175,10 +215,13 @@ const selectionChange = (row: any) => {
   multipleSelection.value = row
 }
 
+// 表单默认数据
+const originalFormData = {
+  acl: 'public-read'
+}
+
 const form = ref({
-  data: {
-    acl:"public-read"
-  },
+  data: cloneDeep(originalFormData),
   props: {
     // 请求预处理
     beforeAction: (_formData: any) => {
@@ -243,7 +286,7 @@ const form = ref({
 
     ],
     rules: {
-      user_id: [
+      name: [
         {min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true,},
       ],
     },
@@ -326,10 +369,55 @@ const storageConfigForm = ref({
 const refresh = () => {
   qaTableRef.value?.refresh()
 }
+
+const testSetResetFormData = () => {
+  formRefs.value?.setResetFormData?.({
+    name: '1111',
+    acl: 'public-read',
+    region: 'ap-guangzhou',
+    domain: 'https://test.example.com',
+  })
+  ElMessage.success('已设置 resetForm 的测试数据源')
+}
+
+const testResetForm = () => {
+  formRefs.value?.resetForm?.()
+}
+
+const testClearValidate = () => {
+  formRefs.value?.clearValidate?.()
+  ElMessage.success('已清除表单校验')
+}
+
+const testValidate = () => {
+  formRefs.value?.validate?.((valid: boolean) => {
+    if (valid) {
+      ElMessage.success('表单验证通过')
+      return
+    }
+    ElMessage.error('表单验证未通过')
+  })
+}
+
+const testValidateField = () => {
+  formRefs.value?.validateField?.('name', (errMsg: string) => {
+    if (errMsg) {
+      ElMessage.error(`name 字段未通过校验: ${errMsg}`)
+      return
+    }
+    ElMessage.success('name 字段校验通过')
+  })
+}
+
+const testSubmitForm = () => {
+  formRefs.value?.submitForm?.()
+}
+
 // 表单数据重置
 const resetForm = async () => {
-  // 弹窗已经显示，子组件应该已经渲染完
-  formRefs.value?.resetForm?.() // 安全调用
+  form.value.data = cloneDeep(originalFormData)
+  await nextTick()
+  formRefs.value?.clearValidate?.()
 }
 const addBtn = () => {
   resetForm()

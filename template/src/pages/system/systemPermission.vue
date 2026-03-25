@@ -28,6 +28,7 @@ import qaTable from '@/components/quickAdmin/qaTable.vue';
 import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { CirclePlus } from '@element-plus/icons-vue'
 import http from '@/utils/axios'
+import { cloneDeep } from '@/utils'
 
 
 const currentChange = (row: any) => {
@@ -148,10 +149,12 @@ interface PermissionFormData {
   [key: string]: unknown
 }
 
+const originalFormData: PermissionFormData = {
+  enable: true,
+}
+
 const form = ref({
-  data: {
-    enable: true,
-  } as PermissionFormData,
+  data: cloneDeep(originalFormData) as PermissionFormData,
   props: {
     // 请求预处理
     beforeAction: (_formData: any) => {
@@ -222,8 +225,9 @@ const refresh = () => {
 }
 // 表单数据重置
 const resetForm = async () => {
-  // 弹窗已经显示，子组件应该已经渲染完
-  formRefs.value?.resetForm?.() // 安全调用
+  form.value.data = cloneDeep(originalFormData) as PermissionFormData
+  await nextTick()
+  formRefs.value?.clearValidate?.()
 }
 // 表单提交
 const submitForm = () => {

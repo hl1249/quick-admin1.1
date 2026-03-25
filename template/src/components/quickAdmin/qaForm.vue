@@ -145,29 +145,27 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-// 完全重置表单
-const resetForm = (formEl: FormInstance | undefined) => {
+function getResetFormData() {
+    return cloneDeep(resetCache.value)
+}
+
+// 按当前缓存的默认值重置表单，并清除校验状态
+const resetForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    formEl.resetFields()
+
+    model.value = getResetFormData()
+    await nextTick()
     formEl.clearValidate()
 }
 
-// 设置新的默认重置值
-function setResetFormData(data?: Partial<typeof model>) {
-    if (data) {
-        Object.assign(model.value, data)
-    }
-    // 更新重置缓存
-    resetCache.value = cloneDeep(model.value)
+// 设置新的默认重置值，不直接改动当前表单数据
+function setResetFormData(data?: Record<string, any>) {
+    resetCache.value = cloneDeep(data ?? model.value)
 }
 
-// 重置表单验证 但是有默认值
-const resetFormDataDefault = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.resetFields()
-    formEl.clearValidate()
-    console.log('model', model, cloneDeep(resetCache.value))
-    Object.assign(model.value, cloneDeep(resetCache.value))
+// 兼容旧调用方式，行为与 resetForm 保持一致
+const resetFormDataDefault = async (formEl: FormInstance | undefined) => {
+    await resetForm(formEl)
 }
 
 // 关闭表单弹窗
@@ -184,14 +182,14 @@ defineExpose({
     // },
     resetForm: async () => {
         await nextTick() // 确认组件已经渲染完成
-        resetForm(ruleFormRef.value)
+        return resetForm(ruleFormRef.value)
     },
     clearValidate: (...args: any[]) => ruleFormRef.value?.clearValidate?.(...args),
     submitForm: () => submitForm(ruleFormRef.value),
     setResetFormData: (data: any) => setResetFormData(data),
     resetFormDataDefault: async () => {
         await nextTick()
-        resetFormDataDefault(ruleFormRef.value)
+        return resetFormDataDefault(ruleFormRef.value)
     }
 })
 

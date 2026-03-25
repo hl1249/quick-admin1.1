@@ -37,7 +37,7 @@ import qaForm from '@/components/quickAdmin/qaForm.vue';
 import bindMenu from './form/bindMenu.vue';
 import bindPermission from './form/bindPermission.vue';
 import { CirclePlus, Tools } from '@element-plus/icons-vue'
-import { renderComponent } from '@/utils'
+import { cloneDeep, renderComponent } from '@/utils'
 import http from '@/utils/axios'
 
 
@@ -189,10 +189,12 @@ const queryForm = ref({
   }]
 })
 
+const originalFormData = {
+  enable: true,
+}
+
 const form = ref({
-  data: {
-    enable: true,
-  },
+  data: cloneDeep(originalFormData),
   props: {
     // 请求预处理
     beforeAction: (_formData: any) => {
@@ -241,8 +243,9 @@ const refresh = () => {
 }
 // 表单数据重置
 const resetForm = async () => {
-  // 弹窗已经显示，子组件应该已经渲染完
-  formRefs.value?.resetForm?.() // 安全调用
+  form.value.data = cloneDeep(originalFormData)
+  await nextTick()
+  formRefs.value?.clearValidate?.()
 }
 // 表单提交
 const submitForm = () => {

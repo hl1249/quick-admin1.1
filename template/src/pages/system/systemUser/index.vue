@@ -357,7 +357,6 @@ const ADD_ACTION = '/app/admin/system/systemUser/systemUser/add'
 
 const addBtn = () => {
   resetForm()
-  form.value.data = {}
   form.value.props.action = ADD_ACTION
   form.value.props.formType = 'add'
   form.value.props.title = '添加'
