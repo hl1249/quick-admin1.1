@@ -298,7 +298,7 @@ const form = ref({
     ],
     rules: {
       name: [
-        {min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true,},
+        {min: 3, max: 30, message: '长度3-5', trigger: 'blur', required: true,},
       ],
     },
     formType: "",

@@ -30,6 +30,53 @@ export class SystemFileController {
     private readonly qiniuOssProvider: QiniuOssProvider,
   ) {}
 
+  private parseDomainHost(domain: string) {
+    try {
+      const parsedUrl = new URL(domain);
+      if (!parsedUrl.hostname) {
+        throw new Error('invalid hostname');
+      }
+      return parsedUrl.hostname.trim().toLowerCase();
+    } catch {
+      throw new BadRequestException('域名输入有误');
+    }
+  }
+
+  private async validateDomainBeforeUpdate(space: any, domain?: string) {
+    if (!domain || space?.domain === domain) {
+      return;
+    }
+
+    const domainHost = this.parseDomainHost(domain);
+
+    try {
+      if (space.provider === 'tencent') {
+        await this.tencentOssProvider.ensureBucketDomain({
+          bucket: space.name,
+          region: space.region,
+          secretId: space.accessKey,
+          secretKey: space.secretKey,
+          domain: domainHost,
+          type: 'REST',
+        });
+        return;
+      }
+
+      if (space.provider === 'aliyun') {
+        await this.aliyunOssProvider.ensureBucketDomain({
+          bucket: space.name,
+          region: space.region,
+          accessKeyId: space.accessKey,
+          accessKeySecret: space.secretKey,
+          endpoint: space.endpoint,
+          domain: domainHost,
+        });
+      }
+    } catch (error) {
+      throw new BadRequestException((error as Error).message);
+    }
+  }
+
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   async upload(
@@ -63,21 +110,16 @@ export class SystemFileController {
   async updateSpace(@Req() req, @Body() data): Promise<Document | null>{
     const { _id, domain, cdn  } = data
 
-    // const space = await this.dbService.findById({
-    //   dbName:'qa-storage-space',
-    //   id:_id
-    // })
-    
-    // if(!space){
-    //   throw new BadRequestException('存储空间不存在');
-    // }
-    // if(space.provider === 'tencent'){
-    //   space.domain =  `https://${name}.cos.${region}.myqcloud.com`
-    // }else if(space.provider === 'aliyun'){
-    //   space.domain = name + '.oss.' + region + '.aliyuncs.com'
-    // }else if(space.provider === 'qiniu'){
-    //   space.domain = name + '.' + region + '.qiniucdn.com'
-    // }
+    const space = await this.dbService.findById({
+      dbName:'qa-storage-space',
+      id:_id
+    })
+
+    if(!space){
+      throw new BadRequestException('存储空间不存在');
+    }
+
+    await this.validateDomainBeforeUpdate(space, domain)
 
     return await this.dbService.updateById({
       dbName:'qa-storage-space',
@@ -283,7 +325,7 @@ export class SystemFileController {
         provider
       },
       dataJson:{
-        enable:!enable,
+        enable,
         _update_time: Date.now(),
         _update_time_str: formatTimestamp(new Date()),
       },

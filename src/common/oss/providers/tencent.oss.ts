@@ -17,6 +17,20 @@ type TencentBucketListOptions = {
   secretKey: string;
 };
 
+type TencentBucketDomainOptions = {
+  bucket: string;
+  region: string;
+  secretId: string;
+  secretKey: string;
+};
+
+type TencentBucketDomainRule = {
+  Status?: string;
+  Name?: string;
+  Type?: string;
+  ForcedReplacement?: string;
+};
+
 type TencentServiceBucket = {
   Name?: string;
   Location?: string;
@@ -210,6 +224,106 @@ export class TencentOssProvider implements IOssProvider {
         : undefined,
       buckets,
     };
+  }
+
+  async getBucketDomainRules(options: TencentBucketDomainOptions): Promise<TencentBucketDomainRule[]> {
+    ensureRequired('SecretId', options.secretId);
+    ensureRequired('SecretKey', options.secretKey);
+    ensureRequired('TENCENT_OSS_BUCKET', options.bucket);
+    ensureRequired('TENCENT_OSS_REGION', options.region);
+
+    const client = this.createClient(options.secretId, options.secretKey);
+
+    try {
+      const result = await new Promise<{ DomainRule?: TencentBucketDomainRule[] }>((resolve, reject) => {
+        client.getBucketDomain(
+          {
+            Bucket: options.bucket,
+            Region: options.region,
+          },
+          (
+            err: { statusCode?: number; code?: string; message?: string } | null,
+            data: { DomainRule?: TencentBucketDomainRule[] }
+          ) => {
+            if (err) reject(err);
+            else resolve(data);
+          }
+        );
+      });
+
+      return Array.isArray(result?.DomainRule) ? result.DomainRule : [];
+    } catch (error) {
+      const err = error as { statusCode?: number; code?: string; message?: string };
+      if (err?.statusCode === 403 || err?.code === 'AccessDenied') {
+        throw new Error('无权查询腾讯云自定义域名，请检查密钥权限');
+      }
+      throw new Error(err?.message || '查询腾讯云自定义域名失败');
+    }
+  }
+
+  async getBucketDomainList(options: TencentBucketDomainOptions): Promise<string[]> {
+    const rules = await this.getBucketDomainRules(options);
+    return rules
+      .map((item) => item.Name?.trim().toLowerCase())
+      .filter((item): item is string => Boolean(item));
+  }
+
+  async ensureBucketDomain(options: TencentBucketDomainOptions & {
+    domain: string;
+    type?: 'REST' | 'WEBSITE';
+  }): Promise<void> {
+    ensureRequired('TENCENT_OSS_DOMAIN', options.domain);
+
+    const client = this.createClient(options.secretId, options.secretKey);
+    const currentRules = await this.getBucketDomainRules(options);
+    const normalizedDomain = options.domain.trim().toLowerCase();
+    const hasDomain = currentRules.some((item) => item.Name?.trim().toLowerCase() === normalizedDomain);
+
+    if (hasDomain) {
+      return;
+    }
+
+    const nextRules: TencentBucketDomainRule[] = [
+      ...currentRules.map((item) => ({
+        Status: item.Status || 'ENABLED',
+        Name: item.Name,
+        Type: item.Type || 'REST',
+        ...(item.ForcedReplacement ? { ForcedReplacement: item.ForcedReplacement } : {}),
+      })),
+      {
+        Status: 'ENABLED',
+        Name: options.domain,
+        Type: options.type || 'REST',
+      },
+    ];
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        client.putBucketDomain(
+          {
+            Bucket: options.bucket,
+            Region: options.region,
+            DomainRule: nextRules,
+          },
+          (err: { statusCode?: number; code?: string; message?: string } | null) => {
+            if (err) reject(err);
+            else resolve();
+          }
+        );
+      });
+    } catch (error) {
+      const err = error as { statusCode?: number; code?: string; message?: string };
+      if (err?.statusCode === 403 || err?.code === 'AccessDenied') {
+        throw new Error('无权绑定腾讯云自定义域名，请检查密钥权限');
+      }
+      if (err?.statusCode === 409) {
+        throw new Error('腾讯云自定义域名配置冲突，请检查域名是否已存在或需要强制覆盖');
+      }
+      if (err?.statusCode === 451) {
+        throw new Error('当前中国境内域名未备案，腾讯云不允许绑定');
+      }
+      throw new Error(err?.message || '绑定腾讯云自定义域名失败');
+    }
   }
 
   async upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult> {

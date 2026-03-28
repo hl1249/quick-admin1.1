@@ -17,6 +17,21 @@ type AliyunCreateBucketOptions = {
   acl?: string;
 };
 
+type AliyunBucketDomainOptions = {
+  bucket: string;
+  region: string;
+  accessKeyId: string;
+  accessKeySecret: string;
+  endpoint?: string;
+};
+
+type AliyunCnameTokenResult = {
+  bucket?: string;
+  cname?: string;
+  token?: string;
+  expireTime?: string;
+};
+
 @Injectable()
 export class AliyunOssProvider implements IOssProvider {
   private client: any = null;
@@ -47,6 +62,35 @@ export class AliyunOssProvider implements IOssProvider {
       endpoint: endpoint || undefined,
       authorizationV4: true,
     });
+  }
+
+  private buildBucketCnameXml(domain: string) {
+    return `<?xml version="1.0" encoding="UTF-8"?>\n<BucketCnameConfiguration>\n  <Cname>\n    <Domain>${domain}</Domain>\n  </Cname>\n</BucketCnameConfiguration>`;
+  }
+
+  private createBucketRequestParams(
+    client: any,
+    method: 'GET' | 'POST',
+    options: AliyunBucketDomainOptions,
+    subres: string | Record<string, string>,
+    xmlResponse = false
+  ) {
+    const params = client._bucketRequestParams(method, options.bucket, subres, undefined);
+    params.successStatuses = [200];
+    params.xmlResponse = xmlResponse;
+    return params;
+  }
+
+  private normalizeCnameList(data: any): string[] {
+    const rawList = data?.Cname ?? [];
+    const cnameList = Array.isArray(rawList) ? rawList : [rawList];
+
+    return cnameList
+      .map((item: any) => {
+        if (typeof item === 'string') return item.trim().toLowerCase();
+        return item?.Domain?.trim?.().toLowerCase?.() || '';
+      })
+      .filter((item: string): item is string => Boolean(item));
   }
 
   private async getActiveAliyunSpace() {
@@ -160,6 +204,161 @@ export class AliyunOssProvider implements IOssProvider {
         throw new Error(`无权创建阿里云存储桶: ${options.bucket}，请检查密钥权限`);
       }
       throw new Error(err?.message || `阿里云存储桶创建失败: ${options.bucket}`);
+    }
+  }
+
+  async getBucketDomainList(options: AliyunBucketDomainOptions): Promise<string[]> {
+    ensureRequired('ALIYUN_OSS_ACCESS_KEY_ID', options.accessKeyId);
+    ensureRequired('ALIYUN_OSS_ACCESS_KEY_SECRET', options.accessKeySecret);
+    ensureRequired('ALIYUN_OSS_BUCKET', options.bucket);
+    ensureRequired('ALIYUN_OSS_REGION', options.region);
+
+    const client = this.createClient(
+      options.accessKeyId,
+      options.accessKeySecret,
+      options.region,
+      options.bucket,
+      options.endpoint
+    );
+
+    try {
+      const params = this.createBucketRequestParams(client, 'GET', options, 'cname', true);
+      const result = await client.request(params);
+      return this.normalizeCnameList(result.data);
+    } catch (error) {
+      const err = error as { message?: string; code?: string; status?: number };
+      if (err?.status === 403 || err?.code === 'AccessDenied') {
+        throw new Error('无权查询阿里云自定义域名，请检查密钥权限');
+      }
+      throw new Error(err?.message || '查询阿里云自定义域名失败');
+    }
+  }
+
+  async createBucketCnameToken(
+    options: AliyunBucketDomainOptions & { domain: string }
+  ): Promise<AliyunCnameTokenResult> {
+    ensureRequired('ALIYUN_OSS_DOMAIN', options.domain);
+
+    const client = this.createClient(
+      options.accessKeyId,
+      options.accessKeySecret,
+      options.region,
+      options.bucket,
+      options.endpoint
+    );
+
+    try {
+      const params = this.createBucketRequestParams(
+        client,
+        'POST',
+        options,
+        { cname: '', comp: 'token' },
+        true
+      );
+      params.content = this.buildBucketCnameXml(options.domain);
+      params.mime = 'xml';
+
+      const result = await client.request(params);
+      return {
+        bucket: result.data?.Bucket,
+        cname: result.data?.Cname,
+        token: result.data?.Token,
+        expireTime: result.data?.ExpireTime,
+      };
+    } catch (error) {
+      const err = error as { message?: string; code?: string; status?: number };
+      if (err?.status === 403 || err?.code === 'AccessDenied') {
+        throw new Error('无权创建阿里云 CnameToken，请检查密钥权限');
+      }
+      throw new Error(err?.message || '创建阿里云 CnameToken 失败');
+    }
+  }
+
+  async getBucketCnameToken(
+    options: AliyunBucketDomainOptions & { domain: string }
+  ): Promise<AliyunCnameTokenResult | null> {
+    ensureRequired('ALIYUN_OSS_DOMAIN', options.domain);
+
+    const client = this.createClient(
+      options.accessKeyId,
+      options.accessKeySecret,
+      options.region,
+      options.bucket,
+      options.endpoint
+    );
+
+    try {
+      const params = this.createBucketRequestParams(
+        client,
+        'GET',
+        options,
+        { comp: 'token', cname: options.domain },
+        true
+      );
+
+      const result = await client.request(params);
+      return {
+        bucket: result.data?.Bucket,
+        cname: result.data?.Cname,
+        token: result.data?.Token,
+        expireTime: result.data?.ExpireTime,
+      };
+    } catch (error) {
+      const err = error as { message?: string; code?: string; status?: number };
+      if (err?.status === 404 || err?.code === 'NoSuchCnameToken') {
+        return null;
+      }
+      if (err?.status === 403 || err?.code === 'AccessDenied') {
+        throw new Error('无权获取阿里云 CnameToken，请检查密钥权限');
+      }
+      throw new Error(err?.message || '获取阿里云 CnameToken 失败');
+    }
+  }
+
+  async ensureBucketDomain(options: AliyunBucketDomainOptions & { domain: string }): Promise<void> {
+    ensureRequired('ALIYUN_OSS_DOMAIN', options.domain);
+
+    const client = this.createClient(
+      options.accessKeyId,
+      options.accessKeySecret,
+      options.region,
+      options.bucket,
+      options.endpoint
+    );
+
+    const currentDomains = await this.getBucketDomainList(options);
+    const normalizedDomain = options.domain.trim().toLowerCase();
+
+    if (currentDomains.includes(normalizedDomain)) {
+      return;
+    }
+
+    try {
+      const params = this.createBucketRequestParams(
+        client,
+        'POST',
+        options,
+        { cname: '', comp: 'add' }
+      );
+      params.content = this.buildBucketCnameXml(normalizedDomain);
+      params.mime = 'xml';
+
+      await client.request(params);
+    } catch (error) {
+      const err = error as { message?: string; code?: string; status?: number };
+      if (err?.status === 403 || err?.code === 'AccessDenied') {
+        throw new Error('无权绑定阿里云自定义域名，请检查密钥权限');
+      }
+      if (err?.status === 409) {
+        throw new Error('阿里云自定义域名配置冲突，请检查域名是否已存在');
+      }
+      const tokenInfo =
+        (await this.getBucketCnameToken({ ...options, domain: normalizedDomain })) ||
+        (await this.createBucketCnameToken({ ...options, domain: normalizedDomain }));
+      const tokenMessage = tokenInfo?.token
+        ? `，请先按阿里云文档添加 TXT 验证记录后再重试，CnameToken: ${tokenInfo.token}`
+        : '，请先按阿里云文档完成域名所有权验证后再重试';
+      throw new Error((err?.message || '绑定阿里云自定义域名失败') + tokenMessage);
     }
   }
 
