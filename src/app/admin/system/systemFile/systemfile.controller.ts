@@ -135,6 +135,13 @@ export class SystemFileController {
   @Post('/space/delete')
   async deleteSpace(@Body() data): Promise<Document | null>{
     const { _id } = data
+    const space = await this.dbService.findById({
+      dbName:'qa-storage-space',
+      id:_id
+    })
+    if(space?.enable){
+      throw new BadRequestException('存储空间已启用，请先禁用');
+    }
     return await this.dbService.deleteById({
       dbName:'qa-storage-space',
       id:_id
@@ -222,6 +229,21 @@ export class SystemFileController {
   @Post('/appConfig/update')
   async updateAppConfig(@Body() data: { oss_provider: 'local' | 'tencent' | 'aliyun' | 'qiniu' }) {
     const { oss_provider } = data;
+
+    const enabledSpaceList = await this.dbService.selects({
+      dbName:'qa-storage-space',
+      whereJson:{
+        provider:oss_provider,
+        enable: true,
+      },
+      getMain: true,
+      pageSize: 1000,
+    })
+
+    if(oss_provider != 'local' && enabledSpaceList.length <= 0){
+      throw new BadRequestException('当前存储提供商下至少需要一个已启用的存储空间');
+    }
+
     const result = await this.dbService.updateById({
       dbName:'qa-app-config',
       id:'69bcbb2e0c34b64800565ec6',

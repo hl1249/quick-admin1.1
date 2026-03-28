@@ -3,7 +3,7 @@
     <div class="flex my-[8px]">
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
       <el-button type="primary" :icon="Download" @click="syncSpac" :loading="syncSpacLoading">同步存储空间</el-button>
-      <el-button :icon="Setting" @click="storageConfigForm.props.show = true" class="!ml-auto">配置存储提供商</el-button>
+      <el-button :icon="Setting" @click="openStorageConfigForm" class="!ml-auto">配置存储提供商</el-button>
     </div>
     <qa-table size="small" ref="qaTableRef" :action="table.action" :columns="table.columns"
               :query-form-param="queryForm"
@@ -114,9 +114,14 @@ const adopt = (status: number) => {
 const formRefs = ref()
 
 const cnameInfoVisible = ref(false)
-const cnameInfo = ref({})
+interface CnameInfo {
+  domain: string
+  [key: string]: any
+}
+const cnameInfo = ref<CnameInfo>({
+  domain: '',
+})
 
-const storageConfigFormRefs = ref()
 const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null);
 const table = ref<{
   action: string,
@@ -307,7 +312,6 @@ const form = ref({
   }
 })
 
-const currentStorageConfig = ref()
 const getCurrentStorageConfig = async () => {
   const res = await getStorageConfig({
     provider: props.provider
@@ -317,6 +321,13 @@ const getCurrentStorageConfig = async () => {
     ...storageConfigForm.value.data,
     ...res.data.data
   }
+}
+
+const storageConfigFormRefs = ref()
+const openStorageConfigForm = async () => {
+  storageConfigFormRefs.value?.resetForm?.()
+  await getCurrentStorageConfig()
+  storageConfigForm.value.props.show = true
 }
 
 onMounted(() => {
@@ -376,6 +387,8 @@ const storageConfigForm = ref({
     show: false
   }
 })
+
+
 // 表格数据刷新
 const refresh = () => {
   qaTableRef.value?.refresh()

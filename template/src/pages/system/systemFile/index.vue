@@ -1,12 +1,12 @@
 <template>
   <div class="system-file-page">
-    <el-tabs type="border-card" class="system-file-tabs">
+    <el-tabs type="border-card" class="system-file-tabs" lazy>
       <el-tab-pane label="上传">上传</el-tab-pane>
       <el-tab-pane label="配置">
         <el-tabs v-model="activeName" class="config-inner-tabs demo-tabs" @tab-click="handleClick">
           <el-tab-pane label="存储配置" name="config">
            <div class="flex flex-col gap-[20px]">
-             <el-radio-group v-model="provider">
+             <el-radio-group v-model="provider" @change="handleProviderChange">
                <el-radio value="local">本地</el-radio>
                <el-radio value="tencent">腾讯云</el-radio>
                <el-radio value="aliyun">阿里云</el-radio>
@@ -50,10 +50,15 @@ import { saveAppConfig, getAppConfig } from '@/api/file'
 
 const activeName = ref('config')
 
-const provider: Ref<string> = ref('')
+const provider: Ref<string> = ref('local')
 
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event)
+const handleProviderChange = () => {
+  saveConfig()
+}
+const handleClick = async (tab: TabsPaneContext) => {
+  if (tab.paneName === 'config') {
+    await getConfig()
+  }
 }
 
 const saveLoading:Ref<boolean> = ref( false)
@@ -64,12 +69,9 @@ const saveConfig = async () => {
       oss_provider: provider.value
     })
     ElMessage.success('保存成功')
-  }catch (err){
-    ElMessage.error(JSON.stringify(err))
   }finally {
     saveLoading.value = false
   }
-
 }
 
 const getConfig = async () => {
