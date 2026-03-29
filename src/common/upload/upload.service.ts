@@ -11,6 +11,14 @@ import type { UploadFileLike, UploadRequestOptions } from './upload.types';
 export class UploadService {
   constructor(private readonly ossService: OssService) {}
 
+  private getUploadFolder() {
+    const now = new Date();
+    const year = String(now.getFullYear());
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+
+    return `/attach/${year}/${month}`;
+  }
+
   /** 上传 Multer 解析后的文件 */
   async uploadFile(
     file: UploadFileLike,
@@ -19,7 +27,7 @@ export class UploadService {
     return this.ossService.upload(file.buffer, {
       filename: file.originalname,
       contentType: file.mimetype,
-      folder: options?.folder,
+      folder: this.getUploadFolder(),
       provider: options?.provider,
     });
   }
@@ -33,7 +41,7 @@ export class UploadService {
     return this.ossService.upload(buffer, {
       filename: meta.filename,
       contentType: meta.contentType,
-      folder: options?.folder,
+      folder: this.getUploadFolder(),
       provider: options?.provider,
     });
   }

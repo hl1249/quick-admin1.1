@@ -13,7 +13,7 @@
                <el-radio value="qiniu">七牛云</el-radio>
              </el-radio-group>
              <div>
-               <el-button type="primary" @click="saveConfig()" :loading="saveLoading">保存</el-button>
+               <el-button type="primary" @click="handleClickSaveConfig" :loading="saveLoading">保存</el-button>
              </div>
            </div>
           </el-tab-pane>
@@ -62,16 +62,21 @@ const handleClick = async (tab: TabsPaneContext) => {
 }
 
 const saveLoading:Ref<boolean> = ref( false)
-const saveConfig = async () => {
+
+const handleClickSaveConfig = async () => {
   saveLoading.value = true
   try{
-    await saveAppConfig({
-      oss_provider: provider.value
-    })
-    ElMessage.success('保存成功')
+    await saveConfig()
   }finally {
     saveLoading.value = false
   }
+}
+const saveConfig = async () => {
+  await saveAppConfig({
+    oss_provider: provider.value
+  })
+  ElMessage.success('保存成功')
+
 }
 
 const getConfig = async () => {
