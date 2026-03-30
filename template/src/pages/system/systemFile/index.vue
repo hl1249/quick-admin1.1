@@ -1,21 +1,23 @@
 <template>
   <div class="system-file-page">
     <el-tabs type="border-card" class="system-file-tabs" lazy>
-      <el-tab-pane label="上传">上传</el-tab-pane>
+      <el-tab-pane label="上传">
+        <upload-manage/>
+      </el-tab-pane>
       <el-tab-pane label="配置">
         <el-tabs v-model="activeName" class="config-inner-tabs demo-tabs" @tab-click="handleClick">
           <el-tab-pane label="存储配置" name="config">
-           <div class="flex flex-col gap-[20px]">
-             <el-radio-group v-model="provider" @change="handleProviderChange">
-               <el-radio value="local">本地</el-radio>
-               <el-radio value="tencent">腾讯云</el-radio>
-               <el-radio value="aliyun">阿里云</el-radio>
-               <el-radio value="qiniu">七牛云</el-radio>
-             </el-radio-group>
-             <div>
-               <el-button type="primary" @click="handleClickSaveConfig" :loading="saveLoading">保存</el-button>
-             </div>
-           </div>
+            <div class="flex flex-col gap-[20px]">
+              <el-radio-group v-model="provider" @change="handleProviderChange">
+                <el-radio value="local">本地</el-radio>
+                <el-radio value="tencent">腾讯云</el-radio>
+                <el-radio value="aliyun">阿里云</el-radio>
+                <el-radio value="qiniu">七牛云</el-radio>
+              </el-radio-group>
+              <div>
+                <el-button type="primary" @click="handleClickSaveConfig" :loading="saveLoading">保存</el-button>
+              </div>
+            </div>
           </el-tab-pane>
           <el-tab-pane label="腾讯云" name="tencent">
             <div class="tab-pane-fill">
@@ -26,14 +28,14 @@
                 <p>第三步（可选）： 选择云存储空间列表上的修改【空间域名操作】</p>
                 <p>第四步（可选）： 选择云存储空间列表上的修改【CNAME配置】，打开后复制记录值到对应的平台解析</p>
               </el-alert>
-              <space-list v-if="activeName === 'tencent'" :provider="activeName" class="space-list-grow" />
+              <space-list v-if="activeName === 'tencent'" :provider="activeName" class="space-list-grow"/>
             </div>
           </el-tab-pane>
           <el-tab-pane label="阿里云" name="aliyun">
-            <space-list v-if="activeName === 'aliyun'" :provider="activeName" class="space-list-grow" />
+            <space-list v-if="activeName === 'aliyun'" :provider="activeName" class="space-list-grow"/>
           </el-tab-pane>
           <el-tab-pane label="七牛云" name="qiniu">
-            <space-list v-if="activeName === 'qiniu'" :provider="activeName" class="space-list-grow" />
+            <space-list v-if="activeName === 'qiniu'" :provider="activeName" class="space-list-grow"/>
           </el-tab-pane>
         </el-tabs>
       </el-tab-pane>
@@ -46,7 +48,8 @@
 <script setup lang="ts">
 import {ElMessage, type TabsPaneContext} from 'element-plus'
 import spaceList from './components/spaceList.vue'
-import { saveAppConfig, getAppConfig } from '@/api/file'
+import uploadManage from './components/uploadManage.vue'
+import {saveAppConfig, getAppConfig} from '@/api/file'
 
 const activeName = ref('config')
 
@@ -61,13 +64,13 @@ const handleClick = async (tab: TabsPaneContext) => {
   }
 }
 
-const saveLoading:Ref<boolean> = ref( false)
+const saveLoading: Ref<boolean> = ref(false)
 
 const handleClickSaveConfig = async () => {
   saveLoading.value = true
-  try{
+  try {
     await saveConfig()
-  }finally {
+  } finally {
     saveLoading.value = false
   }
 }

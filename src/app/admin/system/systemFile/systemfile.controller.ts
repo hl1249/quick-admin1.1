@@ -31,6 +31,46 @@ export class SystemFileController {
     private readonly qiniuOssProvider: QiniuOssProvider,
   ) {}
 
+
+  @Post('/files/getList')
+  async getFileList(@Body() data): Promise<Document | null>{
+
+
+    return await this.dbService.getTableData({
+      dbName: 'qa-files',
+      data,
+    });
+  }
+
+
+  @Post('/files/delete')
+  async deleteFile(@Body() data): Promise<Document | null>{
+
+    const { ids } = data
+    return await this.dbService.del({
+      dbName: 'qa-files',
+      whereJson:{
+        _id:_.in(ids)
+      }
+    })
+  }
+
+  @Post('/files/update')
+  async updateFile(@Body() data): Promise<Document | null>{
+
+    const { original_name, _id } = data
+    return await this.dbService.updateById({
+      dbName: 'qa-files',
+      id:_id,
+      dataJson:{
+        original_name,
+        _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
+      }
+    })
+  }
+
+
   private parseDomainHost(domain: string) {
     try {
       const parsedUrl = new URL(domain);
@@ -42,6 +82,8 @@ export class SystemFileController {
       throw new BadRequestException('域名输入有误');
     }
   }
+
+  
 
   private async validateDomainBeforeUpdate(space: any, domain?: string) {
     if (!domain || space?.domain === domain) {
@@ -203,6 +245,22 @@ export class SystemFileController {
     return { width: null, height: null };
   }
 
+  private normalizeUploadedFilename(originalname?: string) {
+    if (!originalname) {
+      return '';
+    }
+
+    const decodedName = Buffer.from(originalname, 'latin1').toString('utf8');
+    const hasMojibake = /[ÃÂÅÆÇÐÑÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ]/.test(originalname);
+    const hasReadableCjk = /[\u4e00-\u9fff]/.test(decodedName);
+
+    if (!hasMojibake || !hasReadableCjk || decodedName.includes('�')) {
+      return originalname;
+    }
+
+    return decodedName;
+  }
+
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   async upload(
@@ -214,12 +272,18 @@ export class SystemFileController {
       throw new BadRequestException('请上传 file 文件');
     }
 
-    const result = await this.uploadService.uploadFile(file, {
+    const normalizedOriginalName = this.normalizeUploadedFilename(file.originalname);
+    const normalizedFile = {
+      ...file,
+      originalname: normalizedOriginalName,
+    };
+
+    const result = await this.uploadService.uploadFile(normalizedFile, {
       folder: data?.folder,
     });
     const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
-    const fileType = this.getFileType(file.mimetype);
-    const { width, height } = this.getImageSize(file.buffer, file.mimetype);
+    const fileType = this.getFileType(normalizedFile.mimetype);
+    const { width, height } = this.getImageSize(normalizedFile.buffer, normalizedFile.mimetype);
     const objectName = basename(result.key);
     const record = {
       user_id: userId,
@@ -228,8 +292,8 @@ export class SystemFileController {
       type: fileType,
       url: result.url,
       display_name: objectName,
-      original_name: file.originalname,
-      size: file.size ?? file.buffer.length,
+      original_name: normalizedOriginalName,
+      size: normalizedFile.size ?? normalizedFile.buffer.length,
       file_id: result.url,
       provider: result.provider,
       width,
@@ -491,6 +555,17 @@ export class SystemFileController {
     if(!space?.domain && enable){
       throw new BadRequestException('请先配置存储空间域名');
     }
+
+    await this.dbService.update({
+      dbName:'qa-storage-space',
+      whereJson:{
+        provider,
+        _id:_.neq(_id)
+      },
+      dataJson:{
+        enable:false,
+      }
+    })
 
     return await this.dbService.update({
       dbName:'qa-storage-space',

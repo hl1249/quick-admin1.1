@@ -30,3 +30,19 @@ export const syncStorageSpace = (data: any) => {
         data,
     })
 }
+
+export const getSystemCategories = (data: any) => {
+    return http.request({
+        url: '/app/admin/system/systemFile/systemCategories/getList',
+        method: 'post',
+        data,
+    })
+}
+
+export const updateSystemFileName = (data: { _id: string; original_name: string }) => {
+    return http.request({
+        url: '/app/admin/system/systemFile/systemFile/files/update',
+        method: 'post',
+        data,
+    })
+}

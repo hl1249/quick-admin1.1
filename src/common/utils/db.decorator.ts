@@ -46,8 +46,32 @@ export const TransformDbParams = (target, key, descriptor) => {
 
 // 转换whereJson 中的操作符
 // 例 { gt: 20 } 转换为 { __op: '$gt', value: 20 }
-function transformWhereJson(whereJson: Record<string, any>): Record<string, any> {
-  if (typeof whereJson !== 'object' || whereJson === null) return whereJson;
+function normalizeWhereValue(value: any): any {
+  if (value === 'null') {
+    return null;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(item => normalizeWhereValue(item));
+  }
+
+  if (value instanceof RegExp || value instanceof ObjectId || value instanceof FieldQueryTemp) {
+    return value;
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    const normalized: Record<string, any> = {};
+    for (const [key, nestedValue] of Object.entries(value)) {
+      normalized[key] = normalizeWhereValue(nestedValue);
+    }
+    return normalized;
+  }
+
+  return value;
+}
+
+function transformWhereJson(whereJson: any): any {
+  if (typeof whereJson !== 'object' || whereJson === null) return normalizeWhereValue(whereJson);
 
   // Handle $and and $or operators recursively
   if (whereJson.$and) {
@@ -63,7 +87,7 @@ function transformWhereJson(whereJson: Record<string, any>): Record<string, any>
 
     // 对于 FieldQueryTemp 实例，直接调用 buildWithField 方法
     if (value instanceof FieldQueryTemp) {
-      const built = value.buildWithField(key);
+      const built = normalizeWhereValue(value.buildWithField(key));
       Object.assign(result, built);
       // _id 使用 FieldQueryTemp（如 _.in(ids)）时，将 $in/$nin 数组中的字符串转为 ObjectId
       if (key === '_id' && typeof built[key] === 'object' && built[key] !== null) {
@@ -111,7 +135,7 @@ function transformWhereJson(whereJson: Record<string, any>): Record<string, any>
     }
     // 对于其他类型的值，直接赋值
     else {
-      result[key] = transformWhereJson(value);
+      result[key] = transformWhereJson(normalizeWhereValue(value));
     }
   }
   return result;
@@ -332,19 +356,19 @@ function transformForeignDB(foreignDB: ForeignDB[], currentDepth = 0): PipelineS
 
       for (const [field, value] of Object.entries(config.whereJson)) {
         if (value instanceof FieldQueryTemp) {
-          Object.assign(processedWhere, value.buildForeignWhereJsonWithField(field));
+          Object.assign(processedWhere, normalizeWhereValue(value.buildForeignWhereJsonWithField(field)));
         } else if (typeof value === 'object' && value !== null) {
           const nestedProcessed = {};
           for (const [nestedField, nestedValue] of Object.entries(value)) {
             if (nestedValue instanceof FieldQueryTemp) {
-              Object.assign(nestedProcessed, nestedValue.buildForeignWhereJsonWithField(nestedField));
+              Object.assign(nestedProcessed, normalizeWhereValue(nestedValue.buildForeignWhereJsonWithField(nestedField)));
             } else {
-              nestedProcessed[nestedField] = nestedValue;
+              nestedProcessed[nestedField] = normalizeWhereValue(nestedValue);
             }
           }
           processedWhere[field] = nestedProcessed;
         } else {
-          processedWhere[field] = value;
+          processedWhere[field] = normalizeWhereValue(value);
         }
       }
 
@@ -512,14 +536,20 @@ function transTableData(data: any) {
 
   const match: any = {};
   for (const key in data.formData) {
-    if (data.formData[key] === null || data.formData[key]?.length <= 0) {
+    const value = data.formData[key];
+    if (
+      value === null ||
+      value === undefined ||
+      value === '' ||
+      (Array.isArray(value) && value.length <= 0)
+    ) {
       delete data.formData[key]
     }
   }
 
   if (data.columns && data.columns.length >= 1) {
     data.columns.forEach(col => {
-      const value = data.formData[col.key];
+      const value = normalizeWhereValue(data.formData[col.key]);
       if (value === undefined || col.mode === "custom") return;
 
       switch (col.mode) {

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosRequestConfig } from 'axios'
+import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 import { useStore } from '@/store'
 import { AUTHORIZATION } from '@/config'
@@ -23,11 +23,10 @@ class HttpRequest {
   }
 
   getInsidConfig() {
-    const config = {
+    return {
       baseURL: this.baseURL,
       withCredentials: true,
     }
-    return config
   }
 
   errorCode(code: number, res?: any, openMessage = true) {
@@ -85,7 +84,10 @@ class HttpRequest {
           }
         }
         config.headers[AUTHORIZATION] = `Bearer ${token}`;
-        config.headers['Content-Type'] = 'application/json';
+        const hasContentType = Boolean(config.headers['Content-Type'] || config.headers['content-type'])
+        if (!hasContentType && !(config.data instanceof FormData)) {
+          config.headers['Content-Type'] = 'application/json';
+        }
         return config
       },
       error => {
