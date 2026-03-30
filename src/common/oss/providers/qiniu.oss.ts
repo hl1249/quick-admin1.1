@@ -16,6 +16,12 @@ type QiniuCreateBucketOptions = {
   acl?: string;
 };
 
+type QiniuBucketDomainOptions = {
+  bucket: string;
+  accessKey: string;
+  secretKey: string;
+};
+
 const resolveQiniuZone = (qiniu: any, region: string) => {
   const zoneMap: Record<string, any> = {
     z0: qiniu.zone.Zone_z0,
@@ -205,6 +211,63 @@ export class QiniuOssProvider implements IOssProvider {
       }
       throw new Error(errorMessage || `七牛云存储空间创建失败: ${options.bucket}`);
     }
+  }
+
+  async getBucketDomainList(options: QiniuBucketDomainOptions): Promise<string[]> {
+    ensureRequired('QINIU_OSS_ACCESS_KEY', options.accessKey);
+    ensureRequired('QINIU_OSS_SECRET_KEY', options.secretKey);
+    ensureRequired('QINIU_OSS_BUCKET', options.bucket);
+
+    const { bucketManager } = this.createBucketManager(options.accessKey, options.secretKey);
+
+    try {
+      const result = await bucketManager.listBucketDomains(options.bucket);
+      const rawData = result?.data;
+      const rawDomains = Array.isArray(rawData)
+        ? rawData
+        : Array.isArray(rawData?.domains)
+          ? rawData.domains
+          : Array.isArray(rawData?.data)
+            ? rawData.data
+            : [];
+
+      return rawDomains
+        .map((item: any) => {
+          if (typeof item === 'string') {
+            return item.trim().toLowerCase();
+          }
+
+          return (
+            item?.domain?.trim?.().toLowerCase?.() ||
+            item?.name?.trim?.().toLowerCase?.() ||
+            item?.sourceDomain?.trim?.().toLowerCase?.() ||
+            ''
+          );
+        })
+        .filter((item: string): item is string => Boolean(item));
+    } catch (error) {
+      const err = error as { message?: string; resp?: { statusCode?: number; data?: { error?: string } } };
+      const statusCode = err?.resp?.statusCode;
+      const errorMessage = err?.resp?.data?.error || err?.message || '';
+
+      if (statusCode === 401 || statusCode === 403) {
+        throw new Error('无权查询七牛云自定义域名，请检查密钥权限');
+      }
+      throw new Error(errorMessage || '查询七牛云自定义域名失败');
+    }
+  }
+
+  async ensureBucketDomain(options: QiniuBucketDomainOptions & { domain: string }): Promise<void> {
+    ensureRequired('QINIU_OSS_DOMAIN', options.domain);
+
+    const currentDomains = await this.getBucketDomainList(options);
+    const normalizedDomain = options.domain.trim().toLowerCase();
+
+    if (currentDomains.includes(normalizedDomain)) {
+      return;
+    }
+
+    throw new Error(`七牛云存储空间未绑定自定义域名: ${normalizedDomain}，请先在七牛云控制台完成域名绑定后再重试`);
   }
 
   async upload(buffer: Buffer, options?: OssUploadOptions): Promise<OssUploadResult> {

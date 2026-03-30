@@ -72,6 +72,16 @@ export class SystemFileController {
           endpoint: space.endpoint,
           domain: domainHost,
         });
+        return;
+      }
+
+      if (space.provider === 'qiniu') {
+        await this.qiniuOssProvider.ensureBucketDomain({
+          bucket: space.name,
+          accessKey: space.accessKey,
+          secretKey: space.secretKey,
+          domain: domainHost,
+        });
       }
     } catch (error) {
       throw new BadRequestException((error as Error).message);
