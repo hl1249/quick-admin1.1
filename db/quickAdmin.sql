@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : quick
+ Source Server         : 43.139.63.227_27017
  Source Server Type    : MongoDB
  Source Server Version : 80205
  Source Host           : 43.139.63.227:27017
@@ -11,7 +11,7 @@
  Target Server Version : 80205
  File Encoding         : 65001
 
- Date: 25/03/2026 18:43:15
+ Date: 01/04/2026 02:06:32
 */
 
 
@@ -26,9 +26,9 @@ db.createCollection("qa-app-config");
 // ----------------------------
 db.getCollection("qa-app-config").insert([ {
     _id: ObjectId("69bcbb2e0c34b64800565ec6"),
-    "oss_provider": "qiniu",
-    "_update_time": 1774318837488,
-    "_update_time_str": "2026-03-24 10:20:37"
+    "oss_provider": "aliyun",
+    "_update_time": 1774966658947,
+    "_update_time_str": "2026-03-31 22:17:38"
 } ]);
 
 // ----------------------------
@@ -41,22 +41,104 @@ db.createCollection("qa-files");
 // Documents of qa-files
 // ----------------------------
 db.getCollection("qa-files").insert([ {
-    _id: ObjectId("69bca6c70c34b64800565e86"),
-    "user_id": "686ea0993d029cca22ffc26f",
+    _id: ObjectId("69cb3fead8001c5aad8be47c"),
+    "user_id": "672b901c0fcabce5e29faef5",
     sort: NumberInt("0"),
     status: NumberInt("0"),
     type: "image",
-    url: "https://mp-dfe03582-4d20-4823-a4af-531996ee3cb6.cdn.bspapp.com/2026/03/20/71075729-13429739-17739697152364532210535bc4a98bd383b9012d32db9.png",
-    "display_name": "1773969715236-4532210535bc4a98bd383b9012d32db9.png",
-    "original_name": "1773969715236-4532210535bc4a98bd383b9012d32db9.png",
-    size: NumberInt("21367"),
-    "file_id": "https://mp-dfe03582-4d20-4823-a4af-531996ee3cb6.cdn.bspapp.com/2026/03/20/71075729-13429739-17739697152364532210535bc4a98bd383b9012d32db9.png",
-    provider: "unicloud",
-    width: NumberInt("500"),
-    height: NumberInt("500"),
-    "category_id": "69bca58721821bb8e303470d",
-    "_add_time": NumberLong("1773971083844"),
-    "_add_time_str": "2026-03-20 09:44:43"
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850409-7906ce0aba374174a1cb75569303650c.png",
+    "display_name": "1774927850409-7906ce0aba374174a1cb75569303650c.png",
+    "original_name": "1774749277680 - 副本 (3).png",
+    size: NumberInt("1320"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850409-7906ce0aba374174a1cb75569303650c.png",
+    provider: "tencent",
+    width: NumberInt("231"),
+    height: NumberInt("64"),
+    "category_id": "69cb3ff1d8001c5aad8be48e",
+    "_add_time": 1774927850641,
+    "_add_time_str": "2026-03-31 11:30:50",
+    "_update_time": 1774977651642,
+    "_update_time_str": "2026-04-01 01:20:51"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cb3fead8001c5aad8be47a"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850412-caaaf4bc5b7740648463e062774fcf19.png",
+    "display_name": "1774927850412-caaaf4bc5b7740648463e062774fcf19.png",
+    "original_name": "1774749277680 - 副本 (4).png",
+    size: NumberInt("1320"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850412-caaaf4bc5b7740648463e062774fcf19.png",
+    provider: "tencent",
+    width: NumberInt("231"),
+    height: NumberInt("64"),
+    "category_id": "69cb3ff1d8001c5aad8be48e",
+    "_add_time": 1774927850640,
+    "_add_time_str": "2026-03-31 11:30:50",
+    "_update_time": 1774977651642,
+    "_update_time_str": "2026-04-01 01:20:51"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cb3fead8001c5aad8be47e"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850407-d11851638f724bc1a1eaccbe60d415f4.png",
+    "display_name": "1774927850407-d11851638f724bc1a1eaccbe60d415f4.png",
+    "original_name": "1774749277680 - 副本 (5).png",
+    size: NumberInt("1320"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850407-d11851638f724bc1a1eaccbe60d415f4.png",
+    provider: "tencent",
+    width: NumberInt("231"),
+    height: NumberInt("64"),
+    "category_id": "69cb3ff1d8001c5aad8be48e",
+    "_add_time": 1774927850660,
+    "_add_time_str": "2026-03-31 11:30:50",
+    "_update_time": 1774977651642,
+    "_update_time_str": "2026-04-01 01:20:51"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cb3fead8001c5aad8be480"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850468-341068a2cf264d76aaedc4c9464ba33c.png",
+    "display_name": "1774927850468-341068a2cf264d76aaedc4c9464ba33c.png",
+    "original_name": "1774749277680 - 副本 (7).png",
+    size: NumberInt("1320"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850468-341068a2cf264d76aaedc4c9464ba33c.png",
+    provider: "tencent",
+    width: NumberInt("231"),
+    height: NumberInt("64"),
+    "category_id": "69cb3ff1d8001c5aad8be48e",
+    "_add_time": 1774927850721,
+    "_add_time_str": "2026-03-31 11:30:50",
+    "_update_time": 1774977651642,
+    "_update_time_str": "2026-04-01 01:20:51"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cb3fead8001c5aad8be482"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850492-c7561832341b442aa073c8770990b932.png",
+    "display_name": "1774927850492-c7561832341b442aa073c8770990b932.png",
+    "original_name": "1774749277680 - 副本 (6).png",
+    size: NumberInt("1320"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850492-c7561832341b442aa073c8770990b932.png",
+    provider: "tencent",
+    width: NumberInt("231"),
+    height: NumberInt("64"),
+    "category_id": "69cb3ff1d8001c5aad8be48e",
+    "_add_time": 1774927850722,
+    "_add_time_str": "2026-03-31 11:30:50",
+    "_update_time": 1774977651642,
+    "_update_time_str": "2026-04-01 01:20:51"
 } ]);
 
 // ----------------------------
@@ -68,6 +150,21 @@ db.createCollection("qa-files-categories");
 // ----------------------------
 // Documents of qa-files-categories
 // ----------------------------
+db.getCollection("qa-files-categories").insert([ {
+    _id: ObjectId("69ca88cd031c8f39933d18e3"),
+    type: "video",
+    name: "默认视频组",
+    "_add_time": 1774880973018,
+    "_add_time_str": "2026-03-30 22:29:33"
+} ]);
+db.getCollection("qa-files-categories").insert([ {
+    _id: ObjectId("69cb3ff1d8001c5aad8be48e"),
+    type: "image",
+    name: "1",
+    url: null,
+    "_add_time": 1774927857089,
+    "_add_time_str": "2026-03-31 11:30:57"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-logs
@@ -3838,14 +3935,15 @@ db.getCollection("qa-menus").insert([ {
     _id: ObjectId("672b207918a1950fd5ed570b"),
     "_add_time": NumberLong("1596416400000"),
     enable: true,
-    icon: "tools",
+    icon: "User",
     "menu_id": "system",
-    title: "系统设置",
+    title: "用户角色权限",
     name: "system",
-    sort: NumberInt("110"),
+    sort: "110",
     component: null,
     "parent_id": null,
-    path: null
+    path: null,
+    comment: null
 } ]);
 db.getCollection("qa-menus").insert([ {
     _id: ObjectId("672b209618a1950fd5ed570c"),
@@ -3855,7 +3953,7 @@ db.getCollection("qa-menus").insert([ {
     "menu_id": "system-uni-uni-id-files",
     title: "素材管理",
     name: "systemFile",
-    "parent_id": "system",
+    "parent_id": "system-setting",
     sort: NumberInt("2"),
     component: "/src/pages/system/systemFile/index",
     path: "system/system-file",
@@ -3920,7 +4018,7 @@ db.getCollection("qa-menus").insert([ {
 } ]);
 db.getCollection("qa-menus").insert([ {
     _id: ObjectId("6740620e947e19874d59330d"),
-    "parent_id": "system",
+    "parent_id": "system-setting",
     "menu_id": "system-log",
     icon: "Document",
     path: "system/system-log",
@@ -3946,6 +4044,20 @@ db.getCollection("qa-menus").insert([ {
     title: "权限管理",
     enable: true,
     name: "systemPermission"
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("69cbea2224f1c31e7a581a0c"),
+    "menu_id": "system-setting",
+    title: "系统设置",
+    "parent_id": null,
+    component: null,
+    icon: "Setting",
+    path: null,
+    enable: true,
+    comment: "",
+    "_add_time": NumberLong("1774971426024"),
+    "_add_time_str": "2026-03-31 23:37:06",
+    sort: "110"
 } ]);
 
 // ----------------------------
@@ -4287,6 +4399,15 @@ db.getCollection("qa-roles").insert([ {
         "sys-file"
     ]
 } ]);
+db.getCollection("qa-roles").insert([ {
+    _id: ObjectId("69c619706a6bd56618d4e7f3"),
+    "role_id": "亮猛",
+    "role_name": "我猛",
+    comment: "猛",
+    enable: true,
+    "_add_time": 1774590320342,
+    "_add_time_str": "2026-03-27 13:45:20"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-storage-config
@@ -4327,70 +4448,21 @@ db.createCollection("qa-storage-space");
 // Documents of qa-storage-space
 // ----------------------------
 db.getCollection("qa-storage-space").insert([ {
-    _id: ObjectId("69c1661bca511c22ee672e6c"),
-    name: "xxsb-1319368598",
-    region: "ap-guangzhou",
-    domain: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
-    provider: "tencent",
-    accessKey: "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
-    secretKey: "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
-    acl: "public-read",
-    creationDate: "2026-03-19T15:14:38Z",
-    "_update_time": 1774435282283,
-    "_update_time_str": "2026-03-25 18:41:22",
-    enable: false,
-    "_add_time": 1774282267629,
-    "_add_time_str": "2026-03-24 00:11:07",
-    cdn: "腾讯cdn"
-} ]);
-db.getCollection("qa-storage-space").insert([ {
     _id: ObjectId("69c1685d783ca4935ad1614a"),
     name: "xxsb10086",
     region: "oss-cn-beijing",
-    domain: "https://xxsb10086.oss-cn-beijing.aliyuncs.com",
+    domain: "http://fileali.xxsb.games",
     provider: "aliyun",
     accessKey: "LTAI5tDN2aw1RKondrswFT3w",
     secretKey: "iKCzvV1wkhtbiVZuJmzjCDtXNNQcoX",
     acl: null,
     creationDate: "2026-03-23T03:41:27.000Z",
-    "_update_time": 1774435322747,
-    "_update_time_str": "2026-03-25 18:42:02",
-    enable: false,
+    "_update_time": 1774876718857,
+    "_update_time_str": "2026-03-30 21:18:38",
+    enable: true,
     "_add_time": 1774282845840,
     "_add_time_str": "2026-03-24 00:20:45",
     cdn: null
-} ]);
-db.getCollection("qa-storage-space").insert([ {
-    _id: ObjectId("69c1faced5d1d7cc947a98d8"),
-    name: "xxsb",
-    region: "z2",
-    domain: "xxsb.z2.qiniucdn.com",
-    provider: "qiniu",
-    accessKey: "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
-    secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq",
-    acl: null,
-    creationDate: null,
-    "_update_time": 1774435168791,
-    "_update_time_str": "2026-03-25 18:39:28",
-    enable: false,
-    "_add_time": 1774320334864,
-    "_add_time_str": "2026-03-24 10:45:34"
-} ]);
-db.getCollection("qa-storage-space").insert([ {
-    _id: ObjectId("69c1faced5d1d7cc947a98da"),
-    name: "xxsvs",
-    region: "na0",
-    domain: "",
-    provider: "qiniu",
-    accessKey: "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
-    secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq",
-    acl: null,
-    creationDate: null,
-    "_update_time": 1774320334888,
-    "_update_time_str": "2026-03-24 10:45:34",
-    enable: false,
-    "_add_time": 1774320334889,
-    "_add_time_str": "2026-03-24 10:45:34"
 } ]);
 db.getCollection("qa-storage-space").insert([ {
     _id: ObjectId("69c3bbf6a42b37e1bc3ef287"),
@@ -4408,6 +4480,87 @@ db.getCollection("qa-storage-space").insert([ {
     "_add_time": 1774435318079,
     "_add_time_str": "2026-03-25 18:41:58",
     cdn: null
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c7393fed1c1af21a3f1dcf"),
+    name: "xxsb-1319368598",
+    region: "ap-guangzhou",
+    domain: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+    provider: "tencent",
+    accessKey: "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
+    secretKey: "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
+    acl: "public-read",
+    creationDate: "2026-03-19T15:14:38Z",
+    "_update_time": 1774876713603,
+    "_update_time_str": "2026-03-30 21:18:33",
+    enable: true,
+    "_add_time": 1774663999193,
+    "_add_time_str": "2026-03-28 10:13:19"
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c74bfe41fc4773be1ba7cb"),
+    name: "newxxsb",
+    region: "oss-cn-beijing",
+    domain: "https://newxxsb.oss-cn-beijing.aliyuncs.com",
+    provider: "aliyun",
+    acl: "public-read",
+    accessKey: "LTAI5tDN2aw1RKondrswFT3w",
+    secretKey: "iKCzvV1wkhtbiVZuJmzjCDtXNNQcoX",
+    enable: false,
+    "_update_time": 1774876718102,
+    "_update_time_str": "2026-03-30 21:18:38",
+    "_add_time": 1774668798188,
+    "_add_time_str": "2026-03-28 11:33:18"
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c7fb6367216e588922e07d"),
+    name: "test-1319368598",
+    region: "ap-guangzhou",
+    domain: "https://filetencent.xxsb.games",
+    provider: "tencent",
+    accessKey: "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
+    secretKey: "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
+    acl: "public-read",
+    creationDate: "2026-03-25T10:26:33Z",
+    "_update_time": 1774876712537,
+    "_update_time_str": "2026-03-30 21:18:32",
+    enable: false,
+    "_add_time": 1774713699658,
+    "_add_time_str": "2026-03-29 00:01:39",
+    cdn: null
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c9ee452c2278065f0c0a6c"),
+    name: "xxsb",
+    region: "z2",
+    domain: "http://file.xxsb.games",
+    provider: "qiniu",
+    accessKey: "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
+    secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq",
+    acl: null,
+    creationDate: null,
+    "_update_time": 1774876864790,
+    "_update_time_str": "2026-03-30 21:21:04",
+    enable: false,
+    "_add_time": 1774841413334,
+    "_add_time_str": "2026-03-30 11:30:13",
+    cdn: null
+} ]);
+db.getCollection("qa-storage-space").insert([ {
+    _id: ObjectId("69c9ee452c2278065f0c0a6e"),
+    name: "xxsvs",
+    region: "na0",
+    domain: "",
+    provider: "qiniu",
+    accessKey: "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
+    secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq",
+    acl: null,
+    creationDate: null,
+    "_update_time": 1774841413351,
+    "_update_time_str": "2026-03-30 11:30:13",
+    enable: false,
+    "_add_time": 1774841413351,
+    "_add_time_str": "2026-03-30 11:30:13"
 } ]);
 
 // ----------------------------
@@ -4509,10 +4662,10 @@ db.getCollection("qa-users").insert([ {
     token: [
         null,
         null,
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQzMTY2NzEsImV4cCI6MTc3NDkyMTQ3MX0.wv1aimf-wYBeAXEma_BZIzHvRKshzmE6_4KD66ZvvsQ"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQ5Nzk0NTYsImV4cCI6MTc3NTU4NDI1Nn0.KQJMEqe7tXzrlzKdlwvDvG_ZBSBJ8Z11exX5FDPBAy8"
     ],
-    "last_login_date": 1774316671682,
-    "last_login_ip": "未知IP",
+    "last_login_date": 1774979456586,
+    "last_login_ip": "127.0.0.1",
     object: {
         name: "小明",
         age: NumberInt("18")
@@ -4576,4 +4729,22 @@ db.getCollection("qa-users").insert([ {
     token: [ ],
     status: NumberInt("0"),
     role: [ ]
+} ]);
+db.getCollection("qa-users").insert([ {
+    _id: ObjectId("69c619476a6bd56618d4e7df"),
+    rate: NumberInt("5"),
+    username: "亮猛",
+    nickname: "我猛",
+    password: "admin",
+    avatar: "666",
+    "is_login": true,
+    "last_login_date": 1774540800000,
+    "_add_time": 1774590279558,
+    "_add_time_str": "2026-03-27 13:44:39",
+    role: [
+        "admin",
+        "agent",
+        "test",
+        "亮猛"
+    ]
 } ]);
