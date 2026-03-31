@@ -51,11 +51,28 @@
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item @click="handleUploadImage">本地上传</el-dropdown-item>
-                      <el-dropdown-item>远程上传</el-dropdown-item>
+                      <el-dropdown-item @click="handleOpenRemoteUpload">远程上传</el-dropdown-item>
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
                 <el-button :disabled="!selectedImageIds.length" @click="handleDeleteImage">删除</el-button>
+                <el-select
+                  v-model="moveTargetCategoryId"
+                  style="width: 200px"
+                  placeholder="移动至分组"
+                  clearable
+                  :disabled="!selectedImageIds.length"
+                  :loading="moveCategoryLoading"
+                  @change="handleMoveToCategory"
+                >
+                  <el-option label="未分组" :value="CATEGORY_UNGROUPED" />
+                  <el-option
+                    v-for="item in imageCategories"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
               </div>
               <div class="ml-auto flex items-cente gap-[12px]">
                 <el-input v-model="queryForm.formData.original_name" class="!w-[220px] shrink-0" clearable placeholder="搜索名称" @clear="handleSearchImage"
@@ -84,9 +101,8 @@
                   </div>
                   <div class="media-card-actions" @click.stop>
                     <el-button text size="small" @click="handleRenameFile(item)">改名</el-button>
-                    <el-button text size="small" @click="handleGroupFile(item)">分组</el-button>
                     <el-dropdown trigger="click">
-    <span class="el-dropdown-link">
+    <span class="el-dropdown-link w-full">
                         <el-button text size="small">查看</el-button>
     </span>
                       <template #dropdown>
@@ -192,6 +208,59 @@
       </div>
     </el-dialog>
 
+    <el-dialog
+      v-model="remoteUploadVisible"
+      title="远程上传"
+      width="480"
+      :close-on-click-modal="false"
+      @closed="handleRemoteUploadDialogClosed"
+    >
+      <div class="remote-upload-body">
+        <div class="remote-upload-input-row">
+          <el-input
+            v-model="remoteUploadUrl"
+            placeholder="请输入远程文件 URL"
+            clearable
+            :disabled="remoteUploadLoading"
+            @keyup.enter="handleExtractRemote"
+          />
+          <el-button
+            :loading="remoteExtractLoading"
+            :disabled="!remoteUploadUrl.trim() || remoteUploadLoading"
+            @click="handleExtractRemote"
+          >提取图片</el-button>
+        </div>
+
+        <div v-if="remotePreviewUrl" class="remote-upload-preview">
+          <div class="remote-upload-preview-inner">
+            <el-image
+              :src="remotePreviewUrl"
+              fit="contain"
+              class="remote-upload-preview-image"
+            />
+            <div v-if="remoteUploadLoading" class="remote-upload-progress-mask">
+              <el-progress
+                type="circle"
+                :percentage="remoteUploadProgress"
+                :width="64"
+                :stroke-width="6"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <el-button :disabled="remoteUploadLoading" @click="remoteUploadVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="remoteUploadLoading"
+          :disabled="!remotePreviewUrl"
+          @click="handleRemoteUpload"
+        >确认上传</el-button>
+      </template>
+    </el-dialog>
+
     <el-image-viewer v-if="imagePreviewVisible" :url-list="imagePreviewUrls" :initial-index="imagePreviewIndex" close-on-press-escape hide-on-click-modal
       @close="imagePreviewVisible = false" />
   </div>
@@ -202,7 +271,7 @@ import { Delete, Edit, Plus, Search } from '@element-plus/icons-vue'
 import { ElImageViewer, ElMessage, ElMessageBox } from 'element-plus'
 import { useClipboard } from '@vueuse/core'
 import qaForm from '@/components/quickAdmin/qaForm.vue'
-import { getSystemCategories, updateSystemFileName } from '@/api/file'
+import { getSystemCategories, updateSystemFileName, batchUpdateFilesCategory } from '@/api/file'
 import http from '@/utils/axios'
 
 interface CategoryItem {
@@ -250,6 +319,14 @@ const activeUploadName = ref<UploadType>('image')
 const activeImageCategory = ref(CATEGORY_ALL)
 const { copy } = useClipboard()
 const selectedImageIds = ref<string[]>([])
+const moveTargetCategoryId = ref<string | null>(null)
+const moveCategoryLoading = ref(false)
+const remoteUploadVisible = ref(false)
+const remoteUploadUrl = ref('')
+const remoteExtractLoading = ref(false)
+const remotePreviewUrl = ref('')
+const remoteUploadLoading = ref(false)
+const remoteUploadProgress = ref(0)
 const imageCategories = ref<CategoryItem[]>([])
 const categoryLoading = ref(false)
 const fileListLoading = ref(false)
@@ -434,6 +511,70 @@ const clearFileList = () => {
 
 const handleImageCategorySelect = (value: string) => {
   activeImageCategory.value = value
+}
+
+const handleOpenRemoteUpload = () => {
+  remoteUploadVisible.value = true
+}
+
+const handleRemoteUploadDialogClosed = () => {
+  remoteUploadUrl.value = ''
+  remotePreviewUrl.value = ''
+  remoteUploadProgress.value = 0
+}
+
+const handleExtractRemote = () => {
+  const url = remoteUploadUrl.value.trim()
+  if (!url) return
+  remoteExtractLoading.value = true
+  remotePreviewUrl.value = ''
+  // 构造一个临时 img 验证能否加载，加载成功即展示预览
+  const img = new Image()
+  img.onload = () => {
+    remotePreviewUrl.value = url
+    remoteExtractLoading.value = false
+  }
+  img.onerror = () => {
+    // 非图片或无法直接预览，仍允许上传，直接用 url 作预览占位
+    remotePreviewUrl.value = url
+    remoteExtractLoading.value = false
+  }
+  img.src = url
+}
+
+const handleRemoteUpload = async () => {
+  const url = remoteUploadUrl.value.trim()
+  if (!url) return
+
+  remoteUploadLoading.value = true
+  remoteUploadProgress.value = 0
+
+  // 模拟进度（接口无实时进度，用定时器给用户反馈）
+  const progressTimer = setInterval(() => {
+    if (remoteUploadProgress.value < 85) {
+      remoteUploadProgress.value += Math.floor(Math.random() * 12) + 5
+    }
+  }, 300)
+
+  try {
+    await http.request({
+      url: '/app/admin/system/systemFile/systemfile/remote/upload',
+      method: 'post',
+      data: {
+        url,
+        category_id: getUploadCategoryValue() ?? null,
+      },
+    })
+    remoteUploadProgress.value = 100
+    ElMessage.success('远程上传成功')
+    await new Promise(r => setTimeout(r, 400))
+    remoteUploadVisible.value = false
+    clearFileList()
+    await loadFileList()
+  } finally {
+    clearInterval(progressTimer)
+    remoteUploadLoading.value = false
+  }
 }
 
 const handleUploadImage = () => {
@@ -723,8 +864,22 @@ const handleRenameFile = async (item: FileItem) => {
   }
 }
 
-const handleGroupFile = (item: FileItem) => {
-  ElMessage.info(`分组功能待接入：${item.display_name || item.original_name || '未命名文件'}`)
+
+const handleMoveToCategory = async (val: string) => {
+  moveCategoryLoading.value = true
+  try {
+    await batchUpdateFilesCategory({
+      ids: selectedImageIds.value,
+      category_id: val === CATEGORY_UNGROUPED ? null : val,
+    })
+    ElMessage.success(`已将 ${selectedImageIds.value.length} 个文件移动至目标分组`)
+    selectedImageIds.value = []
+    moveTargetCategoryId.value = null
+    clearFileList()
+    await loadFileList()
+  } finally {
+    moveCategoryLoading.value = false
+  }
 }
 
 const handleCopyLink = async (item: FileItem) => {
@@ -857,7 +1012,7 @@ watch(activeImageCategory, () => {
 
 .image-category-add-btn:hover {
   border-color: var(--el-color-primary);
-  box-shadow: 0 0px 12px rgba(64, 158, 255, 0.16);
+  box-shadow: 0 0 12px rgba(64, 158, 255, 0.16);
 }
 
 .image-category-item {
@@ -964,7 +1119,7 @@ watch(activeImageCategory, () => {
 .media-card-actions {
   @apply grid shrink-0;
   border-top: 1px solid var(--el-border-color-lighter);
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .media-card-actions > * {
@@ -1159,5 +1314,55 @@ watch(activeImageCategory, () => {
   flex-shrink: 0;
   font-size: 12px;
   color: var(--el-text-color-secondary);
+}
+
+.remote-upload-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.remote-upload-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.remote-upload-input-row .el-input {
+  flex: 1;
+}
+
+.remote-upload-preview {
+  display: flex;
+  justify-content: center;
+}
+
+.remote-upload-preview-inner {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--el-border-color);
+  background: var(--el-fill-color-lighter);
+}
+
+.remote-upload-preview-image {
+  width: 100%;
+  height: 100%;
+}
+
+.remote-upload-progress-mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.remote-upload-progress-mask :deep(.el-progress__text) {
+  color: #fff;
+  font-size: 13px !important;
 }
 </style>

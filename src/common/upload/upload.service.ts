@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { basename } from 'path';
 import { OssService } from '@/common/oss/oss.service';
+import { DbService } from '@/common/utils/db.service';
+import { getFileType, getImageSize } from './file.utils';
 import type { OssUploadResult } from '@/common/oss/oss.interface';
 import type { OssProvider } from '@/config/oss.config';
 import type { UploadFileLike, UploadRequestOptions } from './upload.types';
@@ -9,7 +12,54 @@ import type { UploadFileLike, UploadRequestOptions } from './upload.types';
  */
 @Injectable()
 export class UploadService {
-  constructor(private readonly ossService: OssService) {}
+  constructor(
+    private readonly ossService: OssService,
+    private readonly dbService: DbService,
+  ) {}
+
+  normalizeCategoryId(category_id: any): string | null {
+    return (category_id == null || category_id === '' || category_id === 'null') ? null : category_id;
+  }
+
+  async saveFileRecord(
+    file: { buffer: Buffer; originalname: string; mimetype: string; size?: number },
+    userId: string,
+    category_id?: any,
+    folder?: string,
+  ) {
+    const result = await this.uploadFile(file, { folder });
+    const fileType = getFileType(file.mimetype);
+    const { width, height } = getImageSize(file.buffer, file.mimetype);
+    const objectName = basename(result.key);
+
+    const record = {
+      user_id: userId,
+      sort: 0,
+      status: 0,
+      type: fileType,
+      url: result.url,
+      display_name: objectName,
+      original_name: file.originalname,
+      size: file.size ?? file.buffer.length,
+      file_id: result.url,
+      provider: result.provider,
+      width,
+      height,
+      category_id: this.normalizeCategoryId(category_id),
+    };
+
+    const saveResult = await this.dbService.add({
+      dbName: 'qa-files',
+      dataJson: record,
+    });
+
+    return {
+      message: '上传成功',
+      ...result,
+      record_id: saveResult.insertedId,
+      record,
+    };
+  }
 
   private getUploadFolder() {
     const now = new Date();

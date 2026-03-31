@@ -10,7 +10,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { basename } from 'path';
 import { UploadService } from '@/common/upload/upload.service';
-import { getFileType, getImageSize, normalizeUploadedFilename } from '@/common/upload/file.utils';
+import { normalizeUploadedFilename } from '@/common/upload/file.utils';
 import { DbService } from '@/common/utils/db.service';
 import { Document } from 'mongodb';
 import { _, } from '@/common/utils/fieldQueryTemp';
@@ -55,7 +55,7 @@ export class SystemFileController {
     })
   }
 
-  @Post('/files/update')
+  @Post('/fileName/update')
   async updateFile(@Body() data): Promise<Document | null>{
 
     const { original_name, _id } = data
@@ -68,6 +68,60 @@ export class SystemFileController {
         _update_time_str: formatTimestamp(new Date()),
       }
     })
+  }
+
+  @Post('/filesCategory/update')
+  async updateFileCategory(@Body() data): Promise<Document | null>{
+    const { category_id, ids } = data
+    return await this.dbService.update({
+      dbName: 'qa-files',
+      whereJson:{
+        _id:_.in(ids)
+      },
+      dataJson:{ 
+        category_id,
+       _update_time: Date.now(),
+        _update_time_str: formatTimestamp(new Date()),
+       },
+    })
+  }
+
+  @Post('/remote/upload')
+  async remoteUpload(@Req() req, @Body() data) {
+    const { url, category_id } = data;
+
+    if (!url) {
+      throw new BadRequestException('请提供远程文件地址');
+    }
+
+    let response: Response;
+    try {
+      response = await fetch(url, { redirect: 'follow' });
+    } catch {
+      throw new BadRequestException('远程地址无法访问');
+    }
+
+    if (!response.ok) {
+      throw new BadRequestException(`远程地址返回错误：${response.status}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const contentType = response.headers.get('content-type') ?? '';
+    const mimetype = contentType.split(';')[0].trim() || 'application/octet-stream';
+
+    const disposition = response.headers.get('content-disposition') ?? '';
+    const dispositionMatch = disposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\r\n]+)/i);
+    const urlFilename = basename(new URL(url).pathname) || 'remote-file';
+    const originalname = dispositionMatch
+      ? decodeURIComponent(dispositionMatch[1].trim())
+      : urlFilename;
+
+    const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
+    const file = { buffer, originalname: normalizeUploadedFilename(originalname), mimetype, size: buffer.length };
+
+    return this.uploadService.saveFileRecord(file, userId, category_id);
   }
 
 
@@ -141,45 +195,10 @@ export class SystemFileController {
       throw new BadRequestException('请上传 file 文件');
     }
 
-    const normalizedOriginalName = normalizeUploadedFilename(file.originalname);
-    const normalizedFile = {
-      ...file,
-      originalname: normalizedOriginalName,
-    };
-
-    const result = await this.uploadService.uploadFile(normalizedFile, {
-      folder: data?.folder,
-    });
     const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
-    const fileType = getFileType(normalizedFile.mimetype);
-    const { width, height } = getImageSize(normalizedFile.buffer, normalizedFile.mimetype);
-    const objectName = basename(result.key);
-    const record = {
-      user_id: userId,
-      sort: 0,
-      status: 0,
-      type: fileType,
-      url: result.url,
-      display_name: objectName,
-      original_name: normalizedOriginalName,
-      size: normalizedFile.size ?? normalizedFile.buffer.length,
-      file_id: result.url,
-      provider: result.provider,
-      width,
-      height,
-      category_id: (data?.category_id == null || data?.category_id === '' || data?.category_id === 'null') ? null : data?.category_id,
-    };
-    const saveResult = await this.dbService.add({
-      dbName: 'qa-files',
-      dataJson: record,
-    });
+    const normalizedFile = { ...file, originalname: normalizeUploadedFilename(file.originalname) };
 
-    return {
-      message: '上传成功',
-      ...result,
-      record_id: saveResult.insertedId,
-      record,
-    };
+    return this.uploadService.saveFileRecord(normalizedFile, userId, data?.category_id, data?.folder);
   }
 
   @Post('/space/getList')

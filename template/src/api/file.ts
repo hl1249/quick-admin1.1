@@ -41,7 +41,15 @@ export const getSystemCategories = (data: any) => {
 
 export const updateSystemFileName = (data: { _id: string; original_name: string }) => {
     return http.request({
-        url: '/app/admin/system/systemFile/systemFile/files/update',
+        url: '/app/admin/system/systemFile/systemFile/fileName/update',
+        method: 'post',
+        data,
+    })
+}
+
+export const batchUpdateFilesCategory = (data: { ids: string[]; category_id: string | null }) => {
+    return http.request({
+        url: '/app/admin/system/systemFile/systemfile/filesCategory/update',
         method: 'post',
         data,
     })
