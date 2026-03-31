@@ -526,18 +526,34 @@ const handleRemoteUploadDialogClosed = () => {
 const handleExtractRemote = () => {
   const url = remoteUploadUrl.value.trim()
   if (!url) return
+
+  // URL 格式校验
+  try {
+    new URL(url)
+  } catch {
+    ElMessage.error('请输入有效的 URL 地址')
+    return
+  }
+
+  // 图片后缀白名单（宽松判断，路径或参数中含即可）
+  const imageExts = /\.(jpe?g|png|gif|webp|bmp|svg|ico|avif|tiff?)(\?|#|$)/i
+  const looksLikeImage = imageExts.test(url)
+
   remoteExtractLoading.value = true
   remotePreviewUrl.value = ''
-  // 构造一个临时 img 验证能否加载，加载成功即展示预览
+
   const img = new Image()
   img.onload = () => {
     remotePreviewUrl.value = url
     remoteExtractLoading.value = false
   }
   img.onerror = () => {
-    // 非图片或无法直接预览，仍允许上传，直接用 url 作预览占位
-    remotePreviewUrl.value = url
     remoteExtractLoading.value = false
+    if (looksLikeImage) {
+      ElMessage.error('图片加载失败，请确认链接可访问且支持跨域')
+    } else {
+      ElMessage.error('该链接无法识别为图片，请检查 URL 是否正确')
+    }
   }
   img.src = url
 }
