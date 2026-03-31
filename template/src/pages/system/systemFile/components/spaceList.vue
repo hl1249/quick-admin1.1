@@ -78,6 +78,7 @@
 </template>
 
 <script setup lang="ts">
+import type qaTable from '@/components/quickAdmin/table/qaTable.vue'
 import type {Columns, RightBtnMoreItem, DeleteRequest, CustomRightBtn} from '@/components/quickAdmin/table/qaTable.vue'
 import {CirclePlus, Setting, Download} from '@element-plus/icons-vue'
 import {getStorageConfig, syncStorageSpace} from '@/api/file'

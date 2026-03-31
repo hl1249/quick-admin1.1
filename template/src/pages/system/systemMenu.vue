@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import type qaTable from '@/components/quickAdmin/table/qaTable.vue'
 import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/table/qaTable.vue'
 import { CirclePlus } from '@element-plus/icons-vue'
 import http from '@/utils/axios'
