@@ -461,7 +461,7 @@ export default defineComponent({
           <div style="display:inline-flex;align-items:center;gap:8px;">
             <el-button onClick={() => (showIconSelect.value = true)}>
               {IconComp
-                ? <><el-icon size={16} style="margin-right:6px;"><IconComp /></el-icon>{p.value}</>
+                ? <><el-icon size={16} style="margin-right:6px;"><IconComp /></el-icon></>
                 : '选择图标'
               }
             </el-button>
