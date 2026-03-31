@@ -432,7 +432,7 @@ const loadSystemCategories = async () => {
       value: String(item._id || item.id || item.value || item.name || index),
       raw: item
     }))
-    activeImageCategory.value = CATEGORY_ALL
+    // activeImageCategory.value = CATEGORY_ALL
   } finally {
     categoryLoading.value = false
   }
@@ -813,7 +813,7 @@ const handleDeleteCategory = async (item: CategoryItem) => {
   ElMessage.success('删除成功')
 
   if (activeImageCategory.value === item.value) {
-    activeImageCategory.value = CATEGORY_ALL
+    // activeImageCategory.value = CATEGORY_ALL
   }
 
   await loadSystemCategories()

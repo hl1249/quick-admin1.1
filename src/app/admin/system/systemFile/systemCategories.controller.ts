@@ -1,4 +1,4 @@
-import { Controller, Req, Post, Body } from '@nestjs/common';
+import { Controller, Req, Post, Body, BadRequestException } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 
@@ -10,8 +10,21 @@ export class SystemCategoriesController {
   }
 
   @Post('/add')
-  add(@Req() req, @Body() data): Promise<Document | null> {
+  async add(@Req() req, @Body() data): Promise<Document | null> {
     const { type, name, url } = data
+
+    const categories = await this.dbService.findByWhereJson({
+      dbName: "qa-files-categories",
+      whereJson:{
+        type,
+        name,
+      }
+    })
+
+    if(categories){
+      throw new BadRequestException('分类已存在')
+    }
+
     return this.dbService.add({
       dbName: "qa-files-categories",
       dataJson:{
