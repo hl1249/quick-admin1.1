@@ -21,7 +21,7 @@
 <script setup lang="ts">
 const emit = defineEmits(['search', 'update:modelValue'])
 import { Search,Refresh } from '@element-plus/icons-vue'
-import qaFormItem from './qaFormItem.vue'
+import qaFormItem from '../form/qaFormItem.vue'
 import { ref, watch } from 'vue'
 
 const formItemSearch = () => {

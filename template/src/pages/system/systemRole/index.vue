@@ -31,9 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
-import qaTable from '@/components/quickAdmin/qaTable.vue';
-import qaForm from '@/components/quickAdmin/qaForm.vue';
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/table/qaTable.vue'
 import bindMenu from './form/bindMenu.vue';
 import bindPermission from './form/bindPermission.vue';
 import { CirclePlus, Tools } from '@element-plus/icons-vue'

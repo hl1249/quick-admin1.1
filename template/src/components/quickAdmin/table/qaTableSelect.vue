@@ -20,7 +20,7 @@
       />
 
       <el-table :data="pendingSelection" border v-if="multiple" class="ml-[20px]" style="width:386px;flex:0 0 auto">
-        <qa-table-column align="center" :width="250" v-for="item,index in renderSelectData" :key="index" :label="item.title" :prop="item.key" />
+        <qa-table-column align="center" :width="250" v-for="(item, index) in renderSelectData" :key="index" :label="item.title" :prop="item.key" />
         <el-table-column  align="center" fixed="right">
           <template #header>
             操作

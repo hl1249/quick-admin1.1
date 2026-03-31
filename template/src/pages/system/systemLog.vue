@@ -36,10 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
-import qaTable from '@/components/quickAdmin/qaTable.vue';
-import qaTableQuery from '@/components/quickAdmin/qaTableQuery.vue';
-import qaForm from '@/components/quickAdmin/qaForm.vue';
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/table/qaTable.vue'
 import { CirclePlus } from '@element-plus/icons-vue'
 import { cloneDeep, getCommonTime } from '@/utils'
 

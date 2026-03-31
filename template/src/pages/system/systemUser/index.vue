@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="flex flex-col h-full">
     <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
 
@@ -37,8 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
-import qaDataTable from '@/components/quickAdmin/qaTable.vue';
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/table/qaTable.vue'
+import qaDataTable from '@/components/quickAdmin/table/qaTable.vue';
 import {cloneDeep, renderComponent} from '@/utils'
 import {ArrowDownBold, CirclePlus, Tools} from "@element-plus/icons-vue";
 import bindRole from "./form/bindRole.vue";

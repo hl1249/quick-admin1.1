@@ -10,8 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import qaAreaCascader from '@/components/quickAdmin/qaAreaCascader.vue';
-import type { AddrResult } from '@/components/quickAdmin/qaAreaCascader.vue';
+import type { AddrResult } from '@/components/quickAdmin/base/qaAreaCascader.vue';
 
 const confirm = (value: AddrResult) => {
     console.log(value)

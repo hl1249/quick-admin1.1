@@ -78,9 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import type {Columns, RightBtnMoreItem, DeleteRequest, CustomRightBtn} from '@/components/quickAdmin/qaTable.vue'
-import qaTable from '@/components/quickAdmin/qaTable.vue';
-import qaForm from '@/components/quickAdmin/qaForm.vue';
+import type {Columns, RightBtnMoreItem, DeleteRequest, CustomRightBtn} from '@/components/quickAdmin/table/qaTable.vue'
 import {CirclePlus, Setting, Download} from '@element-plus/icons-vue'
 import {getStorageConfig, syncStorageSpace} from '@/api/file'
 import http from "@/utils/axios.ts";

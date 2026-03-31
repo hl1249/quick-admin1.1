@@ -36,7 +36,6 @@
 </template>
 
 <script setup lang="ts">
-import qaForm from '@/components/quickAdmin/qaForm.vue';
 import { useVModel } from '@vueuse/core';
 
 type selectItem = {

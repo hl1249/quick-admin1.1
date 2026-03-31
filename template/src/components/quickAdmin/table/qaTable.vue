@@ -197,11 +197,11 @@
 </template>
 
 <script lang="ts" setup>
-import qaDetail from './qaDetail.vue';
+import qaDetail from '../base/qaDetail.vue';
 import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue';
 import http from '@/utils/axios';
 import { ElMessage, ElTable } from 'element-plus';
-import qaTableColumn from './qaTableColumn.vue';
+import qaTableColumn from '../base/qaTableColumn.vue';
 import { cloneDeep } from '@/utils';
 
 type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more';

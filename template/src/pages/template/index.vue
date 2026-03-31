@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 <!--  <div class="flex flex-col h-full">-->
 <!--    <qa-data-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm" :pagination="false"-->
 <!--                   :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true"-->
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/table/qaTable.vue'
 import { cloneDeep } from '@/utils'
 
 const table = ref<{

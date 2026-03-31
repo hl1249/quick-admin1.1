@@ -112,7 +112,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 }
 
                 try {
-                    const res = await http.request({
+                     await http.request({
                         url: props.action as string,
                         method: 'post',
                         data: postData,

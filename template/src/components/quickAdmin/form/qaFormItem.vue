@@ -1,12 +1,18 @@
 <script lang="tsx">
+// Vue
 import { defineComponent, type PropType } from 'vue'
 import type { JSX } from 'vue/jsx-runtime'
+
+// Element Plus
 import { RemoveFilled, Plus, CircleClose } from '@element-plus/icons-vue'
 
-import type { QueryColumns } from './qaTableQuery.vue'
-import type { Columns } from './qaTable.vue'
+// 内部组件类型
+import type { QueryColumns } from '../table/qaTableQuery.vue'
+import type { Columns } from '../table/qaTable.vue'
+
+// 工具 / HTTP
 import { realUnitConversion } from '@/utils'
-import http from '@/utils/axios';
+import http from '@/utils/axios'
 
 /** 日期选择器 pickerOptions */
 interface DatePickerOptions {

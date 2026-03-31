@@ -22,9 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/qaTable.vue'
-import qaTable from '@/components/quickAdmin/qaTable.vue';
-import qaForm from '@/components/quickAdmin/qaForm.vue';
+import type { Columns, RightBtnMoreItem, DeleteRequest } from '@/components/quickAdmin/table/qaTable.vue'
 import { CirclePlus } from '@element-plus/icons-vue'
 import http from '@/utils/axios'
 import { cloneDeep } from '@/utils'
@@ -104,6 +102,7 @@ const originalFormData = {
   enable: true,
   menu_id: '',
   title: '',
+  icon:"",
   url: [],
   parent_id: '',
   comment: '',
@@ -129,6 +128,11 @@ const form = ref({
         "key": "title",
         "title": "菜单名称",
         "type": "text",
+      },
+      {
+        "key": "icon",
+        "title": "图标",
+        "type": "icon",
       },
       {
         "key": "component",

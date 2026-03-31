@@ -9,6 +9,9 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import router from '@/router'
 
+// 全局注册 quickAdmin 组件
+import quickAdmin from '@/components/quickAdmin'
+
 const app = createApp(App)
 
 // 挂载 Pinia
@@ -20,6 +23,8 @@ app.use(router)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+
+app.use(quickAdmin)
 
 
 // ✅ 最终挂载

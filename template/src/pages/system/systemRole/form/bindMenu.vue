@@ -2,7 +2,10 @@
   <el-dialog v-model="visible" :title="title" width="800" :before-close="handleBeforeClose" @open="getAllMenu" @close="handleClose">
     <div class="dialog-content">
       <!-- 你的弹窗内容 -->
-      <qa-form v-model="selectItem" :columns="form.props.columns" :action="form.props.action" @success="visible = false,refresh()"
+      <qa-form v-model="selectItem" :columns="form.props.columns" :action="form.props.action" @success="()=>{
+        visible = false
+        refresh()
+      }"
         @closeForm="visible = false" :before-action="form.props.beforeAction">
         <template v-slot:menuList>
           <el-input placeholder="输入关键字进行搜索" v-model="filterText"> </el-input>
@@ -25,7 +28,6 @@
 </template>
 
 <script setup lang="ts">
-import qaForm from '@/components/quickAdmin/qaForm.vue'
 import { useVModel } from "@vueuse/core"
 import http from '@/utils/axios'
 import { arrayToTree } from '@/utils'

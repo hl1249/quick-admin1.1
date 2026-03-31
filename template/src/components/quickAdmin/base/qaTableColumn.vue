@@ -1,9 +1,10 @@
 <script lang="tsx">
 
-import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable, ElButton, ElRadio } from 'element-plus'
+import { ElTableColumn, ElAvatar, ElIcon, ElImage, ElRate, ElSwitch, ElTag, ElTable } from 'element-plus'
 import type { JSX } from 'vue/jsx-runtime';
-import type { Columns, Data } from './qaTable.vue'
+import type { Columns, Data } from '../table/qaTable.vue'
 import * as Icons from '@element-plus/icons-vue';
+import { Picture } from '@element-plus/icons-vue';
 import { timeFormat } from '@/utils'
 import { useDark } from '@vueuse/core'
 
@@ -112,12 +113,9 @@ export default defineComponent({
         const renderText = (value: any) => <span>{value}</span>;
         const renderAvatar = (value: any, renderShape: 'circle' | 'square') => <ElAvatar src={value} shape={renderShape} />;
         const renderImage = (value: any) => {
-            const PictureIcon = Icons.Picture; // 这里明确指定图标组件
             return <ElImage src={value} preview-src-list={[value]} showProgress={true} preview-teleported={true}>
                 {{
-                    error: () => {
-                        return <ElIcon ><PictureIcon /></ElIcon>
-                    }
+                    error: () => <ElIcon><Picture /></ElIcon>
                 }}
             </ElImage>;
         }
@@ -258,13 +256,7 @@ export default defineComponent({
                 columns,
                 data,
                 formatter,
-                valueFormat,
-                imageWidth,
-                activeValue,
-                inactiveValue,
-                size,
                 sortable,
-                shape,
                 align,
                 show
             } = props

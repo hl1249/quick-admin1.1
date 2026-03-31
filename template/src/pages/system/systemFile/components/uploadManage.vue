@@ -270,7 +270,6 @@
 import { Delete, Edit, Plus, Search } from '@element-plus/icons-vue'
 import { ElImageViewer, ElMessage, ElMessageBox } from 'element-plus'
 import { useClipboard } from '@vueuse/core'
-import qaForm from '@/components/quickAdmin/qaForm.vue'
 import { getSystemCategories, updateSystemFileName, batchUpdateFilesCategory } from '@/api/file'
 import http from '@/utils/axios'
 
