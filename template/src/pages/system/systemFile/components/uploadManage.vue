@@ -85,22 +85,20 @@
                   <div class="media-card-actions" @click.stop>
                     <el-button text size="small" @click="handleRenameFile(item)">改名</el-button>
                     <el-button text size="small" @click="handleGroupFile(item)">分组</el-button>
-                    <el-popover placement="bottom" trigger="hover" popper-class="media-view-popover-popper">
-                      <template #default>
-                        <div class="media-view-popover-menu" @click.stop>
-                          <div class="media-view-popover-item" @click.stop="handleCopyLink(item)">
-                            复制链接
-                          </div>
-                          <div class="media-view-popover-item" @click.stop="handleViewFile(item)">
-                            预览
-                          </div>
-                        </div>
-                      </template>
-                      <template #reference>
+                    <el-dropdown trigger="click">
+    <span class="el-dropdown-link">
                         <el-button text size="small">查看</el-button>
+    </span>
+                      <template #dropdown>
+                        <el-dropdown-menu>
+                          <el-dropdown-item @click.stop="handleCopyLink(item)">复制链接</el-dropdown-item>
+                          <el-dropdown-item @click.stop="handleViewFile(item)">预览</el-dropdown-item>
+                        </el-dropdown-menu>
                       </template>
-                    </el-popover>
+                    </el-dropdown>
                     <el-button text size="small" type="danger" @click="handleDeleteSingleFile(item)">删除</el-button>
+
+
                   </div>
                 </div>
               </div>
@@ -194,7 +192,7 @@
       </div>
     </el-dialog>
 
-    <el-image-viewer v-if="imagePreviewVisible" :url-list="imagePreviewUrls" :initial-index="imagePreviewIndex"
+    <el-image-viewer v-if="imagePreviewVisible" :url-list="imagePreviewUrls" :initial-index="imagePreviewIndex" close-on-press-escape hide-on-click-modal
       @close="imagePreviewVisible = false" />
   </div>
 </template>
@@ -268,7 +266,7 @@ const categoryFormRef = ref()
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const fileQuery = reactive({
   pageIndex: 1,
-  pageSize: 50
+  pageSize: 30
 })
 
 const totalUploadProgress = computed(() => {
@@ -479,7 +477,7 @@ const uploadSingleFile = async (file: File, taskId: string) => {
   if (categoryId !== undefined) {
     formData.append('category_id', categoryId)
   }
-
+  console.log('categoryId',categoryId)
   return http.request({
     url: '/app/admin/system/systemFile/systemFile/upload',
     method: 'post',

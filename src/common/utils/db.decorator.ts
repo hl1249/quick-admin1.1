@@ -538,7 +538,6 @@ function transTableData(data: any) {
   for (const key in data.formData) {
     const value = data.formData[key];
     if (
-      value === null ||
       value === undefined ||
       value === '' ||
       (Array.isArray(value) && value.length <= 0)
@@ -549,8 +548,9 @@ function transTableData(data: any) {
 
   if (data.columns && data.columns.length >= 1) {
     data.columns.forEach(col => {
+      // formData 中不存在该 key 时跳过（null 值保留，代表查询字段为 null 的数据）
+      if (!(col.key in data.formData) || col.mode === "custom") return;
       const value = normalizeWhereValue(data.formData[col.key]);
-      if (value === undefined || col.mode === "custom") return;
 
       switch (col.mode) {
         case "=": match[col.key] = value; break;
