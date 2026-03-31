@@ -1,5 +1,6 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 
 const rootDir = process.cwd();
 const buildDistDir = join(rootDir, 'dist');
@@ -43,3 +44,14 @@ if (existsSync(startScriptSource)) {
 
 rmSync(buildDistDir, { recursive: true, force: true });
 console.log('[build] removed: dist');
+
+// 将 deploy/* 打包成 deploy.zip
+const zipPath = join(rootDir, 'deploy.zip');
+rmSync(zipPath, { force: true });
+
+execSync(
+  `powershell -Command "Compress-Archive -Path '${deployDir}\\*' -DestinationPath '${zipPath}' -Force"`,
+  { stdio: 'inherit' },
+);
+const sizeMB = (statSync(zipPath).size / 1024 / 1024).toFixed(2);
+console.log(`[build] created: deploy.zip (${sizeMB} MB)`);

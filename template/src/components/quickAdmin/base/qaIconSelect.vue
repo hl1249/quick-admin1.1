@@ -55,7 +55,7 @@ import { ref, computed } from 'vue'
 import { useVModel } from '@vueuse/core'
 import * as icons from '@element-plus/icons-vue'
 
-const iconNames = Object.keys(icons) as string[]
+const iconNames = Object.keys(icons) as (keyof typeof icons)[]
 
 const props = withDefaults(
   defineProps<{

@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "builds": "set VITE_SKIP_TS=true && vite build",
-    "preview": "vite preview"
+    "build": "vue-tsc -b && vite build && node scripts/zip-dist.cjs",
+    "builds": "set VITE_SKIP_TS=true && vite build && node scripts/zip-dist.cjs",
+    "preview": "vite preview",
+    "zip": "node scripts/zip-dist.cjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
