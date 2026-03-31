@@ -51,6 +51,9 @@ export class UpdateMenuDto {
   component?: string;
 
   @IsOptional()
+  sort?: string;
+
+  @IsOptional()
   path?: string;
 
   @IsOptional()

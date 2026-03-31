@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, type PropType } from 'vue'
 import type { JSX } from 'vue/jsx-runtime'
-import { RemoveFilled, Plus } from '@element-plus/icons-vue'
+import { RemoveFilled, Plus, CircleClose } from '@element-plus/icons-vue'
 
 import type { QueryColumns } from './qaTableQuery.vue'
 import type { Columns } from './qaTable.vue'
@@ -196,6 +196,20 @@ export default defineComponent({
         style={{ width: realUnitConversion(props.width) }}
         onUpdate:modelValue={p.onChange}
         onClear={() => emit('search')}
+      />
+    )
+
+    const renderNumber = (p: RendererParams) => (
+      <el-input
+        type="number"
+        modelValue={p.value}
+        disabled={isDisabled()}
+        placeholder={p.placeholder || `请输入${p.label}`}
+        style={{ width: realUnitConversion(props.width) }}
+        controls-position="right"
+        onUpdate:modelValue={(v: number | null) => p.onChange(v)}
+        onChange={() => emit('search')}
+        {...(p.itemProps ?? {})}
       />
     )
 
@@ -433,9 +447,19 @@ export default defineComponent({
 
     const renderTreeSelect = (p: RendererParams) => (
       <>
-        <el-button onClick={() => (showTreeSelect.value = true)}>
-          {p.value || '选择'}
-        </el-button>
+        <div style="display:inline-flex;align-items:center;gap:4px;">
+          <el-button onClick={() => (showTreeSelect.value = true)}>
+            {p.value || '选择'}
+          </el-button>
+          {p.value ? (
+            <el-icon
+              style="cursor:pointer;color:var(--el-text-color-placeholder);"
+              onClick={() => p.onChange(null)}
+            >
+              <CircleClose />
+            </el-icon>
+          ) : null}
+        </div>
         <qa-tree-select
           show={showTreeSelect.value}
           action={p.action}
@@ -552,6 +576,7 @@ export default defineComponent({
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
+      number: renderNumber,
       password: renderPassword,
       textarea: renderTextarea,
       switch: renderSwitch,

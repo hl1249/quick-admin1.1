@@ -82,7 +82,7 @@
 
         <el-table-column
           align="center"
-          :width="actionColumnWidth"
+          :min-width="actionColumnWidth"
           v-if="hasActionColumn"
           fixed="right"
         >
@@ -104,6 +104,7 @@
                 :icon="Document"
                 v-if="rightBtnList.includes('detail_auto')"
                 @click="btnsDetail(scope.$index, scope.row)"
+                class="!ml-0"
               >
                 详情
               </el-button>
@@ -112,6 +113,7 @@
                 :icon="Edit"
                 v-if="rightBtnList.includes('update')"
                 @click="btnsUpdate(scope.$index, scope.row)"
+                class="!ml-0"
               >
                 编辑
               </el-button>
@@ -122,7 +124,8 @@
                 @confirm="confirmDelete(scope.row, btnsDeleteRequest)"
               >
                 <template #reference>
-                  <el-button type="danger" :icon="Delete"> 删除 </el-button>
+                  <el-button type="danger" :icon="Delete"
+                class="!ml-0"> 删除 </el-button>
                 </template>
               </el-popconfirm>
 
@@ -778,9 +781,12 @@ const hasActionColumn = computed(() => {
 });
 
 const estimateButtonWidth = (label: string, hasIcon = true): number => {
+  // padding-left + padding-right = 15 + 15 = 30
+  // icon width = 14, icon margin-right = 6
+  // border = 2
   const textWidth = Array.from(label).length * 14;
-  const baseWidth = hasIcon ? textWidth + 44 : textWidth + 28;
-  return Math.max(baseWidth, 76);
+  const baseWidth = hasIcon ? textWidth + 30 + 14 + 6 + 2 : textWidth + 30 + 2;
+  return Math.max(baseWidth, 80);
 };
 
 const getBuiltinActionWidth = (): number => {

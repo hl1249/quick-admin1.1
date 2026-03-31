@@ -107,6 +107,7 @@ const originalFormData = {
   url: [],
   parent_id: '',
   comment: '',
+  sort: 0,
 }
 
 const form = ref({
@@ -122,6 +123,7 @@ const form = ref({
         "key": "menu_id",
         "title": "菜单标识",
         "type": "text",
+        "show":['add'],
       },
       {
         "key": "title",
@@ -132,6 +134,11 @@ const form = ref({
         "key": "component",
         "title": "URL",
         "type": "text",
+      },
+      {
+        "key": "sort",
+        "title": "排序",
+        "type": "number",
       },
       {
         "key": "parent_id",
