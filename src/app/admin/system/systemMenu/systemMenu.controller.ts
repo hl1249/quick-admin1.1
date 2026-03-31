@@ -47,6 +47,8 @@ export class SystemMenuController {
       path,
       enable = true,
       comment,
+      icon,
+      sort,
     } = data;
 
     return this.dbService.add({
@@ -59,6 +61,8 @@ export class SystemMenuController {
         path,
         enable,
         comment,
+        icon,
+        sort,
       },
     });
   }
@@ -80,7 +84,7 @@ export class SystemMenuController {
 
   @Post('/update')
   async update(@Body() data: UpdateMenuDto): Promise<Document | null> {
-    let { _id, menu_id, title, enable = true, comment, parent_id, component, sort } = data;
+    let { _id, menu_id, title, enable = true, comment, parent_id, component, sort, icon } = data;
 
     const result = await this.dbService.updateById({
       dbName: 'qa-menus',
@@ -90,6 +94,7 @@ export class SystemMenuController {
         title,
         component,
         sort,
+        icon,
         enable,
         comment,
         parent_id,

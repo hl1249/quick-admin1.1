@@ -20,6 +20,12 @@ export class AddMenuDto {
   component?: string;
 
   @IsOptional()
+  sort?: string;
+
+  @IsOptional()
+  icon?: string;
+
+  @IsOptional()
   path?: string;
 
   @IsOptional()
@@ -52,6 +58,9 @@ export class UpdateMenuDto {
 
   @IsOptional()
   sort?: string;
+
+  @IsOptional()
+  icon?: string;
 
   @IsOptional()
   path?: string;

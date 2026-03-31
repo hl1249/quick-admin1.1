@@ -1,10 +1,11 @@
 <script lang="tsx">
 // Vue
-import { defineComponent, type PropType } from 'vue'
+import { defineComponent, type PropType, type Ref } from 'vue'
 import type { JSX } from 'vue/jsx-runtime'
 
 // Element Plus
 import { RemoveFilled, Plus, CircleClose } from '@element-plus/icons-vue'
+import * as ElIcons from '@element-plus/icons-vue'
 
 // 内部组件类型
 import type { QueryColumns } from '../table/qaTableQuery.vue'
@@ -291,7 +292,7 @@ export default defineComponent({
       </el-select>
     )
 
-    const renderList: Ref<any[]> = ref([])
+    const remoteSelectList: Ref<any[]> = ref([])
     const remoteSelectRequestLoading = ref(false)
     const remoteSelectRequestKey = computed(() =>
       JSON.stringify({
@@ -305,7 +306,7 @@ export default defineComponent({
     const loadRemoteSelectOptions = async () => {
       if (props.type !== 'remote-select') return
       if (!props.action) {
-        renderList.value = []
+        remoteSelectList.value = []
         return
       }
 
@@ -325,7 +326,7 @@ export default defineComponent({
             ? res.data?.data?.[listKey] ?? []
             : res.data?.data ?? []
 
-        renderList.value = Array.isArray(options)
+        remoteSelectList.value = Array.isArray(options)
           ? options.map((item: any) => ({
               key: item[valueKey],
               label: item[labelKey],
@@ -349,7 +350,7 @@ export default defineComponent({
           onUpdate:modelValue={p.onChange}
           style={{ width: realUnitConversion(props.width) }}
         >
-          {renderList.value.map((item) => (
+          {remoteSelectList.value.map((item) => (
               <el-option key={item.key} value={item.value} label={item.label}>
                 {item.label}
               </el-option>
@@ -449,6 +450,41 @@ export default defineComponent({
       )
     }
 
+
+    /* ---------------- icon-select 状态 ---------------- */
+    const showIconSelect = ref(false)
+
+    const renderIcon = (p: RendererParams) => {
+      const IconComp = p.value ? ElIcons[p.value as keyof typeof ElIcons] : null
+      return (
+        <>
+          <div style="display:inline-flex;align-items:center;gap:8px;">
+            <el-button onClick={() => (showIconSelect.value = true)}>
+              {IconComp
+                ? <><el-icon size={16} style="margin-right:6px;"><IconComp /></el-icon>{p.value}</>
+                : '选择图标'
+              }
+            </el-button>
+            {p.value ? (
+              <el-icon
+              style="cursor:pointer;color:var(--el-text-color-placeholder);"
+              onClick={() => p.onChange(null)}
+            >
+              <CircleClose />
+            </el-icon>
+            ) : null}
+          </div>
+          <qa-icon-select
+            show={showIconSelect.value}
+            modelValue={p.value}
+            onUpdate:show={(v: boolean) => (showIconSelect.value = v)}
+            onConfirm={(name: string) => p.onChange(name)}
+          />
+        </>
+      )
+    }
+
+    /* ---------------- tree-select 状态 ---------------- */
     const showTreeSelect = ref(false)
 
     const renderTreeSelect = (p: RendererParams) => (
@@ -479,9 +515,10 @@ export default defineComponent({
       </>
     )
 
+    /* ---------------- table-select 状态 ---------------- */
     const showTableSelect = ref(false)
-
-    const tableSelectRequestLoaded = ref(false) // 是否已经请求过
+    const tableSelectList: Ref<any[]> = ref([])
+    const tableSelectRequestLoaded = ref(false)
     const tableSelectRequestComplete = ref(false)
 
     const renderTableSelect = (p: RendererParams) => {
@@ -506,43 +543,40 @@ export default defineComponent({
             [idKey]: p.value
           }
         }).then((res) => {
-          renderList.value = res.data?.data?.rows || []
-          const ids = renderList.value.map((item) => item[idKey])
+          tableSelectList.value = res.data?.data?.rows || []
+          const ids = tableSelectList.value.map((item) => item[idKey])
           p.onChange(ids)
-        }).finally(()=>{
+        }).finally(() => {
           tableSelectRequestComplete.value = false
         })
-      } 
-      
+      }
+
       const remove = (i: number) => {
-        const newList = renderList.value.filter((_, idx) => idx !== i)
-        renderList.value = newList
+        const newList = tableSelectList.value.filter((_, idx) => idx !== i)
+        tableSelectList.value = newList
         const newIds = newList.map((item) => item[idKey])
         p.onChange(newIds)
       }
       return (
         <>
-        
           <div class="flex items-center gap-[12px]">
-            {renderList.value?.map((item, index) => (
-            <el-tag
-              key={item[idKey] ?? index}
-              size="large"
-            >
-            <div 
-            class="flex items-center">
-            
-            <span>{item[nameKey]}</span>
-              <el-icon onClick={() => remove(index)} class="ml-[4px]">
-                <RemoveFilled />
-              </el-icon>
-            </div>
-            </el-tag>
-          ))}
+            {tableSelectList.value?.map((item, index) => (
+              <el-tag
+                key={item[idKey] ?? index}
+                size="large"
+              >
+                <div class="flex items-center">
+                  <span>{item[nameKey]}</span>
+                  <el-icon onClick={() => remove(index)} class="ml-[4px]">
+                    <RemoveFilled />
+                  </el-icon>
+                </div>
+              </el-tag>
+            ))}
 
-          <el-button onClick={() => (showTableSelect.value = true)} loading={tableSelectRequestComplete.value}>
-            {p.placeholder || '请选择'+p.title}
-          </el-button>
+            <el-button onClick={() => (showTableSelect.value = true)} loading={tableSelectRequestComplete.value}>
+              {p.placeholder || '请选择' + p.title}
+            </el-button>
           </div>
           <qa-table-select
             show={showTableSelect.value}
@@ -559,19 +593,19 @@ export default defineComponent({
             nameKey={nameKey}
             idKey={idKey}
 
-            selectionData={renderList.value}
+            selectionData={tableSelectList.value}
 
             onUpdate:show={(v: boolean) => (showTableSelect.value = v)}
             onUpdate:modelValue={(data: any) => {
               const rows = data == null ? [] : (Array.isArray(data) ? data : [data])
               const ids = rows.map((row: any) => row[idKey])
-              renderList.value = rows
+              tableSelectList.value = rows
               p.onChange(ids)
             }}
             onTableSelectConfirm={(data: any) => {
               const rows = data == null ? [] : (Array.isArray(data) ? data : [data])
               const ids = rows.map((row: any) => row[idKey])
-              renderList.value = rows
+              tableSelectList.value = rows
               p.onChange(ids)
             }}
           />
@@ -594,6 +628,7 @@ export default defineComponent({
       date: renderDate,
       datetimerange: renderDateTimerange,
       'array<string>': renderArrayString,
+      icon: renderIcon,
       'tree-select': renderTreeSelect,
       'table-select': renderTableSelect,
     }

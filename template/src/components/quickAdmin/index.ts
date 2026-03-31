@@ -9,6 +9,7 @@ import qaTreeSelect from './base/qaTreeSelect.vue'
 import qaDetail from './base/qaDetail.vue'
 import qaTableColumn from './base/qaTableColumn.vue'
 import qaAreaCascader from './base/qaAreaCascader.vue'
+import qaIconSelect from './base/qaIconSelect.vue'
 
 export default {
   install(app: App) {
@@ -21,5 +22,6 @@ export default {
     app.component('qaDetail', qaDetail)
     app.component('qaTableColumn', qaTableColumn)
     app.component('qaAreaCascader', qaAreaCascader)
+    app.component('qaIconSelect', qaIconSelect)
   }
 }
