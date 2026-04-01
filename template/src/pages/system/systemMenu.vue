@@ -138,12 +138,6 @@ const form = ref({
         "show":['add'],
       },
       {
-        key:"user_id", title:"选择用户", type:"remote-select", placeholder:"请输入用户账号/昵称",
-        action:"/app/admin/system/systemUser/systemUser/getList",
-        filterable: true,
-        props: {list: "rows", value: "_id", label: "userInfo.nickname", desc: "desc"},
-      },
-      {
         "key": "title",
         "title": "菜单名称",
         "type": "text",

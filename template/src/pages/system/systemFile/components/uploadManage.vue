@@ -83,7 +83,7 @@
             </div>
 
             <div v-loading="fileListLoading" class="image-content-body">
-              <div v-if="fileList.length" class="media-grid">
+              <div class="media-grid">
                 <div v-for="item in fileList" :key="item._id" class="media-card"
                   :class="{ 'is-selected': selectedImageIds.includes(item._id) }" @click="toggleSelectFile(item._id)">
                   <div class="media-preview">
@@ -117,13 +117,14 @@
 
                   </div>
                 </div>
+                <div  class="image-upload-placeholder" @click="handleUploadImage">
+                  <el-icon class="image-upload-placeholder-icon">
+                    <Plus />
+                  </el-icon>
+                </div>
               </div>
 
-              <div v-else-if="fileListLoaded" class="image-upload-placeholder" @click="handleUploadImage">
-                <el-icon class="image-upload-placeholder-icon">
-                  <Plus />
-                </el-icon>
-              </div>
+             
             </div>
 
             <div v-if="fileTotal > fileQuery.pageSize" class="media-pagination">
