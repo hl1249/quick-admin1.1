@@ -128,6 +128,7 @@ export default defineComponent({
     nameKey: String,
     idKey: String,
     actionData: Object as PropType<Record<string, any>>,
+    filterable: Boolean,
 
     show: Array as PropType<string[]>,
     showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
@@ -303,7 +304,10 @@ export default defineComponent({
       })
     )
 
-    const loadRemoteSelectOptions = async () => {
+    const getByPath = (obj: any, path: string) =>
+      path.split('.').reduce((cur, key) => cur?.[key], obj)
+
+    const loadRemoteSelectOptions = async (searchValue?: string) => {
       if (props.type !== 'remote-select') return
       if (!props.action) {
         remoteSelectList.value = []
@@ -313,10 +317,14 @@ export default defineComponent({
       remoteSelectRequestLoading.value = true
 
       try {
+        const data = searchValue != null && searchValue !== ''
+          ? { searchValue, ...props.actionData }
+          : props.actionData
+
         const res = await http.request({
           method: 'POST',
           url: props.action,
-          data: props.actionData,
+          data,
         })
 
         const listKey = props.props?.list
@@ -328,9 +336,9 @@ export default defineComponent({
 
         remoteSelectList.value = Array.isArray(options)
           ? options.map((item: any) => ({
-              key: item[valueKey],
-              label: item[labelKey],
-              value: item[valueKey],
+              key: getByPath(item, valueKey),
+              label: getByPath(item, labelKey),
+              value: getByPath(item, valueKey),
             }))
           : []
       } finally {
@@ -338,9 +346,26 @@ export default defineComponent({
       }
     }
 
+    // props 变化时重新拉取（actionData / action 等改变）
     watch(remoteSelectRequestKey, () => {
       void loadRemoteSelectOptions()
     }, { immediate: true })
+
+    // formType 变化时重新拉取（表单每次打开都刷新）
+    watch(() => props.formType, () => {
+      if (props.type === 'remote-select') {
+        void loadRemoteSelectOptions()
+      }
+    })
+
+    let remoteSearchTimer: ReturnType<typeof setTimeout> | null = null
+    const handleRemoteSearch = (query: string) => {
+      if (remoteSearchTimer) clearTimeout(remoteSearchTimer)
+      if (!query.trim()) return
+      remoteSearchTimer = setTimeout(() => {
+        void loadRemoteSelectOptions(query)
+      }, 1000)
+    }
 
     const renderRemoteSelect = (p: RendererParams) => {
       return (
@@ -349,6 +374,10 @@ export default defineComponent({
           loading={remoteSelectRequestLoading.value}
           onUpdate:modelValue={p.onChange}
           style={{ width: realUnitConversion(props.width) }}
+          filterable={props.filterable}
+          remote={props.filterable}
+          clearable={true}
+          remoteMethod={props.filterable ? handleRemoteSearch : undefined}
         >
           {remoteSelectList.value.map((item) => (
               <el-option key={item.key} value={item.value} label={item.label}>

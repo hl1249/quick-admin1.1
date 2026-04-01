@@ -22,6 +22,12 @@ export class SystemMenuController {
     const res = await this.dbService.selects({
       dbName: 'qa-menus',
       pageSize: 9999,
+      sortArr: [
+        {
+          name: 'sort',
+          type: 'asc',
+        },
+      ],
     });
 
     let treeProps = {

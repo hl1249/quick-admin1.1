@@ -55,16 +55,28 @@ const table = ref<{
       "width": 150
     },
     {
-      "key": "comment",
-      "title": "备注",
+      "key": "icon",
+      "title": "图标",
+      "align": "center",
+      "type": "icon",
+    },
+    {
+      "key": "sort",
+      "title": "排序",
+      "align": "center",
       "type": "text",
-      "width": 300
     },
     {
       "key": "component",
       "title": "菜单URL",
       "type": "text",
-      "width": 500
+      "width": 320
+    },
+    {
+      "key": "comment",
+      "title": "备注",
+      "type": "text",
+      "width": 250
     },
     {
       key: "enable",
@@ -126,6 +138,12 @@ const form = ref({
         "show":['add'],
       },
       {
+        key:"user_id", title:"选择用户", type:"remote-select", placeholder:"请输入用户账号/昵称",
+        action:"/app/admin/system/systemUser/systemUser/getList",
+        filterable: true,
+        props: {list: "rows", value: "_id", label: "userInfo.nickname", desc: "desc"},
+      },
+      {
         "key": "title",
         "title": "菜单名称",
         "type": "text",
@@ -166,7 +184,7 @@ const form = ref({
     ],
     rules: {
       user_id: [
-        { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
+        // { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
       ],
     },
     formType: "",
