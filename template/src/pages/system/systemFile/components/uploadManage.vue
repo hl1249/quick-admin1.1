@@ -1084,11 +1084,11 @@ watch(activeImageCategory, () => {
 }
 
 .image-content-body {
-  @apply min-h-0 flex-1 overflow-auto;
+  @apply min-h-0 flex-1 overflow-auto ;
 }
 
 .media-grid {
-  @apply grid gap-4;
+  @apply grid gap-4 justify-between;
   grid-template-columns: repeat(auto-fill, 135px);
 }
 
