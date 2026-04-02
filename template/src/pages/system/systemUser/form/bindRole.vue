@@ -138,7 +138,7 @@ const form = ref({
             title: '角色标识',
             type: 'text',
             width: 150,
-            mode: '%%',
+            mode: 'in',
           },
         ],
         multiple: true,

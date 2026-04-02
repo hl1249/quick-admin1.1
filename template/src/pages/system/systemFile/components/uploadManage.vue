@@ -88,7 +88,7 @@
                   :class="{ 'is-selected': selectedImageIds.includes(item._id) }" @click="toggleSelectFile(item._id)">
                   <div class="media-preview">
                     <el-image v-if="activeUploadName === 'image'" :src="item.url" fit="cover"
-                      class="media-preview-image" />
+                      lazy class="media-preview-image" />
                     <video v-else :src="item.url" class="media-preview-video" preload="metadata" muted playsinline />
                   </div>
                   <div class="media-card-info">

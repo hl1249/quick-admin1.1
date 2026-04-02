@@ -206,6 +206,8 @@ export const useMenuStore = defineStore(
     }
   },
   {
-    persist: true,
+    persist: {
+      paths: ['menuList', 'isCollapse', 'tabsList'],
+    },
   },
 )

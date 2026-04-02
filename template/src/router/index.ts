@@ -3,6 +3,10 @@ import staticRouter from './staticRouter'
 import { getDynamicMenu } from '@/api/auth'
 import { useStore } from '@/store'
 import type { TabItem } from '@/store/modules/menuStore'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+NProgress.configure({ showSpinner: false, speed: 300 })
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,6 +24,7 @@ const router = createRouter({
 let firstLoad = true
 
 router.beforeEach(async (to, from, next) => {
+  NProgress.start()
   const { menuStore, authStore } = useStore()
 
   if (to.path === '/login') {
@@ -66,4 +71,8 @@ router.beforeEach(async (to, from, next) => {
     next()
   }
 })
+router.afterEach(() => {
+  NProgress.done()
+})
+
 export default router

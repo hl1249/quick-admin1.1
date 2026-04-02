@@ -116,11 +116,15 @@ const originalFormData = {
   enable: true,
   menu_id: '',
   title: '',
-  icon:"",
+  icon: "",
   url: [],
   parent_id: '',
   comment: '',
   sort: 0,
+  cascader_static: null,
+  cascader_fn: null,
+  cascader_remote: null,
+  cascader_remote_params: null,
 }
 
 const form = ref({
@@ -132,6 +136,27 @@ const form = ref({
     },
     action: '/app/admin/system/systemMenu/systemMenu/add',
     columns: [
+      {
+  key: "role", title: "通过表格选择(单选)", type: "table-select", placeholder: "请选择角色",
+  action: "app/admin/system/SystemMenu/SystemMenu/getList",
+  columns: [
+    { key: "role_name", title: "角色昵称", type: "text", nameKey: true },
+    { key: "role_id", title: "角色标识", type: "text", idKey: true }, // idKey:true 代表此字段为主键字段，若设置show:["none"],则可以在表格中隐藏该字段的显示
+    { key: "comment", title: "备注", type: "text" }
+  ],
+  queryColumns: [
+    { key: "role_name", title: "角色昵称", type: "text", width: 150, mode: "%%" },
+    { key: "role_id", title: "角色标识", type: "text", width: 150, mode: "%%" }
+  ]
+},
+      // ── 远程懒加载 ──────────────────────────────────────────────────
+      // {
+      //   key: "cascader_lazy",
+      //   title: "懒加载",
+      //   type: "cascader",
+      //   action: "app/admin/system/systemMenu/systemMenu/getCascader",
+      //   props: { list: "rows", value: "menu_id", label: "title", children: "children", lazy: true },
+      // },
       {
         "key": "menu_id",
         "title": "菜单标识",

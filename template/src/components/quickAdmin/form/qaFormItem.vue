@@ -35,6 +35,8 @@ interface TreeDefaultProps {
   children?: string
   list?: string
   desc?: 'asc' | 'desc'
+  lazy?: boolean
+  multiple?: boolean
 }
 
 /** 渲染器入参 */
@@ -132,7 +134,7 @@ export default defineComponent({
       type: [String, Number],
       default: '100%',
     },
-    data: Array as PropType<OptionItem[]>,
+    data: [Array, Function] as PropType<OptionItem[] | (() => OptionItem[])>,
     dateType: String,
     valueFormat: String,
     format: String,
@@ -140,6 +142,7 @@ export default defineComponent({
 
     columns: Array as PropType<Columns[]>,
     enable: Boolean,
+    formData: Object as PropType<Record<string, any>>,
     queryColumns: Array as PropType<QueryColumns[]>,
     multiple: Boolean,
     pageSize: Number,
@@ -155,7 +158,7 @@ export default defineComponent({
     autoUpload: { type: Boolean, default: true },
     tempFileType: String as PropType<'tempPath' | 'base64'>,
     httpRequest: Function as PropType<(file: File) => Promise<string>>,
-    actionData: Object as PropType<Record<string, any>>,
+    actionData: [Object, Function] as PropType<Record<string, any> | (() => Record<string, any>)>,
     filterable: Boolean,
     fileType: String as PropType<'image' | 'video' | 'other'>,
     multipleLimit: Number,
@@ -172,6 +175,7 @@ export default defineComponent({
   },
   emits: {
     'update:modelValue': (val: Record<string, unknown>) => true,
+    'update:formData': (val: Record<string, unknown>) => true,
     'search': () => true,
   },
   setup(props, { emit, slots }) {
@@ -423,6 +427,19 @@ export default defineComponent({
       )
     }
 
+    /* ---------------- cascader ---------------- */
+    const renderCascader = (p: RendererParams) => (
+      <qa-cascader
+        modelValue={p.value}
+        onUpdate:modelValue={p.onChange}
+        data={props.data}
+        action={p.action}
+        actionData={props.actionData}
+        props={p.itemProps}
+        width={realUnitConversion(props.width)}
+      />
+    )
+
     const renderDate = (p: RendererParams) => (
       <el-date-picker
         modelValue={p.value}
@@ -579,103 +596,22 @@ export default defineComponent({
       </>
     )
 
-    /* ---------------- table-select 状态 ---------------- */
-    const showTableSelect = ref(false)
-    const tableSelectList: Ref<any[]> = ref([])
-    const tableSelectRequestLoaded = ref(false)
-    const tableSelectRequestComplete = ref(false)
-
-    const renderTableSelect = (p: RendererParams) => {
-      const nameKey = p.columns.find((item) => item.nameKey)?.key || '_id'
-      const idKey = p.columns.find((item) => item.idKey)?.key || '_id'
-
-      const value = p.value
-      const list: string[] = Array.isArray(value) ? value : []
-
-      if (list.length === 0) {
-        tableSelectRequestLoaded.value = false
-      }
-      if (!tableSelectRequestLoaded.value && list.length > 0) {
-        tableSelectRequestLoaded.value = true
-        tableSelectRequestComplete.value = true
-        http.request({
-          method: "POST",
-          url: p.action,
-          data: {
-            pageIndex: 1,
-            pageSize: list.length,
-            [idKey]: p.value
-          }
-        }).then((res) => {
-          tableSelectList.value = res.data?.data?.rows || []
-          const ids = tableSelectList.value.map((item) => item[idKey])
-          p.onChange(ids)
-        }).finally(() => {
-          tableSelectRequestComplete.value = false
-        })
-      }
-
-      const remove = (i: number) => {
-        const newList = tableSelectList.value.filter((_, idx) => idx !== i)
-        tableSelectList.value = newList
-        const newIds = newList.map((item) => item[idKey])
-        p.onChange(newIds)
-      }
-      return (
-        <>
-          <div class="flex items-center gap-[12px]">
-            {tableSelectList.value?.map((item, index) => (
-              <el-tag
-                key={item[idKey] ?? index}
-                size="large"
-              >
-                <div class="flex items-center">
-                  <span>{item[nameKey]}</span>
-                  <el-icon onClick={() => remove(index)} class="ml-[4px]">
-                    <RemoveFilled />
-                  </el-icon>
-                </div>
-              </el-tag>
-            ))}
-
-            <el-button onClick={() => (showTableSelect.value = true)} loading={tableSelectRequestComplete.value}>
-              {p.placeholder || '请选择' + p.title}
-            </el-button>
-          </div>
-          <qa-table-select
-            show={showTableSelect.value}
-            action={p.action}
-            modelValue={p.value}
-            defaultProps={p.itemProps}
-
-            columns={p.columns}
-            formData={p.formData}
-            queryColumns={p.queryColumns}
-            multiple={p.multiple}
-            pageSize={p.pageSize}
-
-            nameKey={nameKey}
-            idKey={idKey}
-
-            selectionData={tableSelectList.value}
-
-            onUpdate:show={(v: boolean) => (showTableSelect.value = v)}
-            onUpdate:modelValue={(data: any) => {
-              const rows = data == null ? [] : (Array.isArray(data) ? data : [data])
-              const ids = rows.map((row: any) => row[idKey])
-              tableSelectList.value = rows
-              p.onChange(ids)
-            }}
-            onTableSelectConfirm={(data: any) => {
-              const rows = data == null ? [] : (Array.isArray(data) ? data : [data])
-              const ids = rows.map((row: any) => row[idKey])
-              tableSelectList.value = rows
-              p.onChange(ids)
-            }}
-          />
-        </>
-      )
-    }
+    /* ---------------- table-select ---------------- */
+    const renderTableSelect = (p: RendererParams) => (
+      <qa-table-select
+        modelValue={p.value}
+        onUpdate:modelValue={p.onChange}
+        action={p.action}
+        columns={p.columns}
+        queryColumns={p.queryColumns}
+        formData={props.formData ?? {}}
+        onUpdate:formData={(val: Record<string, any>) => emit('update:formData', val)}
+        multiple={p.multiple}
+        pageSize={p.pageSize}
+        placeholder={p.placeholder}
+        title={p.title}
+      />
+    )
 
     /* ---------------- file-upload ---------------- */
     const fileUploadList = ref<any[]>([])
@@ -847,6 +783,7 @@ export default defineComponent({
       checkout: renderCheckbox,
       select: renderSelect,
       'remote-select': renderRemoteSelect,
+      cascader: renderCascader,
       date: renderDate,
       file: renderFile,
       datetimerange: renderDateTimerange,
@@ -875,13 +812,13 @@ export default defineComponent({
                 label: props.label,
                 placeholder: props.placeholder,
                 action: props.action,
-                actionData: props.actionData,
+                actionData: typeof props.actionData === 'function' ? (props.actionData as () => Record<string, any>)() : props.actionData,
                 itemProps: props.props,
-                data: props.data,
+                data: typeof props.data === 'function' ? (props.data as () => OptionItem[])() : props.data,
 
                 columns: props.columns ?? [],
                 enable: props.enable ?? false,
-                formData: props.modelValue ?? {},
+                formData: props.formData ?? {},
                 queryColumns: props.queryColumns ?? [],
                 multiple: props.multiple ?? false,
                 pageSize: props.pageSize ?? 0,

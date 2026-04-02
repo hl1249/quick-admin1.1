@@ -10,7 +10,7 @@
         <side-item v-for="child in item.children" :key="child._id" :item="child" />
     </el-sub-menu>
 
-    <el-menu-item :index="item.menu_id || item.name || item._id" @click="handleClick(item)" v-else>
+    <el-menu-item :index="item.name" @click="handleClick(item)" v-else>
         <el-icon :size="20">
             <component :is="item.icon"></component>
         </el-icon>
