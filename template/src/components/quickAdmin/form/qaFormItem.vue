@@ -6,6 +6,7 @@ import type { JSX } from 'vue/jsx-runtime'
 // Element Plus
 import { RemoveFilled, Plus, CircleClose } from '@element-plus/icons-vue'
 import * as ElIcons from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 // 内部组件类型
 import type { QueryColumns } from '../table/qaTableQuery.vue'
@@ -76,6 +77,7 @@ interface RendererParams {
 
   action?: string
   itemProps?: TreeDefaultProps
+  fileType?: string
 }
 
 type RemoteSelectPropsParams = RendererParams & {
@@ -150,6 +152,7 @@ export default defineComponent({
     httpRequest: Function as PropType<(file: File) => Promise<string>>,
     actionData: Object as PropType<Record<string, any>>,
     filterable: Boolean,
+    fileType: String as PropType<'image' | 'video'>,
 
     show: Array as PropType<string[]>,
     showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
@@ -806,11 +809,9 @@ export default defineComponent({
       return (
         <qa-file-select
           modelValue={p.value}
-          onUpdate:modelValue={(v: any) => p.onChange(v)}
-          limit={p.limit}
-          buttonText={p.buttonText}
-          disabled={isDisabled()}
-          style={`width:${typeof p.width === 'number' ? p.width + 'px' : (p.width ?? '100%')}`}
+          fileType={(p.fileType ?? 'image') as 'image' | 'video'}
+          multiple={p.multiple ?? false}
+          onUpdate:modelValue={p.onChange}
         />
       ) as JSX.Element
     }
@@ -877,6 +878,7 @@ export default defineComponent({
                 autoUpload: props.autoUpload,
                 tempFileType: props.tempFileType,
                 httpRequest: props.httpRequest,
+                fileType: props.fileType,
 
                 dateType: props.dateType,
                 valueFormat: props.valueFormat,

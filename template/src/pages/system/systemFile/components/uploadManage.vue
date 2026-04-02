@@ -77,7 +77,7 @@
               <div class="ml-auto flex items-cente gap-[12px]">
                 <el-input v-model="queryForm.formData.original_name" class="!w-[220px] shrink-0" clearable placeholder="搜索名称" @clear="handleSearchImage"
                   @keyup.enter="handleSearchImage" :suffix-icon="Search" />
-                <el-input v-model="queryForm.formData.url" class="!w-[220px] shrink-0" clearable placeholder="搜索url" @clear="handleSearchImage"
+                <el-input v-model="queryForm.formData.url" class="!w-[220px] shrink-0" clearable placeholder="搜索URL" @clear="handleSearchImage"
                   @keyup.enter="handleSearchImage" :suffix-icon="Search" />
               </div>
             </div>
@@ -127,9 +127,10 @@
              
             </div>
 
-            <div v-if="fileTotal > fileQuery.pageSize" class="media-pagination">
-              <el-pagination v-model:current-page="fileQuery.pageIndex" v-model:page-size="fileQuery.pageSize"
-                layout="total, prev, pager, next" :total="fileTotal" @current-change="loadFileList" />
+            <div class="media-pagination">
+              <el-pagination :current-page="fileQuery.pageIndex" :page-size="fileQuery.pageSize"
+                background
+                layout="total, prev, pager, next" :total="fileTotal" @current-change="(page) => { fileQuery.pageIndex = page; loadFileList() }" />
             </div>
           </div>
         </div>
@@ -343,7 +344,7 @@ const categoryFormRef = ref()
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const fileQuery = reactive({
   pageIndex: 1,
-  pageSize: 30
+  pageSize: 50
 })
 
 const totalUploadProgress = computed(() => {
