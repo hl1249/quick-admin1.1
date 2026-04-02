@@ -1,15 +1,16 @@
 <template>
-  <el-cascader size="large" :options="options" v-model="selectedOptions" @change="onChang">
+  <el-cascader :style="style"  :options="options" v-model="selectedOptions" clearable @change="onChang">
   </el-cascader>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, type Ref } from 'vue'
 import type { CascaderOption } from 'element-plus'
-import { regionData, CodeToText } from '@/utils/chinaAreaData'
+import { regionData, CodeToText } from './chinaAreaData'
 
 const props = defineProps<{
   modelValue: AddrResult,
+  style: String,
 }>()
 
 const emit = defineEmits(['confirm','update:modelValue'])
@@ -52,7 +53,7 @@ const selectedResult = computed<AddrResult>(() => {
   const addr = selectedOptions.value
   const result: AddrResult = {}
 
-  const len = addr.length
+  const len = addr?.length
   if (!len) return result
 
   // area 永远是最后一个

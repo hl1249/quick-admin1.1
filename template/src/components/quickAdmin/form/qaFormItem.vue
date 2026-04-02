@@ -771,6 +771,15 @@ export default defineComponent({
       ) as JSX.Element
     }
 
+    /* ---------------- area-cascader ---------------- */
+    const renderAreaCascader = (p: RendererParams) => (
+      <qa-area-cascader
+        modelValue={p.value ?? {}}
+        onUpdate:modelValue={p.onChange}
+        style={{ width: realUnitConversion(props.width) }}
+      />
+    )
+
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -792,6 +801,8 @@ export default defineComponent({
       icon: renderIcon,
       'tree-select': renderTreeSelect,
       'table-select': renderTableSelect,
+      'address': renderAreaCascader,
+      'area-cascader': renderAreaCascader,
     }
 
     /* ---------------- render ---------------- */

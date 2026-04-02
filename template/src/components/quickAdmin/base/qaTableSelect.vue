@@ -172,7 +172,6 @@ watch(
         method: 'POST',
         url: props.action,
         data: { pageIndex: 1, pageSize: ids.length, formData: { [idKey.value]: val },  columns: props.queryColumns },
-      
       })
       selectedList.value = res.data?.data?.rows ?? []
       emit('update:modelValue', selectedList.value.map((r) => r[idKey.value]))
