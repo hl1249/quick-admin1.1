@@ -1,5 +1,5 @@
 <template>
-    <el-sub-menu :index="item.name" v-if="item?.children">
+    <el-sub-menu :index="item.menu_id || item.name || item._id" v-if="item?.children">
         <template #title>
             <el-icon :size="20">
                 <component :is="item.icon"></component>
@@ -9,14 +9,8 @@
 
         <side-item v-for="child in item.children" :key="child._id" :item="child" />
     </el-sub-menu>
-    <el-menu-item :index="item.name" v-else-if="item?.children" @click="handleClick(item)">
-        <el-icon :size="20">
-            <component :is="item.icon"></component>
-        </el-icon>
-        <span>{{ item.title }}</span>
-    </el-menu-item>
 
-    <el-menu-item :index="item.name" @click="handleClick(item)" v-else>
+    <el-menu-item :index="item.menu_id || item.name || item._id" @click="handleClick(item)" v-else>
         <el-icon :size="20">
             <component :is="item.icon"></component>
         </el-icon>

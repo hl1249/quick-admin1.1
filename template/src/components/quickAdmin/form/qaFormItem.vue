@@ -801,6 +801,20 @@ export default defineComponent({
       )
     }
 
+    /* ---------------- file-select ---------------- */
+    const renderFileSelect = (p: RendererParams): JSX.Element => {
+      return (
+        <qa-file-select
+          modelValue={p.value}
+          onUpdate:modelValue={(v: any) => p.onChange(v)}
+          limit={p.limit}
+          buttonText={p.buttonText}
+          disabled={isDisabled()}
+          style={`width:${typeof p.width === 'number' ? p.width + 'px' : (p.width ?? '100%')}`}
+        />
+      ) as JSX.Element
+    }
+
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -817,6 +831,7 @@ export default defineComponent({
       file: renderFile,
       datetimerange: renderDateTimerange,
       'array<string>': renderArrayString,
+      'file-select': renderFileSelect,
       icon: renderIcon,
       'tree-select': renderTreeSelect,
       'table-select': renderTableSelect,

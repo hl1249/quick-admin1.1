@@ -48,8 +48,10 @@ export default [
         "title": "组件演示",
         "name":"组件演示",
         "sort": 999,
+        "path": "template",
         "children": [
             {
+                "path": "template/upload",
                 "menu_id": "template-table",
                 "name": "基础用法",
                 "icon": "grid",
