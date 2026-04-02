@@ -26,8 +26,14 @@ export class UploadService {
     userId: string,
     category_id?: any,
     folder?: string,
+    needSave = true,
   ) {
     const result = await this.uploadFile(file, { folder });
+
+    if (!needSave) {
+      return { message: '上传成功', ...result };
+    }
+
     const fileType = getFileType(file.mimetype);
     const { width, height } = getImageSize(file.buffer, file.mimetype);
     const objectName = basename(result.key);

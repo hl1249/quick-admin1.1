@@ -63,6 +63,17 @@ interface RendererParams {
   nameKey?: string,
   idKey?: string,
 
+  limit?: number,
+  uploadProps?: Record<string, any>,
+  fileSize?: number,
+  sizeUnit?: 'KB' | 'MB' | 'GB',
+  buttonText?: string,
+  categoryId?: string,
+  needSave?: boolean,
+  autoUpload?: boolean,
+  tempFileType?: 'tempPath' | 'base64',
+  httpRequest?: (file: File) => Promise<string>,
+
   action?: string
   itemProps?: TreeDefaultProps
 }
@@ -127,6 +138,16 @@ export default defineComponent({
     pageSize: Number,
     nameKey: String,
     idKey: String,
+    limit: Number,
+    uploadProps: Object as PropType<Record<string, any>>,
+    fileSize: Number,
+    sizeUnit: { type: String as PropType<'KB' | 'MB' | 'GB'>, default: 'MB' },
+    buttonText: String,
+    categoryId: String,
+    needSave: Boolean,
+    autoUpload: { type: Boolean, default: true },
+    tempFileType: String as PropType<'tempPath' | 'base64'>,
+    httpRequest: Function as PropType<(file: File) => Promise<string>>,
     actionData: Object as PropType<Record<string, any>>,
     filterable: Boolean,
 
@@ -642,6 +663,144 @@ export default defineComponent({
       )
     }
 
+    /* ---------------- file-upload ---------------- */
+    const fileUploadList = ref<any[]>([])
+    const fileUidUrlMap = new Map<number, string>()
+    const getFileUrls = () => Array.from(fileUidUrlMap.values())
+
+    // 外部值变化时（编辑回填 / 表单重置）同步列表
+    watch(currentValue, (newVal) => {
+      if (props.type !== 'file') return
+      const newUrls: string[] = Array.isArray(newVal) ? newVal : newVal ? [newVal] : []
+      if (JSON.stringify(getFileUrls().sort()) === JSON.stringify([...newUrls].sort())) return
+      fileUidUrlMap.clear()
+      fileUploadList.value = newUrls.map((url, i) => {
+        const uid = Date.now() + i
+        fileUidUrlMap.set(uid, url)
+        return { name: url.split('/').pop() || `file-${i + 1}`, url, uid, status: 'success' }
+      })
+    }, { immediate: true })
+
+    const fileExceedTip = ref('')
+    const fileSizeTip = ref('')
+    let fileExceedTimer: ReturnType<typeof setTimeout> | null = null
+    let fileSizeTimer: ReturnType<typeof setTimeout> | null = null
+
+    const showTip = (tipRef: Ref<string>, timerRef: { value: ReturnType<typeof setTimeout> | null }, msg: string) => {
+      tipRef.value = msg
+      if (timerRef.value) clearTimeout(timerRef.value)
+      timerRef.value = setTimeout(() => { tipRef.value = '' }, 3000)
+    }
+
+    const renderFile = (p: RendererParams) => {
+      const isSingle = p.limit === 1
+      const autoUpload = p.autoUpload !== false
+
+      const emitValue = () => {
+        const urls = getFileUrls()
+        p.onChange(isSingle ? (urls[0] ?? null) : urls)
+      }
+
+      const convertLocalFile = (file: File, uid: number): Promise<void> =>
+        new Promise((resolve) => {
+          if (p.tempFileType === 'base64') {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              fileUidUrlMap.set(uid, e.target?.result as string)
+              emitValue()
+              resolve()
+            }
+            reader.readAsDataURL(file)
+          } else {
+            fileUidUrlMap.set(uid, URL.createObjectURL(file))
+            emitValue()
+            resolve()
+          }
+        })
+
+      const beforeUpload = (file: File) => {
+        if (p.fileSize) {
+          const unitMap = { KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 }
+          const unit = p.sizeUnit ?? 'MB'
+          if (file.size > p.fileSize * unitMap[unit]) {
+            showTip(fileSizeTip, { value: fileSizeTimer }, `文件大小不能超过 ${p.fileSize}${unit}`)
+            return false
+          }
+        }
+        return true
+      }
+
+      const handleUpload = async (options: any) => {
+        if (!autoUpload) {
+          await convertLocalFile(options.file, options.file.uid)
+          options.onSuccess({})
+          return
+        }
+
+        if (p.httpRequest) {
+          try {
+            const url = await p.httpRequest(options.file)
+            fileUidUrlMap.set(options.file.uid, url)
+            emitValue()
+            options.onSuccess({ url })
+          } catch (err) {
+            options.onError(err)
+          }
+          return
+        }
+
+        const formData = new FormData()
+        formData.append('file', options.file)
+        if (p.categoryId) formData.append('category_id', p.categoryId)
+        if (p.needSave === false) formData.append('needSave', 'false')
+        try {
+          const res = await http.request({
+            url: '/app/admin/system/systemFile/systemFile/upload',
+            method: 'post',
+            data: formData,
+            openMessage: false,
+          })
+          fileUidUrlMap.set(options.file.uid, res.data?.data?.url)
+          emitValue()
+          options.onSuccess(res.data?.data)
+        } catch (err) {
+          options.onError(err)
+        }
+      }
+
+      const handleExceed = () => {
+        if (!p.limit) return
+        showTip(fileExceedTip, { value: fileExceedTimer }, `最多只能上传 ${p.limit} 个文件`)
+      }
+
+      return (
+        <>
+          <el-upload
+            {...(p.uploadProps ?? {})}
+            fileList={fileUploadList.value}
+            onUpdate:fileList={(v: any[]) => { fileUploadList.value = v }}
+            httpRequest={handleUpload}
+            beforeUpload={beforeUpload}
+            onRemove={(file: any) => { fileUidUrlMap.delete(file.uid); emitValue() }}
+            onExceed={handleExceed}
+            multiple={p.multiple}
+            limit={p.limit}
+            disabled={isDisabled()}
+          >
+            <el-button type="primary" disabled={isDisabled()}>
+              {p.buttonText ?? '上传文件'}
+            </el-button>
+          </el-upload>
+          {fileExceedTip.value && (
+            <div class="text-[#f56c6c] text-[12px] mt-[4px]">{fileExceedTip.value}</div>
+          )}
+          {fileSizeTip.value && (
+            <div class="text-[#f56c6c] text-[12px] mt-[4px]">{fileSizeTip.value}</div>
+          )}
+        </>
+      )
+    }
+
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -655,6 +814,7 @@ export default defineComponent({
       select: renderSelect,
       'remote-select': renderRemoteSelect,
       date: renderDate,
+      file: renderFile,
       datetimerange: renderDateTimerange,
       'array<string>': renderArrayString,
       icon: renderIcon,
@@ -692,6 +852,16 @@ export default defineComponent({
                 pageSize: props.pageSize ?? 0,
                 nameKey: props.nameKey ?? '',
                 idKey: props.idKey ?? '',
+                limit: props.limit,
+                uploadProps: props.uploadProps,
+                fileSize: props.fileSize,
+                sizeUnit: props.sizeUnit,
+                buttonText: props.buttonText,
+                categoryId: props.categoryId,
+                needSave: props.needSave,
+                autoUpload: props.autoUpload,
+                tempFileType: props.tempFileType,
+                httpRequest: props.httpRequest,
 
                 dateType: props.dateType,
                 valueFormat: props.valueFormat,

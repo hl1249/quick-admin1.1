@@ -86,44 +86,6 @@ export class SystemFileController {
     })
   }
 
-  @Post('/remote/upload')
-  async remoteUpload(@Req() req, @Body() data) {
-    const { url, category_id } = data;
-
-    if (!url) {
-      throw new BadRequestException('请提供远程文件地址');
-    }
-
-    let response: Response;
-    try {
-      response = await fetch(url, { redirect: 'follow' });
-    } catch {
-      throw new BadRequestException('远程地址无法访问');
-    }
-
-    if (!response.ok) {
-      throw new BadRequestException(`远程地址返回错误：${response.status}`);
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const contentType = response.headers.get('content-type') ?? '';
-    const mimetype = contentType.split(';')[0].trim() || 'application/octet-stream';
-
-    const disposition = response.headers.get('content-disposition') ?? '';
-    const dispositionMatch = disposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\r\n]+)/i);
-    const urlFilename = basename(new URL(url).pathname) || 'remote-file';
-    const originalname = dispositionMatch
-      ? decodeURIComponent(dispositionMatch[1].trim())
-      : urlFilename;
-
-    const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
-    const file = { buffer, originalname: normalizeUploadedFilename(originalname), mimetype, size: buffer.length };
-
-    return this.uploadService.saveFileRecord(file, userId, category_id);
-  }
-
 
   private parseDomainHost(domain: string) {
     try {
@@ -189,18 +151,59 @@ export class SystemFileController {
   async upload(
     @Req() req,
     @UploadedFile() file: { buffer: Buffer; originalname: string; mimetype: string; size?: number },
-    @Body() data: { folder?: string; category_id?: string | null }
+    @Body() data: { folder?: string; category_id?: string | null; needSave?: string | boolean }
   ) {
     if (!file) {
       throw new BadRequestException('请上传 file 文件');
     }
-
+    
+    const { folder, category_id, needSave: needSaveRaw } = data ?? {};
+    // multipart 表单中 boolean 字段以字符串形式传输，需要显式转换
+    const needSave = needSaveRaw !== false && needSaveRaw !== 'false';
     const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
     const normalizedFile = { ...file, originalname: normalizeUploadedFilename(file.originalname) };
 
-    return this.uploadService.saveFileRecord(normalizedFile, userId, data?.category_id, data?.folder);
+    return this.uploadService.saveFileRecord(normalizedFile, userId, category_id, folder, needSave);
   }
 
+
+  @Post('/remote/upload')
+  async remoteUpload(@Req() req, @Body() data) {
+    const { url, category_id, needSave = true } = data;
+
+    if (!url) {
+      throw new BadRequestException('请提供远程文件地址');
+    }
+
+    let response: Response;
+    try {
+      response = await fetch(url, { redirect: 'follow' });
+    } catch {
+      throw new BadRequestException('远程地址无法访问');
+    }
+
+    if (!response.ok) {
+      throw new BadRequestException(`远程地址返回错误：${response.status}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const contentType = response.headers.get('content-type') ?? '';
+    const mimetype = contentType.split(';')[0].trim() || 'application/octet-stream';
+
+    const disposition = response.headers.get('content-disposition') ?? '';
+    const dispositionMatch = disposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\r\n]+)/i);
+    const urlFilename = basename(new URL(url).pathname) || 'remote-file';
+    const originalname = dispositionMatch
+      ? decodeURIComponent(dispositionMatch[1].trim())
+      : urlFilename;
+
+    const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
+    const file = { buffer, originalname: normalizeUploadedFilename(originalname), mimetype, size: buffer.length };
+
+    return this.uploadService.saveFileRecord(file, userId, category_id, undefined, needSave);
+  }
   @Post('/space/getList')
   async getList(@Body() data): Promise<Document | null>{
     return await this.dbService.getTableData({

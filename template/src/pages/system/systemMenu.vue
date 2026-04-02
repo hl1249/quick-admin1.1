@@ -9,6 +9,7 @@
 
 
     <el-dialog width="700" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+      form:{{ form.data }}
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="()=>{
@@ -16,6 +17,7 @@
           refresh()
         }"
         @closeForm="form.props.show = false">
+        
       </qa-form>
     </el-dialog>
   </div>
@@ -136,6 +138,21 @@ const form = ref({
         "title": "菜单标识",
         "type": "text",
         "show":['add'],
+      },
+      {
+        "key": "file",
+        "title": "文件",
+        limit:2,
+        fileSize: 1,
+        "type": "file",
+        multiple:true,
+        autoUpload:true,
+        httpRequest: (file: File) => {
+          console.log("文件", file)
+          return new Promise((resolve) => {
+            resolve(file.name)
+          })
+        }
       },
       {
         "key": "title",
