@@ -780,6 +780,27 @@ export default defineComponent({
       />
     )
 
+    /* ---------------- color ---------------- */
+    const renderColor = (p: RendererParams) => (
+      <el-color-picker
+        modelValue={p.value}
+        disabled={isDisabled()}
+        onUpdate:modelValue={p.onChange}
+        {...(p.itemProps ?? {})}
+      />
+    )
+
+    /* ---------------- slider ---------------- */
+    const renderSlider = (p: RendererParams) => (
+      <el-slider
+        modelValue={p.value}
+        disabled={isDisabled()}
+        style={{ width: realUnitConversion(props.width) }}
+        onUpdate:modelValue={p.onChange}
+        {...(p.itemProps ?? {})}
+      />
+    )
+
     /* ---------------- 映射表 ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -788,6 +809,8 @@ export default defineComponent({
       textarea: renderTextarea,
       switch: renderSwitch,
       rate: renderRate,
+      color: renderColor,
+      slider: renderSlider,
       radio: renderRadio,
       checkout: renderCheckbox,
       select: renderSelect,
@@ -803,6 +826,7 @@ export default defineComponent({
       'table-select': renderTableSelect,
       'address': renderAreaCascader,
       'area-cascader': renderAreaCascader,
+  
     }
 
     /* ---------------- render ---------------- */
