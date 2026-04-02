@@ -6,7 +6,6 @@ import type { JSX } from 'vue/jsx-runtime'
 // Element Plus
 import { RemoveFilled, Plus, CircleClose } from '@element-plus/icons-vue'
 import * as ElIcons from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
 
 // 内部组件类型
 import type { QueryColumns } from '../table/qaTableQuery.vue'
@@ -78,6 +77,12 @@ interface RendererParams {
   action?: string
   itemProps?: TreeDefaultProps
   fileType?: string
+  multipleLimit?: number
+  defaultCategory?: string
+  upload?: boolean
+  updateCategory?: boolean
+  imageFit?: string
+  returnType?: 'url' | 'id'
 }
 
 type RemoteSelectPropsParams = RendererParams & {
@@ -152,7 +157,13 @@ export default defineComponent({
     httpRequest: Function as PropType<(file: File) => Promise<string>>,
     actionData: Object as PropType<Record<string, any>>,
     filterable: Boolean,
-    fileType: String as PropType<'image' | 'video'>,
+    fileType: String as PropType<'image' | 'video' | 'other'>,
+    multipleLimit: Number,
+    defaultCategory: String,
+    upload: { type: Boolean, default: true },
+    updateCategory: { type: Boolean, default: true },
+    imageFit: { type: String as PropType<'fill' | 'contain' | 'cover' | 'none' | 'scale-down'>, default: 'cover' },
+    returnType: { type: String as PropType<'url' | 'id'>, default: 'url' },
 
     show: Array as PropType<string[]>,
     showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
@@ -809,8 +820,16 @@ export default defineComponent({
       return (
         <qa-file-select
           modelValue={p.value}
-          fileType={(p.fileType ?? 'image') as 'image' | 'video'}
+          fileType={(p.fileType ?? 'image') as 'image' | 'video' | 'other'}
           multiple={p.multiple ?? false}
+          multipleLimit={p.multipleLimit}
+          defaultCategory={p.defaultCategory}
+          upload={p.upload !== false}
+          updateCategory={p.updateCategory !== false}
+          imageFit={(p.imageFit ?? 'cover') as any}
+          fileSize={p.fileSize}
+          sizeUnit={p.sizeUnit ?? 'MB'}
+          returnType={(p.returnType ?? 'url') as 'url' | 'id'}
           onUpdate:modelValue={p.onChange}
         />
       ) as JSX.Element
@@ -879,6 +898,12 @@ export default defineComponent({
                 tempFileType: props.tempFileType,
                 httpRequest: props.httpRequest,
                 fileType: props.fileType,
+                multipleLimit: props.multipleLimit,
+                defaultCategory: props.defaultCategory,
+                upload: props.upload,
+                updateCategory: props.updateCategory,
+                imageFit: props.imageFit,
+                returnType: props.returnType,
 
                 dateType: props.dateType,
                 valueFormat: props.valueFormat,

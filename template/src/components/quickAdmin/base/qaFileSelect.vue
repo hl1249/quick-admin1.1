@@ -3,36 +3,33 @@
     <!-- 已选预览 + 添加按钮 -->
     <div class="qa-fs-preview-wrap">
       <div
-        v-for="(url, index) in currentUrls"
-        :key="index"
+        v-for="(item, index) in previewFiles"
+        :key="item.id"
         class="qa-fs-preview-item"
       >
-        <el-image v-if="fileType === 'image'" :src="url" fit="cover" class="qa-fs-preview-media" />
-        <video v-else :src="url" class="qa-fs-preview-media" muted preload="metadata" />
+        <el-image v-if="fileType === 'image'" :src="item.url" :fit="imageFit" class="qa-fs-preview-media" />
+        <video v-else-if="fileType === 'video'" :src="item.url" class="qa-fs-preview-media" muted preload="metadata" />
+        <div v-else class="qa-fs-preview-other">
+          <el-icon :size="22"><Document /></el-icon>
+          <span class="qa-fs-preview-other-name">{{ item.name || '文件' }}</span>
+        </div>
         <div class="qa-fs-preview-remove" @click="handleRemove(index)">
           <el-icon :size="12"><CircleClose /></el-icon>
         </div>
       </div>
-      <div
-        v-if="multiple || currentUrls.length === 0"
-        class="qa-fs-add-btn"
-        @click="handleOpen"
-      >
+      <div v-if="canAddMore" class="qa-fs-add-btn" @click="handleOpen">
         <el-icon :size="22"><Plus /></el-icon>
       </div>
     </div>
 
     <!-- 选择对话框 -->
-    <el-dialog
-      v-model="dialogVisible"
-      :title="`选择${fileType === 'image' ? '图片' : '视频'}`"
-      width="920px"
-    >
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="920px">
       <div class="qa-fs-layout">
         <!-- 分类侧栏 -->
         <div v-loading="categoryLoading" class="qa-fs-sidebar">
           <!-- 添加分组 -->
           <el-popover
+            v-if="updateCategory"
             :visible="addCategoryVisible"
             @update:visible="addCategoryVisible = $event"
             trigger="click"
@@ -79,29 +76,23 @@
               <input
                 ref="uploadInputRef"
                 type="file"
-                :accept="fileType === 'image' ? 'image/*' : 'video/*'"
+                :accept="uploadAccept"
                 multiple
                 class="qa-fs-hidden-input"
                 @change="handleUpload"
               />
-              <el-button type="primary" :loading="uploadLoading" @click="uploadInputRef?.click()" :icon="Plus">
+              <el-button v-if="upload" type="primary" :loading="uploadLoading" :icon="Plus" @click="uploadInputRef?.click()">
                 上传到此分组
               </el-button>
             </div>
-            <div class="flex items-center gap-[12px]"> 
-              <el-input
+            <el-input
               v-model="searchName"
               placeholder="搜索名称"
               clearable
               class="qa-fs-search"
               @keyup.enter="handleSearch"
               @clear="handleSearch"
-            >
-            <template #append>
-              <el-button type="primary" plain :icon="Search" @click="handleSearch" />
-            </template>
-          </el-input>
-            </div>
+            />
           </div>
 
           <!-- 文件网格 -->
@@ -112,12 +103,18 @@
                 v-for="item in fileList"
                 :key="item._id"
                 class="qa-fs-card"
-                :class="{ 'is-selected': tempSelectedIds.includes(item._id) }"
+                :class="{
+                  'is-selected': tempSelectedIds.includes(item._id),
+                  'is-disabled': !tempSelectedIds.includes(item._id) && isMultiple && multipleLimit > 0 && tempSelectedIds.length >= multipleLimit,
+                }"
                 @click="toggleSelect(item)"
               >
                 <div class="qa-fs-card-preview">
-                  <el-image v-if="fileType === 'image'" :src="item.url" fit="cover" class="qa-fs-card-media" />
-                  <video v-else :src="item.url" class="qa-fs-card-media" muted preload="metadata" />
+                  <el-image v-if="fileType === 'image'" :src="item.url" :fit="imageFit" class="qa-fs-card-media" />
+                  <video v-else-if="fileType === 'video'" :src="item.url" class="qa-fs-card-media" muted preload="metadata" />
+                  <div v-else class="qa-fs-card-other">
+                    <el-icon :size="28"><Document /></el-icon>
+                  </div>
                 </div>
                 <div class="qa-fs-card-name" :title="item.original_name || item.display_name || '未命名'">
                   {{ item.original_name || item.display_name || '未命名' }}
@@ -126,25 +123,23 @@
             </div>
           </div>
 
-          <!-- 分页 -->
-          <div class="qa-fs-pagination">
-            <el-pagination
-              :current-page="query.pageIndex"
-              :page-size="query.pageSize"
-              :total="total"
-              background
-              layout="total, prev, pager, next"
-              @current-change="(page) => { query.pageIndex = page; loadFileList() }"
-            />
-          </div>
         </div>
       </div>
 
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleConfirm">
-          确认{{ tempSelectedIds.length > 0 ? `（已选 ${tempSelectedIds.length} 个）` : '' }}
-        </el-button>
+        <div class="qa-fs-footer">
+          <el-pagination
+            :current-page="query.pageIndex"
+            :page-size="query.pageSize"
+            :total="total"
+            background
+            layout="total, prev, pager, next"
+            @current-change="(page) => { query.pageIndex = page; loadFileList() }"
+          />
+          <el-button type="primary" @click="handleConfirm">
+            {{ `选中 ${tempSelectedIds.length}/${multipleLimit}` }}
+          </el-button>
+        </div>
       </template>
     </el-dialog>
 
@@ -172,29 +167,13 @@
         </div>
 
         <div class="qa-fs-progress-list">
-          <div
-            v-for="task in uploadTasks"
-            :key="task.id"
-            class="qa-fs-progress-item"
-          >
+          <div v-for="task in uploadTasks" :key="task.id" class="qa-fs-progress-item">
             <div class="qa-fs-progress-item-inner">
               <div class="qa-fs-progress-item-preview">
-                <el-image
-                  v-if="task.previewUrl && task.isImage"
-                  :src="task.previewUrl"
-                  fit="cover"
-                  class="qa-fs-progress-item-media"
-                />
-                <video
-                  v-else-if="task.previewUrl"
-                  :src="task.previewUrl"
-                  class="qa-fs-progress-item-media"
-                  muted
-                  playsinline
-                  preload="metadata"
-                />
+                <el-image v-if="task.previewUrl && task.isImage" :src="task.previewUrl" fit="cover" class="qa-fs-progress-item-media" />
+                <video v-else-if="task.previewUrl && task.isVideo" :src="task.previewUrl" class="qa-fs-progress-item-media" muted playsinline preload="metadata" />
                 <div v-else class="qa-fs-progress-item-empty">
-                  <el-icon><Plus /></el-icon>
+                  <el-icon><Document /></el-icon>
                 </div>
               </div>
               <div class="qa-fs-progress-item-main">
@@ -215,7 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import { CircleClose, Plus, Search } from '@element-plus/icons-vue'
+import { CircleClose, Plus, Document } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import http from '@/utils/axios'
 
@@ -224,6 +203,12 @@ interface FileItem {
   url: string
   original_name?: string
   display_name?: string
+}
+
+interface PreviewItem {
+  id: string
+  url: string
+  name?: string
 }
 
 interface CategoryItem {
@@ -236,6 +221,7 @@ interface UploadTaskItem {
   name: string
   previewUrl: string
   isImage: boolean
+  isVideo: boolean
   progress: number
   loaded: number
   total: number
@@ -245,12 +231,27 @@ interface UploadTaskItem {
 
 const props = withDefaults(defineProps<{
   modelValue?: string | string[] | null
-  fileType?: 'image' | 'video'
-  multiple?: boolean
+  fileType?: 'image' | 'video' | 'other'
+  multiple?: boolean | number
+  multipleLimit?: number
+  defaultCategory?: string
+  upload?: boolean
+  updateCategory?: boolean
+  imageFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down'
+  fileSize?: number
+  sizeUnit?: 'KB' | 'MB' | 'GB'
+  returnType?: 'url' | 'id'
 }>(), {
   modelValue: null,
   fileType: 'image',
   multiple: false,
+  multipleLimit: 1,
+  defaultCategory: '',
+  upload: true,
+  updateCategory: true,
+  imageFit: 'cover',
+  sizeUnit: 'MB',
+  returnType: 'url',
 })
 
 const emit = defineEmits<{
@@ -260,10 +261,76 @@ const emit = defineEmits<{
 const CATEGORY_ALL = 'all'
 const CATEGORY_UNGROUPED = 'null'
 
-const currentUrls = computed<string[]>(() => {
-  const v = props.modelValue
-  if (Array.isArray(v)) return v
-  return v ? [v] : []
+const isMultiple = computed(() => Boolean(props.multiple))
+
+// 有效上传 accept
+const uploadAccept = computed(() => {
+  if (props.fileType === 'image') return 'image/*'
+  if (props.fileType === 'video') return 'video/*'
+  return '*/*'
+})
+
+// 对话框标题
+const dialogTitle = computed(() => {
+  const map = { image: '图片', video: '视频', other: '文件' }
+  return `选择${map[props.fileType] ?? '文件'}`
+})
+
+// ---- 预览文件列表（供外部预览区显示） ----
+const previewFiles = ref<PreviewItem[]>([])
+
+// 从 modelValue 解析/加载预览项
+const syncPreviewFiles = async (val: string | string[] | null | undefined) => {
+  const rawIds: string[] = Array.isArray(val) ? val : (val ? [val] : [])
+  if (!rawIds.length) {
+    previewFiles.value = []
+    return
+  }
+
+  if (props.returnType === 'url') {
+    previewFiles.value = rawIds.map(url => ({ id: url, url, name: url.split('/').pop() || '' }))
+    return
+  }
+
+  // returnType === 'id'：已有缓存的直接复用，缺失的批量拉取
+  const cached = previewFiles.value
+  const missingIds = rawIds.filter(id => !cached.some(f => f.id === id))
+  let allItems = [...cached]
+
+  if (missingIds.length) {
+    try {
+      const res = await http.request({
+        url: '/app/admin/system/systemFile/systemFile/files/getList',
+        method: 'post',
+        data: {
+          formData: { _id: missingIds },
+          columns: [{ key: '_id', mode: 'in' }],
+          pageIndex: 1,
+          pageSize: missingIds.length,
+        },
+      })
+      const rows: any[] = res?.data?.data?.rows || []
+      allItems = [
+        ...allItems,
+        ...rows.map(item => ({
+          id: String(item._id),
+          url: item.url,
+          name: item.original_name || item.display_name || '',
+        })),
+      ]
+    } catch { /* 拉取失败时降级显示 ID */ }
+  }
+
+  previewFiles.value = rawIds.map(id => allItems.find(f => f.id === id) ?? { id, url: '', name: id })
+}
+
+watch(() => props.modelValue, syncPreviewFiles, { immediate: true })
+
+// 是否还能继续添加
+const canAddMore = computed(() => {
+  if (!isMultiple.value) return previewFiles.value.length === 0
+  if (props.multipleLimit > 0) return previewFiles.value.length < props.multipleLimit
+  return true
 })
 
 // ---- 选择对话框 ----
@@ -344,17 +411,19 @@ const searchName = ref('')
 const loadFileList = async () => {
   fileLoading.value = true
   try {
+    const formData: Record<string, any> = {
+      category_id: getCategoryFilter(),
+      original_name: searchName.value,
+    }
+    if (props.fileType !== 'other') formData.type = props.fileType
+
     const res = await http.request({
       url: '/app/admin/system/systemFile/systemFile/files/getList',
       method: 'post',
       data: {
-        formData: {
-          type: props.fileType,
-          category_id: getCategoryFilter(),
-          original_name: searchName.value,
-        },
+        formData,
         columns: [
-          { key: 'type', mode: '=' },
+          ...(props.fileType !== 'other' ? [{ key: 'type', mode: '=' }] : []),
           { key: 'category_id', mode: '=' },
           { key: 'original_name', mode: '%%' },
         ],
@@ -385,17 +454,17 @@ const totalUploadProgress = computed(() => {
   if (!uploadTasks.value.length) return 0
   const totalBytes = uploadTasks.value.reduce((sum, t) => sum + (t.total > 0 ? t.total : 1), 0)
   const loadedBytes = uploadTasks.value.reduce((sum, t) => {
-    const taskTotal = t.total > 0 ? t.total : 1
-    if (t.status === 'success' || t.status === 'error') return sum + taskTotal
-    return sum + Math.min(t.loaded, taskTotal)
+    const tt = t.total > 0 ? t.total : 1
+    if (t.status === 'success' || t.status === 'error') return sum + tt
+    return sum + Math.min(t.loaded, tt)
   }, 0)
   return totalBytes > 0 ? Math.min(100, Math.round((loadedBytes / totalBytes) * 100)) : 0
 })
 
 const totalUploadCountProgress = computed(() => {
-  const total = uploadTasks.value.length
+  const tot = uploadTasks.value.length
   const done = uploadTasks.value.filter(t => t.status === 'success' || t.status === 'error' || t.progress >= 100).length
-  return `${done}/${total}`
+  return `${done}/${tot}`
 })
 
 const updateUploadTask = (taskId: string, patch: Partial<UploadTaskItem>) => {
@@ -404,6 +473,17 @@ const updateUploadTask = (taskId: string, patch: Partial<UploadTaskItem>) => {
 
 const clearUploadTaskPreviews = () => {
   uploadTasks.value.forEach(t => { if (t.previewUrl) URL.revokeObjectURL(t.previewUrl) })
+}
+
+const checkFileSize = (file: File): boolean => {
+  if (!props.fileSize) return true
+  const unitMap: Record<string, number> = { KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 }
+  const limit = props.fileSize * (unitMap[props.sizeUnit] ?? unitMap.MB)
+  if (file.size > limit) {
+    ElMessage.warning(`文件"${file.name}"超过大小限制（${props.fileSize}${props.sizeUnit}）`)
+    return false
+  }
+  return true
 }
 
 const uploadSingleFile = (file: File, taskId: string) => {
@@ -416,9 +496,9 @@ const uploadSingleFile = (file: File, taskId: string) => {
     method: 'post',
     data: formData,
     openMessage: false,
-    onUploadProgress: (progressEvent: any) => {
-      const total = progressEvent.total || file.size || 0
-      const loaded = progressEvent.loaded || 0
+    onUploadProgress: (e: any) => {
+      const total = e.total || file.size || 0
+      const loaded = e.loaded || 0
       const progress = total > 0 ? Math.min(100, Math.round((loaded / total) * 100)) : 0
       updateUploadTask(taskId, { total, loaded, progress, status: 'uploading', statusText: `${progress}%` })
     },
@@ -427,8 +507,15 @@ const uploadSingleFile = (file: File, taskId: string) => {
 
 const handleUpload = async (event: Event) => {
   const input = event.target as HTMLInputElement
-  const files = Array.from(input.files || [])
-  if (!files.length) return
+  const allFiles = Array.from(input.files || [])
+  if (!allFiles.length) return
+
+  // 过滤超出大小限制的文件
+  const files = allFiles.filter(checkFileSize)
+  if (!files.length) {
+    if (input) input.value = ''
+    return
+  }
 
   uploadLoading.value = true
   uploadProgressVisible.value = true
@@ -436,8 +523,11 @@ const handleUpload = async (event: Event) => {
   uploadTasks.value = files.map((file, index) => ({
     id: `${Date.now()}-${index}`,
     name: file.name,
-    previewUrl: URL.createObjectURL(file),
+    previewUrl: file.type.startsWith('image/') || file.type.startsWith('video/')
+      ? URL.createObjectURL(file)
+      : '',
     isImage: file.type.startsWith('image/'),
+    isVideo: file.type.startsWith('video/'),
     progress: 0,
     loaded: 0,
     total: file.size || 0,
@@ -462,7 +552,6 @@ const handleUpload = async (event: Event) => {
 
     const successCount = results.filter(r => r.status === 'fulfilled').length
     const failCount = results.length - successCount
-
     if (successCount > 0) await loadFileList()
 
     if (failCount === 0) {
@@ -485,37 +574,60 @@ const tempSelectedIds = ref<string[]>([])
 const tempSelectedFiles = ref<FileItem[]>([])
 
 const toggleSelect = (item: FileItem) => {
-  if (props.multiple) {
-    if (tempSelectedIds.value.includes(item._id)) {
-      tempSelectedIds.value = tempSelectedIds.value.filter(i => i !== item._id)
-      tempSelectedFiles.value = tempSelectedFiles.value.filter(f => f._id !== item._id)
-    } else {
-      tempSelectedIds.value = [...tempSelectedIds.value, item._id]
-      tempSelectedFiles.value = [...tempSelectedFiles.value, item]
-    }
+  const alreadySelected = tempSelectedIds.value.includes(item._id)
+
+  if (!isMultiple.value) {
+    tempSelectedIds.value = alreadySelected ? [] : [item._id]
+    tempSelectedFiles.value = alreadySelected ? [] : [item]
+    return
+  }
+
+  if (alreadySelected) {
+    tempSelectedIds.value = tempSelectedIds.value.filter(i => i !== item._id)
+    tempSelectedFiles.value = tempSelectedFiles.value.filter(f => f._id !== item._id)
   } else {
-    const already = tempSelectedIds.value.includes(item._id)
-    tempSelectedIds.value = already ? [] : [item._id]
-    tempSelectedFiles.value = already ? [] : [item]
+    if (props.multipleLimit > 0 && tempSelectedIds.value.length >= props.multipleLimit) {
+      ElMessage.warning(`最多只能选择 ${props.multipleLimit} 个文件`)
+      return
+    }
+    tempSelectedIds.value = [...tempSelectedIds.value, item._id]
+    tempSelectedFiles.value = [...tempSelectedFiles.value, item]
   }
 }
 
 const handleConfirm = () => {
-  const urls = tempSelectedFiles.value.map(f => f.url)
-  emit('update:modelValue', props.multiple ? urls : (urls[0] ?? null))
+  const newItems: PreviewItem[] = tempSelectedFiles.value.map(f => ({
+    id: f._id,
+    url: f.url,
+    name: f.original_name || f.display_name || '',
+  }))
+
+  // 合并已有预览（追加模式）
+  const existingIds = previewFiles.value.map(f => f.id)
+  const toAdd = newItems.filter(f => !existingIds.includes(f.id))
+  previewFiles.value = [...previewFiles.value, ...toAdd]
+
+  // 计算返回值
+  const emitValue = (item: PreviewItem) => props.returnType === 'id' ? item.id : item.url
+  const result = previewFiles.value.map(emitValue)
+  emit('update:modelValue', isMultiple.value ? result : (result[0] ?? null))
+
   dialogVisible.value = false
 }
 
 // ---- 已选预览操作 ----
 const handleRemove = (index: number) => {
-  const newUrls = currentUrls.value.filter((_, i) => i !== index)
-  emit('update:modelValue', props.multiple ? newUrls : (newUrls[0] ?? null))
+  const newItems = previewFiles.value.filter((_, i) => i !== index)
+  previewFiles.value = newItems
+  const emitValue = (item: PreviewItem) => props.returnType === 'id' ? item.id : item.url
+  const result = newItems.map(emitValue)
+  emit('update:modelValue', isMultiple.value ? result : (result[0] ?? null))
 }
 
 // ---- 打开对话框 ----
 const handleOpen = async () => {
   dialogVisible.value = true
-  activeCategory.value = CATEGORY_ALL
+  activeCategory.value = props.defaultCategory || CATEGORY_ALL
   query.pageIndex = 1
   searchName.value = ''
   tempSelectedIds.value = []
@@ -547,6 +659,27 @@ const handleOpen = async () => {
   height: 100%;
   display: block;
   object-fit: cover;
+}
+
+.qa-fs-preview-other {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-secondary);
+}
+
+.qa-fs-preview-other-name {
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 72px;
+  text-align: center;
 }
 
 .qa-fs-preview-remove {
@@ -584,7 +717,7 @@ const handleOpen = async () => {
   }
 }
 
-/* ---- 选择对话框布局 ---- */
+/* ---- 对话框布局 ---- */
 .qa-fs-layout {
   display: flex;
   height: 520px;
@@ -687,8 +820,8 @@ const handleOpen = async () => {
 .qa-fs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 115px);
-  justify-content: space-between;
   gap: 12px;
+  justify-content: space-between;
   padding: 2px;
 }
 
@@ -710,6 +843,12 @@ const handleOpen = async () => {
     border-color: var(--el-color-primary);
     box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.12);
   }
+
+  &.is-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }
 
 .qa-fs-card-preview {
@@ -725,6 +864,15 @@ const handleOpen = async () => {
   object-fit: cover;
 }
 
+.qa-fs-card-other {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--el-text-color-secondary);
+}
+
 .qa-fs-card-name {
   padding: 4px 6px;
   font-size: 11px;
@@ -735,10 +883,14 @@ const handleOpen = async () => {
   line-height: 1.3;
 }
 
-.qa-fs-pagination {
+
+/* ---- 对话框 footer ---- */
+.qa-fs-footer {
   display: flex;
-  justify-content: flex-end;
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
 }
 
 /* ---- 上传进度弹窗 ---- */
@@ -840,7 +992,6 @@ const handleOpen = async () => {
 .qa-fs-progress-item-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   margin-bottom: 8px;
 }

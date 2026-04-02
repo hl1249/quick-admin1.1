@@ -136,7 +136,10 @@ const form = ref({
         "key": "menu_id",
         "title": "素材",
         "type": "file-select",
-        "width": 250
+        "width": 250,
+        multipleLimit:1,
+        multiple:false,
+        fileSize:1
       },
       {
         "key": "menu_id",
