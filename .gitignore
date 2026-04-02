@@ -4,6 +4,7 @@
 /build
 dist.*
 /deploy
+deploy.*
 
 # 日志
 logs
