@@ -137,11 +137,6 @@ const form = ref({
     action: '/app/admin/system/systemMenu/systemMenu/add',
     columns: [
       {
-        "key": "color",
-        "title": "菜单标识",
-        "type": "color",
-      },
-      {
         "key": "slider",
         "title": "菜单标识",
         "type": "slider",

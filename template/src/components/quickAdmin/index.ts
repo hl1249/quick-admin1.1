@@ -11,6 +11,9 @@ import qaAreaCascader from './base/qaAreaCascader.vue'
 import qaIconSelect from './base/qaIconSelect.vue'
 import qaCascader from './base/qaCascader.vue'
 import qaTableSelect from './base/qaTableSelect.vue'
+import qaFileUpload from './base/qaFileUpload.vue'
+import qaRemoteSelect from './base/qaRemoteSelect.vue'
+import qaArrayString from './base/qaArrayString.vue'
 
 export default {
   install(app: App) {
@@ -25,5 +28,8 @@ export default {
     app.component('qaIconSelect', qaIconSelect)
     app.component('qaCascader', qaCascader)
     app.component('qaTableSelect', qaTableSelect)
+    app.component('qaFileUpload', qaFileUpload)
+    app.component('qaRemoteSelect', qaRemoteSelect)
+    app.component('qaArrayString', qaArrayString)
   }
 }
