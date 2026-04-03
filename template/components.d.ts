@@ -64,6 +64,7 @@ declare module 'vue' {
     QaFormItem: typeof import('./src/components/quickAdmin/form/qaFormItem.vue')['default']
     QaIconSelect: typeof import('./src/components/quickAdmin/base/qaIconSelect.vue')['default']
     QaJsonEditor: typeof import('./src/components/quickAdmin/form/qaJsonEditor.vue')['default']
+    QaMapPicker: typeof import('./src/components/quickAdmin/base/qaMapPicker.vue')['default']
     QaRemoteSelect: typeof import('./src/components/quickAdmin/base/qaRemoteSelect.vue')['default']
     QaTable: typeof import('./src/components/quickAdmin/table/qaTable.vue')['default']
     QaTableColumn: typeof import('./src/components/quickAdmin/base/qaTableColumn.vue')['default']

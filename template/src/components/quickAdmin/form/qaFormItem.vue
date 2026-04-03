@@ -592,6 +592,17 @@ export default defineComponent({
       />
     )
 
+    /* ---------------- map-picker ---------------- */
+    const renderMapPicker = (p: RendererParams) => (
+      <qa-map-picker
+        modelValue={p.value}
+        onUpdate:modelValue={p.onChange}
+        disabled={isDisabled.value}
+        placeholder={p.placeholder}
+        {...(p.itemProps ?? {})}
+      />
+    )
+
     /* ---------------- 映射表（静态，不依赖响应式状态） ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -620,6 +631,7 @@ export default defineComponent({
       'table-select': renderTableSelect,
       'address': renderAreaCascader,
       'area-cascader': renderAreaCascader,
+      map: renderMapPicker,
       tag: renderTag,
     }
 
