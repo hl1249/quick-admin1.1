@@ -173,6 +173,12 @@ export interface MapValue {
   area: AreaItem
 }
 
+interface GpsPositionResult {
+  lat: number
+  lng: number
+  source: 'system' | 'fallback'
+}
+
 /* ---------- Props ---------- */
 const props = withDefaults(
   defineProps<{
@@ -225,6 +231,7 @@ const locating = ref(false)
 
 let mapInstance: any = null
 let myLocationMarker: any = null
+let myLocation: { lat: number; lng: number } | null = null
 let currentLat: number | null = null
 let currentLng: number | null = null
 let searchTimer: ReturnType<typeof setTimeout> | null = null
@@ -354,12 +361,38 @@ function onClear() {
 }
 
 /* ---------- 当前位置标记 ---------- */
-const MY_LOCATION_SVG = encodeURIComponent(
-  `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">` +
-  `<circle cx="14" cy="14" r="13" fill="rgba(66,133,244,0.18)" stroke="#4285F4" stroke-width="1.5"/>` +
-  `<circle cx="14" cy="14" r="6" fill="#4285F4" stroke="#fff" stroke-width="2.5"/>` +
-  `</svg>`
-)
+function createLocationIconUrl(): string {
+  const S = 32
+  const canvas = document.createElement('canvas')
+  canvas.width = S
+  canvas.height = S
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return ''
+  const cx = S / 2, cy = S / 2
+  // 外光晕
+  ctx.beginPath()
+  ctx.arc(cx, cy, S / 2 - 1, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(66,133,244,0.22)'
+  ctx.fill()
+  // 外环
+  ctx.beginPath()
+  ctx.arc(cx, cy, S / 2 - 2, 0, Math.PI * 2)
+  ctx.strokeStyle = '#4285F4'
+  ctx.lineWidth = 1.5
+  ctx.stroke()
+  // 内蓝点
+  ctx.beginPath()
+  ctx.arc(cx, cy, 7, 0, Math.PI * 2)
+  ctx.fillStyle = '#4285F4'
+  ctx.fill()
+  // 白色描边
+  ctx.beginPath()
+  ctx.arc(cx, cy, 7, 0, Math.PI * 2)
+  ctx.strokeStyle = '#ffffff'
+  ctx.lineWidth = 3
+  ctx.stroke()
+  return canvas.toDataURL('image/png')
+}
 
 function setMyLocationMarker(lat: number, lng: number) {
   const qq = (window as any).qq
@@ -370,15 +403,14 @@ function setMyLocationMarker(lat: number, lng: number) {
     myLocationMarker.setVisible(true)
     return
   }
+  const iconUrl = createLocationIconUrl()
+  const size = new qq.maps.Size(32, 32)
+  const origin = new qq.maps.Point(0, 0)
+  const anchor = new qq.maps.Point(16, 16)
   myLocationMarker = new qq.maps.Marker({
     position: latlng,
     map: mapInstance,
-    icon: new qq.maps.MarkerImage(
-      `data:image/svg+xml;charset=UTF-8,${MY_LOCATION_SVG}`,
-      new qq.maps.Size(28, 28),
-      new qq.maps.Point(0, 0),
-      new qq.maps.Point(14, 14),
-    ),
+    icon: new qq.maps.MarkerImage(iconUrl, size, origin, anchor),
     title: '我的位置',
     zIndex: 200,
   })
@@ -397,13 +429,19 @@ async function locateMe() {
   try {
     const pos = await getGPSPosition()
     const qq = (window as any).qq
+    if (pos.source === 'system') {
+      myLocation = { lat: pos.lat, lng: pos.lng }
+      setMyLocationMarker(pos.lat, pos.lng)
+    } else {
+      myLocation = null
+      clearMyLocationMarker()
+    }
     programmaticMoveTarget = {
       lat: pos.lat,
       lng: pos.lng,
       expiresAt: Date.now() + PROGRAMMATIC_MOVE_TTL_MS,
     }
     mapInstance.setCenter(new qq.maps.LatLng(pos.lat, pos.lng))
-    setMyLocationMarker(pos.lat, pos.lng)
     selectedId.value = null
     currentLat = pos.lat
     currentLng = pos.lng
@@ -452,6 +490,11 @@ async function initMap() {
   if (!container) return
 
   const pos = await getGPSPosition()
+  if (pos.source === 'system') {
+    myLocation = { lat: pos.lat, lng: pos.lng }
+  } else {
+    myLocation = null
+  }
   const initLat = props.modelValue?.latitude ?? props.defaultLocation?.latitude ?? pos.lat
   const initLng = props.modelValue?.longitude ?? props.defaultLocation?.longitude ?? pos.lng
 
@@ -466,6 +509,10 @@ async function initMap() {
 
   qq.maps.event.addListener(mapInstance, 'dragend', onMapMoved)
   qq.maps.event.addListener(mapInstance, 'zoomend', onMapMoved)
+
+  if (myLocation) {
+    setMyLocationMarker(myLocation.lat, myLocation.lng)
+  }
 
   setTimeout(onMapMoved, 300)
 }
@@ -500,14 +547,18 @@ function translateWgs84ToGcj02(lat: number, lng: number): Promise<{ lat: number;
   })
 }
 
-function getGPSPosition(): Promise<{ lat: number; lng: number }> {
+function getGPSPosition(): Promise<GpsPositionResult> {
   return new Promise((resolve) => {
-    if (!navigator.geolocation) return resolve({ lat: 30.2741, lng: 120.1551 })
+    if (!navigator.geolocation) {
+      return resolve({ lat: 30.2741, lng: 120.1551, source: 'fallback' })
+    }
     navigator.geolocation.getCurrentPosition(
       (p) => {
-        void translateWgs84ToGcj02(p.coords.latitude, p.coords.longitude).then(resolve)
+        void translateWgs84ToGcj02(p.coords.latitude, p.coords.longitude).then(({ lat, lng }) => {
+          resolve({ lat, lng, source: 'system' })
+        })
       },
-      () => resolve({ lat: 30.2741, lng: 120.1551 }),
+      () => resolve({ lat: 30.2741, lng: 120.1551, source: 'fallback' }),
       { timeout: 6000, maximumAge: 60000 }
     )
   })
@@ -840,6 +891,7 @@ watch(visible, (val) => {
   if (!val) {
     createPlacesRequestSeq()
     clearMyLocationMarker()
+    myLocation = null
     mapInstance = null
     programmaticMoveTarget = null
     list.value = []
@@ -1112,7 +1164,7 @@ watch(visible, (val) => {
 /* ---------- 定位按钮 ---------- */
 .qa-map-locate-btn {
   position: absolute;
-  right: 12px;
+  left: 12px;
   bottom: 16px;
   width: 40px;
   height: 40px;
