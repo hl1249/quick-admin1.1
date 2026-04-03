@@ -16,7 +16,13 @@
       <el-icon ><CircleClose /></el-icon>
     </el-button>
   </div>
-
+  <div v-if="staticMapUrl" class="qa-map-static-preview">
+    <img :src="staticMapUrl" class="qa-map-static-preview__img" alt="地图预览" />
+    <div class="qa-map-static-preview__label">
+      <el-icon :size="12" style="flex-shrink:0;"><Location /></el-icon>
+      <span>{{ modelValue?.name }}</span>
+    </div>
+  </div>
   <!-- 全屏选择器（传送到 body） -->
   <teleport to="body">
     <transition name="qa-map-fade">
@@ -115,6 +121,14 @@
             <div class="qa-map-pin__dot"></div>
             <div class="qa-map-pin__shadow"></div>
           </div>
+
+          <!-- 定位到当前位置按钮 -->
+          <button class="qa-map-locate-btn" :class="{ 'is-locating': locating }" :disabled="locating" @click="locateMe" title="定位到当前位置">
+            <el-icon :class="{ 'is-loading': locating }">
+              <Aim v-if="!locating" />
+              <Loading v-else />
+            </el-icon>
+          </button>
         </div>
 
         <!-- 底部预览 -->
@@ -140,7 +154,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
-import { Location, CircleClose, Search, Loading, CircleCheck } from '@element-plus/icons-vue'
+import { Location, CircleClose, Search, Loading, CircleCheck, Aim } from '@element-plus/icons-vue'
 
 /* ---------- 类型 ---------- */
 export interface AreaItem {
@@ -166,15 +180,32 @@ const props = withDefaults(
     placeholder?: string
     disabled?: boolean
     mapKey?: string
+    defaultLocation?: { latitude: number; longitude: number }
   }>(),
   {
-    mapKey: '3EXBZ-3NYCW-L5MRG-ONN2B-FJYR6-H7BSU',
+    mapKey: '3BEBZ-LRPW6-RFTS5-MVFDZ-GN7JV-XSFKZ',
   }
 )
 
 const emit = defineEmits<{
   'update:modelValue': [val: MapValue | null]
 }>()
+
+/* ---------- 静态地图预览 ---------- */
+const staticMapUrl = computed(() => {
+  const v = props.modelValue
+  if (!v?.latitude || !v?.longitude) return ''
+  const lat = v.latitude
+  const lng = v.longitude
+  return (
+    `https://apis.map.qq.com/ws/staticmap/v2/` +
+    `?key=${props.mapKey}` +
+    `&size=320*160` +
+    `&center=${lat},${lng}` +
+    `&zoom=15` +
+    `&markers=color:red|label:A|${lat},${lng}`
+  )
+})
 
 /* ---------- 状态 ---------- */
 const visible = ref(false)
@@ -185,12 +216,15 @@ const loadingMore = ref(false)
 const hasMore = ref(true)
 const currentPage = ref(1)
 const listScrollRef = ref<HTMLElement | null>(null)
+const geocodePois = ref<any[]>([])
 const selectedId = ref<string | null>(null)
 const pendingValue = ref<MapValue | null>(null)
 const geoLoading = ref(false)
 const confirming = ref(false)
+const locating = ref(false)
 
 let mapInstance: any = null
+let myLocationMarker: any = null
 let currentLat: number | null = null
 let currentLng: number | null = null
 let searchTimer: ReturnType<typeof setTimeout> | null = null
@@ -203,9 +237,12 @@ const RGEO_NEAR_RADIUS_M = 3000
 const RGEO_NEAR_POI_POLICY = 3
 /** 地图中心与列表 POI 距离小于此值（米）视为同一地点，用于右侧高亮 */
 const LIST_CENTER_MATCH_M = 80
-/** 附近列表请求失败后的重试间隔；只要该轮请求仍有效，就会持续重试直到拿到 status 0 结果 */
-const PLACES_120_RETRY_MS = 1100
+/** 附近列表临时失败后的重试间隔，避免限频时直接跳页 */
+const PLACES_RETRY_MS = 1100
+const PROGRAMMATIC_MOVE_MATCH_M = 5
+const PROGRAMMATIC_MOVE_TTL_MS = 1500
 let placesRequestSeq = 0
+let programmaticMoveTarget: { lat: number; lng: number; expiresAt: number } | null = null
 
 function sleepMs(ms: number) {
   return new Promise<void>((r) => setTimeout(r, ms))
@@ -218,6 +255,61 @@ function createPlacesRequestSeq() {
 
 function isPlacesRequestActive(requestSeq: number) {
   return visible.value && requestSeq === placesRequestSeq
+}
+
+function isProgrammaticMapMove(lat: number, lng: number) {
+  if (!programmaticMoveTarget) return false
+  const isExpired = Date.now() > programmaticMoveTarget.expiresAt
+  if (isExpired) {
+    programmaticMoveTarget = null
+    return false
+  }
+  const matched =
+    calcDistance(lat, lng, programmaticMoveTarget.lat, programmaticMoveTarget.lng) <=
+    PROGRAMMATIC_MOVE_MATCH_M
+  if (matched) {
+    programmaticMoveTarget = null
+  }
+  return matched
+}
+
+function getPlaceMergeKey(item: any) {
+  if (item?.id != null && item.id !== '') return String(item.id)
+  const lat = item?.location?.lat ?? ''
+  const lng = item?.location?.lng ?? ''
+  return [
+    item?.title ?? '',
+    item?.address ?? '',
+    lat,
+    lng,
+  ].join('__')
+}
+
+function normalizePoisForList(rows: any[], lat: number, lng: number) {
+  return rows.map((p: any) => {
+    const item = { ...p }
+    if (item.location) {
+      item._distance = calcDistance(lat, lng, item.location.lat, item.location.lng)
+    }
+    if (item.id == null || item.id === '') {
+      item.id = getPlaceMergeKey(item)
+    }
+    return item
+  })
+}
+
+function mergePlaceLists(...groups: any[][]) {
+  const merged: any[] = []
+  const seen = new Set<string>()
+  for (const group of groups) {
+    for (const item of group) {
+      const key = getPlaceMergeKey(item)
+      if (seen.has(key)) continue
+      seen.add(key)
+      merged.push(item)
+    }
+  }
+  return merged
 }
 
 const mapCenterLat = ref<number | null>(null)
@@ -261,6 +353,79 @@ function onClear() {
   emit('update:modelValue', null)
 }
 
+/* ---------- 当前位置标记 ---------- */
+const MY_LOCATION_SVG = encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">` +
+  `<circle cx="14" cy="14" r="13" fill="rgba(66,133,244,0.18)" stroke="#4285F4" stroke-width="1.5"/>` +
+  `<circle cx="14" cy="14" r="6" fill="#4285F4" stroke="#fff" stroke-width="2.5"/>` +
+  `</svg>`
+)
+
+function setMyLocationMarker(lat: number, lng: number) {
+  const qq = (window as any).qq
+  if (!qq?.maps || !mapInstance) return
+  const latlng = new qq.maps.LatLng(lat, lng)
+  if (myLocationMarker) {
+    myLocationMarker.setPosition(latlng)
+    myLocationMarker.setVisible(true)
+    return
+  }
+  myLocationMarker = new qq.maps.Marker({
+    position: latlng,
+    map: mapInstance,
+    icon: new qq.maps.MarkerImage(
+      `data:image/svg+xml;charset=UTF-8,${MY_LOCATION_SVG}`,
+      new qq.maps.Size(28, 28),
+      new qq.maps.Point(0, 0),
+      new qq.maps.Point(14, 14),
+    ),
+    title: '我的位置',
+    zIndex: 200,
+  })
+}
+
+function clearMyLocationMarker() {
+  if (myLocationMarker) {
+    myLocationMarker.setMap(null)
+    myLocationMarker = null
+  }
+}
+
+async function locateMe() {
+  if (!mapInstance || locating.value) return
+  locating.value = true
+  try {
+    const pos = await getGPSPosition()
+    const qq = (window as any).qq
+    programmaticMoveTarget = {
+      lat: pos.lat,
+      lng: pos.lng,
+      expiresAt: Date.now() + PROGRAMMATIC_MOVE_TTL_MS,
+    }
+    mapInstance.setCenter(new qq.maps.LatLng(pos.lat, pos.lng))
+    setMyLocationMarker(pos.lat, pos.lng)
+    selectedId.value = null
+    currentLat = pos.lat
+    currentLng = pos.lng
+    mapCenterLat.value = pos.lat
+    mapCenterLng.value = pos.lng
+
+    const seq = createPlacesRequestSeq()
+    currentPage.value = 1
+    hasMore.value = true
+    loadingMore.value = false
+    geocodePois.value = []
+    list.value = []
+    scrollListToTop()
+    loading.value = true
+    reverseGeocode(pos.lat, pos.lng, '').finally(() => {
+      if (isPlacesRequestActive(seq)) loading.value = false
+    })
+  } finally {
+    locating.value = false
+  }
+}
+
 /* ---------- 地图脚本加载 ---------- */
 let mapScriptReady = false
 
@@ -287,8 +452,8 @@ async function initMap() {
   if (!container) return
 
   const pos = await getGPSPosition()
-  const initLat = props.modelValue?.latitude ?? pos.lat
-  const initLng = props.modelValue?.longitude ?? pos.lng
+  const initLat = props.modelValue?.latitude ?? props.defaultLocation?.latitude ?? pos.lat
+  const initLng = props.modelValue?.longitude ?? props.defaultLocation?.longitude ?? pos.lng
 
   const qq = (window as any).qq
   mapInstance = new qq.maps.Map(container, {
@@ -356,16 +521,26 @@ function onMapMoved() {
   const lng = c.getLng()
   mapCenterLat.value = lat
   mapCenterLng.value = lng
+  if (isProgrammaticMapMove(lat, lng)) return
   selectedId.value = null
+  currentLat = lat
+  currentLng = lng
 
-  // 防抖：停止移动 400ms 后触发逆地理编码
+  // 防抖：停止移动 400ms 后用一次 geocoder 同时完成逆地理编码 + 附近列表
   if (geoTimer) clearTimeout(geoTimer)
   geoTimer = setTimeout(() => {
-    reverseGeocode(lat, lng, '')
+    const seq = createPlacesRequestSeq()
+    currentPage.value = 1
+    hasMore.value = true
+    loadingMore.value = false
+    geocodePois.value = []
+    list.value = []
+    scrollListToTop()
+    loading.value = true
+    reverseGeocode(lat, lng, '').finally(() => {
+      if (isPlacesRequestActive(seq)) loading.value = false
+    })
   }, 400)
-
-  // 立即刷新附近列表
-  loadFirst(lat, lng)
 }
 
 /* ---------- 逆地理失败时仍允许选点（省市区为空）---------- */
@@ -384,7 +559,7 @@ function applyGeocodeFallback(lat: number, lng: number, placeName: string, place
 }
 
 /* ---------- JSONP 逆地理编码（获取省市区代码）---------- */
-function reverseGeocode(lat: number, lng: number, placeName: string, placeAddr?: string) {
+function reverseGeocode(lat: number, lng: number, placeName: string, placeAddr?: string, updateList = true) {
   geoLoading.value = true
   return new Promise<void>((resolve) => {
     const cb = '__qa_rgeo_' + Date.now()
@@ -401,13 +576,13 @@ function reverseGeocode(lat: number, lng: number, placeName: string, placeAddr?:
         const province = r.ad_info?.province ?? r.address_component?.province ?? ''
         const city = r.ad_info?.city ?? r.address_component?.city ?? ''
         const district = r.ad_info?.district ?? r.address_component?.district ?? ''
+        const pois = Array.isArray(r.pois) ? normalizePoisForList(r.pois, lat, lng) : []
 
         const provinceCode = adcode ? adcode.slice(0, 2) + '0000' : ''
         const cityCode = adcode ? adcode.slice(0, 4) + '00' : ''
         const areaCode = adcode
 
-        const nearestPoi =
-          Array.isArray(r.pois) && r.pois.length ? r.pois[0] : null
+        const nearestPoi = pois.length ? pois[0] : null
         // name：已选点 > 最近周边 POI > 推荐描述
         const name =
           placeName ||
@@ -427,6 +602,13 @@ function reverseGeocode(lat: number, lng: number, placeName: string, placeAddr?:
           province: { code: provinceCode, name: province },
           city: { code: cityCode, name: city },
           area: { code: areaCode, name: district },
+        }
+        if (updateList) {
+          geocodePois.value = pois
+          if (visible.value && !keyword.value.trim()) {
+            list.value = mergePlaceLists(pois)
+            hasMore.value = pois.length > 0
+          }
         }
       } else if (res?.status === 120) {
         // Key 每秒请求量已达上限：仍写入坐标与名称，确认可用；省市区需业务侧容忍为空
@@ -520,17 +702,12 @@ function fetchPlacesOnce(kw: string, lat: number, lng: number, page: number): Pr
   })
 }
 
-/**
- * 附近列表：status 0（含列表为空）一次即结束；其余异常（含 key 失效、限频、脚本失败）持续重试。
- * 返回 null 表示该轮请求已失效（例如关闭弹窗、地图位置变化、重新搜索）。
- * 返回 any[] 表示成功（可能为空，代表真的没有更多数据）。
- */
 async function fetchPlaces(kw: string, lat: number, lng: number, page = 1, requestSeq: number): Promise<any[] | null> {
   while (isPlacesRequestActive(requestSeq)) {
     const r = await fetchPlacesOnce(kw, lat, lng, page)
     if (!isPlacesRequestActive(requestSeq)) return null
     if (r.kind === 'ok') return r.rows
-    await sleepMs(PLACES_120_RETRY_MS + Math.floor(Math.random() * 400))
+    await sleepMs(PLACES_RETRY_MS + Math.floor(Math.random() * 400))
   }
   return null
 }
@@ -559,12 +736,15 @@ async function loadFirst(lat: number, lng: number) {
   hasMore.value = true
   loadingMore.value = false
   loading.value = true
+  geocodePois.value = []
   scrollListToTop()
   try {
     const data = await fetchPlaces(keyword.value, lat, lng, 1, requestSeq)
     if (!isPlacesRequestActive(requestSeq) || data === null) return
-    list.value = data
-    hasMore.value = true
+    list.value = keyword.value.trim()
+      ? mergePlaceLists(data)
+      : mergePlaceLists(geocodePois.value, data)
+    hasMore.value = data.length > 0
   } finally {
     if (isPlacesRequestActive(requestSeq)) {
       loading.value = false
@@ -573,18 +753,21 @@ async function loadFirst(lat: number, lng: number) {
 }
 
 async function loadMore() {
-  if (loadingMore.value || loading.value || !hasMore.value || currentLat === null) return
+  if (loadingMore.value || loading.value || !hasMore.value || currentLat === null || currentLng === null) return
   const requestSeq = placesRequestSeq
   if (!isPlacesRequestActive(requestSeq)) return
   loadingMore.value = true
+  const nextPage = currentPage.value + 1
   try {
-    const nextPage = currentPage.value + 1
     const data = await fetchPlaces(keyword.value, currentLat!, currentLng!, nextPage, requestSeq)
     if (!isPlacesRequestActive(requestSeq) || data === null) return
     currentPage.value = nextPage
-    hasMore.value = true
+    hasMore.value = data.length > 0
     if (data.length) {
-      list.value = [...list.value, ...data]
+      // 无关键词走 geocoder/v1，直接追加不去重
+      list.value = keyword.value.trim()
+        ? mergePlaceLists(list.value, data)
+        : [...list.value, ...data]
     }
   } finally {
     if (isPlacesRequestActive(requestSeq)) {
@@ -615,10 +798,15 @@ async function selectPlace(item: any) {
   mapCenterLng.value = lng
 
   const qq = (window as any).qq
+  programmaticMoveTarget = {
+    lat,
+    lng,
+    expiresAt: Date.now() + PROGRAMMATIC_MOVE_TTL_MS,
+  }
   mapInstance.setCenter(new qq.maps.LatLng(lat, lng))
 
-  // 用逆地理编码填充省市区代码
-  await reverseGeocode(lat, lng, item.title, item.address)
+  // 用逆地理编码填充省市区代码，不更新右侧列表
+  await reverseGeocode(lat, lng, item.title, item.address, false)
 }
 
 /* ---------- 确认 ---------- */
@@ -651,8 +839,11 @@ function formatDistance(d: number) {
 watch(visible, (val) => {
   if (!val) {
     createPlacesRequestSeq()
+    clearMyLocationMarker()
     mapInstance = null
+    programmaticMoveTarget = null
     list.value = []
+    geocodePois.value = []
     keyword.value = ''
     pendingValue.value = null
     selectedId.value = null
@@ -670,7 +861,6 @@ watch(visible, (val) => {
 <style scoped>
 /* ---------- 触发区域 ---------- */
 .qa-map-picker {
-  display: inline-flex;
   align-items: center;
 }
 
@@ -919,6 +1109,41 @@ watch(visible, (val) => {
   filter: blur(2px);
 }
 
+/* ---------- 定位按钮 ---------- */
+.qa-map-locate-btn {
+  position: absolute;
+  right: 12px;
+  bottom: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--el-color-primary);
+  z-index: 100;
+  transition: box-shadow 0.2s, color 0.2s;
+}
+
+.qa-map-locate-btn:hover:not(:disabled) {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  color: var(--el-color-primary-dark-2);
+}
+
+.qa-map-locate-btn:disabled {
+  cursor: not-allowed;
+  color: #c0c4cc;
+}
+
+.qa-map-locate-btn.is-locating {
+  color: var(--el-color-primary);
+}
+
 /* ---------- 底部信息条 ---------- */
 .qa-map-bottom {
   flex-shrink: 0;
@@ -990,5 +1215,42 @@ watch(visible, (val) => {
 @keyframes rotating {
   from { transform: rotate(0); }
   to { transform: rotate(360deg); }
+}
+
+/* ---------- 静态地图预览 ---------- */
+.qa-map-static-preview {
+  display: inline-flex;
+  flex-direction: column;
+  margin-top: 6px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e4e7ed;
+  width: 320px;
+  max-width: 100%;
+}
+
+.qa-map-static-preview__img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.qa-map-static-preview__label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #555;
+  background: #f9f9f9;
+  border-top: 1px solid #eee;
+  overflow: hidden;
+}
+
+.qa-map-static-preview__label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

@@ -149,6 +149,7 @@ export default defineComponent({
     updateCategory: { type: Boolean, default: true },
     imageFit: { type: String as PropType<'fill' | 'contain' | 'cover' | 'none' | 'scale-down'>, default: 'cover' },
     returnType: { type: String as PropType<'url' | 'id'>, default: 'url' },
+    defaultLocation: Object as PropType<{ latitude: number; longitude: number }>,
 
     show: Array as PropType<string[]>,
     showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
@@ -599,6 +600,7 @@ export default defineComponent({
         onUpdate:modelValue={p.onChange}
         disabled={isDisabled.value}
         placeholder={p.placeholder}
+        defaultLocation={(p as any).defaultLocation}
         {...(p.itemProps ?? {})}
       />
     )
