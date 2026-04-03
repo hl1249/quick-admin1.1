@@ -570,6 +570,28 @@ export default defineComponent({
       />
     )
 
+    /* ---------------- editor ---------------- */
+    const renderEditor = (p: RendererParams) => (
+      <qa-editor
+        modelValue={p.value}
+        onUpdate:modelValue={p.onChange}
+        placeholder={p.placeholder || `请输入${p.label}`}
+        disabled={isDisabled.value}
+        {...(p.itemProps ?? {})}
+      />
+    )
+
+    /* ---------------- tag ---------------- */
+    const renderTag = (p: RendererParams) => (
+      <qa-tag
+        modelValue={p.value}
+        onUpdate:modelValue={p.onChange}
+        disabled={isDisabled.value}
+        placeholder={p.placeholder}
+        {...(p.itemProps ?? {})}
+      />
+    )
+
     /* ---------------- 映射表（静态，不依赖响应式状态） ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -589,6 +611,7 @@ export default defineComponent({
       file: renderFile,
       datetimerange: renderDateTimerange,
       time: renderTime,
+      editor: renderEditor,
       json: renderJson,
       'array<string>': renderArrayString,
       'file-select': renderFileSelect,
@@ -597,6 +620,7 @@ export default defineComponent({
       'table-select': renderTableSelect,
       'address': renderAreaCascader,
       'area-cascader': renderAreaCascader,
+      tag: renderTag,
     }
 
     /* ---------------- rendererParams ---------------- */

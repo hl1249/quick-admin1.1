@@ -15,6 +15,8 @@ import qaFileUpload from './base/qaFileUpload.vue'
 import qaRemoteSelect from './base/qaRemoteSelect.vue'
 import qaArrayString from './base/qaArrayString.vue'
 import qaJsonEditor from './form/qaJsonEditor.vue'
+import qaEditor from './form/qaEditor.vue'
+import qaTag from './base/qaTag.vue'
 
 export default {
   install(app: App) {
@@ -33,5 +35,7 @@ export default {
     app.component('qaRemoteSelect', qaRemoteSelect)
     app.component('qaArrayString', qaArrayString)
     app.component('qaJsonEditor', qaJsonEditor)
+    app.component('qaEditor', qaEditor)
+    app.component('qaTag', qaTag)
   }
 }

@@ -139,7 +139,7 @@ const form = ref({
       {
         "key": "slider",
         "title": "菜单标识",
-        "type": "slider",
+        "type": "tag",
       },
       {
         "key": "menu_id",
