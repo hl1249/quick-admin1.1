@@ -14,6 +14,7 @@ import qaTableSelect from './base/qaTableSelect.vue'
 import qaFileUpload from './base/qaFileUpload.vue'
 import qaRemoteSelect from './base/qaRemoteSelect.vue'
 import qaArrayString from './base/qaArrayString.vue'
+import qaJsonEditor from './form/qaJsonEditor.vue'
 
 export default {
   install(app: App) {
@@ -31,5 +32,6 @@ export default {
     app.component('qaFileUpload', qaFileUpload)
     app.component('qaRemoteSelect', qaRemoteSelect)
     app.component('qaArrayString', qaArrayString)
+    app.component('qaJsonEditor', qaJsonEditor)
   }
 }

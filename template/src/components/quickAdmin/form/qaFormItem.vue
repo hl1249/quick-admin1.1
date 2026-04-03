@@ -558,6 +558,18 @@ export default defineComponent({
       />
     )
 
+    /* ---------------- json ---------------- */
+    const renderJson = (p: RendererParams) => (
+      <qa-json-editor
+        modelValue={p.value}
+        onUpdate:modelValue={p.onChange}
+        width={resolvedWidth.value}
+        readonly={isDisabled.value}
+        placeholder={p.placeholder || `请输入${p.label}`}
+        {...(p.itemProps ?? {})}
+      />
+    )
+
     /* ---------------- 映射表（静态，不依赖响应式状态） ---------------- */
     const renderMap: Record<string, (p: RendererParams) => JSX.Element> = {
       text: renderText,
@@ -577,6 +589,7 @@ export default defineComponent({
       file: renderFile,
       datetimerange: renderDateTimerange,
       time: renderTime,
+      json: renderJson,
       'array<string>': renderArrayString,
       'file-select': renderFileSelect,
       icon: renderIcon,
