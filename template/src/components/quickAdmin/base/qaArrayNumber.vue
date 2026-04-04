@@ -1,15 +1,25 @@
 <template>
   <div class="flex flex-col gap-[12px] w-full">
-    <el-input
+    <div
       v-for="(item, index) in list"
       :key="index"
-      :model-value="item"
-      @update:model-value="(v) => update(index, v)"
+      class="flex items-center gap-[8px] w-full"
     >
+      <el-input
+        :model-value="item"
+        controls-position="right"
+        class="flex-1 min-w-0"
+        clearable
+        type="number"
+        style="width: 100%"
+        @update:model-value="(v) => update(index, v)"
+      >
+     
       <template #append>
         <el-button :icon="Delete" @click="remove(index)" />
       </template>
-    </el-input>
+      </el-input>
+    </div>
 
     <div class="flex gap-[12px]">
       <el-button plain :icon="Plus" @click="add">添加</el-button>
@@ -28,7 +38,7 @@ import { RemoveFilled, Plus, Delete } from '@element-plus/icons-vue'
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: string[]
+    modelValue?: (number | null)[]
   }>(),
   {
     modelValue: () => [],
@@ -36,23 +46,29 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', val: string[]): void
+  (e: 'update:modelValue', val: (number | null)[]): void
 }>()
 
-const list = computed<string[]>(() =>
+const list = computed<(number | null)[]>(() =>
   Array.isArray(props.modelValue) ? props.modelValue : []
 )
 
-const update = (i: number, v: string | undefined) => {
+/** el-input 即 type="number" 仍以 string 形式回传 modelValue */
+const update = (i: number, v: string | number | null | undefined) => {
   const arr = [...list.value]
-  arr[i] = v ?? ''
+  if (v === '' || v === undefined || v === null) {
+    arr[i] = null
+  } else {
+    const n = typeof v === 'number' ? v : Number(v)
+    arr[i] = Number.isFinite(n) ? n : null
+  }
   emit('update:modelValue', arr)
 }
 
 const remove = (i: number) =>
   emit('update:modelValue', list.value.filter((_, idx) => idx !== i))
 
-const add = () => emit('update:modelValue', [...list.value, ''])
+const add = () => emit('update:modelValue', [...list.value, null])
 
 const clear = () => emit('update:modelValue', [])
 </script>

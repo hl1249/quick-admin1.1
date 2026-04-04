@@ -4,6 +4,7 @@ import { defineComponent, type PropType } from 'vue'
 import type { JSX } from 'vue/jsx-runtime'
 
 // Element Plus
+import type { FormItemRule } from 'element-plus'
 import { CircleClose } from '@element-plus/icons-vue'
 import * as ElIcons from '@element-plus/icons-vue'
 
@@ -14,16 +15,49 @@ import type { Columns } from '../table/qaTable.vue'
 // 工具 / HTTP
 import { realUnitConversion } from '@/utils'
 
+/** 仅克隆 path 经过的节点，其余引用保持不变，避免整表深拷贝导致子组件反复同步触发递归更新 */
+function setByPathImmutable(root: Record<string, any>, path: string, value: any): Record<string, any> {
+  const parts = path.split('.').filter(Boolean)
+  if (parts.length === 0) return { ...root }
+
+  const walk = (node: any, i: number): any => {
+    const key = parts[i]
+    const isLast = i === parts.length - 1
+    if (isLast) {
+      if (Array.isArray(node)) {
+        const idx = Number(key)
+        const next = [...node]
+        next[idx] = value
+        return next
+      }
+      return { ...node, [key]: value }
+    }
+    const child = Array.isArray(node) ? node[Number(key)] : node?.[key]
+    const nextSeg = parts[i + 1]
+    const emptyChild = nextSeg !== undefined && /^\d+$/.test(nextSeg) ? [] : {}
+    const clonedChild = walk(child ?? emptyChild, i + 1)
+    if (Array.isArray(node)) {
+      const idx = Number(key)
+      const next = [...node]
+      next[idx] = clonedChild
+      return next
+    }
+    return { ...node, [key]: clonedChild }
+  }
+
+  return walk(root, 0) as Record<string, any>
+}
+
 /** 日期选择器 pickerOptions */
 interface DatePickerOptions {
   defaultTime?: (string | Date)[]
   shortcuts?: { text: string; value: () => void | Date | [Date, Date] }[]
 }
 
-/** 选项项（radio/select/tag 等） */
+/** 选项项（radio/select/tag 等；与 qaTable Columns.data 的 Data 对齐，label 可缺省） */
 interface OptionItem {
   value: any
-  label: string
+  label?: string
   [key: string]: any
 }
 
@@ -154,7 +188,16 @@ export default defineComponent({
     show: Array as PropType<string[]>,
     showRule: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
     disabled: [Function, String] as PropType<((model: Record<string, any>) => boolean) | string>,
-    watch: Function as PropType<(val: any) => void>,
+    watch: Function as PropType<(val: any, ...args: any[]) => void>,
+    rules: [Object, Array] as PropType<FormItemRule | FormItemRule[]>,
+
+    /** array<object> 等扩展配置（由列配置透传） */
+    defaultValue: Object as PropType<Record<string, any>>,
+    showAdd: Boolean,
+    showClear: Boolean,
+    showSort: Boolean,
+    rightBtns: Array as PropType<string[]>,
+    itemWidth: [String, Number],
   },
   emits: {
     'update:modelValue': (val: Record<string, unknown>) => true,
@@ -165,18 +208,37 @@ export default defineComponent({
     /* ---------------- v-model ---------------- */
     const { formType, showRule, disabled } = toRefs(props)
 
+    const getByPath = (obj: Record<string, any> | undefined, path: string): any => {
+      if (!obj || path == null || path === '') return undefined
+      if (!path.includes('.')) return obj[path]
+      return path.split('.').reduce((o: any, k) => (o == null ? undefined : o[k]), obj)
+    }
+
     const currentValue = computed({
-      get: () => props.modelValue?.[props.itemKey],
+      get: () => getByPath(props.modelValue, props.itemKey),
       set: (v) => {
-        const newValue = { ...props.modelValue, [props.itemKey]: v }
-        emit('update:modelValue', newValue)
+        const base = props.modelValue ?? {}
+        const prev = getByPath(base, props.itemKey)
+        if (Object.is(v, prev)) return
+        if (props.itemKey.includes('.')) {
+          emit('update:modelValue', setByPathImmutable(base, props.itemKey, v))
+          return
+        }
+        emit('update:modelValue', { ...base, [props.itemKey]: v })
       },
     })
 
+    /** 点路径多为行内叶子字段：deep 会在兄弟字段 patch 整行时反复触发 user watch */
+    const watchDeep = !props.itemKey.includes('.')
+
     watch(
-      () => props.modelValue?.[props.itemKey],
-      (val) => props.watch?.(val),
-      { deep: true }
+      () => getByPath(props.modelValue, props.itemKey),
+      (val, oldVal) => {
+        if (!props.watch) return
+        if (props.itemKey.includes('.') && Object.is(val, oldVal)) return
+        props.watch(val)
+      },
+      { deep: watchDeep, flush: 'post' }
     )
 
     /* ---------------- 通用逻辑（computed 缓存，避免重复计算） ---------------- */
@@ -296,7 +358,7 @@ export default defineComponent({
       <el-radio-group modelValue={p.value} onUpdate:modelValue={p.onChange}>
         {(p.data ?? []).map((item) => (
           <el-radio key={item.value} value={item.value}>
-            {item.label}
+            {item.label ?? String(item.value)}
           </el-radio>
         ))}
       </el-radio-group>
@@ -306,7 +368,7 @@ export default defineComponent({
       <el-checkbox-group modelValue={p.value} onUpdate:modelValue={p.onChange} style={{ width: resolvedWidth.value }}>
         {(p.data ?? []).map((item) => (
           <el-checkbox key={item.value} value={item.value}>
-            {item.label}
+            {item.label ?? String(item.value)}
           </el-checkbox>
         ))}
       </el-checkbox-group>
@@ -323,7 +385,11 @@ export default defineComponent({
         onChange={() => emit('search')}
       >
         {(p.data ?? []).map((item) => (
-          <el-option key={item.value} value={item.value} label={item.label} />
+          <el-option
+            key={item.value}
+            value={item.value}
+            label={item.label ?? String(item.value)}
+          />
         ))}
       </el-select>
     )
@@ -394,6 +460,31 @@ export default defineComponent({
       <qa-array-string
         modelValue={p.value}
         onUpdate:modelValue={p.onChange}
+      />
+    )
+
+    const renderArrayNumber = (p: RendererParams) => (
+      <qa-array-number
+        modelValue={p.value}
+        onUpdate:modelValue={p.onChange}
+      />
+    )
+
+    const renderArrayObject = () => (
+      <qa-array-object
+        rootModel={props.modelValue ?? {}}
+        fieldKey={props.itemKey}
+        columns={props.columns ?? []}
+        defaultRow={props.defaultValue}
+        showAdd={props.showAdd !== false}
+        showClear={props.showClear === true}
+        showSort={props.showSort === true}
+        rightBtns={props.rightBtns}
+        itemWidth={props.itemWidth}
+        disabled={isDisabled.value}
+        formType={props.formType}
+        nestedLabelWidth={props.labelWidth}
+        onUpdate:rootModel={(v: Record<string, any>) => emit('update:modelValue', v)}
       />
     )
 
@@ -627,6 +718,8 @@ export default defineComponent({
       editor: renderEditor,
       json: renderJson,
       'array<string>': renderArrayString,
+      'array<number>': renderArrayNumber,
+      'array<object>': renderArrayObject,
       'file-select': renderFileSelect,
       icon: renderIcon,
       'tree-select': renderTreeSelect,
@@ -668,6 +761,7 @@ export default defineComponent({
           label={props.showLabel ? props.label : ''}
           labelWidth={props.showLabel ? props.labelWidth : '0'}
           prop={props.itemKey}
+          rules={props.rules}
         >
           <div class="w-full">
             {slots.default?.() || renderer?.(rendererParams.value)}
