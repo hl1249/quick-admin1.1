@@ -1,5 +1,6 @@
 <template>
-  <!-- 触发按钮 -->
+  <div>
+    <!-- 触发按钮 -->
   <div class="qa-map-picker">
     <el-button :disabled="disabled" @click="openPicker">
       <el-icon style="margin-right: 4px;"><Location /></el-icon>
@@ -17,7 +18,12 @@
     </el-button>
   </div>
   <div v-if="staticMapUrl" class="qa-map-static-preview">
-    <img :src="staticMapUrl" class="qa-map-static-preview__img" alt="地图预览" />
+    <div class="qa-map-static-preview__map">
+      <img :src="staticMapUrl" class="qa-map-static-preview__img" alt="地图预览" />
+      <div class="qa-map-static-preview__geo-badge" :title="staticGeoBadgeText">
+        {{ staticGeoBadgeText }}
+      </div>
+    </div>
     <div class="qa-map-static-preview__label">
       <el-icon :size="12" style="flex-shrink:0;"><Location /></el-icon>
       <span>{{ modelValue?.name }}</span>
@@ -150,6 +156,7 @@
       </div>
     </transition>
   </teleport>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -211,6 +218,15 @@ const staticMapUrl = computed(() => {
     `&zoom=15` +
     `&markers=color:red|label:A|${lat},${lng}`
   )
+})
+
+/** 静态预览图中心：白底红字（与静态图中心标点大致对齐） */
+const staticGeoBadgeText = computed(() => {
+  const v = props.modelValue
+  if (v?.name?.trim()) return v.name.trim()
+  if (v?.formatted_address?.trim()) return v.formatted_address.trim()
+  if (v?.address?.trim()) return v.address.trim()
+  return '地理位置'
 })
 
 /* ---------- 状态 ---------- */
@@ -584,10 +600,13 @@ function onMapMoved() {
     currentPage.value = 1
     hasMore.value = true
     loadingMore.value = false
-    geocodePois.value = []
-    list.value = []
-    scrollListToTop()
-    loading.value = true
+    // 地图拖动结束：保留当前列表直到逆地理返回，避免先清空再加载造成右侧列表闪烁
+    const hadList = list.value.length > 0
+    if (!hadList) {
+      geocodePois.value = []
+      scrollListToTop()
+      loading.value = true
+    }
     reverseGeocode(lat, lng, '').finally(() => {
       if (isPlacesRequestActive(seq)) loading.value = false
     })
@@ -659,6 +678,7 @@ function reverseGeocode(lat: number, lng: number, placeName: string, placeAddr?:
           if (visible.value && !keyword.value.trim()) {
             list.value = mergePlaceLists(pois)
             hasMore.value = pois.length > 0
+            scrollListToTop()
           }
         }
       } else if (res?.status === 120) {
@@ -1281,11 +1301,36 @@ watch(visible, (val) => {
   max-width: 100%;
 }
 
+.qa-map-static-preview__map {
+  position: relative;
+}
+
 .qa-map-static-preview__img {
   width: 100%;
   height: 160px;
   object-fit: cover;
   display: block;
+}
+
+.qa-map-static-preview__geo-badge {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  transform: translate(-50%, -50%);
+  max-width: calc(100% - 24px);
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  color: #e53935;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .qa-map-static-preview__label {
