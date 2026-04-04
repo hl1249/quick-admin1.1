@@ -25,7 +25,7 @@
         <qa-table
           ref="qaTableRef"
           style="width: 100%;"
-          :action="action!"
+          :action="action ?? ''"
           :columns="columns"
           :row-key="idKey"
           :selection-data="pendingSelection"
