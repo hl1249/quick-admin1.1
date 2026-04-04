@@ -9,7 +9,6 @@
 
 
     <qa-dialog v-model="form.props.show" :title="form.props.title">
-      {{ form.data }}
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="()=>{
@@ -137,112 +136,6 @@ const form = ref({
     },
     action: '/app/admin/system/systemMenu/systemMenu/add',
     columns: [
-      {
-        key: "array", title: "数组<对象>类型", type: "array<object>", itemWidth: 260,
-        showAdd: true,
-        showClear: true,
-        showSort: true,
-        // 新增一行（外层行）时的默认值：含内层子数组字段 array
-        defaultValue: {
-          array: [],
-          text1: "",
-          select1: 1,
-          switch: true,
-        },
-        rightBtns: ['copy', 'delete'],
-        // 外层每一行的列：内嵌一层 array<object> + 同行上的 select / switch
-        columns: [
-          {
-            key: "array", title: "嵌套数组<对象>", type: "array<object>", itemWidth: 260,
-            labelWidth: 120,
-            showAdd: true,
-            showClear: true,
-            showSort: true,
-            defaultValue: {
-              switch: true,
-              text1: "",
-              number1: null as number | null,
-            },
-            rightBtns: ['copy', 'delete'],
-            columns: [
-              {
-                key: "text1",
-                title: "昵称",
-                type: "text",
-                isUnique: true,
-                rules: [
-                  { required: true, message: "该项不能为空", trigger: ["change", "blur"] },
-                  { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: ["change", "blur"] }
-                ]
-              },
-              {
-                key: "number1",
-                title: "数字",
-                type: "number",
-                rules: [
-                  { required: true, message: "该项不能为空", trigger: ["change", "blur"] },
-                ]
-              },
-              {
-                key: "select1",
-                title: "select类型",
-                type: "select",
-                data: [
-                  { value: 1, label: "选项1" },
-                  { value: 2, label: "选项2" }
-                ],
-                rules: [
-                  { required: true, message: "该项不能为空", trigger: ["change", "blur"] },
-                ],
-                watch: ({
-                  value,
-                  $set,
-                }: {
-                  value: unknown
-                  $set: (key: string, val: unknown) => void
-                }) => {
-                  $set("text1", `昵称${value}`);
-                }
-              },
-              { key: "switch", title: "switch类型", type: "switch", width: 160 },
-            ]
-          },
-              {
-                key: "text1",
-                title: "昵称",
-                type: "text",
-                isUnique: true,
-                rules: [
-                  { required: true, message: "该项不能为空", trigger: ["change", "blur"] },
-                  { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: ["change", "blur"] }
-                ]
-              },
-          {
-            key: "select1",
-            title: "select类型",
-            type: "select",
-            data: [
-              { value: 1, label: "选项1" },
-              { value: 2, label: "选项2" }
-            ],
-            rules: [
-              { required: true, message: "该项不能为空", trigger: ["change", "blur"] },
-            ],
-            watch: ({
-              value,
-              $set,
-            }: {
-              value: unknown
-              $set: (key: string, val: unknown) => void
-            }) => {
-              // 此处演示根据选择的值动态改变外层行上的 text1（若需改内层子行需遍历 row.array）
-              $set("text1", `昵称${value}`);
-            }
-          },
-          { key: "switch", title: "switch类型", type: "switch", width: 160 },
-        ]
-      },
-
       {
         "key": "map",
         "title": "菜单标识",
