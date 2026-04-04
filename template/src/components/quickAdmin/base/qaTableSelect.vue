@@ -19,7 +19,7 @@
       </el-button>
     </div>
 
-    <el-dialog title="选择" v-model="showDialog" :width="multiple ? 1140 : 750">
+    <qa-dialog title="选择" v-model="showDialog" :width="multiple ? 1140 : 750">
       <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
       <div class="flex mt-[20px] w-full">
         <qa-table
@@ -54,7 +54,7 @@
           <el-button @click="showDialog = false">关闭</el-button>
         </div>
       </template>
-    </el-dialog>
+    </qa-dialog>
   </div>
 </template>
 

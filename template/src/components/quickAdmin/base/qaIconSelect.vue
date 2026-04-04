@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" title="选择图标" :width="680" top="5vh">
+  <qa-dialog v-model="visible" title="选择图标" :width="680" top="5vh">
     <!-- 搜索框 -->
     <el-input
       v-model="keyword"
@@ -47,7 +47,7 @@
         </div>
       </div>
     </template>
-  </el-dialog>
+  </qa-dialog>
 </template>
 
 <script setup lang="ts">

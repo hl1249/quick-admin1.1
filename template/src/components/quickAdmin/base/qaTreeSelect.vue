@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="选择" v-model="visible" :width="720">
+    <qa-dialog title="选择" v-model="visible" :width="720">
       <el-divider />
       <el-tree
         style="max-width: 600px"
@@ -20,7 +20,7 @@
           <el-button @click="visible = false">关闭</el-button>
         </div>
       </template>
-    </el-dialog>
+    </qa-dialog>
   </div>
 </template>
 

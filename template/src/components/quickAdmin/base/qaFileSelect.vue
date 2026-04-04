@@ -23,7 +23,7 @@
     </div>
 
     <!-- 选择对话框 -->
-    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="920px">
+    <qa-dialog v-model="dialogVisible" :title="dialogTitle" width="920px">
       <div class="qa-fs-layout">
         <!-- 分类侧栏 -->
         <div v-loading="categoryLoading" class="qa-fs-sidebar">
@@ -141,16 +141,17 @@
           </el-button>
         </div>
       </template>
-    </el-dialog>
+    </qa-dialog>
 
     <!-- 上传进度弹窗 -->
-    <el-dialog
+    <qa-dialog
       v-model="uploadProgressVisible"
       title="上传进度"
       width="560"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      :show-close="!uploadLoading"
+      :show-close-button="!uploadLoading"
+      :show-fullscreen-button="false"
     >
       <div class="qa-fs-progress-dialog">
         <div class="qa-fs-progress-summary">
@@ -189,7 +190,7 @@
           </div>
         </div>
       </div>
-    </el-dialog>
+    </qa-dialog>
   </div>
 </template>
 

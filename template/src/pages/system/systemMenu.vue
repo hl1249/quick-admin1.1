@@ -8,7 +8,7 @@
       @update="updateBtn" highlight-current-row @current-change="currentChange" @delete="deleteBtn" />
 
 
-    <el-dialog width="700" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+    <qa-dialog v-model="form.props.show" :title="form.props.title">
       {{ form.data }}
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
@@ -19,7 +19,7 @@
         @closeForm="form.props.show = false">
         
       </qa-form>
-    </el-dialog>
+    </qa-dialog>
   </div>
 </template>
 

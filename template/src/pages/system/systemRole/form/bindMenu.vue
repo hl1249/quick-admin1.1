@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" :title="title" width="800" :before-close="handleBeforeClose" @open="getAllMenu" @close="handleClose">
+  <qa-dialog v-model="visible" :title="title" width="800" :before-close="handleBeforeClose" @open="getAllMenu" @close="handleClose">
     <div class="dialog-content">
       <!-- 你的弹窗内容 -->
       <qa-form v-model="selectItem" :columns="form.props.columns" :action="form.props.action" @success="()=>{
@@ -24,7 +24,7 @@
         </template>
       </qa-form>
     </div>
-  </el-dialog>
+  </qa-dialog>
 </template>
 
 <script setup lang="ts">
@@ -59,7 +59,7 @@ const emit = defineEmits<{
   'cancel': []
 }>()
 
-// el-dialog 真正用的值
+// qa-dialog 真正用的值
 const visible = useVModel(props, 'show', emit)
 
 const filterNode = (value: any, data: any) => {

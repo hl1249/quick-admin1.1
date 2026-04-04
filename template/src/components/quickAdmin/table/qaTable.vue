@@ -174,7 +174,7 @@
       />
     </div>
 
-    <el-dialog
+    <qa-dialog
       v-model="infoDialogVisible"
       title="详情"
       width="830"
@@ -192,7 +192,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-dialog>
+    </qa-dialog>
   </div>
 </template>
 

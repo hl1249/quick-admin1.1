@@ -11,7 +11,7 @@
               :custom-right-btns="table.customRightBtns"
               @selection-change="selectionChange" @update="updateBtn"
               @delete="deleteBtn"/>
-    <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+    <qa-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
                :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
                :before-action="form.props.beforeAction" @success="()=>{
@@ -33,8 +33,8 @@
         <el-button size="small" @click="testValidateField">测试字段校验</el-button>
         <el-button size="small" @click="testSetResetFormData">测试设置重置源</el-button>
       </div>
-    </el-dialog>
-    <el-dialog width="500" v-model="storageConfigForm.props.show" :title="storageConfigForm.props.title"
+    </qa-dialog>
+    <qa-dialog width="500" v-model="storageConfigForm.props.show" :title="storageConfigForm.props.title"
                :close-on-click-modal="false">
       <qa-form v-model="storageConfigForm.data" ref="storageConfigFormRefs" :rules="storageConfigForm.props.rules"
                :action="storageConfigForm.props.action"
@@ -45,9 +45,9 @@
             refresh()
           }" @closeForm="storageConfigForm.props.show = false">
       </qa-form>
-    </el-dialog>
+    </qa-dialog>
 
-    <el-dialog
+    <qa-dialog
         v-model="cnameInfoVisible"
         title="CNAME详情"
         width="600"
@@ -73,7 +73,7 @@
           </p>
         </div>
 
-    </el-dialog>
+    </qa-dialog>
   </div>
 </template>
 

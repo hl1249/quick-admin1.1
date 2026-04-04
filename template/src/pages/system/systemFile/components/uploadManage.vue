@@ -137,21 +137,22 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-dialog v-model="categoryForm.props.show" :title="categoryForm.props.title" width="500"
+    <qa-dialog v-model="categoryForm.props.show" :title="categoryForm.props.title" width="500"
       :close-on-click-modal="false">
       <qa-form v-model="categoryForm.data" ref="categoryFormRef" :rules="categoryForm.props.rules"
         :action="categoryForm.props.action" :form-type="categoryForm.props.formType"
         :columns="categoryForm.props.columns" :before-action="categoryForm.props.beforeAction" label-width="90px"
         @success="handleAddCategorySuccess" @closeForm="categoryForm.props.show = false" />
-    </el-dialog>
+    </qa-dialog>
 
-    <el-dialog
+    <qa-dialog
       v-model="uploadProgressVisible"
       title="上传进度"
       width="560"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      :show-close="!uploadLoading"
+      :show-close-button="!uploadLoading"
+      :show-fullscreen-button="false"
     >
       <div class="upload-progress-dialog">
         <div class="upload-progress-summary">
@@ -208,9 +209,9 @@
           </div>
         </div>
       </div>
-    </el-dialog>
+    </qa-dialog>
 
-    <el-dialog
+    <qa-dialog
       v-model="remoteUploadVisible"
       title="远程上传"
       width="480"
@@ -261,7 +262,7 @@
           @click="handleRemoteUpload"
         >确认上传</el-button>
       </template>
-    </el-dialog>
+    </qa-dialog>
 
     <el-image-viewer v-if="imagePreviewVisible" :url-list="imagePreviewUrls" :initial-index="imagePreviewIndex" close-on-press-escape hide-on-click-modal
       @close="imagePreviewVisible = false" />

@@ -10,7 +10,7 @@
       @delete="deleteBtn" />
 
   
-      <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+      <qa-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
         <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
           :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
           :before-action="form.props.beforeAction" @success="()=>{
@@ -31,7 +31,7 @@
             </template>
         </qa-form>
         <el-button @click="fromDefalut">表单默认值</el-button>
-      </el-dialog>
+      </qa-dialog>
   </div>
 </template>
 

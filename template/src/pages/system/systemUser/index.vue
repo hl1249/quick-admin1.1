@@ -24,7 +24,7 @@
       :right-btns="['detail_auto', 'update', 'delete', 'more']" :right-btns-more="table.rightBtnsMore" :row-no="true" selection
       @selection-change="selectionChange" @update="updateBtn" @delete="deleteBtn" @current-change="currentChange"   highlight-current-row/>
     
-    <el-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
+    <qa-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="()=>{
@@ -32,7 +32,7 @@
           refresh()
         }" @closeForm="form.props.show = false">
       </qa-form>
-    </el-dialog>
+    </qa-dialog>
   </div>
 </template>
 

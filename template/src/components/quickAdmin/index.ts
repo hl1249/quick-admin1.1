@@ -20,6 +20,7 @@ import qaJsonEditor from './form/qaJsonEditor.vue'
 import qaEditor from './form/qaEditor.vue'
 import qaTag from './base/qaTag.vue'
 import qaMapPicker from './base/qaMapPicker.vue'
+import qaDialog from './base/qaDialog.vue'
 
 export default {
   install(app: App) {
@@ -43,5 +44,6 @@ export default {
     app.component('qaEditor', qaEditor)
     app.component('qaTag', qaTag)
     app.component('qaMapPicker', qaMapPicker)
+    app.component('qaDialog', qaDialog)
   }
 }

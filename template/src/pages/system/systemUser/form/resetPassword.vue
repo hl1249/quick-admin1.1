@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <qa-dialog
       v-model="visible"
       :title="title"
       width="800"
@@ -32,7 +32,7 @@
         </template>
       </qa-form>
     </div>
-  </el-dialog>
+  </qa-dialog>
 </template>
 
 <script setup lang="ts">
@@ -77,7 +77,7 @@ const onFormSuccess = () => {
   props.refresh()
 }
 
-// el-dialog 真正用的值
+// qa-dialog 真正用的值
 const visible = useVModel(props, 'show', emit);
 
 const title = ref('角色绑定');
