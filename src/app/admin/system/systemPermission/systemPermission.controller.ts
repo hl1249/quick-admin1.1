@@ -1,4 +1,4 @@
-import { Controller, Post,Body } from '@nestjs/common';
+import { BadRequestException, Controller, Post, Body } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/utils/db.service';
 import { arrayToTree } from '@/common/utils/utils'
@@ -102,11 +102,18 @@ export class SystemPermissionController {
       _id,
       permission_id,
       permission_name,
+      parent_id,
       url,
       match_mode,
       enable = true,
       comment,
     } = data;
+
+    const hasParent =
+      parent_id !== undefined && parent_id !== null && parent_id !== '';
+    if (hasParent && permission_id === parent_id) {
+      throw new BadRequestException('父级不能与本权限的 permission_id 相同');
+    }
 
     const result = await this.dbService.updateById({
       dbName: 'qa-permissions',
@@ -114,6 +121,7 @@ export class SystemPermissionController {
       dataJson: {
         permission_id,
         permission_name,
+        parent_id,
         url,
         match_mode,
         enable,

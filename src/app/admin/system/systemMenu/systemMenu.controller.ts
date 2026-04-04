@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Post,
   Body,
@@ -91,6 +92,12 @@ export class SystemMenuController {
   @Post('/update')
   async update(@Body() data: UpdateMenuDto): Promise<Document | null> {
     let { _id, menu_id, title, enable = true, comment, parent_id, component, sort, icon } = data;
+
+    const hasParent =
+      parent_id !== undefined && parent_id !== null && parent_id !== '';
+    if (hasParent && menu_id === parent_id) {
+      throw new BadRequestException('父级不能与本菜单的 menu_id 相同');
+    }
 
     const result = await this.dbService.updateById({
       dbName: 'qa-menus',
