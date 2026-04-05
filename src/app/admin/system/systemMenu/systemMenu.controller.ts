@@ -5,7 +5,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { Document, InsertOneResult } from 'mongodb';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { arrayToTree } from '@/common/utils/utils'
 import { Promise } from 'mongoose';
 import { AddMenuDto, UpdateMenuDto } from './dto/systemMenu.dto';

@@ -3,7 +3,7 @@ import { Observable, from } from 'rxjs';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { AsyncStorageService } from './asyncStorage.service';
 import { AppConfigService } from '@/config/app-config.service';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 
 @Injectable()
 export class LogInterceptor implements NestInterceptor {

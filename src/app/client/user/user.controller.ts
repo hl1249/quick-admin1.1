@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Req, SetMetadata, BadRequestException, Ip } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { UserDto } from './user.dto';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { filterObject } from '@/common/utils/utils'
 import { AppConfigService } from '@/config/app-config.service';

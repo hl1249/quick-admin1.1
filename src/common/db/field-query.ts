@@ -1,4 +1,4 @@
-import { MongoAggBuilder , CondExpr} from './utils.types'
+import { MongoAggBuilder , CondExpr} from '@/common/db/db.types'
 
 // 常量定义
 const COMPARISON_OPERATORS = ['gte', 'lte', 'gt', 'lt', 'eq', 'ne'] as const;

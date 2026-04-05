@@ -1,6 +1,6 @@
 import { BadRequestException, Controller, Post, Body } from '@nestjs/common';
 import { Document } from 'mongodb'
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { arrayToTree } from '@/common/utils/utils'
 import { AuthService } from '@/app/admin/auth/auth.service';
 

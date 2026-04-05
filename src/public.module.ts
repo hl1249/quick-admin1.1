@@ -1,6 +1,6 @@
 import { Module, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { JwtModule } from '@/common/jwt/jwt.module';
-import { DbModule } from '@/common/utils/db.module';
+import { DbModule } from '@/common/db/db.module';
 // 数据库配置
 import { MongooseModule, InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';

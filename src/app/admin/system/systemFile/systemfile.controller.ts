@@ -11,9 +11,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { basename } from 'path';
 import { UploadService } from '@/common/upload/upload.service';
 import { normalizeUploadedFilename } from '@/common/upload/file.utils';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { Document } from 'mongodb';
-import { _, } from '@/common/utils/fieldQueryTemp';
+import { _, } from '@/common/db/field-query';
 import { formatTimestamp } from '@/common/utils/utils'
 import { LocalOssProvider } from '@/common/oss/providers/local.oss';
 import { TencentOssProvider } from '@/common/oss/providers/tencent.oss';

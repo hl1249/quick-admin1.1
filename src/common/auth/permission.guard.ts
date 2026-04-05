@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AppConfigService } from '@/config/app-config.service';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { CacheService } from '@/common/cache/cache.service'
 import { AuthService } from '@/app/admin/auth/auth.service';
 // admin端权限守卫 对接口进行权限验证

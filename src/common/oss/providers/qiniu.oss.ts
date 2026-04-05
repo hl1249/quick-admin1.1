@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IOssProvider, OssRegionOption, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
 import { buildObjectKey, ensureRequired, joinUrl } from '@/common/oss/oss.utils';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 
 type QiniuBucketListOptions = {
   accessKey: string;

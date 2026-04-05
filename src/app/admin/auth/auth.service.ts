@@ -3,14 +3,14 @@ import {
   BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { Document } from 'mongodb'
 import { UserDto, RegisterDto } from './auth.dto';
 import { AppConfigService } from '@/config/app-config.service';
 import { JwtService } from '@/common/jwt/jwt.service';
 import { arrayToTree, filterObject } from '@/common/utils/utils'
 import { CacheService } from '@/common/cache/cache.service'
-import { _ } from '@/common/utils/fieldQueryTemp';
+import { _ } from '@/common/db/field-query';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()

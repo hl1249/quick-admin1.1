@@ -9,7 +9,7 @@ import type {
   AvgParams,
   SampleParams,
   SortRule,
-} from './utils.types';
+} from './db.types';
 import { InsertOneResult, DeleteResult, UpdateResult, ObjectId, Document, InsertManyResult } from 'mongodb'
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
@@ -602,7 +602,4 @@ export class DbService {
     const result = await collection.aggregate(pipeline).toArray();
     return result;
   }
-
-
-
 }

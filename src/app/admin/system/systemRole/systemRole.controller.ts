@@ -1,6 +1,6 @@
 import { Controller, Post,Body } from '@nestjs/common';
 import { Document, UpdateResult } from 'mongodb';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { AuthService } from '@/app/admin/auth/auth.service';
 
 @Controller()

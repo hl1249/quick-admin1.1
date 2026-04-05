@@ -140,7 +140,7 @@ npm run preview
 ### 注入方式
 
 ```typescript
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 
 @Injectable()
 export class UserService {

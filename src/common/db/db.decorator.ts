@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
-import { FieldQueryTemp } from '@/common/utils/fieldQueryTemp';
-import { ForeignDB } from './utils.types';
+import { FieldQueryTemp } from '@/common/db/field-query';
+import { ForeignDB } from './db.types';
 // DB参数装饰器处理 whereJson,dataJson,fieldJson,sortArr
 export const TransformDbParams = (target, key, descriptor) => {
   const originalMethod = descriptor.value;

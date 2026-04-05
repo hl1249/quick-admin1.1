@@ -1,6 +1,6 @@
 import { Controller, Req, Post, Body, BadRequestException } from '@nestjs/common';
 import { Document } from 'mongodb'
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 
 @Controller()
 export class SystemCategoriesController {

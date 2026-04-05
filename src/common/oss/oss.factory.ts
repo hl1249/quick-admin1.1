@@ -5,7 +5,7 @@ import { LocalOssProvider } from '@/common/oss/providers/local.oss';
 import { TencentOssProvider } from '@/common/oss/providers/tencent.oss';
 import { AliyunOssProvider } from '@/common/oss/providers/aliyun.oss';
 import { QiniuOssProvider } from '@/common/oss/providers/qiniu.oss';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 
 interface AppConfigDoc {
   _id: string;

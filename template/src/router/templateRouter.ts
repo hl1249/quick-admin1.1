@@ -59,5 +59,15 @@ export default [
                 component: "/src/pages/template/index",
             }
         ]
+    },
+    {
+        "_id": "databaseDesign",
+        "menu_id": "databaseDesign",
+        "icon": "DocumentCopy",
+        "title": "CRUD代码生成",
+        "name":"数据表设计",
+        "sort": 999,
+        "path": "databaseDesign",
+        component: "/src/pages/template/databaseDesign/index",
     }
 ]

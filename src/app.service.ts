@@ -3,7 +3,7 @@ import { JwtService } from '@/common/jwt/jwt.service';
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 @Injectable()
 export class AppService {
 

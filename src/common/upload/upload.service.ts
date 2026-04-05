@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { basename } from 'path';
 import { OssService } from '@/common/oss/oss.service';
-import { DbService } from '@/common/utils/db.service';
+import { DbService } from '@/common/db/db.service';
 import { getFileType, getImageSize } from './file.utils';
 import type { OssUploadResult } from '@/common/oss/oss.interface';
 import type { OssProvider } from '@/config/oss.config';

@@ -1,3 +1,5 @@
+import type { Document } from 'mongodb';
+
 // 排序规则
 export interface SortRule {
   name: string; // 排序字段名
