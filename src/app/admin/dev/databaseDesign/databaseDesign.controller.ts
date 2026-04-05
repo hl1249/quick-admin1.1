@@ -210,15 +210,19 @@ export class DatabaseDesignController {
    */
   @Post('/createDatabase')
   async createDatabase(@Body() body: CreateCollectionBody) {
+    
+    throw new BadRequestException('功能开发中');
     const tableName = (body.tableName ?? body.collectionName)?.trim();
     assertCollectionName(tableName);
 
-    const fields = Array.isArray(body.fields) ? body.fields : [];
+    const fields = Array.isArray(body.fields)
+      ? (body.fields as SchemaField[])
+      : [];
     const customSchema = extractCustomJsonSchema(body);
     const withValidator =
       body.withValidator !== false &&
       (fields.length > 0 || customSchema != null);
-
+    
     const mongoDb = this.getTargetDb(body.dbName);
 
     const names = await mongoDb.listCollections({ name: tableName }).toArray();
@@ -228,14 +232,14 @@ export class DatabaseDesignController {
 
     if (withValidator) {
       const $jsonSchema =
-        customSchema ?? buildJsonSchema(fields, body.required);
-      await mongoDb.createCollection(tableName, {
+        customSchema ?? buildJsonSchema(fields ?? [], body.required);
+      await mongoDb.createCollection(tableName ?? '', {
         validator: { $jsonSchema },
         validationLevel: 'strict',
         validationAction: 'error',
       });
     } else {
-      await mongoDb.createCollection(tableName);
+      await mongoDb.createCollection(tableName ?? '');
     }
 
     return {

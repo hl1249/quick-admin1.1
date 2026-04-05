@@ -11,7 +11,7 @@
  Target Server Version : 80205
  File Encoding         : 65001
 
- Date: 01/04/2026 02:06:32
+ Date: 05/04/2026 23:39:10
 */
 
 
@@ -26,9 +26,9 @@ db.createCollection("qa-app-config");
 // ----------------------------
 db.getCollection("qa-app-config").insert([ {
     _id: ObjectId("69bcbb2e0c34b64800565ec6"),
-    "oss_provider": "aliyun",
-    "_update_time": 1774966658947,
-    "_update_time_str": "2026-03-31 22:17:38"
+    "oss_provider": "tencent",
+    "_update_time": 1775144887292,
+    "_update_time_str": "2026-04-02 23:48:07"
 } ]);
 
 // ----------------------------
@@ -41,104 +41,230 @@ db.createCollection("qa-files");
 // Documents of qa-files
 // ----------------------------
 db.getCollection("qa-files").insert([ {
-    _id: ObjectId("69cb3fead8001c5aad8be47c"),
+    _id: ObjectId("69cc8711e67959fa820633e3"),
     "user_id": "672b901c0fcabce5e29faef5",
     sort: NumberInt("0"),
     status: NumberInt("0"),
-    type: "image",
-    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850409-7906ce0aba374174a1cb75569303650c.png",
-    "display_name": "1774927850409-7906ce0aba374174a1cb75569303650c.png",
-    "original_name": "1774749277680 - 副本 (3).png",
-    size: NumberInt("1320"),
-    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850409-7906ce0aba374174a1cb75569303650c.png",
+    type: "file",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775011601277-d85a032b45a046d1bd4395f0dc9d1d66.txt",
+    "display_name": "1775011601277-d85a032b45a046d1bd4395f0dc9d1d66.txt",
+    "original_name": "1.txt",
+    size: NumberInt("0"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775011601277-d85a032b45a046d1bd4395f0dc9d1d66.txt",
     provider: "tencent",
-    width: NumberInt("231"),
-    height: NumberInt("64"),
-    "category_id": "69cb3ff1d8001c5aad8be48e",
-    "_add_time": 1774927850641,
-    "_add_time_str": "2026-03-31 11:30:50",
-    "_update_time": 1774977651642,
-    "_update_time_str": "2026-04-01 01:20:51"
+    width: null,
+    height: null,
+    "category_id": null,
+    "_add_time": 1775011601549,
+    "_add_time_str": "2026-04-01 10:46:41"
 } ]);
 db.getCollection("qa-files").insert([ {
-    _id: ObjectId("69cb3fead8001c5aad8be47a"),
+    _id: ObjectId("69cdc5811b35ba12433f2878"),
     "user_id": "672b901c0fcabce5e29faef5",
     sort: NumberInt("0"),
     status: NumberInt("0"),
-    type: "image",
-    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850412-caaaf4bc5b7740648463e062774fcf19.png",
-    "display_name": "1774927850412-caaaf4bc5b7740648463e062774fcf19.png",
-    "original_name": "1774749277680 - 副本 (4).png",
-    size: NumberInt("1320"),
-    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850412-caaaf4bc5b7740648463e062774fcf19.png",
-    provider: "tencent",
-    width: NumberInt("231"),
-    height: NumberInt("64"),
-    "category_id": "69cb3ff1d8001c5aad8be48e",
-    "_add_time": 1774927850640,
-    "_add_time_str": "2026-03-31 11:30:50",
-    "_update_time": 1774977651642,
-    "_update_time_str": "2026-04-01 01:20:51"
+    type: "file",
+    url: "http://file.xxsb.games/attach/2026/04/1775093121110-8dbf303e834747efa84a113cfadec9f1.json",
+    "display_name": "1775093121110-8dbf303e834747efa84a113cfadec9f1.json",
+    "original_name": "HeapSnapshot-strings-20260330T140052.json",
+    size: NumberInt("5432200"),
+    "file_id": "http://file.xxsb.games/attach/2026/04/1775093121110-8dbf303e834747efa84a113cfadec9f1.json",
+    provider: "qiniu",
+    width: null,
+    height: null,
+    "category_id": null,
+    "_add_time": 1775093121668,
+    "_add_time_str": "2026-04-02 09:25:21"
 } ]);
 db.getCollection("qa-files").insert([ {
-    _id: ObjectId("69cb3fead8001c5aad8be47e"),
+    _id: ObjectId("69cdce541b35ba12433f28eb"),
     "user_id": "672b901c0fcabce5e29faef5",
     sort: NumberInt("0"),
     status: NumberInt("0"),
-    type: "image",
-    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850407-d11851638f724bc1a1eaccbe60d415f4.png",
-    "display_name": "1774927850407-d11851638f724bc1a1eaccbe60d415f4.png",
-    "original_name": "1774749277680 - 副本 (5).png",
-    size: NumberInt("1320"),
-    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850407-d11851638f724bc1a1eaccbe60d415f4.png",
-    provider: "tencent",
-    width: NumberInt("231"),
-    height: NumberInt("64"),
-    "category_id": "69cb3ff1d8001c5aad8be48e",
-    "_add_time": 1774927850660,
-    "_add_time_str": "2026-03-31 11:30:50",
-    "_update_time": 1774977651642,
-    "_update_time_str": "2026-04-01 01:20:51"
+    type: "file",
+    url: "http://file.xxsb.games/attach/2026/04/1775095380611-68f0a10705c544fdafb4af0f638cc4f1.json",
+    "display_name": "1775095380611-68f0a10705c544fdafb4af0f638cc4f1.json",
+    "original_name": "a.json",
+    size: NumberInt("19779"),
+    "file_id": "http://file.xxsb.games/attach/2026/04/1775095380611-68f0a10705c544fdafb4af0f638cc4f1.json",
+    provider: "qiniu",
+    width: null,
+    height: null,
+    "category_id": null,
+    "_add_time": 1775095380730,
+    "_add_time_str": "2026-04-02 10:03:00"
 } ]);
 db.getCollection("qa-files").insert([ {
-    _id: ObjectId("69cb3fead8001c5aad8be480"),
+    _id: ObjectId("69cf4bec73b752fd836bc77b"),
     "user_id": "672b901c0fcabce5e29faef5",
     sort: NumberInt("0"),
     status: NumberInt("0"),
     type: "image",
-    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850468-341068a2cf264d76aaedc4c9464ba33c.png",
-    "display_name": "1774927850468-341068a2cf264d76aaedc4c9464ba33c.png",
-    "original_name": "1774749277680 - 副本 (7).png",
-    size: NumberInt("1320"),
-    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850468-341068a2cf264d76aaedc4c9464ba33c.png",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775193068096-87e945655796412ca64843274dcb8496.png",
+    "display_name": "1775193068096-87e945655796412ca64843274dcb8496.png",
+    "original_name": "彭帅的简历 - 副本 (3).png",
+    size: NumberInt("3779334"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775193068096-87e945655796412ca64843274dcb8496.png",
     provider: "tencent",
-    width: NumberInt("231"),
-    height: NumberInt("64"),
-    "category_id": "69cb3ff1d8001c5aad8be48e",
-    "_add_time": 1774927850721,
-    "_add_time_str": "2026-03-31 11:30:50",
-    "_update_time": 1774977651642,
-    "_update_time_str": "2026-04-01 01:20:51"
+    width: NumberInt("820"),
+    height: NumberInt("1150"),
+    "category_id": "69ce0893139664eda4dc2da0",
+    "_add_time": 1775193068711,
+    "_add_time_str": "2026-04-03 13:11:08",
+    "_update_time": 1775395884323,
+    "_update_time_str": "2026-04-05 21:31:24"
 } ]);
 db.getCollection("qa-files").insert([ {
-    _id: ObjectId("69cb3fead8001c5aad8be482"),
+    _id: ObjectId("69cf646c89210344a23817b4"),
     "user_id": "672b901c0fcabce5e29faef5",
     sort: NumberInt("0"),
     status: NumberInt("0"),
     type: "image",
-    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850492-c7561832341b442aa073c8770990b932.png",
-    "display_name": "1774927850492-c7561832341b442aa073c8770990b932.png",
-    "original_name": "1774749277680 - 副本 (6).png",
-    size: NumberInt("1320"),
-    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/03/1774927850492-c7561832341b442aa073c8770990b932.png",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775199339995-045c72b93a524053a2c855c5b22ebef2.png",
+    "display_name": "1775199339995-045c72b93a524053a2c855c5b22ebef2.png",
+    "original_name": "1774885904094.png",
+    size: NumberInt("97925"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775199339995-045c72b93a524053a2c855c5b22ebef2.png",
     provider: "tencent",
-    width: NumberInt("231"),
-    height: NumberInt("64"),
-    "category_id": "69cb3ff1d8001c5aad8be48e",
-    "_add_time": 1774927850722,
-    "_add_time_str": "2026-03-31 11:30:50",
-    "_update_time": 1774977651642,
-    "_update_time_str": "2026-04-01 01:20:51"
+    width: NumberInt("1416"),
+    height: NumberInt("863"),
+    "category_id": "69ce0893139664eda4dc2da0",
+    "_add_time": 1775199340309,
+    "_add_time_str": "2026-04-03 14:55:40",
+    "_update_time": 1775395884323,
+    "_update_time_str": "2026-04-05 21:31:24"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cf647389210344a23817b9"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775199347587-0b0bd3e2989d40439f807424c974c6ab.png",
+    "display_name": "1775199347587-0b0bd3e2989d40439f807424c974c6ab.png",
+    "original_name": "1774885904094.png",
+    size: NumberInt("97925"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775199347587-0b0bd3e2989d40439f807424c974c6ab.png",
+    provider: "tencent",
+    width: NumberInt("1416"),
+    height: NumberInt("863"),
+    "category_id": "69ce0893139664eda4dc2da0",
+    "_add_time": 1775199347668,
+    "_add_time_str": "2026-04-03 14:55:47",
+    "_update_time": 1775395884323,
+    "_update_time_str": "2026-04-05 21:31:24"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cf8bce067a4fb3b8190247"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "video",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775209417779-b89a44076c084b78a35228d432769487.mp4",
+    "display_name": "1775209417779-b89a44076c084b78a35228d432769487.mp4",
+    "original_name": "1774884031863-59b15c7f315147a19a536f51bfd507d0.mp4",
+    size: NumberInt("34408377"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775209417779-b89a44076c084b78a35228d432769487.mp4",
+    provider: "tencent",
+    width: null,
+    height: null,
+    "category_id": null,
+    "_add_time": 1775209422796,
+    "_add_time_str": "2026-04-03 17:43:42"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cf8c21067a4fb3b819026f"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775209505385-7dba4eb7a46e45919fba540cdbd73847.png",
+    "display_name": "1775209505385-7dba4eb7a46e45919fba540cdbd73847.png",
+    "original_name": "1774885904094.png",
+    size: NumberInt("97925"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775209505385-7dba4eb7a46e45919fba540cdbd73847.png",
+    provider: "tencent",
+    width: NumberInt("1416"),
+    height: NumberInt("863"),
+    "category_id": null,
+    "_add_time": 1775209505645,
+    "_add_time_str": "2026-04-03 17:45:05"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69cf8c5e067a4fb3b8190282"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775209565828-661ef56c5f6a43608a8f38b352fef401.png",
+    "display_name": "1775209565828-661ef56c5f6a43608a8f38b352fef401.png",
+    "original_name": "1774885904094.png",
+    size: NumberInt("97925"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775209565828-661ef56c5f6a43608a8f38b352fef401.png",
+    provider: "tencent",
+    width: NumberInt("1416"),
+    height: NumberInt("863"),
+    "category_id": null,
+    "_add_time": 1775209566235,
+    "_add_time_str": "2026-04-03 17:46:06"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69d0dde9dc4bd4536df7f5f8"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775295976714-d6f83dc623684dffa0a6362220c04043.png",
+    "display_name": "1775295976714-d6f83dc623684dffa0a6362220c04043.png",
+    "original_name": "image.png",
+    size: NumberInt("488785"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775295976714-d6f83dc623684dffa0a6362220c04043.png",
+    provider: "tencent",
+    width: NumberInt("1902"),
+    height: NumberInt("2440"),
+    "category_id": null,
+    "_add_time": 1775295977155,
+    "_add_time_str": "2026-04-04 17:46:17"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69d12643f0c26718ed7524b2"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775314499711-fbb21afdcd854ca9b47ea7b523cf99f5.png",
+    "display_name": "1775314499711-fbb21afdcd854ca9b47ea7b523cf99f5.png",
+    "original_name": "黄弱的液体",
+    size: NumberInt("351112"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775314499711-fbb21afdcd854ca9b47ea7b523cf99f5.png",
+    provider: "tencent",
+    width: NumberInt("503"),
+    height: NumberInt("580"),
+    "category_id": null,
+    "_add_time": 1775314499847,
+    "_add_time_str": "2026-04-04 22:54:59",
+    "_update_time": 1775314514647,
+    "_update_time_str": "2026-04-04 22:55:14"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69d12657f0c26718ed7524bf"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775314519043-20609096afa944c0941635ef5ad97bd8.png",
+    "display_name": "1775314519043-20609096afa944c0941635ef5ad97bd8.png",
+    "original_name": "亮猛的液体",
+    size: NumberInt("380547"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775314519043-20609096afa944c0941635ef5ad97bd8.png",
+    provider: "tencent",
+    width: NumberInt("616"),
+    height: NumberInt("624"),
+    "category_id": null,
+    "_add_time": 1775314519111,
+    "_add_time_str": "2026-04-04 22:55:19",
+    "_update_time": 1775314526637,
+    "_update_time_str": "2026-04-04 22:55:26"
 } ]);
 
 // ----------------------------
@@ -164,6 +290,14 @@ db.getCollection("qa-files-categories").insert([ {
     url: null,
     "_add_time": 1774927857089,
     "_add_time_str": "2026-03-31 11:30:57"
+} ]);
+db.getCollection("qa-files-categories").insert([ {
+    _id: ObjectId("69ce0893139664eda4dc2da0"),
+    type: "image",
+    name: "芜湖",
+    url: null,
+    "_add_time": 1775110291856,
+    "_add_time_str": "2026-04-02 14:11:31"
 } ]);
 
 // ----------------------------
@@ -3918,6 +4052,329 @@ db.getCollection("qa-logs").insert([ {
         }
     ]
 } ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d12704f0c26718ed752583"),
+    "user_id": "32412",
+    "_add_time": 1775314692958,
+    "_add_time_str": "2026-04-04 22:58:12"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d12710f0c26718ed752589"),
+    "user_id": "黄弱啊",
+    "_add_time": 1775314704707,
+    "_add_time_str": "2026-04-04 22:58:24"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d12714f0c26718ed75258f"),
+    "user_id": "亮猛啊",
+    "_add_time": 1775314708856,
+    "_add_time_str": "2026-04-04 22:58:28"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d1c4bb9111338ca2a67b2d"),
+    url: "/api/ossProvider",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "d9ab26c0-9607-4e0c-8678-aef2187337a9",
+    "_add_time": 1775355067034,
+    "_add_time_str": "2026-04-05 10:11:07",
+    response: [
+        {
+            _id: ObjectId("69bcbb2e0c34b64800565ec6"),
+            "oss_provider": "tencent",
+            "_update_time": 1775144887292,
+            "_update_time_str": "2026-04-02 23:48:07",
+            space: {
+                _id: ObjectId("69c7393fed1c1af21a3f1dcf"),
+                name: "xxsb-1319368598",
+                region: "ap-guangzhou",
+                domain: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+                provider: "tencent",
+                accessKey: "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
+                secretKey: "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
+                acl: "public-read",
+                creationDate: "2026-03-19T15:14:38Z",
+                "_update_time": 1774876713603,
+                "_update_time_str": "2026-03-30 21:18:33",
+                enable: true,
+                "_add_time": 1774663999193,
+                "_add_time_str": "2026-03-28 10:13:19"
+            }
+        }
+    ]
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d1c5efc99b6367abd23b05"),
+    url: "/api/dbList",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "b9e069fd-5fec-48ea-8821-e2b0eb58b43d",
+    "_add_time": 1775355375586,
+    "_add_time_str": "2026-04-05 10:16:15",
+    response: [
+        {
+            name: "qa-permissions",
+            type: "collection",
+            options: {
+                validator: {
+                    $jsonSchema: {
+                        bsonType: "object",
+                        required: [
+                            "_id",
+                            "_add_time",
+                            "comment",
+                            "enable",
+                            "permission_id",
+                            "permission_name",
+                            "url"
+                        ],
+                        properties: {
+                            _id: {
+                                bsonType: "objectId"
+                            },
+                            "_add_time": {
+                                bsonType: [
+                                    "long",
+                                    "double"
+                                ]
+                            },
+                            "_add_time_str": {
+                                bsonType: "string"
+                            },
+                            comment: {
+                                bsonType: "string"
+                            },
+                            enable: {
+                                bsonType: "bool"
+                            },
+                            "match_mode": {
+                                bsonType: "null"
+                            },
+                            "parent_id": {
+                                bsonType: "string"
+                            },
+                            "permission_id": {
+                                bsonType: [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "permission_name": {
+                                bsonType: [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            sort: {
+                                bsonType: "int"
+                            },
+                            url: {
+                                bsonType: "array",
+                                items: {
+                                    bsonType: "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                validationLevel: "off",
+                validationAction: "error"
+            },
+            info: {
+                readOnly: false,
+                uuid: UUID("0f5a74a0-e141-4cd2-94e2-f6909bb9c31d")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-roles",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("414873f7-1c98-4a2f-9f1f-b5a18e911e3a")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-storage-space",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("4da4d1aa-6f0d-4c75-b14c-c6a3aa861d53")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-test",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("654f61af-061c-4f6c-989e-eb0d94221315")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-files-categories",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("97329a0b-0a89-4f5a-962a-af2a32a10a52")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-storage-config",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("9a44c589-78a1-453f-99eb-f2a3200d5cf4")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-files",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("b2e4dea0-f406-4dfb-9ef7-3cee0c89f21b")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-users",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("cba37cb6-f028-4b89-8a49-bd6197059064")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-app-config",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("d7b90e9d-ac85-4f32-984c-48f0cdeb0304")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-menus",
+            type: "collection",
+            options: {
+                validationLevel: "off",
+                validationAction: "error"
+            },
+            info: {
+                readOnly: false,
+                uuid: UUID("ef057bda-c864-47d1-a5c8-2689dd8ca919")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        },
+        {
+            name: "qa-logs",
+            type: "collection",
+            options: { },
+            info: {
+                readOnly: false,
+                uuid: UUID("f64f5672-7d6a-4ada-aca4-b32d8f24d2a6")
+            },
+            idIndex: {
+                v: NumberInt("2"),
+                key: {
+                    _id: NumberInt("1")
+                },
+                name: "_id_"
+            }
+        }
+    ]
+} ]);
 
 // ----------------------------
 // Collection structure for qa-menus
@@ -3949,12 +4406,12 @@ db.getCollection("qa-menus").insert([ {
     _id: ObjectId("672b209618a1950fd5ed570c"),
     "_add_time": NumberLong("1596416400000"),
     enable: true,
-    icon: "folder-opened",
+    icon: "FolderOpened",
     "menu_id": "system-uni-uni-id-files",
     title: "素材管理",
     name: "systemFile",
     "parent_id": "system-setting",
-    sort: NumberInt("2"),
+    sort: "2",
     component: "/src/pages/system/systemFile/index",
     path: "system/system-file",
     comment: null
@@ -3964,12 +4421,12 @@ db.getCollection("qa-menus").insert([ {
     "_add_time": NumberLong("1596416400000"),
     comment: "1个角色可以分配多个角色",
     enable: true,
-    icon: "user-filled",
+    icon: "User",
     "menu_id": "sys-user-manage",
     title: "系统用户管理",
     name: "systemUser",
     "parent_id": "system",
-    sort: NumberInt("1"),
+    sort: "1",
     component: "/src/pages/system/systemUser/index",
     path: "system/system-user"
 } ]);
@@ -3978,12 +4435,12 @@ db.getCollection("qa-menus").insert([ {
     "_add_time": NumberLong("1596416400000"),
     comment: "1个角色可以分配多个权限和菜单",
     enable: true,
-    icon: "user",
+    icon: "UserFilled",
     "menu_id": "sys-role-manage",
     title: "角色管理",
     name: "systemRole",
     "parent_id": "system",
-    sort: NumberInt("3"),
+    sort: "3",
     component: "/src/pages/system/systemRole/index",
     path: "system/system-role"
 } ]);
@@ -4000,21 +4457,6 @@ db.getCollection("qa-menus").insert([ {
     sort: NumberInt("4"),
     component: "/src/pages/system/systemMenu",
     path: "system/system-menu"
-} ]);
-db.getCollection("qa-menus").insert([ {
-    _id: ObjectId("673f2966f80f4613e73ed0cc"),
-    "parent_id": "system",
-    "menu_id": "enable",
-    title: "健身管理",
-    icon: "AlarmClock",
-    "_add_time": NumberLong("1732192614508"),
-    "_add_time_str": "2024-11-21 20:36:54",
-    enable: true,
-    name: "muscle",
-    component: "/src/pages/muscle/muscleManage",
-    path: "Muscle/muscleManage",
-    sort: null,
-    comment: null
 } ]);
 db.getCollection("qa-menus").insert([ {
     _id: ObjectId("6740620e947e19874d59330d"),
@@ -4408,6 +4850,34 @@ db.getCollection("qa-roles").insert([ {
     "_add_time": 1774590320342,
     "_add_time_str": "2026-03-27 13:45:20"
 } ]);
+db.getCollection("qa-roles").insert([ {
+    _id: ObjectId("69d125caf0c26718ed752471"),
+    "role_id": "黄弱",
+    "role_name": "我弱",
+    comment: "弱",
+    enable: true,
+    "_add_time": 1775314378630,
+    "_add_time_str": "2026-04-04 22:52:58"
+} ]);
+db.getCollection("qa-roles").insert([ {
+    _id: ObjectId("69d125e1f0c26718ed752483"),
+    "role_id": "亮猛",
+    "role_name": "我猛",
+    comment: "猛",
+    enable: true,
+    "_add_time": 1775314401824,
+    "_add_time_str": "2026-04-04 22:53:21"
+} ]);
+
+// ----------------------------
+// Collection structure for qa-schemas
+// ----------------------------
+db.getCollection("qa-schemas").drop();
+db.createCollection("qa-schemas");
+
+// ----------------------------
+// Documents of qa-schemas
+// ----------------------------
 
 // ----------------------------
 // Collection structure for qa-storage-config
@@ -4539,9 +5009,9 @@ db.getCollection("qa-storage-space").insert([ {
     secretKey: "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq",
     acl: null,
     creationDate: null,
-    "_update_time": 1774876864790,
-    "_update_time_str": "2026-03-30 21:21:04",
-    enable: false,
+    "_update_time": 1775031907344,
+    "_update_time_str": "2026-04-01 16:25:07",
+    enable: true,
     "_add_time": 1774841413334,
     "_add_time_str": "2026-03-30 11:30:13",
     cdn: null
@@ -4647,7 +5117,7 @@ db.createCollection("qa-users");
 db.getCollection("qa-users").insert([ {
     _id: ObjectId("672b901c0fcabce5e29faef5"),
     username: "admin",
-    password: "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+    password: "$2b$10$MRvFGZuSJqfCWKBhBbirPePjC17AqOF5SJiJwG0WInmvo..NYYAbi",
     role: [
         "admin",
         "agent",
@@ -4660,11 +5130,11 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        null,
-        null,
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQ5Nzk0NTYsImV4cCI6MTc3NTU4NDI1Nn0.KQJMEqe7tXzrlzKdlwvDvG_ZBSBJ8Z11exX5FDPBAy8"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzUzNzcxNzUsImV4cCI6MTc3NTk4MTk3NX0.MapUhmPNeiCidSIay9mD7rb10LjpefkXC62s7IQvAPY",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzUzODkwNzUsImV4cCI6MTc3NTk5Mzg3NX0.MsTRLtseJJPwSHlPkhbaUvNu_IgGW5uTOjLpiz8aDkw",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzUzODk5OTAsImV4cCI6MTc3NTk5NDc5MH0.9K5Zi2ZkWP5y1WY4iw4j8KlReJJt0x5eyYhCibJpoQg"
     ],
-    "last_login_date": 1774979456586,
+    "last_login_date": 1775389990904,
     "last_login_ip": "127.0.0.1",
     object: {
         name: "小明",
@@ -4742,9 +5212,17 @@ db.getCollection("qa-users").insert([ {
     "_add_time": 1774590279558,
     "_add_time_str": "2026-03-27 13:44:39",
     role: [
-        "admin",
-        "agent",
-        "test",
-        "亮猛"
+        "test"
     ]
+} ]);
+db.getCollection("qa-users").insert([ {
+    _id: ObjectId("69d1268bf0c26718ed7524d4"),
+    rate: NumberInt("5"),
+    username: "亮猛",
+    nickname: "我猛",
+    password: "123456",
+    "is_login": true,
+    "last_login_date": -239443200000,
+    "_add_time": 1775314571852,
+    "_add_time_str": "2026-04-04 22:56:11"
 } ]);
