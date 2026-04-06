@@ -3,6 +3,16 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "assets": [
+      {
+        "include": "app/admin/dev/databaseDesign/控制器模板",
+        "watchAssets": true
+      },
+      {
+        "include": "app/admin/dev/databaseDesign/前端页面模板",
+        "watchAssets": true
+      }
+    ]
   }
 }

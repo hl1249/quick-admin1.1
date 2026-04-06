@@ -58,6 +58,12 @@
       type:  "text",
       title:  "sex",
       width:  200
+    },
+    {
+      key:  "groupId",
+      type:  "text",
+      title:  "groupId",
+      width:  200
     }
     ]
   })
@@ -88,6 +94,13 @@
       key:  "sex",
       type:  "text",
       title:  "sex",
+      width:  200,
+      mode:  "="
+    },
+    {
+      key:  "groupId",
+      type:  "text",
+      title:  "groupId",
       width:  200,
       mode:  "="
     }
@@ -126,12 +139,40 @@
         title:  "sex",
         data:  [
           {
-            value:  "0",
+            value:  0,
             label:  "男"
           },
           {
-            value:  "1",
+            value:  1,
             label:  "女"
+          }
+        ]
+      },
+      {
+        key:  "groupId",
+        type:  "table-select",
+        title:  "groupId",
+
+        action:  "/app/admin/system/systemFile/systemCategories/getList",
+        columns:  [
+          {
+            key:  "name",
+            title:  "类型",
+            nameKey:  true,
+            idKey:  false
+          },
+          {
+            key:  "type",
+            title:  "值",
+            nameKey:  false,
+            idKey:  true
+          }
+        ],
+        queryColumns:  [
+          {
+            key:  "name",
+            title:  "类型",
+            mode:  "%%"
           }
         ]
       }

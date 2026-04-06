@@ -13,7 +13,6 @@ import type { Response } from 'express';
 import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
 import { relative, resolve } from 'path';
 import archiver = require('archiver');
-import { AppConfigService } from '@/config/app-config.service';
 
 /** 单字段描述，对应 $jsonSchema properties 里的一项（复杂规则请改用 body.jsonSchema） */
 export type SchemaField = {
@@ -76,7 +75,6 @@ type DownloadCrudBody = {
 
 type GetAdminRoutesBody = {
   keyword?: string;
-  withGlobalPrefix?: boolean;
 };
 
 type AdminRouteItem = {
@@ -203,8 +201,8 @@ function readControllerTemplate(): string {
 
 function readFrontendTemplate(): string {
   const templatePaths = [
-    resolve(process.cwd(), 'src/app/admin/dev/databaseDesign/前端页面模板.vue'),
-    resolve(__dirname, '前端页面模板.vue'),
+    resolve(process.cwd(), 'src/app/admin/dev/databaseDesign/前端页面模板'),
+    resolve(__dirname, '前端页面模板'),
   ];
   for (const p of templatePaths) {
     if (existsSync(p)) return readFileSync(p, 'utf8');
@@ -421,10 +419,7 @@ function getControllerRoutePrefix(filePath: string, rootDir: string): string {
 
 @Controller()
 export class DatabaseDesignController {
-  constructor(
-    @InjectConnection() private readonly connection: Connection,
-    private readonly appConfig: AppConfigService,
-  ) {}
+  constructor(@InjectConnection() private readonly connection: Connection) {}
 
   private getTargetDb(databaseName?: string): Db {
     const db = databaseName?.trim()
@@ -589,8 +584,6 @@ export class DatabaseDesignController {
     }
 
     const keyword = body.keyword?.trim().toLowerCase();
-    const globalPrefix =
-      body.withGlobalPrefix === false ? '' : this.appConfig.globalPrefix;
 
     const routes: AdminRouteItem[] = [];
     const treeMap = new Map<string, AdminRouteTreeNode>();
@@ -632,7 +625,8 @@ export class DatabaseDesignController {
 
         for (const methodPath of methodPaths) {
           const route: AdminRouteItem = {
-            path: joinRoutePath(globalPrefix, controllerPath, methodPath),
+            /** 与权限校验一致：不含 Nest 的 globalPrefix（如 api） */
+            path: joinRoutePath(controllerPath, methodPath),
             controller: controllerClass.name,
             file,
           };

@@ -62,9 +62,6 @@ export class SystemCategoriesController {
     const { type } = data
     return this.dbService.select({
       dbName: "qa-files-categories",
-      whereJson:{
-        type
-      }
     })
   }
 }
