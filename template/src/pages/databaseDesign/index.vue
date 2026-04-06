@@ -2,7 +2,14 @@
 import { ref, computed, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '@/utils/axios'
-import { isStringType, isNumericType, type BsonType, type FieldDef } from './types'
+import {
+  coerceOptionDataValues,
+  getOptionDataValueType,
+  isStringType,
+  isNumericType,
+  type BsonType,
+  type FieldDef,
+} from './types'
 import FieldTypePanel from './components/FieldTypePanel.vue'
 import FieldCanvas from './components/FieldCanvas.vue'
 import FieldPropertyPanel from './components/FieldPropertyPanel.vue'
@@ -364,14 +371,29 @@ async function handleDownloadCRUD() {
         dirName: dirName.trim(),
         controllerName: controllerName.trim(),
         tableName: tableName.trim(),
-        fields: fields.value.filter(f => f.key.trim()).map(f => ({
-          key: f.key.trim(),
-          bsonType: f.bsonType,
-          description: f.description || undefined,
-          required: f.required,
-          formType: f.formType || undefined,
-          formConfig: f.formConfig || undefined,
-        })),
+        fields: fields.value.filter(f => f.key.trim()).map((f) => {
+          const formConfig = f.formConfig
+            ? (JSON.parse(JSON.stringify(f.formConfig)) as Record<string, unknown>)
+            : undefined
+          if (
+            formConfig
+            && ['select', 'radio', 'checkbox'].includes(f.formType || '')
+            && Array.isArray(formConfig.data)
+          ) {
+            coerceOptionDataValues(
+              formConfig.data as { value: unknown; label?: string }[],
+              getOptionDataValueType(formConfig as Record<string, any>),
+            )
+          }
+          return {
+            key: f.key.trim(),
+            bsonType: f.bsonType,
+            description: f.description || undefined,
+            required: f.required,
+            formType: f.formType || undefined,
+            formConfig,
+          }
+        }),
       },
     })
 
@@ -409,7 +431,7 @@ async function handleReset() {
     <div class="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2 text-blue-600 font-bold text-lg select-none">
         <span class="text-xl">🗄️</span>
-        <span>QuickAdmin 表设计器</span>
+        <span>QuickAdmin CRUD生成器</span>
       </div>
       <div class="flex-1 flex items-center gap-3 ml-4">
         <div class="text-sm text-gray-400">

@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { FORM_TYPE_CONFIG, type FieldDef } from '../types'
+import { ref, computed, watch } from 'vue'
+import {
+  FORM_TYPE_CONFIG,
+  coerceOptionDataValues,
+  getOptionDataValueType,
+  inferOptionDataValueType,
+  type FieldDef,
+} from '../types'
 import RouteActionSelect from './RouteActionSelect.vue'
 import ConfigObjectArrayEditor from './ConfigObjectArrayEditor.vue'
 
@@ -44,12 +50,24 @@ function open(ftValue: string, ftLabel: string) {
       tempFormConfig.value[cf.key] = cloneValue(cf.default)
     }
   })
+  if (
+    isReedit
+    && field.formConfig?.dataValueType === undefined
+    && Array.isArray(tempFormConfig.value.data)
+    && tempFormConfig.value.data.length
+  ) {
+    tempFormConfig.value.dataValueType = inferOptionDataValueType(tempFormConfig.value.data)
+  }
   showDialog.value = true
 }
 
 function save() {
   const field = props.selectedField
   if (!field) return
+  const vt = tempFormConfig.value.dataValueType
+  if ((vt === 'number' || vt === 'string') && Array.isArray(tempFormConfig.value.data)) {
+    coerceOptionDataValues(tempFormConfig.value.data, vt)
+  }
   field.formType = configFormType.value
   field.formConfig = cloneValue(tempFormConfig.value)
   showDialog.value = false
@@ -60,14 +78,23 @@ function cancel() {
   showDialog.value = false
 }
 
-function addOptionItem() {
-  if (!tempFormConfig.value.data) tempFormConfig.value.data = []
-  tempFormConfig.value.data.push({ value: '', label: '' })
+function addOptionItem(listKey: string) {
+  if (!tempFormConfig.value[listKey]) tempFormConfig.value[listKey] = []
+  tempFormConfig.value[listKey].push({ value: '', label: '' })
 }
 
-function removeOptionItem(index: number) {
-  tempFormConfig.value.data?.splice(index, 1)
+function removeOptionItem(listKey: string, index: number) {
+  tempFormConfig.value[listKey]?.splice(index, 1)
 }
+
+watch(
+  () => tempFormConfig.value.dataValueType,
+  (next, prev) => {
+    if (prev === undefined || next === prev) return
+    if (next !== 'string' && next !== 'number') return
+    coerceOptionDataValues(tempFormConfig.value.data, next)
+  },
+)
 
 defineExpose({ open })
 </script>
@@ -122,12 +149,17 @@ defineExpose({ open })
           <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
           <div class="flex flex-col gap-1.5">
             <div v-for="(item, idx) in (tempFormConfig[cf.key] ?? [])" :key="idx" class="flex items-center gap-2">
-              <el-input v-model="item.value" placeholder="value" class="flex-1" />
+              <el-input
+                v-model="item.value"
+                class="flex-1"
+                placeholder="value"
+                :type="getOptionDataValueType(tempFormConfig) === 'number' ? 'number' : 'text'"
+              />
               <el-input v-model="item.label" placeholder="label（可选）" class="flex-1" />
-              <el-button type="danger" text @click="removeOptionItem(Number(idx))">✕</el-button>
+              <el-button type="danger" text @click="removeOptionItem(cf.key, Number(idx))">✕</el-button>
             </div>
           </div>
-          <el-button type="primary" plain class="mt-2 w-full" @click="addOptionItem">
+          <el-button type="primary" plain class="mt-2 w-full" @click="addOptionItem(cf.key)">
             + 添加选项
           </el-button>
         </div>

@@ -69,6 +69,38 @@ export interface ConfigField {
   itemFields?: ConfigArrayField[]
 }
 
+/** select / radio / checkbox 的选项 data[].value 使用字符串或数字（影响生成代码中的字面量类型） */
+export type OptionDataValueType = 'string' | 'number'
+
+export function inferOptionDataValueType(data: unknown[] | undefined): OptionDataValueType {
+  if (!Array.isArray(data) || !data.length) return 'string'
+  const v = (data[0] as { value?: unknown })?.value
+  return typeof v === 'number' && Number.isFinite(v) ? 'number' : 'string'
+}
+
+export function getOptionDataValueType(cfg: Record<string, any> | undefined): OptionDataValueType {
+  if (!cfg) return 'string'
+  if (cfg.dataValueType === 'number' || cfg.dataValueType === 'string') return cfg.dataValueType
+  return inferOptionDataValueType(cfg.data)
+}
+
+export function coerceOptionDataValues(
+  data: { value: unknown; label?: string }[] | undefined,
+  valueType: OptionDataValueType,
+): void {
+  if (!Array.isArray(data)) return
+  if (valueType === 'number') {
+    for (const item of data) {
+      const n = Number(item.value)
+      item.value = Number.isFinite(n) ? n : 0
+    }
+  } else {
+    for (const item of data) {
+      item.value = item.value === undefined || item.value === null ? '' : String(item.value)
+    }
+  }
+}
+
 export const TYPE_DEFS: TypeDef[] = [
   { bsonType: 'string',   label: 'String',   icon: 'T',  color: '#409EFF', desc: '文本字符串' },
   { bsonType: 'int',      label: 'Int32',    icon: '①',  color: '#67C23A', desc: '32位整数' },
@@ -189,19 +221,54 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'range', label: '范围选择', type: 'switch' },
   ],
   radio: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
+    {
+      key: 'dataValueType',
+      label: '选项 value 类型',
+      type: 'select',
+      default: 'string',
+      options: [
+        { value: 'string', label: '字符串' },
+        { value: 'number', label: '数字' },
+      ],
+      tip: '切换后会把当前列表中的 value 转为对应类型',
+    },
     { key: 'data', label: '选项列表', type: 'options-editor', tip: '配置 radio 的可选项' },
   ],
   checkbox: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
+    {
+      key: 'dataValueType',
+      label: '选项 value 类型',
+      type: 'select',
+      default: 'string',
+      options: [
+        { value: 'string', label: '字符串' },
+        { value: 'number', label: '数字' },
+      ],
+      tip: '切换后会把当前列表中的 value 转为对应类型',
+    },
     { key: 'data', label: '选项列表', type: 'options-editor', tip: '配置 checkbox 的可选项' },
   ],
   select: [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
+    {
+      key: 'dataValueType',
+      label: '选项 value 类型',
+      type: 'select',
+      default: 'string',
+      options: [
+        { value: 'string', label: '字符串' },
+        { value: 'number', label: '数字' },
+      ],
+      tip: '切换后会把当前列表中的 value 转为对应类型',
+    },
     { key: 'multiple', label: '多选', type: 'switch' },
     { key: 'filterable', label: '可搜索', type: 'switch' },
     { key: 'data', label: '选项列表', type: 'options-editor', tip: '配置下拉选项' },
   ],
   'remote-select': [
-    { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/list', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
+    { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '请选择接口地址', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'filterable', label: '可搜索', type: 'switch' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value', tip: '返回数据中作为 value 的字段' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label', tip: '返回数据中作为 label 的字段' },

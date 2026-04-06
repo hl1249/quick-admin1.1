@@ -4,6 +4,9 @@ import { ArrowLeft } from '@element-plus/icons-vue'
 import {
   FORM_TYPE_GROUPS, FORM_TYPE_CONFIG,
   getTypeDef, isStringType, isNumericType,
+  coerceOptionDataValues,
+  getOptionDataValueType,
+  inferOptionDataValueType,
   type FieldDef, type ConfigField,
 } from '../types'
 import RouteActionSelect from './RouteActionSelect.vue'
@@ -37,6 +40,31 @@ const detailConfigFields = computed<ConfigField[]>(() => {
 watch(() => props.selectedField?.id, () => {
   formView.value = props.selectedField?.formType ? 'detail' : 'select'
 })
+
+watch(
+  () => ({ id: props.selectedField?.id, ft: props.selectedField?.formType }),
+  () => {
+    const f = props.selectedField
+    if (!f || !['select', 'radio', 'checkbox'].includes(f.formType || '')) return
+    if (!f.formConfig) f.formConfig = {}
+    if (f.formConfig.dataValueType === undefined) {
+      f.formConfig.dataValueType = inferOptionDataValueType(f.formConfig.data)
+    }
+  },
+  { immediate: true },
+)
+
+watch(
+  () => props.selectedField?.formConfig?.dataValueType,
+  (next, prev) => {
+    const data = props.selectedField?.formConfig?.data
+    if (!props.selectedField?.formConfig) return
+    if (next !== 'string' && next !== 'number') return
+    if (prev === undefined && next === undefined) return
+    if (next === prev) return
+    coerceOptionDataValues(data, next)
+  },
+)
 
 function switchToDetail() {
   formView.value = 'detail'
@@ -246,7 +274,12 @@ defineExpose({ switchToDetail })
                 <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
                 <div class="flex flex-col gap-1.5">
                   <div v-for="(item, idx) in (cfgModel[cf.key] ?? [])" :key="idx" class="flex items-center gap-1">
-                    <el-input v-model="item.value" placeholder="value" class="flex-1" />
+                    <el-input
+                      v-model="item.value"
+                      class="flex-1"
+                      placeholder="value"
+                      :type="getOptionDataValueType(cfgModel) === 'number' ? 'number' : 'text'"
+                    />
                     <el-input v-model="item.label" placeholder="label" class="flex-1" />
                     <el-button type="danger" text @click="removeOptionItem(cf.key, Number(idx))">✕</el-button>
                   </div>
