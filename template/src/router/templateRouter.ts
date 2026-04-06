@@ -54,9 +54,17 @@ export default [
                 "path": "template/upload",
                 "menu_id": "template-table",
                 "name": "基础用法",
-                "icon": "grid",
+                "icon": "tickets",
                 "title": "基础用法",
-                component: "/src/pages/template/index",
+                component: "/src/pages/template/form/index",
+            },
+            {
+                "path": "template/upload",
+                "menu_id": "template-table",
+                "name": "表格渲染",
+                "icon": "document-copy",
+                "title": "表格渲染",
+                component: "/src/pages/template/table/index",
             }
         ]
     },
@@ -68,6 +76,6 @@ export default [
         "name":"数据表设计",
         "sort": 999,
         "path": "databaseDesign",
-        component: "/src/pages/template/databaseDesign/index",
+        component: "/src/pages/databaseDesign/index",
     }
 ]

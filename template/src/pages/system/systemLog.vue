@@ -17,20 +17,7 @@
             form.props.show = false
             refresh()
           }">
-            <template v-slot:user_id="{ form, keyName }">
-            <div style="height: 36px;display: flex;align-items: center;">
-              <br/>
-              <el-input v-model="form[keyName]" placeholder="插槽输入框" />
-            </div>
-          </template>
-            <template v-slot:footer="{ loading }">
-              <div style="text-align: center;" >
-                <el-button :loading="loading" type="danger"  size="small" style="padding: 10px 40px;margin-right: 30px; " @click="adopt(-1)"> 拒绝 </el-button>
-                <el-button :loading="loading" type="success" size="small" style="padding: 10px 40px; " @click="adopt(1)"> 通过 </el-button>
-              </div>
-            </template>
         </qa-form>
-        <el-button @click="fromDefalut">表单默认值</el-button>
       </qa-dialog>
   </div>
 </template>
