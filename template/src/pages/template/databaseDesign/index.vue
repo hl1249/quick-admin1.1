@@ -64,6 +64,48 @@ const jsonSchemaPreview = computed(() => {
 // ──────────────────────────── 工具函数 ────────────────────────────
 const genId = () => Math.random().toString(36).slice(2)
 
+function buildFieldList() {
+  return fields.value
+    .filter(f => f.key.trim())
+    .map(f => {
+      const item: Record<string, unknown> = {
+        key: f.key.trim(),
+        bsonType: f.bsonType,
+      }
+      if (f.description) item.description = f.description
+      if (isStringType(f.bsonType)) {
+        if (f.minLength !== undefined) item.minLength = f.minLength
+        if (f.maxLength !== undefined) item.maxLength = f.maxLength
+        if (f.pattern) item.pattern = f.pattern
+        if (f.enumStr) item.enum = f.enumStr.split(',').map(s => s.trim()).filter(Boolean)
+      }
+      if (isNumericType(f.bsonType)) {
+        if (f.minimum !== undefined) item.minimum = f.minimum
+        if (f.maximum !== undefined) item.maximum = f.maximum
+      }
+      return item
+    })
+}
+
+function getFilenameFromDisposition(disposition?: string) {
+  if (!disposition) return ''
+  const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i)
+  if (utf8Match?.[1]) return decodeURIComponent(utf8Match[1])
+  const plainMatch = disposition.match(/filename="?([^"]+)"?/i)
+  return plainMatch?.[1] ?? ''
+}
+
+function triggerBrowserDownload(blob: Blob, fileName: string) {
+  const downloadUrl = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = downloadUrl
+  link.download = fileName
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(downloadUrl)
+}
+
 // ──────────────────────────── 左侧拖拽 ────────────────────────────
 function onTypeDragStart(e: DragEvent, bsonType: BsonType) {
   draggingType = bsonType
@@ -267,26 +309,7 @@ async function handleSubmit() {
 
   submitting.value = true
   try {
-    const fieldList = fields.value
-      .filter(f => f.key.trim())
-      .map(f => {
-        const item: Record<string, unknown> = {
-          key: f.key.trim(),
-          bsonType: f.bsonType,
-        }
-        if (f.description) item.description = f.description
-        if (isStringType(f.bsonType)) {
-          if (f.minLength !== undefined) item.minLength = f.minLength
-          if (f.maxLength !== undefined) item.maxLength = f.maxLength
-          if (f.pattern) item.pattern = f.pattern
-          if (f.enumStr) item.enum = f.enumStr.split(',').map(s => s.trim()).filter(Boolean)
-        }
-        if (isNumericType(f.bsonType)) {
-          if (f.minimum !== undefined) item.minimum = f.minimum
-          if (f.maximum !== undefined) item.maximum = f.maximum
-        }
-        return item
-      })
+    const fieldList = buildFieldList()
 
     await http.request({
       method: 'POST',
@@ -302,6 +325,35 @@ async function handleSubmit() {
 
     ElMessage.success(`集合 "${collectionName.value}" 创建成功！`)
     clearForm()
+  } catch {
+    // axios 拦截器已自动处理错误提示
+  } finally {
+    submitting.value = false
+  }
+}
+
+async function handleDownloadController() {
+  const err = validateBeforeSubmit()
+  if (err) { ElMessage.warning(err); return }
+
+  submitting.value = true
+  try {
+    const response = await http.request({
+      method: 'POST',
+      url: '/app/admin/dev/databaseDesign/databaseDesign/downloadController',
+      responseType: 'blob',
+      data: {
+        tableName: collectionName.value.trim(),
+        fields: buildFieldList(),
+      },
+    })
+
+    const fileName = getFilenameFromDisposition(response.headers['content-disposition'])
+      || `${collectionName.value.trim()}.controller.ts`
+    const blob = response.data instanceof Blob ? response.data : new Blob([response.data], { type: 'text/plain;charset=utf-8' })
+
+    triggerBrowserDownload(blob, fileName)
+    ElMessage.success(`控制器 "${fileName}" 下载成功`)
   } catch {
     // axios 拦截器已自动处理错误提示
   } finally {
@@ -352,6 +404,7 @@ async function handleReset() {
       </div>
       <div class="flex items-center gap-2 ml-auto">
         <el-button @click="showPreview = true" :disabled="!fields.length">预览 Schema</el-button>
+        <el-button :loading="submitting" :disabled="!collectionName.trim()" @click="handleDownloadController">下载控制器</el-button>
         <el-button type="danger" plain @click="handleReset" :disabled="!fields.length && !collectionName">清空</el-button>
         <el-button type="primary" :loading="submitting" :disabled="!collectionName.trim()" @click="handleSubmit">创建集合</el-button>
       </div>

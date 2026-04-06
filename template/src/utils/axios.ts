@@ -100,6 +100,9 @@ class HttpRequest {
       response => {
         // 对响应数据做点什么
         this.destroy(url)
+        if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+          return response
+        }
         const { data: { code, message } } = response
         this.errorCode(code, message, openMessage)
         return response

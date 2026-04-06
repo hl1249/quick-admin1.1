@@ -3,12 +3,14 @@ import {
   Body,
   Controller,
   Post,
+  Res,
 } from '@nestjs/common';
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { InjectConnection } from '@nestjs/mongoose';
 import type { Connection } from 'mongoose';
 import type { Db } from 'mongodb';
-import { existsSync, readdirSync, statSync } from 'fs';
+import type { Response } from 'express';
+import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
 import { relative, resolve } from 'path';
 import { AppConfigService } from '@/config/app-config.service';
 
@@ -50,6 +52,12 @@ export type CreateCollectionBody = {
    * 默认 true；若 false 则仅 createCollection，不挂 $jsonSchema
    */
   withValidator?: boolean;
+};
+
+type DownloadControllerBody = {
+  tableName?: string;
+  collectionName?: string;
+  fields?: SchemaField[];
 };
 
 type GetAdminRoutesBody = {
@@ -134,6 +142,113 @@ function extractCustomJsonSchema(
     return b;
   }
   return null;
+}
+
+function toControllerClassName(value: string): string {
+  const parts = value
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .split(/[^a-zA-Z0-9]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase());
+
+  const className = parts.join('');
+  if (!className) {
+    throw new BadRequestException('集合名无法生成有效控制器类名');
+  }
+  return /^\d/.test(className) ? `Generated${className}` : className;
+}
+
+function toControllerFileName(value: string): string {
+  const fileName = value
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
+
+  if (!fileName) {
+    throw new BadRequestException('集合名无法生成有效文件名');
+  }
+  return fileName;
+}
+
+function readControllerTemplate(): string {
+  const templatePaths = [
+    resolve(process.cwd(), 'src/app/admin/dev/databaseDesign/控制器模板'),
+    resolve(__dirname, '控制器模板'),
+  ];
+
+  for (const templatePath of templatePaths) {
+    if (existsSync(templatePath)) {
+      return readFileSync(templatePath, 'utf8');
+    }
+  }
+
+  throw new BadRequestException('未找到控制器模板文件');
+}
+
+function renderTemplate(
+  template: string,
+  variables: Record<string, string>,
+): string {
+  let content = template;
+  for (const [key, value] of Object.entries(variables)) {
+    content = content.replaceAll(`\${${key}}`, value);
+  }
+  return content;
+}
+
+function extractAllowedFieldKeys(fields: SchemaField[] | undefined): string[] {
+  if (!Array.isArray(fields)) {
+    return [];
+  }
+
+  return [...new Set(
+    fields
+      .map((field) => field?.key?.trim())
+      .filter((key): key is string => !!key && key !== '_id'),
+  )];
+}
+
+function isValidIdentifier(value: string): boolean {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(value);
+}
+
+function toSafeVariableName(value: string, usedNames: Set<string>): string {
+  const normalized = value
+    .replace(/[^A-Za-z0-9_$]+/g, '_')
+    .replace(/^[^A-Za-z_$]+/, '');
+  let candidate = normalized || 'fieldValue';
+  while (usedNames.has(candidate)) {
+    candidate = `${candidate}_1`;
+  }
+  usedNames.add(candidate);
+  return candidate;
+}
+
+function buildUpdateFieldParts(fieldKeys: string[]) {
+  const usedNames = new Set<string>(['_id']);
+  const destructureParts: string[] = ['_id'];
+  const objectParts: string[] = [];
+
+  for (const key of fieldKeys) {
+    if (isValidIdentifier(key)) {
+      usedNames.add(key);
+      destructureParts.push(key);
+      objectParts.push(key);
+      continue;
+    }
+
+    const variableName = toSafeVariableName(key, usedNames);
+    const keyLiteral = JSON.stringify(key);
+    destructureParts.push(`${keyLiteral}: ${variableName}`);
+    objectParts.push(`${keyLiteral}: ${variableName}`);
+  }
+
+  return {
+    destructureCode: `    const { ${destructureParts.join(', ')} } = data`,
+    dataJsonCode: objectParts.map((part) => `        ${part},`).join('\n'),
+  };
 }
 
 function scanControllerFiles(dir: string): string[] {
@@ -246,6 +361,38 @@ export class DatabaseDesignController {
       tableName,
       validator: withValidator,
     };
+  }
+
+  /**
+   * 根据控制器模板直接生成并下载 ts 文件
+   * POST body: { collectionName, tableName?, fields? }
+   */
+  @Post('/downloadController')
+  async downloadController(
+    @Body() body: DownloadControllerBody,
+    @Res() res: Response,
+  ) {
+    const collectionName = (body.collectionName ?? body.tableName)?.trim();
+    assertCollectionName(collectionName);
+
+    const template = readControllerTemplate();
+    const controllerName = toControllerClassName(collectionName);
+    const downloadFileName = `${toControllerFileName(collectionName)}.controller.ts`;
+    const allowedFieldKeys = extractAllowedFieldKeys(body.fields);
+    const { destructureCode, dataJsonCode } = buildUpdateFieldParts(allowedFieldKeys);
+    const content = renderTemplate(template, {
+      ControllerName: controllerName,
+      collectionName: JSON.stringify(collectionName),
+      updateDestructureCode: destructureCode,
+      updateDataJsonCode: dataJsonCode,
+    });
+
+    res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodeURIComponent(downloadFileName)}`,
+    );
+    res.send(content);
   }
 
   @Post('/getRouter')
