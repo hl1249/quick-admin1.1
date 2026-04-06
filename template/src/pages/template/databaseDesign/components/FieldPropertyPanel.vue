@@ -6,6 +6,7 @@ import {
   getTypeDef, isStringType, isNumericType,
   type FieldDef, type ConfigField,
 } from '../types'
+import RouteActionSelect from './RouteActionSelect.vue'
 
 const props = defineProps<{
   selectedField: FieldDef | null
@@ -198,7 +199,16 @@ defineExpose({ switchToDetail })
           <div v-if="detailConfigFields.length" class="flex flex-col gap-3">
             <div v-for="cf in detailConfigFields" :key="cf.key" class="field-item" @click="ensureFormConfig()">
               <!-- 文本输入 -->
-              <template v-if="cf.type === 'text'">
+              <template v-if="cf.type === 'route-select'">
+                <label class="field-label">{{ cf.label }}</label>
+                <RouteActionSelect
+                  v-model="cfgModel[cf.key]"
+                  :placeholder="cf.placeholder || '请选择接口地址'"
+                />
+                <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+              </template>
+
+              <template v-else-if="cf.type === 'text'">
                 <label class="field-label">{{ cf.label }}</label>
                 <el-input v-model="cfgModel[cf.key]" :placeholder="cf.placeholder || ''" clearable />
                 <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>

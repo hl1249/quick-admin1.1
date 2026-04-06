@@ -53,6 +53,7 @@ declare module 'vue' {
     ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElTree: typeof import('element-plus/es')['ElTree']
+    ElTreeSelect: typeof import('element-plus/es')['ElTreeSelect']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     QaAreaCascader: typeof import('./src/components/quickAdmin/base/qaAreaCascader.vue')['default']
     QaArrayNumber: typeof import('./src/components/quickAdmin/base/qaArrayNumber.vue')['default']

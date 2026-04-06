@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Post,
-  RequestMethod,
 } from '@nestjs/common';
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -59,14 +58,18 @@ type GetAdminRoutesBody = {
 };
 
 type AdminRouteItem = {
-  method: string;
   path: string;
   controller: string;
-  handler: string;
-  controllerPath: string;
-  methodPath: string;
   file: string;
 };
+
+type AdminRouteTreeNode = {
+  controller: string;
+  controllerPath: string;
+  file: string;
+  routes: AdminRouteItem[];
+};
+
 
 function assertCollectionName(
   name: string | undefined,
@@ -167,6 +170,10 @@ function joinRoutePath(...parts: string[]): string {
   return normalized.length ? `/${normalized.join('/')}` : '/';
 }
 
+function isSelectableRoute(path: string): boolean {
+  return /\/(getList|get)$/.test(path);
+}
+
 function getControllerRoutePrefix(filePath: string, rootDir: string): string {
   const relativePath = relative(rootDir, filePath)
     .replace(/\.controller\.(ts|js)$/, '')
@@ -177,15 +184,6 @@ function getControllerRoutePrefix(filePath: string, rootDir: string): string {
   return joinRoutePath(relativePath);
 }
 
-function getRequestMethodName(methodMetadata: unknown): string {
-  if (typeof methodMetadata === 'number' && RequestMethod[methodMetadata]) {
-    return RequestMethod[methodMetadata].toUpperCase();
-  }
-  if (typeof methodMetadata === 'string') {
-    return methodMetadata.toUpperCase();
-  }
-  return 'UNKNOWN';
-}
 
 @Controller()
 export class DatabaseDesignController {
@@ -263,6 +261,8 @@ export class DatabaseDesignController {
       body.withGlobalPrefix === false ? '' : this.appConfig.globalPrefix;
 
     const routes: AdminRouteItem[] = [];
+    const treeMap = new Map<string, AdminRouteTreeNode>();
+
     for (const filePath of scanControllerFiles(adminDir)) {
       const mod = require(filePath) as Record<string, unknown>;
       const controllerClass = Object.values(mod).find(
@@ -277,6 +277,7 @@ export class DatabaseDesignController {
       }
 
       const controllerPath = getControllerRoutePrefix(filePath, rootDir);
+      const file = relative(adminDir, filePath).replace(/\\/g, '/');
       const handlerNames = Object.getOwnPropertyNames(controllerClass.prototype);
 
       for (const handlerName of handlerNames) {
@@ -299,35 +300,49 @@ export class DatabaseDesignController {
 
         for (const methodPath of methodPaths) {
           const route: AdminRouteItem = {
-            method: getRequestMethodName(methodMetadata),
             path: joinRoutePath(globalPrefix, controllerPath, methodPath),
             controller: controllerClass.name,
-            handler: handlerName,
-            controllerPath,
-            methodPath: joinRoutePath(methodPath),
-            file: relative(adminDir, filePath).replace(/\\/g, '/'),
+            file,
           };
 
-          if (!keyword) {
-            routes.push(route);
+          if (!isSelectableRoute(route.path)) {
             continue;
           }
 
-          const searchText =
-            `${route.method} ${route.path} ${route.controller} ${route.handler} ${route.file}`.toLowerCase();
-          if (searchText.includes(keyword)) {
-            routes.push(route);
+          if (keyword) {
+            const searchText =
+              `${route.path} ${route.controller} ${route.file}`.toLowerCase();
+            if (!searchText.includes(keyword)) {
+              continue;
+            }
           }
+
+          routes.push(route);
+
+          if (!treeMap.has(controllerClass.name)) {
+            treeMap.set(controllerClass.name, {
+              controller: controllerClass.name,
+              controllerPath,
+              file,
+              routes: [],
+            });
+          }
+          treeMap.get(controllerClass.name)!.routes.push(route);
         }
       }
     }
 
-    routes.sort((a, b) => a.path.localeCompare(b.path) || a.method.localeCompare(b.method));
+    routes.sort((a, b) => a.path.localeCompare(b.path));
+
+    const tree = Array.from(treeMap.values()).sort((a, b) =>
+      a.controllerPath.localeCompare(b.controllerPath),
+    );
 
     return {
       ok: true,
       total: routes.length,
       list: routes,
+      tree,
     };
   }
 }

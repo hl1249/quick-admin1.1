@@ -10,20 +10,24 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  select: [id: string]
-  delete: [id: string]
-  duplicate: [id: string]
-  moveUp: [index: number]
-  moveDown: [index: number]
-  canvasDragOver: [e: DragEvent]
-  canvasDrop: [e: DragEvent]
-  fieldDragStart: [e: DragEvent, index: number, id: string]
-  fieldDragOver: [e: DragEvent, index: number]
+  select: [string]
+  delete: [string]
+  duplicate: [string]
+  moveUp: [number]
+  moveDown: [number]
+  canvasDragOver: [DragEvent]
+  canvasDrop: [DragEvent]
+  fieldDragStart: [DragEvent, number, string]
+  fieldDragOver: [DragEvent, number]
   fieldDragEnd: []
-  beforeLeave: [el: Element]
-  leave: [el: Element, done: () => void]
-  afterLeave: [el: Element]
+  beforeLeave: [Element]
+  leave: [Element, () => void]
+  afterLeave: [Element]
 }>()
+
+const onBeforeLeave = (el: Element) => emit('beforeLeave', el)
+const onLeave = (el: Element, done: () => void) => emit('leave', el, done)
+const onAfterLeave = (el: Element) => emit('afterLeave', el)
 </script>
 
 <template>
@@ -67,9 +71,9 @@ const emit = defineEmits<{
         tag="div"
         name="field-list"
         class="relative overflow-hidden py-2 px-3 flex flex-col gap-1"
-        @before-leave="(el: Element) => emit('beforeLeave', el)"
-        @leave="(el: Element, done: () => void) => emit('leave', el, done)"
-        @after-leave="(el: Element) => emit('afterLeave', el)"
+        @before-leave="onBeforeLeave"
+        @leave="onLeave"
+        @after-leave="onAfterLeave"
       >
         <div
           v-for="(field, index) in fields"

@@ -32,7 +32,13 @@ export interface FormTypeDef {
   group: string
 }
 
-export type ConfigFieldType = 'text' | 'number' | 'switch' | 'select' | 'options-editor'
+export type ConfigFieldType =
+  | 'text'
+  | 'number'
+  | 'switch'
+  | 'select'
+  | 'options-editor'
+  | 'route-select'
 
 export interface ConfigField {
   key: string
@@ -176,13 +182,13 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'data', label: '选项列表', type: 'options-editor', tip: '配置下拉选项' },
   ],
   'remote-select': [
-    { key: 'action', label: '请求地址 (action)', type: 'text', placeholder: '/api/xxx/list' },
+    { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/list', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'filterable', label: '可搜索', type: 'switch' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value', tip: '返回数据中作为 value 的字段' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label', tip: '返回数据中作为 label 的字段' },
   ],
   cascader: [
-    { key: 'action', label: '请求地址 (action)', type: 'text', placeholder: '/api/xxx/tree' },
+    { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/tree', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label' },
     { key: 'propsChildren', label: 'props.children 字段名', type: 'text', placeholder: '默认 children' },
@@ -190,13 +196,13 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'multiple', label: '多选', type: 'switch' },
   ],
   'tree-select': [
-    { key: 'action', label: '请求地址 (action)', type: 'text', placeholder: '/api/xxx/tree' },
+    { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/tree', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label' },
     { key: 'propsChildren', label: 'props.children 字段名', type: 'text', placeholder: '默认 children' },
   ],
   'table-select': [
-    { key: 'action', label: '请求地址 (action)', type: 'text', placeholder: '/api/xxx/page' },
+    { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/page', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择' },
     { key: 'title', label: '弹窗标题', type: 'text', placeholder: '选择数据' },
     { key: 'multiple', label: '多选', type: 'switch' },

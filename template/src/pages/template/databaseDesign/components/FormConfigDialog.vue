@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { FORM_TYPE_CONFIG, type FieldDef } from '../types'
+import RouteActionSelect from './RouteActionSelect.vue'
 
 const props = defineProps<{
   selectedField: FieldDef | null
@@ -74,7 +75,16 @@ defineExpose({ open })
   >
     <div v-if="currentConfigFields.length" class="flex flex-col gap-4">
       <div v-for="cf in currentConfigFields" :key="cf.key">
-        <div v-if="cf.type === 'text'" class="config-field">
+        <div v-if="cf.type === 'route-select'" class="config-field">
+          <label class="config-label">{{ cf.label }}</label>
+          <RouteActionSelect
+            v-model="tempFormConfig[cf.key]"
+            :placeholder="cf.placeholder || '请选择接口地址'"
+          />
+          <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+        </div>
+
+        <div v-else-if="cf.type === 'text'" class="config-field">
           <label class="config-label">{{ cf.label }}</label>
           <el-input v-model="tempFormConfig[cf.key]" :placeholder="cf.placeholder || ''" clearable />
           <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
