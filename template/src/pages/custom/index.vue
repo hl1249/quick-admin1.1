@@ -33,7 +33,7 @@
     action: string,
     columns: Columns[]
   }>({
-    action: '/app/admin/${目录名称}/${控制器名称}/getList',
+    action: '/app/admin/custom/custom/getList',
     columns: [
       {
         key: "_id",
@@ -41,7 +41,24 @@
         title: "记录ID(唯一ID)",
         width: 240
       },
-      ${传入表格字段}
+          {
+      key:  "username",
+      type:  "text",
+      title:  "用户名",
+      width:  200
+    },
+    {
+      key:  "age",
+      type:  "text",
+      title:  "年龄",
+      width:  200
+    },
+    {
+      key:  "sex",
+      type:  "text",
+      title:  "sex",
+      width:  200
+    }
     ]
   })
   const search = () => {
@@ -53,7 +70,27 @@
   const queryForm = ref({
     formData: {},
     columns: [
-      ${传入查询字段}
+          {
+      key:  "username",
+      type:  "text",
+      title:  "用户名",
+      width:  200,
+      mode:  "="
+    },
+    {
+      key:  "age",
+      type:  "text",
+      title:  "年龄",
+      width:  200,
+      mode:  "="
+    },
+    {
+      key:  "sex",
+      type:  "text",
+      title:  "sex",
+      width:  200,
+      mode:  "="
+    }
     ]
   })
   
@@ -70,11 +107,40 @@
   const form = ref({
     data: cloneDeep(originalFormData),
     props: {
-      action: '/app/admin/${目录名称}/${控制器名称}/add',
+      action: '/app/admin/custom/custom/add',
       columns: [
-        ${传入表单字段}
+              {
+        key:  "username",
+        type:  "text",
+        title:  "用户名"
+      },
+      {
+        key:  "age",
+        type:  "number",
+        title:  "年龄",
+        step:  1
+      },
+      {
+        key:  "sex",
+        type:  "radio",
+        title:  "sex",
+        data:  [
+          {
+            value:  "0",
+            label:  "男"
+          },
+          {
+            value:  "1",
+            label:  "女"
+          }
+        ]
+      }
       ],
-      rules: {${传入校验规则}},
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ]
+      },
       formType: "",
       title: "",
       show: false
@@ -106,7 +172,7 @@
   }
   const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
     btnsDeleteRequest({
-      action: '/app/admin/${目录名称}/${控制器名称}/delete',
+      action: '/app/admin/custom/custom/delete',
       data: {
         _id: row._id
       }

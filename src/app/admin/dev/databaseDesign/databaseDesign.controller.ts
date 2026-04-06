@@ -12,6 +12,7 @@ import type { Db } from 'mongodb';
 import type { Response } from 'express';
 import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
 import { relative, resolve } from 'path';
+import archiver = require('archiver');
 import { AppConfigService } from '@/config/app-config.service';
 
 /** 单字段描述，对应 $jsonSchema properties 里的一项（复杂规则请改用 body.jsonSchema） */
@@ -54,10 +55,23 @@ export type CreateCollectionBody = {
   withValidator?: boolean;
 };
 
+type CrudField = SchemaField & {
+  required?: boolean;
+  formType?: string;
+  formConfig?: Record<string, any>;
+};
+
 type DownloadControllerBody = {
   tableName?: string;
   collectionName?: string;
   fields?: SchemaField[];
+};
+
+type DownloadCrudBody = {
+  dirName: string;
+  controllerName: string;
+  tableName: string;
+  fields?: CrudField[];
 };
 
 type GetAdminRoutesBody = {
@@ -187,6 +201,86 @@ function readControllerTemplate(): string {
   throw new BadRequestException('未找到控制器模板文件');
 }
 
+function readFrontendTemplate(): string {
+  const templatePaths = [
+    resolve(process.cwd(), 'src/app/admin/dev/databaseDesign/前端页面模板.vue'),
+    resolve(__dirname, '前端页面模板.vue'),
+  ];
+  for (const p of templatePaths) {
+    if (existsSync(p)) return readFileSync(p, 'utf8');
+  }
+  throw new BadRequestException('未找到前端页面模板文件');
+}
+
+function objToJS(obj: Record<string, any>, baseIndent = 0): string {
+  const raw = JSON.stringify(obj, null, 2);
+  const cleaned = raw.replace(/"([a-zA-Z_$][a-zA-Z0-9_$]*)"\s*:/g, '$1: ');
+  if (baseIndent <= 0) return cleaned;
+  const indent = ' '.repeat(baseIndent);
+  return cleaned.split('\n').map((line, i) => (i === 0 ? line : indent + line)).join('\n');
+}
+
+function buildTableColumnsStr(fields: CrudField[]): string {
+  return fields.map((f) => {
+    const title = f.formConfig?.placeholder || f.description || f.key;
+    return '    ' + objToJS({ key: f.key, type: 'text', title, width: 200 }, 4);
+  }).join(',\n');
+}
+
+function buildQueryColumnsStr(fields: CrudField[]): string {
+  return fields.map((f) => {
+    const title = f.formConfig?.placeholder || f.description || f.key;
+    return '    ' + objToJS({ key: f.key, type: 'text', title, width: 200, mode: '=' }, 4);
+  }).join(',\n');
+}
+
+function buildFormColumnObj(f: CrudField): Record<string, any> {
+  const title = f.formConfig?.placeholder || f.description || f.key;
+  const col: Record<string, any> = { key: f.key, type: f.formType || 'text', title };
+  const cfg = f.formConfig || {};
+  switch (f.formType) {
+    case 'select': case 'radio': case 'checkbox':
+      if (cfg.data) col.data = cfg.data;
+      if (cfg.placeholder) col.placeholder = cfg.placeholder;
+      break;
+    case 'remote-select':
+      if (cfg.action) col.action = cfg.action;
+      if (cfg.propsValue || cfg.propsLabel) {
+        col.props = {
+          ...(cfg.propsValue ? { value: cfg.propsValue } : {}),
+          ...(cfg.propsLabel ? { label: cfg.propsLabel } : {}),
+        };
+      }
+      break;
+    case 'table-select':
+      if (cfg.action) col.action = cfg.action;
+      if (cfg.columns) col.columns = cfg.columns;
+      if (cfg.queryColumns) col.queryColumns = cfg.queryColumns;
+      break;
+    case 'number':
+      if (cfg.step !== undefined) col.step = cfg.step;
+      if (cfg.min !== undefined) col.min = cfg.min;
+      if (cfg.max !== undefined) col.max = cfg.max;
+      if (cfg.precision !== undefined) col.precision = cfg.precision;
+      break;
+  }
+  return col;
+}
+
+function buildFormColumnsStr(fields: CrudField[]): string {
+  return fields.map((f) => '      ' + objToJS(buildFormColumnObj(f), 6)).join(',\n');
+}
+
+function buildRulesStr(fields: CrudField[]): string {
+  const requiredFields = fields.filter((f) => f.required);
+  if (!requiredFields.length) return '';
+  const entries = requiredFields.map((f) => {
+    const title = f.formConfig?.placeholder || f.description || f.key;
+    return `\n        ${f.key}: [\n          { required: true, message: "请输入${title}", trigger: "blur" }\n        ]`;
+  });
+  return entries.join(',') + '\n      ';
+}
+
 function renderTemplate(
   template: string,
   variables: Record<string, string>,
@@ -229,6 +323,31 @@ function toSafeVariableName(value: string, usedNames: Set<string>): string {
 function buildUpdateFieldParts(fieldKeys: string[]) {
   const usedNames = new Set<string>(['_id']);
   const destructureParts: string[] = ['_id'];
+  const objectParts: string[] = [];
+
+  for (const key of fieldKeys) {
+    if (isValidIdentifier(key)) {
+      usedNames.add(key);
+      destructureParts.push(key);
+      objectParts.push(key);
+      continue;
+    }
+
+    const variableName = toSafeVariableName(key, usedNames);
+    const keyLiteral = JSON.stringify(key);
+    destructureParts.push(`${keyLiteral}: ${variableName}`);
+    objectParts.push(`${keyLiteral}: ${variableName}`);
+  }
+
+  return {
+    destructureCode: `    const { ${destructureParts.join(', ')} } = data`,
+    dataJsonCode: objectParts.map((part) => `        ${part},`).join('\n'),
+  };
+}
+
+function buildAddFieldParts(fieldKeys: string[]) {
+  const usedNames = new Set<string>();
+  const destructureParts: string[] = [];
   const objectParts: string[] = [];
 
   for (const key of fieldKeys) {
@@ -324,7 +443,6 @@ export class DatabaseDesignController {
   @Post('/createDatabase')
   async createDatabase(@Body() body: CreateCollectionBody) {
     
-    throw new BadRequestException('功能开发中');
     const tableName = (body.tableName ?? body.collectionName)?.trim();
     assertCollectionName(tableName);
 
@@ -393,6 +511,67 @@ export class DatabaseDesignController {
       `attachment; filename*=UTF-8''${encodeURIComponent(downloadFileName)}`,
     );
     res.send(content);
+  }
+
+  /**
+   * 生成 CRUD 全套代码并以 ZIP 下载
+   * ZIP 结构: {dirName}/{controllerName}.controller.ts + {dirName}/index.vue
+   */
+  @Post('/downloadCRUD')
+  async downloadCRUD(
+    @Body() body: DownloadCrudBody,
+    @Res() res: Response,
+  ) {
+    const { dirName, controllerName: ctrlName, tableName } = body;
+    if (!dirName?.trim()) throw new BadRequestException('目录名称不能为空');
+    if (!ctrlName?.trim()) throw new BadRequestException('控制器名称不能为空');
+    if (!tableName?.trim()) throw new BadRequestException('表名不能为空');
+
+    const dir = dirName.trim();
+    const ctrl = ctrlName.trim();
+    const table = tableName.trim();
+    const fields: CrudField[] = Array.isArray(body.fields)
+      ? body.fields.filter((f) => f?.key?.trim())
+      : [];
+
+    // 1) 渲染后端控制器
+    const controllerTemplate = readControllerTemplate();
+    const className = toControllerClassName(ctrl);
+    const controllerFileName = `${toControllerFileName(ctrl)}.controller.ts`;
+    const allowedKeys = extractAllowedFieldKeys(fields);
+    const { destructureCode, dataJsonCode } = buildUpdateFieldParts(allowedKeys);
+    const controllerContent = renderTemplate(controllerTemplate, {
+      ControllerName: className,
+      collectionName: JSON.stringify(table),
+      updateDestructureCode: destructureCode,
+      updateDataJsonCode: dataJsonCode,
+    });
+
+    // 2) 渲染前端页面
+    const frontendTemplate = readFrontendTemplate();
+    const frontendContent = renderTemplate(frontendTemplate, {
+      目录名称: dir,
+      控制器名称: ctrl,
+      表名: table,
+      传入表格字段: buildTableColumnsStr(fields),
+      传入查询字段: buildQueryColumnsStr(fields),
+      传入表单字段: buildFormColumnsStr(fields),
+      传入校验规则: buildRulesStr(fields),
+    });
+
+    // 3) 打包 ZIP
+    const zipFileName = `${dir}.zip`;
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodeURIComponent(zipFileName)}`,
+    );
+
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    archive.pipe(res);
+    archive.append(controllerContent, { name: `${dir}/${controllerFileName}` });
+    archive.append(frontendContent, { name: `${dir}/index.vue` });
+    await archive.finalize();
   }
 
   @Post('/getRouter')

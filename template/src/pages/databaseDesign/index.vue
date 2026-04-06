@@ -9,12 +9,16 @@ import FieldPropertyPanel from './components/FieldPropertyPanel.vue'
 import FormConfigDialog from './components/FormConfigDialog.vue'
 
 // ──────────────────────────── 状态 ────────────────────────────
-const collectionName = ref('')
-const dbName = ref('')
 const fields = ref<FieldDef[]>([])
 const selectedId = ref<string | null>(null)
 const showPreview = ref(false)
 const submitting = ref(false)
+
+const showCreateDialog = ref(false)
+const createForm = ref({ dbName: '', collectionName: '' })
+
+const showCrudDialog = ref(false)
+const crudForm = ref({ dirName: '', controllerName: '', tableName: '' })
 const dragOverCanvas = ref(false)
 const draggingId = ref<string | null>(null)
 const formConfigRef = ref<InstanceType<typeof FormConfigDialog>>()
@@ -291,9 +295,8 @@ function onFormConfigSaved() {
   propertyPanelRef.value?.switchToDetail()
 }
 
-// ──────────────────────────── 提交 ────────────────────────────
-function validateBeforeSubmit(): string | null {
-  if (!collectionName.value.trim()) return '请填写集合名（Collection Name）'
+// ──────────────────────────── 字段校验 ────────────────────────────
+function validateFields(): string | null {
   const keys = fields.value.map(f => f.key.trim()).filter(Boolean)
   if (fields.value.length > 0 && keys.length !== fields.value.length) {
     return '存在字段名为空的字段，请填写完整'
@@ -303,84 +306,105 @@ function validateBeforeSubmit(): string | null {
   return null
 }
 
-async function handleSubmit() {
-  const err = validateBeforeSubmit()
+// ──────────────────────────── 创建集合 ────────────────────────────
+function openCreateDialog() {
+  const err = validateFields()
   if (err) { ElMessage.warning(err); return }
+  createForm.value = { dbName: '', collectionName: '' }
+  showCreateDialog.value = true
+}
+
+async function handleCreateCollection() {
+  const { dbName, collectionName } = createForm.value
+  if (!collectionName.trim()) { ElMessage.warning('请填写集合名'); return }
 
   submitting.value = true
   try {
-    const fieldList = buildFieldList()
-
     await http.request({
       method: 'POST',
       url: '/app/admin/dev/databaseDesign/databaseDesign/createDatabase',
       data: {
-        dbName: dbName.value.trim() || undefined,
-        tableName: collectionName.value.trim(),
-        fields: fieldList,
+        dbName: dbName.trim() || undefined,
+        tableName: collectionName.trim(),
+        fields: buildFieldList(),
         required: requiredKeys.value,
-        withValidator: fieldList.length > 0,
+        withValidator: buildFieldList().length > 0,
       },
     })
-
-    ElMessage.success(`集合 "${collectionName.value}" 创建成功！`)
-    clearForm()
+    ElMessage.success(`集合 "${collectionName}" 创建成功！`)
+    showCreateDialog.value = false
   } catch {
-    // axios 拦截器已自动处理错误提示
   } finally {
     submitting.value = false
   }
 }
 
-async function handleDownloadController() {
-  const err = validateBeforeSubmit()
+// ──────────────────────────── 生成 CRUD ────────────────────────────
+function openCrudDialog() {
+  if (!fields.value.length) { ElMessage.warning('请先添加字段'); return }
+  const err = validateFields()
   if (err) { ElMessage.warning(err); return }
+  crudForm.value = { dirName: '', controllerName: '', tableName: '' }
+  showCrudDialog.value = true
+}
+
+async function handleDownloadCRUD() {
+  const { dirName, controllerName, tableName } = crudForm.value
+  if (!dirName.trim()) { ElMessage.warning('请填写目录名称'); return }
+  if (!controllerName.trim()) { ElMessage.warning('请填写控制器名称'); return }
+  if (!tableName.trim()) { ElMessage.warning('请填写表名'); return }
 
   submitting.value = true
   try {
     const response = await http.request({
       method: 'POST',
-      url: '/app/admin/dev/databaseDesign/databaseDesign/downloadController',
+      url: '/app/admin/dev/databaseDesign/databaseDesign/downloadCRUD',
       responseType: 'blob',
       data: {
-        tableName: collectionName.value.trim(),
-        fields: buildFieldList(),
+        dirName: dirName.trim(),
+        controllerName: controllerName.trim(),
+        tableName: tableName.trim(),
+        fields: fields.value.filter(f => f.key.trim()).map(f => ({
+          key: f.key.trim(),
+          bsonType: f.bsonType,
+          description: f.description || undefined,
+          required: f.required,
+          formType: f.formType || undefined,
+          formConfig: f.formConfig || undefined,
+        })),
       },
     })
 
     const fileName = getFilenameFromDisposition(response.headers['content-disposition'])
-      || `${collectionName.value.trim()}.controller.ts`
-    const blob = response.data instanceof Blob ? response.data : new Blob([response.data], { type: 'text/plain;charset=utf-8' })
+      || `${dirName.trim()}.zip`
+    const blob = response.data instanceof Blob
+      ? response.data
+      : new Blob([response.data], { type: 'application/zip' })
 
     triggerBrowserDownload(blob, fileName)
-    ElMessage.success(`控制器 "${fileName}" 下载成功`)
+    ElMessage.success('CRUD 代码包下载成功')
+    showCrudDialog.value = false
   } catch {
-    // axios 拦截器已自动处理错误提示
   } finally {
     submitting.value = false
   }
 }
 
 function clearForm() {
-  collectionName.value = ''
-  dbName.value = ''
   fields.value = []
   selectedId.value = null
 }
 
 async function handleReset() {
   try {
-    await ElMessageBox.confirm('确认清空当前设计？', '提示', { type: 'warning' })
+    await ElMessageBox.confirm('确认清空所有字段？', '提示', { type: 'warning' })
     clearForm()
-  } catch {
-    // 用户取消
-  }
+  } catch {}
 }
 </script>
 
 <template>
   <div class="db-designer h-full flex flex-col bg-gray-50 overflow-hidden">
-    fields：{{ fields }}
     <!-- ───── 顶部栏 ───── -->
     <div class="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2 text-blue-600 font-bold text-lg select-none">
@@ -388,25 +412,16 @@ async function handleReset() {
         <span>QuickAdmin 表设计器</span>
       </div>
       <div class="flex-1 flex items-center gap-3 ml-4">
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-500 whitespace-nowrap">数据库</span>
-          <el-input v-model="dbName" placeholder="默认库（可不填）" class="w-40" clearable />
-        </div>
-        <span class="text-gray-300">/</span>
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-500 whitespace-nowrap">集合名 <span class="text-red-500">*</span></span>
-          <el-input v-model="collectionName" placeholder="请输入 Collection 名称" class="w-52" clearable />
-        </div>
-        <div class="ml-2 text-sm text-gray-400">
+        <div class="text-sm text-gray-400">
           <span class="bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full">{{ fields.length }} 个字段</span>
           <span v-if="requiredKeys.length" class="ml-1 bg-red-50 text-red-500 px-2 py-0.5 rounded-full">{{ requiredKeys.length }} 必填</span>
         </div>
       </div>
       <div class="flex items-center gap-2 ml-auto">
         <el-button @click="showPreview = true" :disabled="!fields.length">预览 Schema</el-button>
-        <el-button :loading="submitting" :disabled="!collectionName.trim()" @click="handleDownloadController">下载控制器</el-button>
-        <el-button type="danger" plain @click="handleReset" :disabled="!fields.length && !collectionName">清空</el-button>
-        <el-button type="primary" :loading="submitting" :disabled="!collectionName.trim()" @click="handleSubmit">创建集合</el-button>
+        <el-button type="danger" plain @click="handleReset" :disabled="!fields.length">清空</el-button>
+        <el-button :disabled="!fields.length" @click="openCreateDialog">创建集合</el-button>
+        <el-button type="primary" :disabled="!fields.length" @click="openCrudDialog">生成 CRUD</el-button>
       </div>
     </div>
 
@@ -448,6 +463,44 @@ async function handleReset() {
     <!-- ───── 弹窗 ───── -->
     <FormConfigDialog ref="formConfigRef" :selected-field="selectedField" @saved="onFormConfigSaved" />
 
+    <!-- 创建集合弹窗 -->
+    <el-dialog v-model="showCreateDialog" title="创建集合" width="460" draggable :close-on-click-modal="false">
+      <el-form label-width="80px" @submit.prevent="handleCreateCollection">
+        <el-form-item label="数据库">
+          <el-input v-model="createForm.dbName" placeholder="默认库（可不填）" clearable />
+        </el-form-item>
+        <el-form-item label="集合名" required>
+          <el-input v-model="createForm.collectionName" placeholder="请输入集合名称" clearable />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showCreateDialog = false">取消</el-button>
+        <el-button type="primary" :loading="submitting" @click="handleCreateCollection">确认创建</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 生成 CRUD 弹窗 -->
+    <el-dialog v-model="showCrudDialog" title="生成 CRUD 代码包" width="500" draggable :close-on-click-modal="false">
+      <el-form label-width="90px" @submit.prevent="handleDownloadCRUD">
+        <el-form-item label="目录名称" required>
+          <el-input v-model="crudForm.dirName" placeholder="如 system" clearable />
+        </el-form-item>
+        <el-form-item label="控制器名称" required>
+          <el-input v-model="crudForm.controllerName" placeholder="如 systemLog" clearable />
+        </el-form-item>
+        <el-form-item label="表名" required>
+          <el-input v-model="crudForm.tableName" placeholder="数据库集合名" clearable />
+        </el-form-item>
+      </el-form>
+      <div class="text-xs text-gray-400 mt-2 px-1">
+        下载 ZIP 包含：<code class="bg-gray-100 px-1 rounded">{目录名}/{控制器名}.controller.ts</code> + <code class="bg-gray-100 px-1 rounded">{目录名}/index.vue</code>
+      </div>
+      <template #footer>
+        <el-button @click="showCrudDialog = false">取消</el-button>
+        <el-button type="primary" :loading="submitting" @click="handleDownloadCRUD">下载代码包</el-button>
+      </template>
+    </el-dialog>
+
     <el-dialog v-model="showPreview" title="完整 $jsonSchema 预览" width="600" draggable>
       <div class="text-xs text-gray-500 mb-2">
         该 Schema 将作为 <code class="bg-gray-100 px-1 rounded">validator.$jsonSchema</code> 写入 MongoDB 集合。
@@ -455,7 +508,6 @@ async function handleReset() {
       <pre class="text-sm bg-gray-50 border border-gray-200 rounded-xl p-4 overflow-auto max-h-96 leading-relaxed text-gray-700">{{ JSON.stringify(jsonSchemaPreview, null, 2) }}</pre>
       <template #footer>
         <el-button @click="showPreview = false">关闭</el-button>
-        <el-button type="primary" :loading="submitting" @click="showPreview = false; handleSubmit()">确认并创建集合</el-button>
       </template>
     </el-dialog>
   </div>

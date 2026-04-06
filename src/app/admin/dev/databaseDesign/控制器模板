@@ -11,9 +11,13 @@ export class ${ControllerName}Controller {
 
   @Post('/add')
   add(@Req() req, @Body() data): Promise<Document | null> {
+${addDestructureCode}
+
     return this.dbService.add({
       dbName: ${collectionName},
-      dataJson:data
+      dataJson: {
+${addDataJsonCode}
+      }
     })
   }
 

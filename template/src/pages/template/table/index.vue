@@ -1,19 +1,19 @@
 <template>
   <div class="flex flex-col h-full">
-    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
+    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search"/>
     <div>
       <el-button type="success" :icon="CirclePlus" @click="addBtn">添加</el-button>
     </div>
     <qa-table ref="qaTableRef" :action="table.action" :columns="table.columns" :query-form-param="queryForm"
               :pagination="false" :right-btns="['detail_auto', 'delete', 'update']"
               :row-no="true" @selection-change="selectionChange" @update="updateBtn"
-              @delete="deleteBtn" />
+              @delete="deleteBtn"/>
 
 
     <qa-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
                :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
-                @success="()=>{
+               @success="()=>{
             form.props.show = false
             refresh()
           }">
@@ -23,33 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import { CirclePlus } from '@element-plus/icons-vue'
-import { cloneDeep, getCommonTime } from '@/utils'
-
-const adopt = (status: number) => {
-  formRefs.value.submitForm({
-    // data为额外提交的参数，真正提交的参数为form1.data+这里的data
-    data: {
-      status: status
-    },
-    success: (_data:any) => {
-      // 提交成功
-
-    },
-    fail: (_data:any) => {
-      // 提交失败
-
-    }
-  });
-}
+import {CirclePlus} from '@element-plus/icons-vue'
+import {cloneDeep} from '@/utils'
 
 const formRefs = ref()
-const fromDefalut = () => {
-  formRefs.value.setResetFormData({ user_id: '我叼你妈的' })
-  // 还原表单验证并恢复默认数据
-  formRefs.value.resetFormDataDefault()
-}
-
 const qaTableRef = ref<QaTableInstance | null>(null);
 const table = ref<{
   action: string,
@@ -64,9 +41,9 @@ const table = ref<{
       width: 240
     },
     {
-      key: "url",
+      key: "nickname",
       type: "text",
-      title: "请求地址",
+      title: "昵称",
       width: 200
     },
   ]
@@ -78,16 +55,16 @@ const search = () => {
 }
 
 const queryForm = ref({
-  formData: {
-  },
+  formData: {},
   columns: [
     {
-      key: "requestId",
+      key: "nickname",
       type: "text",
-      title: "_id",
-      mode: "=",
-      width: 230,
-    }]
+      title: "昵称",
+      width: 200,
+      mode: "="
+    }
+  ]
 })
 
 // 多选逻辑
@@ -97,19 +74,17 @@ const selectionChange = (row: any) => {
   multipleSelection.value = row
 }
 
-const originalFormData = {
-}
+// 默认拉取列表参数
+const originalFormData = {}
 
 const form = ref({
   data: cloneDeep(originalFormData),
   props: {
     action: '/app/admin/system/systemLog/systemLog/add',
-    columns: [
-
-    ],
+    columns: [],
     rules: {
       user_id: [
-        { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
+        {min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true,},
       ],
     },
     formType: "",
