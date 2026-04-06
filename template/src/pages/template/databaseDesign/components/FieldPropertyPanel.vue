@@ -7,6 +7,7 @@ import {
   type FieldDef, type ConfigField,
 } from '../types'
 import RouteActionSelect from './RouteActionSelect.vue'
+import ConfigObjectArrayEditor from './ConfigObjectArrayEditor.vue'
 
 const props = defineProps<{
   selectedField: FieldDef | null
@@ -253,6 +254,17 @@ defineExpose({ switchToDetail })
                 <el-button type="primary" plain class="mt-1 w-full" @click="addOptionItem(cf.key)">
                   + 添加选项
                 </el-button>
+              </template>
+
+              <template v-else-if="cf.type === 'object-array-editor'">
+                <label class="field-label">{{ cf.label }}</label>
+                <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
+                <ConfigObjectArrayEditor
+                  :model-value="cfgModel[cf.key] ?? []"
+                  :item-fields="cf.itemFields"
+                  :add-text="cf.addText"
+                  @update:model-value="cfgModel[cf.key] = $event"
+                />
               </template>
             </div>
           </div>

@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { FORM_TYPE_CONFIG, type FieldDef } from '../types'
 import RouteActionSelect from './RouteActionSelect.vue'
+import ConfigObjectArrayEditor from './ConfigObjectArrayEditor.vue'
 
 const props = defineProps<{
   selectedField: FieldDef | null
@@ -17,6 +18,12 @@ const configFormLabel = ref('')
 const tempFormConfig = ref<Record<string, any>>({})
 
 const currentConfigFields = computed(() => FORM_TYPE_CONFIG[configFormType.value] ?? [])
+const dialogWidth = computed(() => configFormType.value === 'table-select' ? 920 : 520)
+
+function cloneValue<T>(value: T): T {
+  if (value === undefined) return value
+  return JSON.parse(JSON.stringify(value))
+}
 
 function open(ftValue: string, ftLabel: string) {
   const field = props.selectedField
@@ -31,10 +38,10 @@ function open(ftValue: string, ftLabel: string) {
     return
   }
   const isReedit = field.formType === ftValue
-  tempFormConfig.value = isReedit ? { ...(field.formConfig ?? {}) } : {}
+  tempFormConfig.value = isReedit ? cloneValue(field.formConfig ?? {}) : {}
   cfgFields.forEach(cf => {
     if (tempFormConfig.value[cf.key] === undefined && cf.default !== undefined) {
-      tempFormConfig.value[cf.key] = cf.default
+      tempFormConfig.value[cf.key] = cloneValue(cf.default)
     }
   })
   showDialog.value = true
@@ -44,7 +51,7 @@ function save() {
   const field = props.selectedField
   if (!field) return
   field.formType = configFormType.value
-  field.formConfig = { ...tempFormConfig.value }
+  field.formConfig = cloneValue(tempFormConfig.value)
   showDialog.value = false
   emit('saved')
 }
@@ -69,7 +76,7 @@ defineExpose({ open })
   <el-dialog
     v-model="showDialog"
     :title="`配置 - ${configFormLabel || configFormType}`"
-    width="520"
+    :width="dialogWidth"
     draggable
     destroy-on-close
   >
@@ -123,6 +130,17 @@ defineExpose({ open })
           <el-button type="primary" plain class="mt-2 w-full" @click="addOptionItem">
             + 添加选项
           </el-button>
+        </div>
+
+        <div v-else-if="cf.type === 'object-array-editor'" class="config-field">
+          <label class="config-label">{{ cf.label }}</label>
+          <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
+          <ConfigObjectArrayEditor
+            :model-value="tempFormConfig[cf.key] ?? []"
+            :item-fields="cf.itemFields"
+            :add-text="cf.addText"
+            @update:model-value="tempFormConfig[cf.key] = $event"
+          />
         </div>
       </div>
     </div>

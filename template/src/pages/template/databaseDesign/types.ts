@@ -39,6 +39,23 @@ export type ConfigFieldType =
   | 'select'
   | 'options-editor'
   | 'route-select'
+  | 'object-array-editor'
+
+export type ConfigArrayFieldType =
+  | 'text'
+  | 'number'
+  | 'switch'
+  | 'select'
+
+export interface ConfigArrayField {
+  key: string
+  label: string
+  type: ConfigArrayFieldType
+  placeholder?: string
+  options?: { value: string; label: string }[]
+  default?: any
+  uniqueTrue?: boolean
+}
 
 export interface ConfigField {
   key: string
@@ -48,6 +65,8 @@ export interface ConfigField {
   tip?: string
   options?: { value: string; label: string }[]
   default?: any
+  addText?: string
+  itemFields?: ConfigArrayField[]
 }
 
 export const TYPE_DEFS: TypeDef[] = [
@@ -203,10 +222,56 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
   ],
   'table-select': [
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/page', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
-    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择' },
-    { key: 'title', label: '弹窗标题', type: 'text', placeholder: '选择数据' },
+    {
+      key: 'columns',
+      label: '表格列配置',
+      type: 'object-array-editor',
+      default: [],
+      addText: '添加表格列',
+      tip: '配置弹窗表格展示列，可标记显示字段和取值字段',
+      itemFields: [
+        { key: 'key', label: '字段 key', type: 'text', placeholder: '字段 key' },
+        { key: 'title', label: '列标题', type: 'text', placeholder: '列标题' },
+        { key: 'nameKey', label: '显示名字段', type: 'switch', uniqueTrue: true },
+        { key: 'idKey', label: '值字段', type: 'switch', uniqueTrue: true },
+      ],
+    },
+    {
+      key: 'queryColumns',
+      label: '查询条件配置',
+      type: 'object-array-editor',
+      default: [],
+      addText: '添加查询条件',
+      tip: '配置表格弹窗顶部的搜索条件',
+      itemFields: [
+        { key: 'key', label: '字段 key', type: 'text', placeholder: '字段 key' },
+        { key: 'title', label: '标题', type: 'text', placeholder: '标题' },
+        {
+          key: 'mode',
+          label: '查询方式',
+          type: 'select',
+          options: [
+            { value: '=', label: '= 完全匹配' },
+            { value: '!=', label: '!= 不等于' },
+            { value: '%%', label: '%% 模糊匹配' },
+            { value: '%*', label: '%* 以 xxx 开头' },
+            { value: '*%', label: '*% 以 xxx 结尾' },
+            { value: '>', label: '> 大于' },
+            { value: '>=', label: '>= 大于等于' },
+            { value: '<', label: '< 小于' },
+            { value: '<=', label: '<= 小于等于' },
+            { value: 'in', label: 'in 在数组里' },
+            { value: 'nin', label: 'nin 不在数组里' },
+            { value: '[]', label: '[] 范围 arr[0] <= x <= arr[1]' },
+            { value: '[)', label: '[) 范围 arr[0] <= x < arr[1]' },
+            { value: '(]', label: '(] 范围 arr[0] < x <= arr[1]' },
+            { value: '()', label: '() 范围 arr[0] < x < arr[1]' },
+            { value: 'custom', label: 'custom 不自动参与 where 条件' },
+          ],
+        },
+      ],
+    },
     { key: 'multiple', label: '多选', type: 'switch' },
-    { key: 'pageSize', label: '每页条数', type: 'number', default: 10 },
   ],
   date: [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择日期' },
