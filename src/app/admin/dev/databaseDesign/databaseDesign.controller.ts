@@ -497,12 +497,15 @@ export class DatabaseDesignController {
     const controllerName = toControllerClassName(collectionName);
     const downloadFileName = `${toControllerFileName(collectionName)}.controller.ts`;
     const allowedFieldKeys = extractAllowedFieldKeys(body.fields);
-    const { destructureCode, dataJsonCode } = buildUpdateFieldParts(allowedFieldKeys);
+    const updateParts = buildUpdateFieldParts(allowedFieldKeys);
+    const addParts = buildAddFieldParts(allowedFieldKeys);
     const content = renderTemplate(template, {
       ControllerName: controllerName,
       collectionName: JSON.stringify(collectionName),
-      updateDestructureCode: destructureCode,
-      updateDataJsonCode: dataJsonCode,
+      addDestructureCode: addParts.destructureCode,
+      addDataJsonCode: addParts.dataJsonCode,
+      updateDestructureCode: updateParts.destructureCode,
+      updateDataJsonCode: updateParts.dataJsonCode,
     });
 
     res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8');
@@ -539,12 +542,15 @@ export class DatabaseDesignController {
     const className = toControllerClassName(ctrl);
     const controllerFileName = `${toControllerFileName(ctrl)}.controller.ts`;
     const allowedKeys = extractAllowedFieldKeys(fields);
-    const { destructureCode, dataJsonCode } = buildUpdateFieldParts(allowedKeys);
+    const updateParts = buildUpdateFieldParts(allowedKeys);
+    const addParts = buildAddFieldParts(allowedKeys);
     const controllerContent = renderTemplate(controllerTemplate, {
       ControllerName: className,
       collectionName: JSON.stringify(table),
-      updateDestructureCode: destructureCode,
-      updateDataJsonCode: dataJsonCode,
+      addDestructureCode: addParts.destructureCode,
+      addDataJsonCode: addParts.dataJsonCode,
+      updateDestructureCode: updateParts.destructureCode,
+      updateDataJsonCode: updateParts.dataJsonCode,
     });
 
     // 2) 渲染前端页面
