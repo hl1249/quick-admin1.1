@@ -3,10 +3,11 @@ import { ref, computed, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '@/utils/axios'
 import {
+  buildFieldSpec,
+  coerceSwitchValues,
   coerceOptionDataValues,
+  isSwitchCustomValueEnabled,
   getOptionDataValueType,
-  isStringType,
-  isNumericType,
   type BsonType,
   type FieldDef,
 } from './types'
@@ -53,19 +54,7 @@ const jsonSchemaPreview = computed(() => {
   const properties: Record<string, unknown> = {}
   for (const f of fields.value) {
     if (!f.key) continue
-    const spec: Record<string, unknown> = { bsonType: f.bsonType }
-    if (f.description) spec.description = f.description
-    if (['string'].includes(f.bsonType)) {
-      if (f.minLength !== undefined) spec.minLength = f.minLength
-      if (f.maxLength !== undefined) spec.maxLength = f.maxLength
-      if (f.pattern) spec.pattern = f.pattern
-      if (f.enumStr) spec.enum = f.enumStr.split(',').map(s => s.trim()).filter(Boolean)
-    }
-    if (['number', 'int', 'long', 'decimal'].includes(f.bsonType)) {
-      if (f.minimum !== undefined) spec.minimum = f.minimum
-      if (f.maximum !== undefined) spec.maximum = f.maximum
-    }
-    properties[f.key] = spec
+    properties[f.key] = buildFieldSpec(f)
   }
   const schema: Record<string, unknown> = { bsonType: 'object', properties }
   if (requiredKeys.value.length) schema.required = requiredKeys.value
@@ -81,18 +70,7 @@ function buildFieldList() {
     .map(f => {
       const item: Record<string, unknown> = {
         key: f.key.trim(),
-        bsonType: f.bsonType,
-      }
-      if (f.description) item.description = f.description
-      if (isStringType(f.bsonType)) {
-        if (f.minLength !== undefined) item.minLength = f.minLength
-        if (f.maxLength !== undefined) item.maxLength = f.maxLength
-        if (f.pattern) item.pattern = f.pattern
-        if (f.enumStr) item.enum = f.enumStr.split(',').map(s => s.trim()).filter(Boolean)
-      }
-      if (isNumericType(f.bsonType)) {
-        if (f.minimum !== undefined) item.minimum = f.minimum
-        if (f.maximum !== undefined) item.maximum = f.maximum
+        ...buildFieldSpec(f),
       }
       return item
     })
@@ -230,7 +208,13 @@ function deleteField(id: string) {
 function duplicateField(id: string) {
   const idx = fields.value.findIndex(f => f.id === id)
   if (idx === -1) return
-  const copy: FieldDef = { ...fields.value[idx], id: genId(), key: fields.value[idx].key + '_copy' }
+  const source = fields.value[idx]
+  const copy: FieldDef = {
+    ...source,
+    id: genId(),
+    key: source.key + '_copy',
+    bsonType: Array.isArray(source.bsonType) ? [...source.bsonType] : source.bsonType,
+  }
   fields.value.splice(idx + 1, 0, copy)
   selectedId.value = copy.id
 }
@@ -385,9 +369,12 @@ async function handleDownloadCRUD() {
               getOptionDataValueType(formConfig as Record<string, any>),
             )
           }
+          if (formConfig && f.formType === 'switch' && isSwitchCustomValueEnabled(formConfig as Record<string, any>)) {
+            coerceSwitchValues(formConfig as Record<string, any>)
+          }
           return {
             key: f.key.trim(),
-            bsonType: f.bsonType,
+            ...buildFieldSpec(f),
             description: f.description || undefined,
             required: f.required,
             formType: f.formType || undefined,

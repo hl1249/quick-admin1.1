@@ -47,6 +47,8 @@ interface QaFormColumns {
     type?: string
     labelWidth?: string | number,
     width?: string | number
+    activeValue?: boolean | string | number
+    inactiveValue?: boolean | string | number
     valueFormat?: string
     tips?: string
     dateType?: string

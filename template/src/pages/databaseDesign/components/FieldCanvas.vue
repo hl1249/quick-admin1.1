@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowUp, ArrowDown } from '@element-plus/icons-vue'
-import { getTypeDef, type FieldDef } from '../types'
+import { getBsonTypeList, getTypeDef, type FieldDef } from '../types'
 
 const props = defineProps<{
   fields: FieldDef[]
@@ -104,11 +104,16 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
             />
           </div>
 
-          <div class="min-w-0 flex justify-center">
-            <span
-              class="px-2 py-0.5 rounded-full text-xs text-white font-medium"
-              :style="{ backgroundColor: getTypeDef(field.bsonType).color }"
-            >{{ getTypeDef(field.bsonType).label }}</span>
+          <div class="min-w-0 flex justify-center overflow-hidden">
+            <div class="flex flex-nowrap justify-center gap-1 max-w-full overflow-hidden">
+              <span
+                v-for="bsonType in getBsonTypeList(field.bsonType)"
+                :key="bsonType"
+                class="px-2 py-0.5 rounded-full text-xs text-white font-medium shrink-0 whitespace-nowrap"
+                :style="{ backgroundColor: getTypeDef(bsonType).color }"
+                :title="getTypeDef(bsonType).desc"
+              >{{ getTypeDef(bsonType).label }}</span>
+            </div>
           </div>
 
           <div class="min-w-0 flex justify-center">
@@ -172,7 +177,7 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
 
 .field-grid {
   display: grid;
-  grid-template-columns: 1.25rem 1.25rem minmax(0, 1fr) 6rem 6rem 3.5rem 7rem;
+  grid-template-columns: 1.25rem 1.25rem minmax(0, 1fr) 45rem 6rem 3.5rem 7rem;
   align-items: center;
   column-gap: 0.5rem;
 }

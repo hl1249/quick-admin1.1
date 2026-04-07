@@ -2,16 +2,27 @@ export type BsonType =
   | 'string' | 'number' | 'int' | 'long' | 'decimal'
   | 'bool' | 'date' | 'objectId' | 'array' | 'object' | 'binData'
 
-export interface FieldDef {
-  id: string
-  key: string
-  bsonType: BsonType
-  description: string
-  required: boolean
+export type BsonTypeValue = BsonType | BsonType[]
+
+export interface FieldTypeRule {
   minLength?: number
   maxLength?: number
   pattern?: string
-  enumStr?: string
+  minimum?: number
+  maximum?: number
+}
+
+export interface FieldDef {
+  id: string
+  key: string
+  bsonType: BsonTypeValue
+  description: string
+  required: boolean
+  typeRules?: Partial<Record<BsonType, FieldTypeRule>>
+  // 兼容旧数据结构，打开已有字段时会迁移到 typeRules
+  minLength?: number
+  maxLength?: number
+  pattern?: string
   minimum?: number
   maximum?: number
   formType?: string
@@ -47,6 +58,8 @@ export type ConfigArrayFieldType =
   | 'switch'
   | 'select'
 
+export type SwitchValueType = 'string' | 'number' | 'boolean'
+
 export interface ConfigArrayField {
   key: string
   label: string
@@ -67,6 +80,16 @@ export interface ConfigField {
   default?: any
   addText?: string
   itemFields?: ConfigArrayField[]
+  visibleWhen?: {
+    key: string
+    value: any
+  }
+}
+
+export interface BuiltFieldSpec {
+  bsonType?: BsonTypeValue
+  anyOf?: Record<string, unknown>[]
+  description?: string
 }
 
 /** select / radio / checkbox 的选项 data[].value 使用字符串或数字（影响生成代码中的字面量类型） */
@@ -99,6 +122,46 @@ export function coerceOptionDataValues(
       item.value = item.value === undefined || item.value === null ? '' : String(item.value)
     }
   }
+}
+
+export function inferSwitchValueType(cfg: Record<string, any> | undefined): SwitchValueType {
+  if (!cfg) return 'string'
+  if (cfg.switchValueType === 'number' || cfg.switchValueType === 'string' || cfg.switchValueType === 'boolean') {
+    return cfg.switchValueType
+  }
+  const sample = cfg.activeValue ?? cfg.inactiveValue
+  if (typeof sample === 'number' && Number.isFinite(sample)) return 'number'
+  if (typeof sample === 'boolean') return 'boolean'
+  return 'string'
+}
+
+function coerceSingleSwitchValue(value: unknown, valueType: SwitchValueType): unknown {
+  if (value === undefined || value === null || value === '') return value
+  if (valueType === 'number') {
+    const n = Number(value)
+    return Number.isFinite(n) ? n : value
+  }
+  if (valueType === 'boolean') {
+    if (typeof value === 'boolean') return value
+    const normalized = String(value).trim().toLowerCase()
+    if (['true', '1', 'yes', 'y'].includes(normalized)) return true
+    if (['false', '0', 'no', 'n'].includes(normalized)) return false
+    return value
+  }
+  return String(value)
+}
+
+export function coerceSwitchValues(cfg: Record<string, any> | undefined): void {
+  if (!cfg) return
+  const valueType = inferSwitchValueType(cfg)
+  cfg.activeValue = coerceSingleSwitchValue(cfg.activeValue, valueType)
+  cfg.inactiveValue = coerceSingleSwitchValue(cfg.inactiveValue, valueType)
+}
+
+export function isSwitchCustomValueEnabled(cfg: Record<string, any> | undefined): boolean {
+  if (!cfg) return false
+  if (typeof cfg.useCustomSwitchValue === 'boolean') return cfg.useCustomSwitchValue
+  return cfg.activeValue !== undefined || cfg.inactiveValue !== undefined
 }
 
 export const TYPE_DEFS: TypeDef[] = [
@@ -205,15 +268,42 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请输入…' },
     { key: 'rows', label: '行数', type: 'number', default: 3 },
   ],
-  switch: [],
+  switch: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
+    {
+      key: 'useCustomSwitchValue',
+      label: '自定义激活值',
+      type: 'switch',
+      default: false,
+      tip: '关闭时使用默认 true / false；开启后可自定义激活值和关闭值',
+    },
+    {
+      key: 'switchValueType',
+      label: '值类型',
+      type: 'select',
+      default: 'number',
+      options: [
+        { value: 'string', label: '字符串' },
+        { value: 'number', label: '数字' },
+        { value: 'boolean', label: '布尔值' },
+      ],
+      tip: '激活值 / 关闭值将按此类型输出到生成代码',
+      visibleWhen: { key: 'useCustomSwitchValue', value: true },
+    },
+    { key: 'activeValue', label: '激活值', type: 'text', placeholder: '如 100 / Y / true', visibleWhen: { key: 'useCustomSwitchValue', value: true } },
+    { key: 'inactiveValue', label: '关闭值', type: 'text', placeholder: '如 0 / N / false', visibleWhen: { key: 'useCustomSwitchValue', value: true } },
+  ],
   rate: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择评分' },
     { key: 'max', label: '最大分值', type: 'number', default: 5 },
     { key: 'allowHalf', label: '允许半选', type: 'switch' },
   ],
   color: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择颜色' },
     { key: 'showAlpha', label: '透明度', type: 'switch' },
   ],
   slider: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请输入数值' },
     { key: 'min', label: '最小值', type: 'number', default: 0 },
     { key: 'max', label: '最大值', type: 'number', default: 100 },
     { key: 'step', label: '步长', type: 'number', default: 1 },
@@ -268,12 +358,14 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'data', label: '选项列表', type: 'options-editor', tip: '配置下拉选项' },
   ],
   'remote-select': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '请选择接口地址', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'filterable', label: '可搜索', type: 'switch' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value', tip: '返回数据中作为 value 的字段' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label', tip: '返回数据中作为 label 的字段' },
   ],
   cascader: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/tree', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label' },
@@ -282,12 +374,14 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'multiple', label: '多选', type: 'switch' },
   ],
   'tree-select': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/tree', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label' },
     { key: 'propsChildren', label: 'props.children 字段名', type: 'text', placeholder: '默认 children' },
   ],
   'table-select': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/page', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
     {
       key: 'columns',
@@ -366,6 +460,7 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择时间' },
   ],
   file: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择文件' },
     { key: 'multiple', label: '多文件', type: 'switch' },
     { key: 'limit', label: '最大文件数', type: 'number' },
     { key: 'fileSize', label: '文件大小限制', type: 'number' },
@@ -378,6 +473,7 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
     { key: 'autoUpload', label: '自动上传', type: 'switch', default: true },
   ],
   'file-select': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择素材' },
     { key: 'fileType', label: '文件类型', type: 'select', options: [
       { value: 'image', label: '图片' },
       { value: 'video', label: '视频' },
@@ -396,7 +492,9 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
       { value: 'GB', label: 'GB' },
     ]},
   ],
-  icon: [],
+  icon: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择图标' },
+  ],
   editor: [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请输入内容…' },
   ],
@@ -406,20 +504,122 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
   tag: [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '输入后回车添加' },
   ],
-  address: [],
-  'area-cascader': [],
+  address: [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择地址' },
+  ],
+  'area-cascader': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择地区' },
+  ],
   map: [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择位置' },
   ],
-  'array<string>': [],
-  'array<number>': [],
-  'array<object>': [],
+  'array<string>': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请输入内容' },
+  ],
+  'array<number>': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请输入数值' },
+  ],
+  'array<object>': [
+    { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请输入内容' },
+  ],
+}
+
+export function getBsonTypeList(value: BsonTypeValue | null | undefined): BsonType[] {
+  if (Array.isArray(value)) return [...new Set(value)]
+  return value ? [value] : []
+}
+
+export function supportsStringRule(type: BsonType): boolean {
+  return type === 'string'
+}
+
+export function supportsNumericRule(type: BsonType): boolean {
+  return ['number', 'int', 'long', 'decimal'].includes(type)
+}
+
+export function supportsTypeRuleEditor(type: BsonType): boolean {
+  return supportsStringRule(type) || supportsNumericRule(type)
+}
+
+export function ensureFieldTypeRules(field: FieldDef | null | undefined): Partial<Record<BsonType, FieldTypeRule>> {
+  if (!field) return {}
+  if (!field.typeRules) field.typeRules = {}
+
+  for (const type of getBsonTypeList(field.bsonType)) {
+    if (!field.typeRules[type]) field.typeRules[type] = {}
+    const rule = field.typeRules[type]!
+    if (supportsStringRule(type)) {
+      if (rule.minLength === undefined && field.minLength !== undefined) rule.minLength = field.minLength
+      if (rule.maxLength === undefined && field.maxLength !== undefined) rule.maxLength = field.maxLength
+      if (rule.pattern === undefined && field.pattern !== undefined) rule.pattern = field.pattern
+    }
+    if (supportsNumericRule(type)) {
+      if (rule.minimum === undefined && field.minimum !== undefined) rule.minimum = field.minimum
+      if (rule.maximum === undefined && field.maximum !== undefined) rule.maximum = field.maximum
+    }
+  }
+
+  return field.typeRules
+}
+
+export function getPrimaryBsonType(value: BsonTypeValue | null | undefined): BsonType {
+  return getBsonTypeList(value)[0] ?? 'string'
+}
+
+export function normalizeBsonTypeValue(value: BsonTypeValue | null | undefined): BsonTypeValue {
+  const types = getBsonTypeList(value)
+  if (types.length <= 1) return types[0] ?? 'string'
+  return types
 }
 
 export const getTypeDef = (bsonType: BsonType) =>
   TYPE_DEFS.find(t => t.bsonType === bsonType)!
 
-export const isNumericType = (t: BsonType) =>
-  ['number', 'int', 'long', 'decimal'].includes(t)
+export function formatBsonTypeLabel(value: BsonTypeValue | null | undefined): string {
+  return getBsonTypeList(value).map(type => getTypeDef(type).label).join(' | ')
+}
 
-export const isStringType = (t: BsonType) => t === 'string'
+export const isNumericType = (t: BsonTypeValue) =>
+  getBsonTypeList(t).some(type => ['number', 'int', 'long', 'decimal'].includes(type))
+
+export const isStringType = (t: BsonTypeValue) => getBsonTypeList(t).includes('string')
+
+function buildTypeRuleSpec(type: BsonType, rule: FieldTypeRule | undefined): Record<string, unknown> {
+  const spec: Record<string, unknown> = { bsonType: type }
+  if (supportsStringRule(type)) {
+    if (rule?.minLength !== undefined) spec.minLength = rule.minLength
+    if (rule?.maxLength !== undefined) spec.maxLength = rule.maxLength
+    if (rule?.pattern) spec.pattern = rule.pattern
+  }
+  if (supportsNumericRule(type)) {
+    if (rule?.minimum !== undefined) spec.minimum = rule.minimum
+    if (rule?.maximum !== undefined) spec.maximum = rule.maximum
+  }
+  return spec
+}
+
+function typeSpecHasRule(spec: Record<string, unknown>): boolean {
+  return Object.keys(spec).some(key => key !== 'bsonType')
+}
+
+export function buildFieldSpec(field: FieldDef): BuiltFieldSpec {
+  const types = getBsonTypeList(field.bsonType)
+  const typeRules = ensureFieldTypeRules(field)
+
+  if (types.length > 1) {
+    const anyOf = types.map(type => buildTypeRuleSpec(type, typeRules[type]))
+    const built: BuiltFieldSpec = {}
+    if (field.description) built.description = field.description
+    if (anyOf.some(typeSpecHasRule)) {
+      built.anyOf = anyOf
+    } else {
+      built.bsonType = normalizeBsonTypeValue(types)
+    }
+    return built
+  }
+
+  const type = types[0] ?? 'string'
+  const built = buildTypeRuleSpec(type, typeRules[type]) as BuiltFieldSpec
+  if (field.description) built.description = field.description
+  return built
+}

@@ -2,9 +2,13 @@
 import { ref, computed, watch } from 'vue'
 import {
   FORM_TYPE_CONFIG,
+  coerceSwitchValues,
   coerceOptionDataValues,
   getOptionDataValueType,
   inferOptionDataValueType,
+  inferSwitchValueType,
+  isSwitchCustomValueEnabled,
+  type ConfigField,
   type FieldDef,
 } from '../types'
 import RouteActionSelect from './RouteActionSelect.vue'
@@ -25,6 +29,11 @@ const tempFormConfig = ref<Record<string, any>>({})
 
 const currentConfigFields = computed(() => FORM_TYPE_CONFIG[configFormType.value] ?? [])
 const dialogWidth = computed(() => configFormType.value === 'table-select' ? 920 : 520)
+
+function isConfigFieldVisible(cf: ConfigField): boolean {
+  if (!cf.visibleWhen) return true
+  return tempFormConfig.value?.[cf.visibleWhen.key] === cf.visibleWhen.value
+}
 
 function cloneValue<T>(value: T): T {
   if (value === undefined) return value
@@ -58,6 +67,12 @@ function open(ftValue: string, ftLabel: string) {
   ) {
     tempFormConfig.value.dataValueType = inferOptionDataValueType(tempFormConfig.value.data)
   }
+  if (isReedit && ftValue === 'switch' && tempFormConfig.value.switchValueType === undefined) {
+    tempFormConfig.value.switchValueType = inferSwitchValueType(tempFormConfig.value)
+  }
+  if (isReedit && ftValue === 'switch' && tempFormConfig.value.useCustomSwitchValue === undefined) {
+    tempFormConfig.value.useCustomSwitchValue = isSwitchCustomValueEnabled(tempFormConfig.value)
+  }
   showDialog.value = true
 }
 
@@ -67,6 +82,9 @@ function save() {
   const vt = tempFormConfig.value.dataValueType
   if ((vt === 'number' || vt === 'string') && Array.isArray(tempFormConfig.value.data)) {
     coerceOptionDataValues(tempFormConfig.value.data, vt)
+  }
+  if (configFormType.value === 'switch' && isSwitchCustomValueEnabled(tempFormConfig.value)) {
+    coerceSwitchValues(tempFormConfig.value)
   }
   field.formType = configFormType.value
   field.formConfig = cloneValue(tempFormConfig.value)
@@ -96,6 +114,26 @@ watch(
   },
 )
 
+watch(
+  () => tempFormConfig.value.useCustomSwitchValue,
+  (enabled) => {
+    if (enabled !== true) return
+    if (tempFormConfig.value.switchValueType === undefined) {
+      tempFormConfig.value.switchValueType = inferSwitchValueType(tempFormConfig.value)
+    }
+  },
+)
+
+watch(
+  () => tempFormConfig.value.switchValueType,
+  (next, prev) => {
+    if (prev === undefined || next === prev) return
+    if (next !== 'string' && next !== 'number' && next !== 'boolean') return
+    if (!isSwitchCustomValueEnabled(tempFormConfig.value)) return
+    coerceSwitchValues(tempFormConfig.value)
+  },
+)
+
 defineExpose({ open })
 </script>
 
@@ -109,6 +147,7 @@ defineExpose({ open })
   >
     <div v-if="currentConfigFields.length" class="flex flex-col gap-4">
       <div v-for="cf in currentConfigFields" :key="cf.key">
+        <template v-if="isConfigFieldVisible(cf)">
         <div v-if="cf.type === 'route-select'" class="config-field">
           <label class="config-label">{{ cf.label }}</label>
           <RouteActionSelect
@@ -174,6 +213,7 @@ defineExpose({ open })
             @update:model-value="tempFormConfig[cf.key] = $event"
           />
         </div>
+        </template>
       </div>
     </div>
     <div v-else class="text-center text-gray-400 py-6 text-sm">

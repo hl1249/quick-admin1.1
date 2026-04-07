@@ -11,15 +11,16 @@ export class CustomController {
 
   @Post('/add')
   add(@Req() req, @Body() data): Promise<Document | null> {
-    const { username, age, sex, groupId } = data
+    const { username, password, age, sex, garoupIds } = data
 
     return this.dbService.add({
       dbName: "custom",
       dataJson: {
         username,
+        password,
         age,
         sex,
-        groupId,
+        garoupIds,
       }
     })
   }
@@ -34,16 +35,17 @@ export class CustomController {
 
   @Post('/update')
   update(@Req() req, @Body() data): Promise<Document | null> {
-    const { _id, username, age, sex, groupId } = data
+    const { _id, username, password, age, sex, garoupIds } = data
 
     return this.dbService.updateById({
       id: _id,
       dbName: "custom",
       dataJson: {
         username,
+        password,
         age,
         sex,
-        groupId,
+        garoupIds,
       }
     })
   }

@@ -17,7 +17,8 @@ import archiver = require('archiver');
 /** 单字段描述，对应 $jsonSchema properties 里的一项（复杂规则请改用 body.jsonSchema） */
 export type SchemaField = {
   key: string;
-  bsonType: string;
+  bsonType?: string | string[];
+  anyOf?: Record<string, unknown>[];
   /** 写入该字段的 description，仅文档/工具可读，不参与校验逻辑 */
   description?: string;
   minLength?: number;
@@ -25,7 +26,6 @@ export type SchemaField = {
   minimum?: number;
   maximum?: number;
   pattern?: string;
-  enum?: unknown[];
 };
 
 export type CreateCollectionBody = {
@@ -117,14 +117,19 @@ function buildJsonSchema(
     'minimum',
     'maximum',
     'pattern',
-    'enum',
   ];
   for (const f of fields) {
     if (!f?.key || typeof f.key !== 'string') continue;
-    if (!f.bsonType || typeof f.bsonType !== 'string') {
-      throw new BadRequestException(`字段 ${f.key} 缺少 bsonType`);
+    const spec: Record<string, unknown> = {};
+    if (Array.isArray(f.anyOf) && f.anyOf.length) {
+      spec.anyOf = f.anyOf;
+    } else {
+      const bsonTypes = Array.isArray(f.bsonType) ? f.bsonType : [f.bsonType];
+      if (!bsonTypes.length || bsonTypes.some((type) => typeof type !== 'string' || !type.trim())) {
+        throw new BadRequestException(`字段 ${f.key} 缺少 bsonType`);
+      }
+      spec.bsonType = bsonTypes.length === 1 ? bsonTypes[0] : bsonTypes;
     }
-    const spec: Record<string, unknown> = { bsonType: f.bsonType };
     for (const k of optionalPropKeys) {
       const v = f[k];
       if (v !== undefined) spec[k as string] = v;
@@ -241,8 +246,15 @@ function buildFormColumnObj(f: CrudField): Record<string, any> {
       if (cfg.data) col.data = cfg.data;
       if (cfg.placeholder) col.placeholder = cfg.placeholder;
       break;
+    case 'switch':
+      if (cfg.useCustomSwitchValue) {
+        if (cfg.activeValue !== undefined && cfg.activeValue !== '') col.activeValue = cfg.activeValue;
+        if (cfg.inactiveValue !== undefined && cfg.inactiveValue !== '') col.inactiveValue = cfg.inactiveValue;
+      }
+      break;
     case 'remote-select':
       if (cfg.action) col.action = cfg.action;
+      if (cfg.placeholder) col.placeholder = cfg.placeholder;
       if (cfg.propsValue || cfg.propsLabel) {
         col.props = {
           ...(cfg.propsValue ? { value: cfg.propsValue } : {}),

@@ -141,7 +141,7 @@ const form = ref({
             mode: 'in',
           },
         ],
-        multiple: true,
+        multiple: false,
         pageSize: 10, // 只有5和10可以选
       },
     ],

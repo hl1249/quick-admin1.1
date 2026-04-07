@@ -136,11 +136,16 @@ const removePending = (index: number) => {
   pendingSelection.value = pendingSelection.value.filter((_, i) => i !== index)
 }
 
+const getModelValue = (rows: any[]) => {
+  const ids = rows.map((r: any) => r[idKey.value])
+  return props.multiple ? ids : ids[0]
+}
+
 const onConfirmDialog = () => {
   const rows = pendingSelection.value ?? []
   selectedList.value = rows
   loaded.value = true
-  emit('update:modelValue', rows.map((r: any) => r[idKey.value]))
+  emit('update:modelValue', getModelValue(rows))
   showDialog.value = false
 }
 
@@ -174,7 +179,7 @@ watch(
         data: { pageIndex: 1, pageSize: ids.length, formData: { [idKey.value]: val },  columns: props.queryColumns },
       })
       selectedList.value = res.data?.data?.rows ?? []
-      emit('update:modelValue', selectedList.value.map((r) => r[idKey.value]))
+      emit('update:modelValue', getModelValue(selectedList.value))
     } finally {
       initialLoading.value = false
     }
@@ -185,6 +190,6 @@ watch(
 /* ---------- 操作 ---------- */
 const remove = (index: number) => {
   selectedList.value = selectedList.value.filter((_, i) => i !== index)
-  emit('update:modelValue', selectedList.value.map((r) => r[idKey.value]))
+  emit('update:modelValue', getModelValue(selectedList.value))
 }
 </script>

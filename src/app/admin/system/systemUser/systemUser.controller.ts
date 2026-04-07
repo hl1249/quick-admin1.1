@@ -61,11 +61,12 @@ export class SystemUserController {
   @Post('/bindRole')
   bindRole(@Body() data): Promise<Document | null> {
     const { user_id, roleList } = data;
+
     return this.dbService.updateById({
       id: user_id,
       dbName: 'qa-users',
       dataJson: {
-        role: roleList,
+        role: typeof roleList === 'string' ? [roleList] : roleList,
       },
     });
   }

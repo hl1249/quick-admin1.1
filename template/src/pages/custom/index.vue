@@ -17,7 +17,7 @@
               form.props.show = false
               refresh()
             }"
-                 @closeForm="form.props.show = false">
+             @closeForm="form.props.show = false">
         </qa-form>
       </qa-dialog>
     </div>
@@ -49,6 +49,12 @@
       width:  200
     },
     {
+      key:  "password",
+      type:  "text",
+      title:  "密码",
+      width:  200
+    },
+    {
       key:  "age",
       type:  "text",
       title:  "年龄",
@@ -57,13 +63,13 @@
     {
       key:  "sex",
       type:  "text",
-      title:  "sex",
+      title:  "性别",
       width:  200
     },
     {
-      key:  "groupId",
+      key:  "garoupIds",
       type:  "text",
-      title:  "groupId",
+      title:  "garoupIds",
       width:  200
     }
     ]
@@ -85,6 +91,13 @@
       mode:  "="
     },
     {
+      key:  "password",
+      type:  "text",
+      title:  "密码",
+      width:  200,
+      mode:  "="
+    },
+    {
       key:  "age",
       type:  "text",
       title:  "年龄",
@@ -94,14 +107,14 @@
     {
       key:  "sex",
       type:  "text",
-      title:  "sex",
+      title:  "性别",
       width:  200,
       mode:  "="
     },
     {
-      key:  "groupId",
+      key:  "garoupIds",
       type:  "text",
-      title:  "groupId",
+      title:  "garoupIds",
       width:  200,
       mode:  "="
     }
@@ -129,6 +142,11 @@
         title:  "用户名"
       },
       {
+        key:  "password",
+        type:  "text",
+        title:  "密码"
+      },
+      {
         key:  "age",
         type:  "number",
         title:  "年龄",
@@ -137,7 +155,7 @@
       {
         key:  "sex",
         type:  "radio",
-        title:  "sex",
+        title:  "性别",
         data:  [
           {
             value:  0,
@@ -147,13 +165,13 @@
             value:  1,
             label:  "女"
           }
-        ]
+        ],
+        placeholder:  "性别"
       },
       {
-        key:  "groupId",
+        key:  "garoupIds",
         type:  "table-select",
-        title:  "groupId",
-
+        title:  "garoupIds",
         action:  "/app/admin/system/systemFile/systemCategories/getList",
         columns:  [
           {
@@ -164,7 +182,7 @@
           },
           {
             key:  "type",
-            title:  "值",
+            title:  "类型值",
             nameKey:  false,
             idKey:  true
           }
