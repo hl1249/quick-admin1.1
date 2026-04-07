@@ -16,7 +16,8 @@
                  @success="()=>{
               form.props.show = false
               refresh()
-            }">
+            }"
+             @closeForm="form.props.show = false">
         </qa-form>
       </qa-dialog>
     </div>
