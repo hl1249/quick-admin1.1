@@ -17,19 +17,31 @@ export class SystemLogController {
     })
   }
 
+  @Post('/delete')
+  delete(@Body() data): Promise<Document | null> {
+    return this.dbService.deleteById({
+      dbName: "qa-logs",
+      id: data._id
+    })
+  }
+
+  @Post('/update')
+  update(@Body() data): Promise<Document | null> {
+    const { _id, statusCode } = data
+    return this.dbService.updateById({
+      id: _id,
+      dbName: "qa-logs",
+      dataJson: { 
+        statusCode
+      }
+    })
+  }
+
   @Post('/getList')
   getList(@Req() req, @Body() data): Promise<Document | null> {
     return this.dbService.getTableData({
       dbName: "qa-logs",
       data
-    })
-  }
-
-  @Post('/delete')
-  delete(@Body() whereJson): Promise<Document | null> {
-    return this.dbService.del({
-      dbName: "qa-logs",
-      whereJson
     })
   }
 }

@@ -177,7 +177,7 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
 
 .field-grid {
   display: grid;
-  grid-template-columns: 1.25rem 1.25rem minmax(0, 1fr) 45rem 6rem 3.5rem 7rem;
+  grid-template-columns: 1.25rem 1.25rem minmax(0, 1fr) 40rem 6rem 3.5rem 7rem;
   align-items: center;
   column-gap: 0.5rem;
 }

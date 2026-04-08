@@ -16,7 +16,8 @@
           :before-action="form.props.beforeAction" @success="()=>{
             form.props.show = false
             refresh()
-          }">
+          }"
+          @closeForm="form.props.show = false">
         </qa-form>
       </qa-dialog>
   </div>
@@ -209,40 +210,24 @@ const form = ref({
       return true
     },
     action: '/app/admin/system/systemLog/systemLog/add',
-    // action:  ({data}:{
-    //   data: any
-    // })=>{
-    //   return http.request({
-    //       url: '/app/admin/system/systemLog/systemLog/update',
-    //       method: 'post',
-    //       data,
-    //       openMessage: false
-    //   })
-    // },
     columns: [
       {
-        "key": "user_id",
-        "title": "用户ID",
-        "type": "text",
-        width: 250,
-        showLabel: true,
-        show: ['add', 'edit'],
-        watch: (res: any) => {
-          console.log("watch", res)
-        }
-      },
-      {
-        key: "date1", title: "日期", type: "date", valueFormat: "x", tips: "可选择年月日", dateType: "date",
-        format: "YYYY-MM-DD HH:mm:ss",
-        width: 250,
-        show: ['add', 'edit'],
-        // showRule:"user_id==自定义文案",
-        // showRule:(formData: any)=>{
-        //   console.log('带就不',formData)
-        //   if(formData.user_id === "123456") return true
-        //   else return false
-        // },
-        disabled: "user_id==自定义文案"
+        width:256,
+        key: "statusCode",
+        title:"状态码",
+        type: "select",
+        data:[{
+          value: 200,
+          label: "成功"
+        },
+        {
+          value: 500,
+          label: "错误"
+        },
+        {
+          value: 0,
+          label: "等待"
+        }]
       }
     ],
     rules: {
@@ -274,9 +259,11 @@ const addBtn = () => {
 }
 const updateBtn = (index: number, row: any) => {
   resetForm()
+  form.value.props.action = '/app/admin/system/systemLog/systemLog/update';
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
   form.value.props.show = true
+  form.value.data = row;
   console.log("调用编辑", index, row)
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
