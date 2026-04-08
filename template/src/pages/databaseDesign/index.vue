@@ -15,6 +15,7 @@ import FieldTypePanel from './components/FieldTypePanel.vue'
 import FieldCanvas from './components/FieldCanvas.vue'
 import FieldPropertyPanel from './components/FieldPropertyPanel.vue'
 import FormConfigDialog from './components/FormConfigDialog.vue'
+import QaForm from '@/components/quickAdmin/form/qaForm.vue'
 
 interface SchemaRecord {
   _id: string
@@ -25,6 +26,13 @@ interface SchemaRecord {
   fieldCount?: number
   _add_time?: number
   _update_time?: number
+}
+
+interface PreviewFormColumn {
+  key: string
+  title: string
+  type?: string
+  [key: string]: any
 }
 
 const genId = () => Math.random().toString(36).slice(2)
@@ -129,10 +137,155 @@ function getSchemaFieldCount(item: SchemaRecord) {
   return Array.isArray(item.fields) ? item.fields.filter(field => field.key?.trim()).length : 0
 }
 
+function inferPreviewFormType(field: FieldDef): string {
+  if (field.formType) return field.formType
+  if (Array.isArray(field.bsonType)) return 'text'
+
+  switch (field.bsonType) {
+    case 'bool':
+      return 'switch'
+    case 'number':
+    case 'int':
+    case 'long':
+    case 'decimal':
+      return 'number'
+    case 'date':
+      return 'date'
+    default:
+      return 'text'
+  }
+}
+
+function buildPreviewFormColumn(field: FieldDef): PreviewFormColumn {
+  const key = field.key.trim()
+  const formType = inferPreviewFormType(field)
+  const cfg = field.formConfig ? deepClone(field.formConfig) : {}
+  const title = cfg.placeholder || field.description || key
+  const column: PreviewFormColumn = {
+    key,
+    type: formType,
+    title,
+    placeholder: cfg.placeholder,
+  }
+
+  if (['select', 'radio', 'checkbox'].includes(formType) && Array.isArray(cfg.data)) {
+    column.data = cfg.data
+  }
+
+  if (formType === 'select') {
+    if (cfg.multiple !== undefined) column.multiple = cfg.multiple
+    if (cfg.filterable !== undefined) column.filterable = cfg.filterable
+  }
+
+  if (formType === 'number') {
+    if (cfg.step !== undefined) column.step = cfg.step
+    if (cfg.min !== undefined) column.min = cfg.min
+    if (cfg.max !== undefined) column.max = cfg.max
+    if (cfg.precision !== undefined) column.precision = cfg.precision
+  }
+
+  if (formType === 'switch') {
+    if (cfg.activeValue !== undefined) column.activeValue = cfg.activeValue
+    if (cfg.inactiveValue !== undefined) column.inactiveValue = cfg.inactiveValue
+  }
+
+  if (formType === 'textarea' && cfg.rows !== undefined) {
+    column.rows = cfg.rows
+  }
+
+  if (['date', 'datetimerange', 'time'].includes(formType)) {
+    if (cfg.dateType !== undefined) column.dateType = cfg.dateType
+    if (cfg.format !== undefined) column.format = cfg.format
+    if (cfg.valueFormat !== undefined) column.valueFormat = cfg.valueFormat
+  }
+
+  if (['remote-select', 'cascader', 'tree-select'].includes(formType)) {
+    if (cfg.action) column.action = cfg.action
+    if (cfg.filterable !== undefined) column.filterable = cfg.filterable
+
+    const mappedProps = {
+      ...(cfg.propsList ? { list: cfg.propsList } : {}),
+      ...(cfg.propsValue ? { value: cfg.propsValue } : {}),
+      ...(cfg.propsLabel ? { label: cfg.propsLabel } : {}),
+      ...(cfg.propsChildren ? { children: cfg.propsChildren } : {}),
+      ...(cfg.multiple !== undefined ? { multiple: cfg.multiple } : {}),
+      ...(cfg.lazy !== undefined ? { lazy: cfg.lazy } : {}),
+    }
+
+    if (Object.keys(mappedProps).length) {
+      if (formType === 'cascader' || formType === 'tree-select') {
+        column.props = mappedProps
+      } else {
+        column.props = mappedProps
+      }
+    }
+  }
+
+  if (formType === 'table-select') {
+    if (cfg.action) column.action = cfg.action
+    if (cfg.columns) column.columns = cfg.columns
+    if (cfg.queryColumns) column.queryColumns = cfg.queryColumns
+    if (cfg.multiple !== undefined) column.multiple = cfg.multiple
+  }
+
+  if (formType === 'file') {
+    if (cfg.multiple !== undefined) column.multiple = cfg.multiple
+    if (cfg.limit !== undefined) column.limit = cfg.limit
+    if (cfg.buttonText !== undefined) column.buttonText = cfg.buttonText
+    if (cfg.autoUpload !== undefined) column.autoUpload = cfg.autoUpload
+    if (cfg.fileSize !== undefined) column.fileSize = cfg.fileSize
+    if (cfg.sizeUnit !== undefined) column.sizeUnit = cfg.sizeUnit
+  }
+
+  if (formType === 'file-select') {
+    if (cfg.fileType !== undefined) column.fileType = cfg.fileType
+    if (cfg.multiple !== undefined) column.multiple = cfg.multiple
+    if (cfg.multipleLimit !== undefined) column.multipleLimit = cfg.multipleLimit
+    if (cfg.returnType !== undefined) column.returnType = cfg.returnType
+    if (cfg.fileSize !== undefined) column.fileSize = cfg.fileSize
+    if (cfg.sizeUnit !== undefined) column.sizeUnit = cfg.sizeUnit
+  }
+
+  if (formType === 'array<object>') {
+    column.columns = Array.isArray(cfg.columns) ? cfg.columns : []
+  }
+
+  return column
+}
+
+function buildPreviewFormDefaultValue(field: FieldDef) {
+  const formType = inferPreviewFormType(field)
+  const cfg = field.formConfig || {}
+
+  if (formType === 'checkbox') return []
+  if (formType === 'select' && cfg.multiple) return []
+  if (['array<string>', 'array<number>', 'array<object>', 'datetimerange'].includes(formType)) return []
+  if (formType === 'switch') return cfg.inactiveValue ?? false
+  if (formType === 'rate') return 0
+  if (['table-select', 'remote-select', 'cascader', 'tree-select', 'file', 'file-select', 'icon', 'map', 'address'].includes(formType)) {
+    return undefined
+  }
+  if (formType === 'number') return undefined
+  return undefined
+}
+
+function buildPreviewFormData() {
+  return fields.value
+    .filter(field => field.key.trim())
+    .reduce<Record<string, any>>((result, field) => {
+      const defaultValue = buildPreviewFormDefaultValue(field)
+      if (defaultValue !== undefined) {
+        result[field.key.trim()] = defaultValue
+      }
+      return result
+    }, {})
+}
+
 // ──────────────────────────── 状态 ────────────────────────────
 const fields = ref<FieldDef[]>([])
 const selectedId = ref<string | null>(null)
 const showPreview = ref(false)
+const showFormPreview = ref(false)
 const submitting = ref(false)
 const schemaSubmitting = ref(false)
 const loadingSchemas = ref(false)
@@ -157,6 +310,9 @@ const dragOverCanvas = ref(false)
 const draggingId = ref<string | null>(null)
 const formConfigRef = ref<InstanceType<typeof FormConfigDialog>>()
 const propertyPanelRef = ref<InstanceType<typeof FieldPropertyPanel>>()
+const previewFormData = ref<Record<string, any>>({})
+const previewFormColumnsState = ref<PreviewFormColumn[]>([])
+const previewFormRulesState = ref<Record<string, any[]>>({})
 
 let draggingType: BsonType | null = null
 let draggingFieldId: string | null = null
@@ -177,6 +333,29 @@ const canvasAddActive = computed(() =>
 const requiredKeys = computed(() => buildRequiredKeys(fields.value))
 
 const jsonSchemaPreview = computed(() => buildJsonSchemaPreview(fields.value))
+
+const previewFormColumns = computed(() =>
+  fields.value
+    .filter(field => field.key.trim())
+    .map(field => buildPreviewFormColumn(field)),
+)
+
+const previewFormRules = computed(() => {
+  return fields.value
+    .filter(field => field.key.trim() && field.required)
+    .reduce<Record<string, any[]>>((result, field) => {
+      const key = field.key.trim()
+      const title = field.formConfig?.placeholder || field.description || key
+      result[key] = [
+        {
+          required: true,
+          message: `请输入${title}`,
+          trigger: ['blur', 'change'],
+        },
+      ]
+      return result
+    }, {})
+})
 
 const hasActiveSchema = computed(() => !!currentSchemaId.value)
 
@@ -382,6 +561,19 @@ function queueAutoSave() {
   autoSaveTimer = setTimeout(() => {
     void persistSchema()
   }, 500)
+}
+
+function openFormPreview() {
+  previewFormColumnsState.value = deepClone(previewFormColumns.value)
+  previewFormRulesState.value = deepClone(previewFormRules.value)
+  previewFormData.value = deepClone(buildPreviewFormData())
+  showFormPreview.value = true
+}
+
+function resetFormPreview() {
+  previewFormColumnsState.value = deepClone(previewFormColumns.value)
+  previewFormRulesState.value = deepClone(previewFormRules.value)
+  previewFormData.value = deepClone(buildPreviewFormData())
 }
 
 async function handleBackToSchemaList() {
@@ -806,6 +998,7 @@ watch(
 
       <div class="flex items-center gap-2 ml-auto">
         <el-button @click="showPreview = true" :disabled="!hasActiveSchema">预览 Schema</el-button>
+        <el-button @click="openFormPreview" :disabled="!hasActiveSchema || !previewFormColumns.length">预览表单</el-button>
         <el-button type="danger" plain @click="handleReset" :disabled="!hasActiveSchema || !fields.length">清空</el-button>
         <el-button :disabled="!hasActiveSchema || !fields.length" @click="openCreateDialog">创建集合</el-button>
         <el-button type="primary" :disabled="!hasActiveSchema || !fields.length" @click="openCrudDialog">生成 CRUD</el-button>
@@ -853,7 +1046,7 @@ watch(
         </div>
       </div>
     </div>
-
+    
     <div v-else class="flex flex-1 overflow-hidden">
       <FieldTypePanel
         @drag-start="onTypeDragStart"
@@ -952,6 +1145,30 @@ watch(
       <template #footer>
         <el-button @click="showPreview = false">关闭</el-button>
       </template>
+    </el-dialog>
+
+    <el-dialog v-model="showFormPreview" title="表单预览" width="760" draggable>
+      <div class="text-xs text-gray-500 mb-3">
+        按当前 Schema 的字段属性和表单类型实时渲染，仅用于预览交互效果。
+      </div>
+      previewFormData:{{ previewFormData }}<br/>
+      previewFormColumnsState:{{ previewFormColumnsState }}
+      <div class="max-h-[65vh] overflow-auto pr-2">
+        <qa-form
+          v-model="previewFormData"
+          :action="async () => true"
+          :columns="previewFormColumnsState"
+          :rules="previewFormRulesState"
+          label-width="220px"
+        >
+          <template #footer>
+            <div class="flex items-center justify-end gap-2">
+              <el-button @click="resetFormPreview">重置预览</el-button>
+              <el-button @click="showFormPreview = false">关闭</el-button>
+            </div>
+          </template>
+        </qa-form>
+      </div>
     </el-dialog>
   </div>
 </template>

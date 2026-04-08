@@ -39,8 +39,10 @@ const props = withDefaults(
   {
     show: false,  // 默认值
     defaultProps: () => ({
+      list: 'rows',
       children: 'children',
-      label: 'label'
+      label: 'label',
+      value: 'value'
     })
   }
 )
@@ -58,8 +60,20 @@ watch(()=> props.modelValue,()=>{
   if(findData) emit('treeSelectConfirm', findData)
 })
 
-const data = ref([])
-const list = ref([])
+const data = ref<any[]>([])
+const list = ref<any[]>([])
+
+function flattenTree(nodes: any[], childrenKey: string, result: any[] = []) {
+  for (const node of nodes) {
+    result.push(node)
+    const children = node?.[childrenKey]
+    if (Array.isArray(children) && children.length) {
+      flattenTree(children, childrenKey, result)
+    }
+  }
+  return result
+}
+
 const getData = async () => {
   const res = await http.request({
     url: props.action,
@@ -67,9 +81,17 @@ const getData = async () => {
   })
 
   console.log('res',res)
-  data.value = res.data.data.rows
-  list.value = res.data.data.list
-  const findData = props.modelValue ? res.data.data.list.find((item:any) => item[props.defaultProps.value] === props.modelValue) : null;
+  const responseData = res.data?.data ?? {}
+  const listKey = props.defaultProps?.list || 'rows'
+  const childrenKey = props.defaultProps?.children || 'children'
+  const treeData = responseData?.[listKey] ?? []
+  const flatList = Array.isArray(responseData?.list)
+    ? responseData.list
+    : flattenTree(Array.isArray(treeData) ? treeData : [], childrenKey)
+
+  data.value = Array.isArray(treeData) ? treeData : []
+  list.value = flatList
+  const findData = props.modelValue ? flatList.find((item:any) => item[props.defaultProps.value] === props.modelValue) : null;
   if(findData) emit('treeSelectConfirm', findData)
 }
 

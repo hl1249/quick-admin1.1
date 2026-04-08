@@ -262,6 +262,21 @@ function buildFormColumnObj(f: CrudField): Record<string, any> {
         };
       }
       break;
+    case 'cascader':
+    case 'tree-select':
+      if (cfg.action) col.action = cfg.action;
+      if (cfg.placeholder) col.placeholder = cfg.placeholder;
+      if (cfg.propsList || cfg.propsValue || cfg.propsLabel || cfg.propsChildren || cfg.multiple !== undefined || cfg.lazy !== undefined) {
+        col.props = {
+          ...(cfg.propsList ? { list: cfg.propsList } : {}),
+          ...(cfg.propsValue ? { value: cfg.propsValue } : {}),
+          ...(cfg.propsLabel ? { label: cfg.propsLabel } : {}),
+          ...(cfg.propsChildren ? { children: cfg.propsChildren } : {}),
+          ...(cfg.multiple !== undefined ? { multiple: cfg.multiple } : {}),
+          ...(cfg.lazy !== undefined ? { lazy: cfg.lazy } : {}),
+        };
+      }
+      break;
     case 'table-select':
       if (cfg.action) col.action = cfg.action;
       if (cfg.columns) col.columns = cfg.columns;

@@ -5,6 +5,7 @@
     :title="title"
     :width="width"
     :fullscreen="isFullscreen"
+    :append-to-body="appendToBody"
     :close-on-click-modal="closeOnClickModal"
     :show-close="false"
     @update:model-value="onUpdateVisible"
@@ -41,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { Close, FullScreen, ScaleToOriginal } from '@element-plus/icons-vue'
 
 defineOptions({ inheritAttrs: false })
@@ -52,6 +53,7 @@ const props = withDefaults(
     title?: string
     width?: string | number
     closeOnClickModal?: boolean
+    appendToBody?: boolean
     /** 头部是否显示关闭按钮（上传中等场景可设为 false） */
     showCloseButton?: boolean
     /** 头部是否显示全屏切换 */
@@ -61,6 +63,7 @@ const props = withDefaults(
     title: '',
     width: '700',
     closeOnClickModal: false,
+    appendToBody: true,
     showCloseButton: true,
     showFullscreenButton: true,
   }

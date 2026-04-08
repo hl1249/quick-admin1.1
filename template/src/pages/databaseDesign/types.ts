@@ -367,6 +367,7 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
   cascader: [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/tree', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
+    { key: 'propsList', label: '数据属性 (props.list)', type: 'text', placeholder: '默认 rows' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label' },
     { key: 'propsChildren', label: 'props.children 字段名', type: 'text', placeholder: '默认 children' },
@@ -376,6 +377,7 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
   'tree-select': [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '/api/xxx/tree', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
+    { key: 'propsList', label: '数据属性 (props.list)', type: 'text', placeholder: '默认 rows' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label' },
     { key: 'propsChildren', label: 'props.children 字段名', type: 'text', placeholder: '默认 children' },

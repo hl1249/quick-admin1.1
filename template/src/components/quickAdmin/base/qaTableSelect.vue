@@ -19,7 +19,7 @@
       </el-button>
     </div>
 
-    <qa-dialog title="选择" v-model="showDialog" :width="multiple ? 1140 : 750">
+    <qa-dialog title="选择" v-model="showDialog" :width="multiple ? 1140 : 750" append-to-body>
       <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
       <div class="flex mt-[20px] w-full">
         <qa-table
@@ -29,7 +29,6 @@
           :columns="columns"
           :row-key="idKey"
           :selection-data="pendingSelection"
-          :reserve-selection="true"
           selection
           border
           :multiple="multiple"
@@ -91,10 +90,16 @@ const emit = defineEmits<{
 
 /* ---------- 从 columns 推断 key ---------- */
 const nameKey = computed(() =>
-  props.columns.find((c) => c.nameKey)?.key ?? '_id'
+  props.columns.find((c) => c.nameKey)?.key
+  ?? props.columns.find((c) => ['name', 'title', 'label'].includes(String(c.key)))?.key
+  ?? props.columns[0]?.key
+  ?? '_id'
 )
 const idKey = computed(() =>
-  props.columns.find((c) => c.idKey)?.key ?? '_id'
+  props.columns.find((c) => c.idKey)?.key
+  ?? props.columns.find((c) => ['_id', 'id', 'value'].includes(String(c.key)))?.key
+  ?? props.columns[0]?.key
+  ?? '_id'
 )
 
 /* ---------- 弹窗 ---------- */
@@ -117,6 +122,16 @@ const renderSelectData = computed(() =>
 /* ---------- 弹窗内待确认选中项 ---------- */
 const pendingSelection = ref<any[]>([])
 
+const mergeUniqueRows = (rows: any[]) => {
+  const map = new Map<any, any>()
+  for (const row of rows) {
+    const id = row?.[idKey.value]
+    if (id === undefined || id === null) continue
+    map.set(id, row)
+  }
+  return Array.from(map.values())
+}
+
 watch(showDialog, (open) => {
   if (open) {
     const arr = Array.isArray(selectedList.value) ? selectedList.value : []
@@ -128,8 +143,14 @@ watch(showDialog, (open) => {
   }
 })
 
-const handleSelectionChange = (selection: any[]) => {
-  pendingSelection.value = Array.isArray(selection) ? selection : []
+const handleSelectionChange = (selection: any[], currentPageRowIds?: any[]) => {
+  const normalized = Array.isArray(selection) ? selection : []
+  if (Array.isArray(currentPageRowIds) && currentPageRowIds.length) {
+    const rest = pendingSelection.value.filter((row) => !currentPageRowIds.includes(row?.[idKey.value]))
+    pendingSelection.value = mergeUniqueRows([...rest, ...normalized])
+    return
+  }
+  pendingSelection.value = mergeUniqueRows(normalized)
 }
 
 const removePending = (index: number) => {
