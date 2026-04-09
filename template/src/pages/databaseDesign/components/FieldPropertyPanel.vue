@@ -98,6 +98,11 @@ watch(() => props.selectedField?.id, () => {
   formView.value = props.selectedField?.formType ? 'detail' : 'select'
 })
 
+watch(rightTab, (tab) => {
+  if (tab !== 'form') return
+  formView.value = props.selectedField?.formType ? 'detail' : 'select'
+})
+
 watch(
   () => props.selectedField?.bsonType,
   () => {
@@ -111,7 +116,7 @@ watch(
   () => {
     const f = props.selectedField
     if (!f || !['select', 'radio', 'checkbox', 'switch'].includes(f.formType || '')) return
-    if (!f.formConfig) f.formConfig = {}
+    if (!f.formConfig) return
     if (['select', 'radio', 'checkbox'].includes(f.formType || '') && f.formConfig.dataValueType === undefined) {
       f.formConfig.dataValueType = inferOptionDataValueType(f.formConfig.data)
     }

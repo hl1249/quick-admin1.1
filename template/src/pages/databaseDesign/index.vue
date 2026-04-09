@@ -312,7 +312,6 @@ const formConfigRef = ref<InstanceType<typeof FormConfigDialog>>()
 const propertyPanelRef = ref<InstanceType<typeof FieldPropertyPanel>>()
 const previewFormData = ref<Record<string, any>>({})
 const previewFormColumnsState = ref<PreviewFormColumn[]>([])
-const previewFormRulesState = ref<Record<string, any[]>>({})
 
 let draggingType: BsonType | null = null
 let draggingFieldId: string | null = null
@@ -339,23 +338,6 @@ const previewFormColumns = computed(() =>
     .filter(field => field.key.trim())
     .map(field => buildPreviewFormColumn(field)),
 )
-
-const previewFormRules = computed(() => {
-  return fields.value
-    .filter(field => field.key.trim() && field.required)
-    .reduce<Record<string, any[]>>((result, field) => {
-      const key = field.key.trim()
-      const title = field.formConfig?.placeholder || field.description || key
-      result[key] = [
-        {
-          required: true,
-          message: `请输入${title}`,
-          trigger: ['blur', 'change'],
-        },
-      ]
-      return result
-    }, {})
-})
 
 const hasActiveSchema = computed(() => !!currentSchemaId.value)
 
@@ -565,14 +547,12 @@ function queueAutoSave() {
 
 function openFormPreview() {
   previewFormColumnsState.value = deepClone(previewFormColumns.value)
-  previewFormRulesState.value = deepClone(previewFormRules.value)
   previewFormData.value = deepClone(buildPreviewFormData())
   showFormPreview.value = true
 }
 
 function resetFormPreview() {
   previewFormColumnsState.value = deepClone(previewFormColumns.value)
-  previewFormRulesState.value = deepClone(previewFormRules.value)
   previewFormData.value = deepClone(buildPreviewFormData())
 }
 
@@ -1152,13 +1132,12 @@ watch(
         按当前 Schema 的字段属性和表单类型实时渲染，仅用于预览交互效果。
       </div>
       previewFormData:{{ previewFormData }}<br/>
-      previewFormColumnsState:{{ previewFormColumnsState }}
+      previewFormColumnsState:{{ previewFormColumnsState }}<br/>
       <div class="max-h-[65vh] overflow-auto pr-2">
         <qa-form
           v-model="previewFormData"
           :action="async () => true"
           :columns="previewFormColumnsState"
-          :rules="previewFormRulesState"
           label-width="220px"
         >
           <template #footer>
