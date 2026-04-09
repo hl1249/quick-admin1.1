@@ -360,6 +360,7 @@ export const FORM_TYPE_CONFIG: Record<string, ConfigField[]> = {
   'remote-select': [
     { key: 'placeholder', label: '占位提示', type: 'text', placeholder: '请选择…' },
     { key: 'action', label: '请求地址 (action)', type: 'route-select', placeholder: '请选择接口地址', tip: '可从系统路由中级联选择叶子接口，或手动输入地址' },
+    { key: 'propsList', label: '数据属性 (props.list)', type: 'text', placeholder: '默认 rows' },
     { key: 'filterable', label: '可搜索', type: 'switch' },
     { key: 'propsValue', label: 'props.value 字段名', type: 'text', placeholder: '默认 value', tip: '返回数据中作为 value 的字段' },
     { key: 'propsLabel', label: 'props.label 字段名', type: 'text', placeholder: '默认 label', tip: '返回数据中作为 label 的字段' },

@@ -96,13 +96,13 @@ const loadOptions = async (searchValue?: string) => {
       url: props.action,
       data,
     })
-    console.log("组件",res)
-    const listKey = props.props?.list
+    const responseData = res.data?.data
+    const listKey = props.props?.list ?? 'rows'
     const valueKey = props.props?.value ?? 'value'
     const labelKey = props.props?.label ?? 'label'
-    const options = listKey
-      ? res.data?.data?.[listKey] ?? []
-      : res.data?.data ?? []
+    const options = Array.isArray(responseData)
+      ? responseData
+      : responseData?.[listKey] ?? []
 
     optionList.value = Array.isArray(options)
       ? options.map((item: any) => ({
