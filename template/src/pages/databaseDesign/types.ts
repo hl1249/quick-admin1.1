@@ -194,6 +194,7 @@ export const FORM_TYPE_GROUPS: { name: string; types: FormTypeDef[] }[] = [
       { value: 'select', label: '下拉选择', group: '选择类' },
       { value: 'radio', label: '单选', group: '选择类' },
       { value: 'checkbox', label: '多选', group: '选择类' },
+      { value: 'cascader', label: '级联选择', group: '选择类' },
     ],
   },
   {

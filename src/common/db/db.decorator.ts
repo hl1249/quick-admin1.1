@@ -102,7 +102,7 @@ function transformWhereJson(whereJson: any): any {
       }
     }
     // 对于普通对象，递归转换
-    else if (typeof value === 'object' && value.__field_placeholder__) {
+    else if (typeof value === 'object' && value !== null && value.__field_placeholder__) {
       result[key] = value.__field_placeholder__;
     }
     // 对于正则表达式，转换为 MongoDB 的 $regex 格式

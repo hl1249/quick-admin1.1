@@ -136,12 +136,7 @@ const form = ref({
     },
     action: '/app/admin/system/systemMenu/systemMenu/add',
     columns: [
-      {
-        "key": "map",
-        "title": "菜单标识",
-        defaultLocation: { latitude: 30.224781, longitude: 120.12438 },
-        "type": "map",
-      },
+
       {
         "key": "menu_id",
         "title": "菜单标识",

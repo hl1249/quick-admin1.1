@@ -430,7 +430,7 @@ function joinRoutePath(...parts: string[]): string {
 }
 
 function isSelectableRoute(path: string): boolean {
-  return /\/(getList|get)$/.test(path);
+  return path.toLowerCase().includes('get');
 }
 
 function getControllerRoutePrefix(filePath: string, rootDir: string): string {

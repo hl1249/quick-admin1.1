@@ -1,5 +1,6 @@
 <template>
   <el-cascader
+    clearable
     v-model="currentValue"
     :options="isLazy ? undefined : list"
     :props="cascaderProps"
@@ -61,28 +62,63 @@ const resolveActionData = (): Record<string, any> | undefined => {
   return props.actionData
 }
 
+const leafKey = computed(() => {
+  const key = props.props?.leaf
+  return typeof key === 'string' && key ? key : 'leaf'
+})
+
+const normalizeOptions = (options: any[]): any[] =>
+  options.map((item) => {
+    const normalized = { ...item }
+
+    if (normalized.leaf !== undefined) {
+      normalized.leaf = Boolean(normalized.leaf)
+    }
+
+    if (
+      leafKey.value !== 'leaf' &&
+      normalized.leaf !== undefined &&
+      normalized[leafKey.value] === undefined
+    ) {
+      normalized[leafKey.value] = normalized.leaf
+    }
+
+    return normalized
+  })
+
 /* ---------- 懒加载函数 ---------- */
 const lazyLoad = (node: any, resolve: (data: any[]) => void) => {
-  const { value, level } = node
+  if (node?.data?.[leafKey.value] === true || node?.data?.leaf === true) {
+    resolve([])
+    return
+  }
+
   http
     .request({
       method: 'POST',
       url: props.action!,
-      data: { ...resolveActionData(), node_value: value, level },
+      data: {
+        ...resolveActionData(),
+        node: {
+          root: node.root,
+          value: node.value,
+          level: node.level,
+        },
+      },
     })
     .then((res) => {
       const listKey = props.props?.list
       const options = listKey
         ? res.data?.data?.[listKey] ?? []
         : res.data?.data ?? []
-      resolve(Array.isArray(options) ? options : [])
+      resolve(normalizeOptions(Array.isArray(options) ? options : []))
     })
 }
 
 /* ---------- cascaderProps 合并 lazyLoad ---------- */
 const cascaderProps = computed(() => {
   if (!isLazy.value) return props.props
-  return { ...props.props, lazyLoad }
+  return { leaf: 'leaf', ...props.props, lazyLoad }
 })
 
 /* ---------- 列表数据 ---------- */

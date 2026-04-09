@@ -133,4 +133,44 @@ export class SystemMenuController {
     await this.authService.updateAuthVersion();
     return result;
   }
+
+  @Post('/getCascader')
+  async getCascader(@Body() data: any): Promise<Document | null> {
+		let { node = {} } = data;
+    let whereJson = {
+			enable: true
+		};
+		if (node.root) {
+			whereJson["parent_id"] = null;
+		} else {
+			whereJson["parent_id"] = node.value;
+		}
+    const res = await this.dbService.selects({
+      dbName: 'qa-menus',
+      whereJson,
+			pageIndex: 1,
+			pageSize: 500,
+      foreignDB: [
+				{
+					dbName: "qa-menus",
+					localKey:"menu_id",
+					foreignKey: "parent_id",
+					as: "hasChildren",
+					limit: 1,
+				}
+			]
+    });
+    let rows = res.rows;
+		for (let i in rows) {
+			let item = rows[i];
+			rows[i].label = `${item.title ?? item.name ?? item.menu_id}（${item.menu_id}）`;
+			const hasChildren =
+				item.hasChildren &&
+				typeof item.hasChildren === 'object' &&
+				Object.keys(item.hasChildren).length > 0;
+			rows[i].leaf = !hasChildren;
+		}
+		res.rows = rows;
+    return res;
+  }
 }
