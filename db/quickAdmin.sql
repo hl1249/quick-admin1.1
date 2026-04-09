@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 43.139.63.227_27017
+ Source Server         : quick
  Source Server Type    : MongoDB
  Source Server Version : 80205
  Source Host           : 43.139.63.227:27017
@@ -11,9 +11,47 @@
  Target Server Version : 80205
  File Encoding         : 65001
 
- Date: 05/04/2026 23:39:10
+ Date: 09/04/2026 11:19:16
 */
 
+
+// ----------------------------
+// Collection structure for custom
+// ----------------------------
+db.getCollection("custom").drop();
+db.createCollection("custom",{
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            properties: {
+                username: {
+                    bsonType: "string"
+                },
+                password: {
+                    bsonType: "string"
+                },
+                age: {
+                    bsonType: "int"
+                },
+                sex: {
+                    bsonType: "int"
+                },
+                garoupIds: {
+                    bsonType: "array"
+                }
+            },
+            required: [
+                "username"
+            ]
+        }
+    },
+    validationLevel: "strict",
+    validationAction: "error"
+});
+
+// ----------------------------
+// Documents of custom
+// ----------------------------
 
 // ----------------------------
 // Collection structure for qa-app-config
@@ -265,6 +303,24 @@ db.getCollection("qa-files").insert([ {
     "_add_time_str": "2026-04-04 22:55:19",
     "_update_time": 1775314526637,
     "_update_time_str": "2026-04-04 22:55:26"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69d5321340fba40bb8b8c66f"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+    "display_name": "1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+    "original_name": "image (4).png",
+    size: NumberInt("497407"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+    provider: "tencent",
+    width: NumberInt("1179"),
+    height: NumberInt("2556"),
+    "category_id": null,
+    "_add_time": 1775579667535,
+    "_add_time_str": "2026-04-08 00:34:27"
 } ]);
 
 // ----------------------------
@@ -4375,6 +4431,206 @@ db.getCollection("qa-logs").insert([ {
         }
     ]
 } ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d29650bcdf29b83b2e34f1"),
+    url: "/api",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        host: "43.139.63.227",
+        "x-real-ip": "185.150.191.165",
+        "x-forwarded-for": "185.150.191.165",
+        connection: "upgrade",
+        "user-agent": "Umai-Scanner/1.0 (+https://umai.entelijan.com/methodology)",
+        accept: "text/html, application/json, */*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "accept-encoding": "br, gzip, deflate"
+    },
+    body: null,
+    requestId: "0dab4cde-6598-4ea8-ab75-a5e046b9df2c",
+    "_add_time": 1775408720737,
+    "_add_time_str": "2026-04-06 01:05:20",
+    response: {
+        acknowledged: true,
+        deletedCount: NumberInt("0")
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d5b77415d653328440943d"),
+    code: NumberInt("500"),
+    "_add_time": 1775613812631,
+    "_add_time_str": "2026-04-08 10:03:32"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d5b7a115d653328440944c"),
+    statusCode: NumberInt("500"),
+    "_add_time": 1775613857608,
+    "_add_time_str": "2026-04-08 10:04:17"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d5b7ac15d653328440945e"),
+    statusCode: NumberInt("200"),
+    "_add_time": 1775613868752,
+    "_add_time_str": "2026-04-08 10:04:28"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d70c92f9cd4e085884b0d0"),
+    url: "/api/findByWhereJson",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njg3OTU2MDEsImV4cCI6MTc2OTQwMDQwMX0.plua9EAL0R-MmEwFOYBteQ1YJIxgqhTtVpxwcI4YxAk",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "78ba5576-8d9a-449a-b9ad-af24e7c5592a",
+    "_add_time": 1775701138616,
+    "_add_time_str": "2026-04-09 10:18:58",
+    response: {
+        _id: ObjectId("672b901c0fcabce5e29faef5"),
+        username: "admin",
+        password: "$2b$10$MRvFGZuSJqfCWKBhBbirPePjC17AqOF5SJiJwG0WInmvo..NYYAbi",
+        role: [
+            "admin"
+        ],
+        "_add_time": 1730908188567,
+        "_add_time_str": "2024-11-06 23:49:48",
+        no: NumberInt("2"),
+        image: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+        lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+        token: [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU2OTcxODYsImV4cCI6MTc3NjMwMTk4Nn0.Eqd62utWi-UZzFiMrkILiRb1h_Kqa65wrRd_RkSoW18"
+        ],
+        "last_login_date": 1775697186412,
+        "last_login_ip": "未知IP",
+        object: {
+            name: "小明",
+            age: NumberInt("18")
+        },
+        userInfo: {
+            name: "小明",
+            age: NumberInt("18"),
+            avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+            nickname: "你猜"
+        },
+        enable: true,
+        nickname: "yellow12321",
+        rate: NumberInt("2"),
+        status: NumberInt("0"),
+        wdf: null
+    }
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d70cb0320307a618e1f58f"),
+    url: "/api/select",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        authorization: "",
+        "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+        accept: "*/*",
+        host: "127.0.0.1:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive"
+    },
+    body: null,
+    requestId: "30de3cc7-0f94-4399-9e9f-b00afb934df8",
+    "_add_time": 1775701168359,
+    "_add_time_str": "2026-04-09 10:19:28",
+    response: {
+        rows: [
+            {
+                _id: ObjectId("672b901c0fcabce5e29faef5"),
+                username: "admin",
+                password: "$2b$10$MRvFGZuSJqfCWKBhBbirPePjC17AqOF5SJiJwG0WInmvo..NYYAbi",
+                role: [
+                    "admin"
+                ],
+                "_add_time": 1730908188567,
+                "_add_time_str": "2024-11-06 23:49:48",
+                no: NumberInt("2"),
+                image: "https://avatars.githubusercontent.com/u/53579755?v=4",
+                avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+                lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+                token: [
+                    null,
+                    null,
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU2OTcxODYsImV4cCI6MTc3NjMwMTk4Nn0.Eqd62utWi-UZzFiMrkILiRb1h_Kqa65wrRd_RkSoW18"
+                ],
+                "last_login_date": 1775697186412,
+                "last_login_ip": "未知IP",
+                object: {
+                    name: "小明",
+                    age: NumberInt("18")
+                },
+                userInfo: {
+                    name: "小明",
+                    age: NumberInt("18"),
+                    avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+                    nickname: "你猜"
+                },
+                enable: true,
+                nickname: "yellow12321",
+                rate: NumberInt("2"),
+                status: NumberInt("0"),
+                wdf: null
+            },
+            {
+                _id: ObjectId("68bb20b94f8c40661556f27c"),
+                username: "agent",
+                password: "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+                role: [
+                    "agent"
+                ],
+                "_add_time": 1730908188567,
+                "_add_time_str": "2024-11-06 23:49:48",
+                no: NumberInt("2"),
+                image: "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+                avatar: "玩过",
+                lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
+                token: [
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjAsImV4cCI6MTc3NjE4Mzc2MH0.XFDU-Zzig17wO2AMXJojVij3X7nQVqZoBeyL8sC65fw",
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjMsImV4cCI6MTc3NjE4Mzc2M30.gkLJLEaFlO5Mo06HSGTt7l3OywvXL-tVeqDLKN_9B2I",
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1NzkyNjksImV4cCI6MTc3NjE4NDA2OX0.DmTkaDYwApR4HrcEE0jWA7k7waO4f1V7tzEOgS9MBEQ"
+                ],
+                "last_login_date": 1775579269545,
+                "last_login_ip": "未知IP",
+                object: {
+                    name: "小王",
+                    age: NumberInt("18")
+                },
+                userInfo: {
+                    name: "小明",
+                    age: NumberInt("18"),
+                    avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
+                    nickname: "你猜"
+                },
+                enable: true,
+                nickname: "1",
+                rate: NumberInt("2"),
+                status: NumberInt("0"),
+                wdf: null
+            }
+        ],
+        hasMore: false,
+        total: NumberInt("2"),
+        getCount: true,
+        pagination: {
+            pageIndex: NumberInt("1"),
+            pageSize: NumberInt("2")
+        },
+        msg: "查询成功",
+        code: NumberInt("0")
+    }
+} ]);
 
 // ----------------------------
 // Collection structure for qa-menus
@@ -4810,64 +5066,6 @@ db.getCollection("qa-roles").insert([ {
         "system-permission"
     ]
 } ]);
-db.getCollection("qa-roles").insert([ {
-    _id: ObjectId("68f099d01c5507ab49971458"),
-    "role_id": "test",
-    "role_name": "测试角色1",
-    comment: "测试角色",
-    enable: true,
-    "_add_time": NumberLong("1760598480627"),
-    "_add_time_str": "2025-10-16 15:08:00",
-    menu: [
-        "system",
-        "system-uni-uni-id-files",
-        "sys-user-manage",
-        "sys-role-manage",
-        "sys-menus-manage",
-        "enable",
-        "system-log"
-    ],
-    permission: [
-        "sys-permission",
-        "sys-add",
-        "sys-delete",
-        "sys-update",
-        "sys-read",
-        "sys-manage",
-        "sys-log",
-        "sys-user",
-        "sys-menu",
-        "sys-role",
-        "sys-file"
-    ]
-} ]);
-db.getCollection("qa-roles").insert([ {
-    _id: ObjectId("69c619706a6bd56618d4e7f3"),
-    "role_id": "亮猛",
-    "role_name": "我猛",
-    comment: "猛",
-    enable: true,
-    "_add_time": 1774590320342,
-    "_add_time_str": "2026-03-27 13:45:20"
-} ]);
-db.getCollection("qa-roles").insert([ {
-    _id: ObjectId("69d125caf0c26718ed752471"),
-    "role_id": "黄弱",
-    "role_name": "我弱",
-    comment: "弱",
-    enable: true,
-    "_add_time": 1775314378630,
-    "_add_time_str": "2026-04-04 22:52:58"
-} ]);
-db.getCollection("qa-roles").insert([ {
-    _id: ObjectId("69d125e1f0c26718ed752483"),
-    "role_id": "亮猛",
-    "role_name": "我猛",
-    comment: "猛",
-    enable: true,
-    "_add_time": 1775314401824,
-    "_add_time_str": "2026-04-04 22:53:21"
-} ]);
 
 // ----------------------------
 // Collection structure for qa-schemas
@@ -4878,6 +5076,109 @@ db.createCollection("qa-schemas");
 // ----------------------------
 // Documents of qa-schemas
 // ----------------------------
+db.getCollection("qa-schemas").insert([ {
+    _id: ObjectId("69d5c0ee0cb30e56b1f6c6fa"),
+    name: "test",
+    fields: [
+        {
+            id: "cg06xvvk77b",
+            key: "ces",
+            bsonType: [
+                "string",
+                "array"
+            ],
+            description: "",
+            required: true,
+            typeRules: {
+                string: { },
+                array: { }
+            },
+            formType: "remote-select",
+            formConfig: {
+                action: "/app/admin/system/systemMenu/systemMenu/getList",
+                propsValue: "menu_id",
+                propsLabel: "title",
+                placeholder: "菜单远程选择",
+                propsList: ""
+            }
+        },
+        {
+            id: "jfpuhfoag7",
+            key: "nickname",
+            bsonType: "string",
+            description: "",
+            required: true,
+            typeRules: {
+                string: { }
+            },
+            formType: "text",
+            formConfig: {
+                placeholder: "用户名"
+            }
+        }
+    ],
+    required: [
+        "ces",
+        "nickname"
+    ],
+    jsonSchema: {
+        bsonType: "object",
+        properties: {
+            ces: {
+                bsonType: [
+                    "string",
+                    "array"
+                ]
+            },
+            nickname: {
+                bsonType: "string"
+            }
+        },
+        required: [
+            "ces",
+            "nickname"
+        ]
+    },
+    fieldCount: NumberInt("2"),
+    "_update_time": 1775703642049,
+    "_add_time": 1775616238069,
+    "_add_time_str": "2026-04-08 10:43:58"
+} ]);
+db.getCollection("qa-schemas").insert([ {
+    _id: ObjectId("69d70efd09b2dcfd66540985"),
+    name: "fuck",
+    fields: [
+        {
+            id: "o5l8xcpckp",
+            key: "",
+            bsonType: "string",
+            description: "",
+            required: false,
+            typeRules: {
+                string: { }
+            }
+        },
+        {
+            id: "np2tqpks8je",
+            key: "",
+            bsonType: "string",
+            description: "",
+            required: false,
+            typeRules: {
+                string: { }
+            }
+        }
+    ],
+    required: [ ],
+    jsonSchema: {
+        bsonType: "object",
+        properties: { }
+    },
+    fieldCount: NumberInt("0"),
+    "_update_time": 1775701759606,
+    "_add_time": 1775701757072,
+    "_add_time_str": "2026-04-09 10:29:17"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-storage-config
@@ -5117,11 +5418,9 @@ db.createCollection("qa-users");
 db.getCollection("qa-users").insert([ {
     _id: ObjectId("672b901c0fcabce5e29faef5"),
     username: "admin",
-    password: "$2b$10$MRvFGZuSJqfCWKBhBbirPePjC17AqOF5SJiJwG0WInmvo..NYYAbi",
+    password: "$2b$10$KygUBQF9cCA.Xj8aopjW.ObWnEWe7seNtjcUKr4czluBMOV8jhWKG",
     role: [
-        "admin",
-        "agent",
-        "test"
+        "admin"
     ],
     "_add_time": NumberLong("1730908188567"),
     "_add_time_str": "2024-11-06 23:49:48",
@@ -5130,11 +5429,10 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzUzNzcxNzUsImV4cCI6MTc3NTk4MTk3NX0.MapUhmPNeiCidSIay9mD7rb10LjpefkXC62s7IQvAPY",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzUzODkwNzUsImV4cCI6MTc3NTk5Mzg3NX0.MsTRLtseJJPwSHlPkhbaUvNu_IgGW5uTOjLpiz8aDkw",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzUzODk5OTAsImV4cCI6MTc3NTk5NDc5MH0.9K5Zi2ZkWP5y1WY4iw4j8KlReJJt0x5eyYhCibJpoQg"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU3MDQ1ODEsImV4cCI6MTc3NjMwOTM4MX0.iJ1yHc1spgm-KiRkek9Kyucir5zmPfIzejakQgoA1X0",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU3MDQ2NzYsImV4cCI6MTc3NjMwOTQ3Nn0.sU7u_4eGwxGgNXzW0-cA-EYGfDFii3KT5TARCU0MqQ0"
     ],
-    "last_login_date": 1775389990904,
+    "last_login_date": 1775704676329,
     "last_login_ip": "127.0.0.1",
     object: {
         name: "小明",
@@ -5149,7 +5447,8 @@ db.getCollection("qa-users").insert([ {
     enable: true,
     nickname: "yellow12321",
     rate: NumberInt("2"),
-    status: NumberInt("0")
+    status: NumberInt("0"),
+    wdf: null
 } ]);
 db.getCollection("qa-users").insert([ {
     _id: ObjectId("68bb20b94f8c40661556f27c"),
@@ -5165,11 +5464,11 @@ db.getCollection("qa-users").insert([ {
     avatar: "玩过",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjAsImV4cCI6MTc3NjE4Mzc2MH0.XFDU-Zzig17wO2AMXJojVij3X7nQVqZoBeyL8sC65fw",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjMsImV4cCI6MTc3NjE4Mzc2M30.gkLJLEaFlO5Mo06HSGTt7l3OywvXL-tVeqDLKN_9B2I",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1NzkyNjksImV4cCI6MTc3NjE4NDA2OX0.DmTkaDYwApR4HrcEE0jWA7k7waO4f1V7tzEOgS9MBEQ"
     ],
-    "last_login_date": 1774098992205,
+    "last_login_date": NumberLong("1775579269545"),
     "last_login_ip": "未知IP",
     object: {
         name: "小王",
@@ -5184,45 +5483,6 @@ db.getCollection("qa-users").insert([ {
     enable: true,
     nickname: "1",
     rate: NumberInt("2"),
-    status: NumberInt("0")
-} ]);
-db.getCollection("qa-users").insert([ {
-    _id: ObjectId("69b771e8138f8761a51680dc"),
-    rate: NumberInt("4"),
-    username: "test",
-    nickname: "哈哈哈萨达阿萨德",
-    password: "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
-    avatar: "1123",
-    "_add_time": 1773629928986,
-    "_add_time_str": "2026-03-16 10:58:48",
-    enable: true,
-    token: [ ],
     status: NumberInt("0"),
-    role: [ ]
-} ]);
-db.getCollection("qa-users").insert([ {
-    _id: ObjectId("69c619476a6bd56618d4e7df"),
-    rate: NumberInt("5"),
-    username: "亮猛",
-    nickname: "我猛",
-    password: "admin",
-    avatar: "666",
-    "is_login": true,
-    "last_login_date": 1774540800000,
-    "_add_time": 1774590279558,
-    "_add_time_str": "2026-03-27 13:44:39",
-    role: [
-        "test"
-    ]
-} ]);
-db.getCollection("qa-users").insert([ {
-    _id: ObjectId("69d1268bf0c26718ed7524d4"),
-    rate: NumberInt("5"),
-    username: "亮猛",
-    nickname: "我猛",
-    password: "123456",
-    "is_login": true,
-    "last_login_date": -239443200000,
-    "_add_time": 1775314571852,
-    "_add_time_str": "2026-04-04 22:56:11"
+    wdf: null
 } ]);
