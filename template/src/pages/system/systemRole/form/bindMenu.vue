@@ -174,7 +174,7 @@ const getAllMenu = async () => {
     })
 
     let treeProps = {
-      id: "menu_id",
+      id: "name",
       parent_id: "parent_id",
       children: "children"
     };

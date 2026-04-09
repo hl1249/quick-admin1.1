@@ -23,32 +23,6 @@ const router = createRouter({
 
 let firstLoad = true
 
-async function syncDynamicMenus(forceRefresh = false) {
-  const { menuStore } = useStore()
-  const res = await getDynamicMenu()
-  const data = res.data?.data ?? {}
-  const menus = Array.isArray(data.menus) ? data.menus : []
-  const nextVersion = Number(data.authVersion) || 0
-  const missingVersion = menuStore.menuVersion <= 0
-  const versionChanged =
-    menuStore.menuVersion > 0
-    && nextVersion > 0
-    && menuStore.menuVersion !== nextVersion
-  const shouldReload =
-    forceRefresh || missingVersion || versionChanged || menuStore.menuList.length <= 0
-
-  if (versionChanged) {
-    menuStore.resetMenuCache()
-  }
-
-  if (shouldReload) {
-    menuStore.initMenu(menus)
-  }
-  menuStore.setMenuVersion(nextVersion)
-
-  return { versionChanged }
-}
-
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
   const { menuStore, authStore } = useStore()
@@ -78,9 +52,11 @@ router.beforeEach(async (to, from, next) => {
   if (firstLoad) {
     firstLoad = false
     try {
-      const { versionChanged } = await syncDynamicMenus()
+      // 获取动态菜单
+      const res = await getDynamicMenu()
+      menuStore.initMenu(res.data.data.menus)
       // 菜单加载完成后继续导航
-      next(versionChanged ? { path: '/home' } : { path: to.path, query: to.query })
+      next({ path: to.path, query: to.query })
     } catch (error) {
       console.error('Failed to load dynamic menu:', error)
       // 即使菜单加载失败也允许继续导航
@@ -88,7 +64,8 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     if (menuStore.menuList.length <= 0) {
-      await syncDynamicMenus(true)
+      const res = await getDynamicMenu()
+      menuStore.initMenu(res.data.data.menus)
     }
     // 非首次加载，直接继续
     next()
