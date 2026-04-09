@@ -521,35 +521,22 @@ export default defineComponent({
       )
     }
 
-    /* ---------------- tree-select 状态 ---------------- */
-    const showTreeSelect = ref(false)
-
     const renderTreeSelect = (p: RendererParams) => (
-      <>
-        <div style="display:inline-flex;align-items:center;gap:4px;">
-          <el-button onClick={() => (showTreeSelect.value = true)}>
-            {p.value || '选择'}
-          </el-button>
-          {p.value ? (
-            <el-icon
-              style="cursor:pointer;color:var(--el-text-color-placeholder);"
-              onClick={() => p.onChange(null)}
-            >
-              <CircleClose />
-            </el-icon>
-          ) : null}
-        </div>
-        <qa-tree-select
-          show={showTreeSelect.value}
-          action={p.action}
-          modelValue={p.value}
-          defaultProps={p.itemProps}
-          onUpdate:show={(v: boolean) => (showTreeSelect.value = v)}
-          onTreeSelectConfirm={(data: Record<string, any>) => {
-            p.onChange(data ? data[p.itemProps?.value ?? 'value'] : null)
-          }}
-        />
-      </>
+      <qa-tree-select
+        modelValue={p.value}
+        onUpdate:modelValue={(val: any) => {
+          if (val === null || val === undefined || val === '') {
+            p.onChange(val)
+          }
+        }}
+        onTreeSelectConfirm={(data: Record<string, any> | null) => {
+          p.onChange(data ? data[p.itemProps?.value ?? 'value'] : null)
+        }}
+        action={p.action}
+        defaultProps={p.itemProps}
+        placeholder={p.placeholder}
+        title={p.title}
+      />
     )
 
     /* ---------------- table-select ---------------- */

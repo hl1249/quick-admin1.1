@@ -9,6 +9,7 @@
 
 
     <qa-dialog v-model="form.props.show" :title="form.props.title">
+      {{form.data}}
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="()=>{
