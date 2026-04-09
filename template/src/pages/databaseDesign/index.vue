@@ -1070,7 +1070,7 @@ watch(
       draggable
       :close-on-click-modal="false"
     >
-      <el-form label-width="90px" @submit.prevent="handleCreateSchema">
+      <el-form label-width="120px" @submit.prevent="handleCreateSchema">
         <el-form-item label="Schema 名称" required>
           <el-input v-model="schemaCreateForm.name" placeholder="请输入 schema 名称" clearable />
         </el-form-item>
@@ -1127,26 +1127,39 @@ watch(
       </template>
     </el-dialog>
 
-    <el-dialog v-model="showFormPreview" title="表单预览" width="760" draggable>
+    <el-dialog v-model="showFormPreview" title="表单预览" width="1400" draggable>
       <div class="text-xs text-gray-500 mb-3">
         按当前 Schema 的字段属性和表单类型实时渲染，仅用于预览交互效果。
       </div>
-      previewFormData:{{ previewFormData }}<br/>
-      previewFormColumnsState:{{ previewFormColumnsState }}<br/>
-      <div class="max-h-[65vh] overflow-auto pr-2">
-        <qa-form
-          v-model="previewFormData"
-          :action="async () => true"
-          :columns="previewFormColumnsState"
-          label-width="220px"
-        >
-          <template #footer>
-            <div class="flex items-center justify-end gap-2">
-              <el-button @click="resetFormPreview">重置预览</el-button>
-              <el-button @click="showFormPreview = false">关闭</el-button>
-            </div>
-          </template>
-        </qa-form>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="min-w-0 rounded-xl border border-gray-200 bg-white p-4">
+          <div class="mb-3 text-sm font-medium text-gray-700">渲染表单</div>
+          <div class="max-h-[65vh] overflow-auto pr-2">
+            <qa-form
+              v-model="previewFormData"
+              :action="async () => true"
+              :columns="previewFormColumnsState"
+              label-width="120px"
+            >
+              <template #footer>
+                <div class="flex items-center justify-end gap-2">
+                  <el-button @click="resetFormPreview">重置预览</el-button>
+                  <el-button @click="showFormPreview = false">关闭</el-button>
+                </div>
+              </template>
+            </qa-form>
+          </div>
+        </div>
+
+        <div class="min-w-0 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div class="mb-3 text-sm font-medium text-gray-700">表单结构</div>
+          <pre class="max-h-[65vh] overflow-auto whitespace-pre-wrap break-all text-xs leading-5 text-gray-700">{{ JSON.stringify(previewFormColumnsState, null, 2) }}</pre>
+        </div>
+
+        <div class="min-w-0 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div class="mb-3 text-sm font-medium text-gray-700">表单数据</div>
+          <pre class="max-h-[65vh] overflow-auto whitespace-pre-wrap break-all text-xs leading-5 text-gray-700">{{ JSON.stringify(previewFormData, null, 2) }}</pre>
+        </div>
       </div>
     </el-dialog>
   </div>

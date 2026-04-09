@@ -4,7 +4,7 @@
             <qa-form-item v-for="item in columns" :key="item.key"
                 v-model="model"
                 v-bind="getFormItemBind(item)" :form-type="formType"
-                @update:formData="(val) => { (item as any).formData = val }">
+                @update:formData="(val) => updateFormItemData(item, val)">
 
                 <template v-if="$slots[item.key]" #default>
                     <slot :form="model" :keyName="item.key" :name="item.key" />
@@ -75,7 +75,16 @@ const props = withDefaults(
 /** 表单项绑定 props（排除 key，避免与 v-for 的 :key 冲突） */
 function getFormItemBind(item: QaFormColumns) {
     const { key: _key, ...rest } = item
-    return { ...rest, itemKey: item.key, label: item.title }
+    return {
+        ...rest,
+        itemKey: item.key,
+        label: item.title,
+        labelWidth: item.labelWidth ?? props.labelWidth,
+    }
+}
+
+function updateFormItemData(item: QaFormColumns, val: any) {
+    ;(item as QaFormColumns & { formData?: any }).formData = val
 }
 
 // 通过 useVModel 直接拿到响应式 formData（相当于 computed + emit）
