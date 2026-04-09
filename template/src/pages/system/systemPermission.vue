@@ -191,7 +191,7 @@ const form = ref({
         "title": "父级权限",
         "type": "tree-select",
         "width": 500,
-        action: "app/admin/system/SystemPermission/SystemPermission/getList",
+        action: "app/admin/system/systemPermission/systemPermission/getList",
         props: { list: "rows", value: "permission_id", label: "permission_name", children: "children" },
       },
       {

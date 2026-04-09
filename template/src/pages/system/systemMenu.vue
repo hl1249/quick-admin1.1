@@ -9,7 +9,6 @@
 
 
     <qa-dialog v-model="form.props.show" :title="form.props.title">
-      {{form.data}}
       <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
         :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
         :before-action="form.props.beforeAction" @success="()=>{
@@ -169,7 +168,7 @@ const form = ref({
         "title": "父级菜单",
         "type": "tree-select",
         "width": 500,
-        action: "app/admin/system/SystemMenu/SystemMenu/getList",
+        action: "app/admin/system/systemMenu/systemMenu/getList",
         props: { list: "rows", value: "menu_id", label: "title", children: "children" },
       },
       {
