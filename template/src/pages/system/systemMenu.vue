@@ -234,7 +234,6 @@ const updateBtn = (index: number, row: any) => {
   form.value.props.title = '编辑'
   form.value.props.show = true
   form.value.data = row;
-  console.log("调用编辑", index, row)
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
   btnsDeleteRequest({

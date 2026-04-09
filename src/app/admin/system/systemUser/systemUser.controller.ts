@@ -27,7 +27,7 @@ export class SystemUserController {
 
   @Post('/update')
   async update(@Body() data): Promise<Document | null> {
-    let { _id, nickname, avatar, rate, enable = true } = data;
+    let { _id, nickname, avatar, image, userInfo, rate, enable = true } = data;
 
     const result: UpdateResult = await this.dbService.updateById({
       dbName: 'qa-users',
@@ -35,6 +35,8 @@ export class SystemUserController {
       dataJson: {
         nickname,
         avatar,
+        image,
+        userInfo,
         rate,
         enable,
       },
