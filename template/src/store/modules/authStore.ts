@@ -41,7 +41,7 @@ export const useAuthStore = defineStore(
 
         const logout = () => {
             const menuStore = useMenuStore()
-            menuStore.clearMenuList()
+            menuStore.resetMenuCache()
             token.value = ''
             expired.value = 0
             userInfo.value = {}

@@ -30,8 +30,11 @@ export type MenuList = Routers & {
 
 export interface MenuState {
   menuList: Ref<MenuList[]>
+  menuVersion: Ref<number>
+  setMenuVersion: (version: number) => void
   initMenu: (menus: MenuList[]) => void
   clearMenuList: () => void
+  resetMenuCache: () => void
   isCollapse: Ref<boolean>
   changeIsCollapse: (val: boolean) => void
   openeds: Ref<any[]>
@@ -63,9 +66,13 @@ export const useMenuStore = defineStore(
     }
 
     // 身份动态菜单
+    const menuVersion = ref(0)
+    const setMenuVersion: MenuState['setMenuVersion'] = (version) => {
+      menuVersion.value = Number(version) || 0
+    }
     const menuList: MenuState['menuList'] = ref([])
     const initMenu: MenuState['initMenu'] = (newMenuList: MenuList[]) => {
-      menuList.value = [...newMenuList,...templateRouter as unknown as MenuList[]]
+      menuList.value = [...newMenuList, ...templateRouter as unknown as MenuList[]]
       router.addRoute({
         path: '/',
         component: () => import('@/layout/main.vue'),
@@ -74,19 +81,27 @@ export const useMenuStore = defineStore(
     }
 
     // 动态添加菜单
-      const addMnes:(staticMenuList:any) => void = (staticMenuList) => {
-        menuList.value = [
-            ...menuList.value,
-            ...staticMenuList
-        ]
-        //   menuList.value = staticMenuList
-        // console.log('staticMenuList',staticMenuList)
-        // router.addRoute(staticMenuList)
-        //   console.log('原格式',staticMenuList)
-      }
+    const addMnes: (staticMenuList: any) => void = (staticMenuList) => {
+      menuList.value = [
+        ...menuList.value,
+        ...staticMenuList
+      ]
+      //   menuList.value = staticMenuList
+      // console.log('staticMenuList',staticMenuList)
+      // router.addRoute(staticMenuList)
+      //   console.log('原格式',staticMenuList)
+    }
 
     const clearMenuList: MenuState['clearMenuList'] = () => {
       menuList.value = []
+    }
+    const resetMenuCache: MenuState['resetMenuCache'] = () => {
+      menuList.value = []
+      menuVersion.value = 0
+      openeds.value = []
+      activeName.value = ''
+      tabsList.value = [{ ...homeRoute, noClosable: true }]
+      currentTagName.value = String(homeRoute?.name ?? 'home_page')
     }
 
     // 左侧菜单树状展开状态
@@ -113,7 +128,7 @@ export const useMenuStore = defineStore(
     // tag历史记录
     const currentTagName: MenuState['currentTagName'] = ref("home")
     // tag当前下标
-    const tabsActiveIndex = computed(()=>{
+    const tabsActiveIndex = computed(() => {
       return tabsList.value.findIndex(item => item.name === activeName.value)
     })
 
@@ -128,11 +143,11 @@ export const useMenuStore = defineStore(
     const addTabs: MenuState['addTabs'] = (tabsItem) => {
       const exists = tabsList.value.some(tab => tab.name === tabsItem.name)
       if (!exists && tabsItem.name != 'NotFound') {
-         tabsList.value.push({
-            name:String(tabsItem.name),
-            path:tabsItem.path,
-            meta:tabsItem.meta,
-            query:tabsItem.query
+        tabsList.value.push({
+          name: String(tabsItem.name),
+          path: tabsItem.path,
+          meta: tabsItem.meta,
+          query: tabsItem.query
         })
       }
     }
@@ -173,22 +188,22 @@ export const useMenuStore = defineStore(
     }
 
     const closeLeftNavTab = () => {
-       tabsList.value =  [tabsList.value[0],...tabsList.value.slice(tabsActiveIndex.value,tabsList.value.length)]
+      tabsList.value = [tabsList.value[0], ...tabsList.value.slice(tabsActiveIndex.value, tabsList.value.length)]
     }
 
     const closeRightNavTab = () => {
-       tabsList.value =  tabsList.value.slice(0,tabsActiveIndex.value+1)
+      tabsList.value = tabsList.value.slice(0, tabsActiveIndex.value + 1)
     }
 
     const closeOtherNavTab = () => {
-      if( tabsActiveIndex.value === 0) tabsList.value = [tabsList.value[0]]
-      else tabsList.value =  [tabsList.value[0],tabsList.value[tabsActiveIndex.value]]
+      if (tabsActiveIndex.value === 0) tabsList.value = [tabsList.value[0]]
+      else tabsList.value = [tabsList.value[0], tabsList.value[tabsActiveIndex.value]]
     }
 
     return {
-      menuList, initMenu,clearMenuList,
-        addMnes,
-      isCollapse, changeIsCollapse, 
+      menuList, menuVersion, setMenuVersion, initMenu, clearMenuList, resetMenuCache,
+      addMnes,
+      isCollapse, changeIsCollapse,
       openeds,
       initOpends,
       activeName, initActiveName,
@@ -207,7 +222,7 @@ export const useMenuStore = defineStore(
   },
   {
     persist: {
-      pick: ['menuList', 'isCollapse', 'tabsList'],
+      pick: ['menuList', 'menuVersion', 'isCollapse', 'tabsList'],
     },
   },
 )

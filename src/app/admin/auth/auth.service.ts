@@ -144,9 +144,19 @@ export class AuthService {
   async getMenu(req): Promise<any> {
     const { userInfo } = req;
     const userId = userInfo._id.toHexString();
-    const cachedPermissions = (await this.cache.get<{ allowedMenus: string[] }>(
-      `auth:${userId}`,
-    ))!;
+    const currentAuthVersion =
+      (await this.cache.get<number>('authVersion')) ?? 1;
+    let cachedPermissions = await this.cache.get<{
+      allowedMenus: string[];
+      authVersion: number;
+    }>(`auth:${userId}`);
+
+    const needRebuild =
+      cachedPermissions && cachedPermissions.authVersion !== currentAuthVersion;
+    if (!cachedPermissions || needRebuild) {
+      await this.buildCacheUserPermission(userInfo);
+      cachedPermissions = await this.cache.get(`auth:${userId}`);
+    }
 
     if (!cachedPermissions) throw new UnauthorizedException('身份认证失败');
     let whereJson = {};
@@ -178,6 +188,7 @@ export class AuthService {
     return {
       res,
       menus: arrayToTree(res as Document[], treeProps),
+      authVersion: currentAuthVersion,
     };
   }
 
