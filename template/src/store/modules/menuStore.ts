@@ -65,6 +65,11 @@ export const useMenuStore = defineStore(
     // 身份动态菜单
     const menuList: MenuState['menuList'] = ref([])
     const initMenu: MenuState['initMenu'] = (newMenuList: MenuList[]) => {
+      menuList.value = []
+      openeds.value = []
+      activeName.value = ''
+      tabsList.value = [{ ...homeRoute, noClosable: true }]
+      currentTagName.value = String(homeRoute?.name ?? 'home_page')
       menuList.value = [...newMenuList,...templateRouter as unknown as MenuList[]]
       router.addRoute({
         path: '/',
