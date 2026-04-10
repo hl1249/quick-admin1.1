@@ -54,7 +54,7 @@ export class SystemPermissionController {
   }
 
   @Post('/add')
-  add(@Body() data: any): Promise<Document | null> {
+  async add(@Body() data: any): Promise<Document | null> {
     let {
       permission_id,
       permission_name,
@@ -65,7 +65,25 @@ export class SystemPermissionController {
       comment,
     } = data;
 
-    return this.dbService.add({
+    
+    const hasParent =
+      parent_id !== undefined && parent_id !== null && parent_id !== '';
+    if (hasParent && permission_id === parent_id) {
+      throw new BadRequestException('父级不能与本权限的 permission_id 相同');
+    }
+
+    const hasPermission = await this.dbService.findByWhereJson({
+      dbName: 'qa-permissions',
+      whereJson: {
+        permission_id,
+      },
+    });
+    
+    if (hasPermission) {
+      throw new BadRequestException('权限已存在');
+    }
+
+    return await this.dbService.add({
       dbName: 'qa-permissions',
       dataJson: {
         permission_id,
@@ -113,6 +131,17 @@ export class SystemPermissionController {
       parent_id !== undefined && parent_id !== null && parent_id !== '';
     if (hasParent && permission_id === parent_id) {
       throw new BadRequestException('父级不能与本权限的 permission_id 相同');
+    }
+
+    const hasPermission = await this.dbService.findByWhereJson({
+      dbName: 'qa-permissions',
+      whereJson: {
+        permission_id,
+      },
+    });
+
+    if (hasPermission) {
+      throw new BadRequestException('权限已存在');
     }
 
     const result = await this.dbService.updateById({
