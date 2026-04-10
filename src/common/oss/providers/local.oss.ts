@@ -3,7 +3,7 @@ import { dirname, resolve } from 'path';
 import { Injectable } from '@nestjs/common';
 import { AppConfigService } from '@/config/app-config.service';
 import { IOssProvider, OssRegionOption, OssUploadOptions, OssUploadResult } from '@/common/oss/oss.interface';
-import { buildObjectKey } from '@/common/oss/oss.utils';
+import { buildObjectKey, joinUrl } from '@/common/oss/oss.utils';
 
 @Injectable()
 export class LocalOssProvider implements IOssProvider {
@@ -21,10 +21,13 @@ export class LocalOssProvider implements IOssProvider {
     await fs.mkdir(dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, buffer);
 
+    const base = options?.localPublicBaseUrl ?? this.publicBaseUrl;
+    const url = joinUrl(base, key);
+
     return {
       provider: 'local',
       key,
-      url: `${this.publicBaseUrl}/${key}`.replace(/\/+/g, '/'),
+      url,
     };
   }
 

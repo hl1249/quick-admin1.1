@@ -202,7 +202,6 @@ const refresh = () => {
 // 表单数据重置
 const resetForm = async () => {
   form.value.data = cloneDeep(originalFormData)
-  await nextTick()
   formRefs.value?.clearValidate?.()
 }
 // 表单提交
@@ -232,8 +231,8 @@ const updateBtn = (index: number, row: any) => {
   form.value.props.action = '/app/admin/system/systemMenu/systemMenu/update';
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
-  form.value.props.show = true
   form.value.data = row;
+  form.value.props.show = true
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
   btnsDeleteRequest({

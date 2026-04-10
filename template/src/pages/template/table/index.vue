@@ -337,7 +337,6 @@ const formRefs = ref()
 // 表单重置
 const resetForm = async () => {
   form.value.data = cloneDeep(originalFormData)
-  await nextTick()
   formRefs.value?.clearValidate?.()
 }
 
@@ -357,9 +356,6 @@ const addBtn = () => {
   form.value.props.formType = 'add'
   form.value.props.title = '添加'
   form.value.props.show = true
-  nextTick(() => {
-    formRefs.value?.setResetFormData?.({})
-  })
 }
 
 const updateBtn = (index: number, row: any) => {
@@ -367,8 +363,8 @@ const updateBtn = (index: number, row: any) => {
   form.value.props.action = '/app/admin/system/systemUser/systemUser/update'
   form.value.props.formType = 'edit'
   form.value.props.title = '编辑'
-  form.value.props.show = true
   form.value.data = row
+  form.value.props.show = true
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
   btnsDeleteRequest({

@@ -439,7 +439,6 @@ const testSubmitForm = () => {
 // 表单数据重置
 const resetForm = async () => {
   form.value.data = cloneDeep(originalFormData)
-  await nextTick()
   formRefs.value?.clearValidate?.()
 }
 const addBtn = () => {
@@ -451,9 +450,9 @@ const addBtn = () => {
 const updateBtn = (index: number, row: any) => {
   resetForm()
   form.value.props.action = '/app/admin/system/systemFile/systemFile/space/update';
-  form.value.data = row;
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
+  form.value.data = row;
   form.value.props.show = true
   console.log("调用编辑", index, row)
 }

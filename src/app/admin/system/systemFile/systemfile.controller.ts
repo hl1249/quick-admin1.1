@@ -163,7 +163,7 @@ export class SystemFileController {
     const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
     const normalizedFile = { ...file, originalname: normalizeUploadedFilename(file.originalname) };
 
-    return this.uploadService.saveFileRecord(normalizedFile, userId, category_id, folder, needSave);
+    return this.uploadService.saveFileRecord(normalizedFile, userId, category_id, folder, needSave, req);
   }
 
 
@@ -202,7 +202,7 @@ export class SystemFileController {
     const userId = req?.userInfo?._id?.toHexString?.() ?? String(req?.userInfo?._id ?? '');
     const file = { buffer, originalname: normalizeUploadedFilename(originalname), mimetype, size: buffer.length };
 
-    return this.uploadService.saveFileRecord(file, userId, category_id, undefined, needSave);
+    return this.uploadService.saveFileRecord(file, userId, category_id, undefined, needSave, req);
   }
   @Post('/space/getList')
   async getList(@Body() data): Promise<Document | null>{

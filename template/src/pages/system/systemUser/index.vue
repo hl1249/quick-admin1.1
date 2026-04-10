@@ -341,8 +341,9 @@ const form = ref({
 const formRefs = ref()
 
 // 表单重置
-const resetForm = () => {
-  formRefs.value?.resetForm?.()
+const resetForm = async () => {
+  form.value.data = cloneDeep({})
+  formRefs.value?.clearValidate?.()
 }
 
 
@@ -361,21 +362,15 @@ const addBtn = () => {
   form.value.props.formType = 'add'
   form.value.props.title = '添加'
   form.value.props.show = true
-  nextTick(() => {
-    formRefs.value?.setResetFormData?.({})
-  })
 }
 
 const updateBtn = (index: number, row: any) => {
   resetForm()
-  form.value.data = cloneDeep(row)
   form.value.props.action = '/app/admin/system/systemUser/systemUser/update'
   form.value.props.formType = 'edit'
   form.value.props.title = '编辑'
+  form.value.data = row
   form.value.props.show = true
-  nextTick(() => {
-    formRefs.value?.setResetFormData?.(form.value.data)
-  })
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
   btnsDeleteRequest({

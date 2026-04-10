@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { basename } from 'path';
+import type { Request } from 'express';
 import { OssService } from '@/common/oss/oss.service';
 import { DbService } from '@/common/db/db.service';
+import { AppConfigService } from '@/config/app-config.service';
 import { getFileType, getImageSize } from './file.utils';
 import type { OssUploadResult } from '@/common/oss/oss.interface';
 import type { OssProvider } from '@/config/oss.config';
@@ -15,10 +17,23 @@ export class UploadService {
   constructor(
     private readonly ossService: OssService,
     private readonly dbService: DbService,
+    private readonly appConfig: AppConfigService,
   ) {}
 
   normalizeCategoryId(category_id: any): string | null {
     return (category_id == null || category_id === '' || category_id === 'null') ? null : category_id;
+  }
+
+  /** 本地入库 URL：协议 + Host + 配置的本地目录名（与磁盘目录一致） */
+  buildLocalPublicBaseUrl(req: Request): string | undefined {
+    const host = req.get('host');
+    if (!host) {
+      return undefined;
+    }
+    const forwarded = req.get('x-forwarded-proto');
+    const proto = (forwarded?.split(',')[0]?.trim() || req.protocol || 'http').replace(/:+$/, '');
+    const dir = this.appConfig.localUploadsDirName.replace(/^\/+|\/+$/g, '');
+    return `${proto}://${host}/${dir}`;
   }
 
   async saveFileRecord(
@@ -27,8 +42,10 @@ export class UploadService {
     category_id?: any,
     folder?: string,
     needSave = true,
+    req?: Request,
   ) {
-    const result = await this.uploadFile(file, { folder });
+    const localPublicBaseUrl = req ? this.buildLocalPublicBaseUrl(req) : undefined;
+    const result = await this.uploadFile(file, { folder, localPublicBaseUrl });
 
     if (!needSave) {
       return { message: '上传成功', ...result };
@@ -85,6 +102,7 @@ export class UploadService {
       contentType: file.mimetype,
       folder: this.getUploadFolder(),
       provider: options?.provider,
+      localPublicBaseUrl: options?.localPublicBaseUrl,
     });
   }
 
@@ -99,6 +117,7 @@ export class UploadService {
       contentType: meta.contentType,
       folder: this.getUploadFolder(),
       provider: options?.provider,
+      localPublicBaseUrl: options?.localPublicBaseUrl,
     });
   }
 

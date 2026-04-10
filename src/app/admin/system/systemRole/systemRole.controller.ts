@@ -1,4 +1,4 @@
-import { Controller, Post,Body } from '@nestjs/common';
+import {BadRequestException, Controller, Post,Body } from '@nestjs/common';
 import { Document, UpdateResult } from 'mongodb';
 import { DbService } from '@/common/db/db.service';
 import { AuthService } from '@/app/admin/auth/auth.service';
@@ -53,8 +53,18 @@ export class SystemRoleController {
   }
 
   @Post('/add')
-  add(@Body() data: any): Promise<Document | null> {
+  async add(@Body() data: any): Promise<Document | null> {
     let { role_id, role_name, comment, enable = true } = data;
+
+    const hasRole = await this.dbService.findByWhereJson({
+      dbName: 'qa-roles',
+      whereJson: {
+        role_id,
+      },
+    });
+    if (hasRole) {
+      throw new BadRequestException('角色已存在');
+    }
 
     return this.dbService.add({
       dbName: 'qa-roles',
