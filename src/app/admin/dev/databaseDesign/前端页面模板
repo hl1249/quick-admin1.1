@@ -89,7 +89,6 @@
   // 表单数据重置
   const resetForm = async () => {
     form.value.data = cloneDeep(originalFormData)
-    await nextTick()
     formRefs.value?.clearValidate?.()
   }
   const addBtn = () => {

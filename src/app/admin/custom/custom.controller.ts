@@ -11,7 +11,7 @@ export class CustomController {
 
   @Post('/add')
   add(@Req() req, @Body() data): Promise<Document | null> {
-    const { username, password, age, sex, garoupIds } = data
+    const { username, password, age, sex, groupId } = data
 
     return this.dbService.add({
       dbName: "custom",
@@ -20,7 +20,7 @@ export class CustomController {
         password,
         age,
         sex,
-        garoupIds,
+        groupId,
       }
     })
   }
@@ -35,7 +35,7 @@ export class CustomController {
 
   @Post('/update')
   update(@Req() req, @Body() data): Promise<Document | null> {
-    const { _id, username, password, age, sex, garoupIds } = data
+    const { _id, username, password, age, sex, groupId } = data
 
     return this.dbService.updateById({
       id: _id,
@@ -45,7 +45,7 @@ export class CustomController {
         password,
         age,
         sex,
-        garoupIds,
+        groupId,
       }
     })
   }

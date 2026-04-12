@@ -59,7 +59,6 @@ export class SystemCategoriesController {
 
   @Post('/getList')
   getList( @Body() data): Promise<Document | null> {
-    const { type } = data
     return this.dbService.select({
       dbName: "qa-files-categories",
     })

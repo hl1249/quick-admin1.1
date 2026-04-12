@@ -67,9 +67,9 @@
       width:  200
     },
     {
-      key:  "garoupIds",
+      key:  "groupId",
       type:  "text",
-      title:  "garoupIds",
+      title:  "班级",
       width:  200
     }
     ]
@@ -112,9 +112,9 @@
       mode:  "="
     },
     {
-      key:  "garoupIds",
+      key:  "groupId",
       type:  "text",
-      title:  "garoupIds",
+      title:  "班级",
       width:  200,
       mode:  "="
     }
@@ -143,7 +143,7 @@
       },
       {
         key:  "password",
-        type:  "text",
+        type:  "password",
         title:  "密码"
       },
       {
@@ -154,7 +154,7 @@
       },
       {
         key:  "sex",
-        type:  "radio",
+        type:  "select",
         title:  "性别",
         data:  [
           {
@@ -169,36 +169,23 @@
         placeholder:  "性别"
       },
       {
-        key:  "garoupIds",
-        type:  "table-select",
-        title:  "garoupIds",
+        key:  "groupId",
+        type:  "remote-select",
+        title:  "班级",
         action:  "/app/admin/system/systemFile/systemCategories/getList",
-        columns:  [
-          {
-            key:  "name",
-            title:  "类型",
-            nameKey:  true,
-            idKey:  false
-          },
-          {
-            key:  "type",
-            title:  "类型值",
-            nameKey:  false,
-            idKey:  true
-          }
-        ],
-        queryColumns:  [
-          {
-            key:  "name",
-            title:  "类型",
-            mode:  "%%"
-          }
-        ]
+        placeholder:  "班级",
+        props:  {
+          value:  "type",
+          label:  "name"
+        }
       }
       ],
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" }
         ]
       },
       formType: "",
@@ -214,7 +201,6 @@
   // 表单数据重置
   const resetForm = async () => {
     form.value.data = cloneDeep(originalFormData)
-    await nextTick()
     formRefs.value?.clearValidate?.()
   }
   const addBtn = () => {
@@ -225,9 +211,11 @@
   }
   const updateBtn = (index: number, row: any) => {
     resetForm()
+    form.value.props.action = '/app/admin/custom/custom/update';
     form.value.props.formType = 'edit';
     form.value.props.title = '编辑'
     form.value.props.show = true
+    form.value.data = row;
     console.log("调用编辑", index, row)
   }
   const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
