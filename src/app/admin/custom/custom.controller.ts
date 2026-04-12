@@ -1,4 +1,4 @@
-import { Controller, Req, Post, Body } from '@nestjs/common';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/db/db.service';
 import { AdminSocketService } from '@/websocket/services/admin-socket.service';
@@ -51,8 +51,7 @@ export class CustomController {
       }
     })
 
-    this.adminSocketService.emitNotify({
-      type: 'custom:update',
+    this.adminSocketService.emitNotifyToUser('68bb20b94f8c40661556f27c',{
       title: '自定义数据已更新',
       message: `custom 数据 ${username || _id} 已更新`,
       bizType: 'custom',

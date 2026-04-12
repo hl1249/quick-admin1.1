@@ -6,7 +6,7 @@ import { PATH_METADATA } from '@nestjs/common/constants';
 function getFiles(
   dir: string,
   suffix: string[] = [],
-  ignoreDirs: string[] = ['template'],
+  ignoreDirs: string[] = [],
 ): string[] {
   const files = readdirSync(dir);
   const result: string[] = [];
@@ -18,7 +18,7 @@ function getFiles(
 
     if (stat.isDirectory()) {
       result.push(...getFiles(fullPath, suffix, ignoreDirs));
-    } else if (suffix.some((s) => file.endsWith(s))) {
+    } else if (suffix.some((s) => file.toLowerCase().endsWith(s.toLowerCase()))) {
       result.push(fullPath);
     }
   });
@@ -44,7 +44,7 @@ export function loadControllers(
 
       if (controllerClass) {
         const relativePath = relative(rootDir, file)
-          .replace(/\.controller\.(ts|js)$/, '')
+          .replace(/\.controller\.(ts|js)$/i, '')
           .replace(/\\/g, '/')
           .split('/')
           .filter(p => p !== 'controller' && p !== 'controllers')

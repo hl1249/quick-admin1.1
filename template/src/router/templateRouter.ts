@@ -65,6 +65,14 @@ export default [
                 "icon": "document-copy",
                 "title": "表格渲染",
                 component: "/src/pages/template/table/index",
+            },
+            {
+                "path": "template/socket",
+                "menu_id": "template-socket",
+                "name": "Socket测试",
+                "icon": "Connection",
+                "title": "Socket测试",
+                component: "/src/pages/template/socket/index",
             }
         ]
     },

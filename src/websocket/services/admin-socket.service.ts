@@ -75,4 +75,21 @@ export class AdminSocketService {
       ts: Date.now(),
     });
   }
+
+  // 向指定业务房间发送通知，适合按群组/业务维度做定向广播。
+  emitNotifyToBizRoom(
+    bizType: string,
+    bizId: string,
+    payload: Record<string, any>,
+  ) {
+    if (!this.namespace) {
+      this.logger.warn('Admin namespace 尚未初始化，忽略业务房间通知推送');
+      return;
+    }
+
+    this.namespace.to(buildBizRoom(bizType, bizId)).emit(SOCKET_EVENTS.notify, {
+      ...payload,
+      ts: Date.now(),
+    });
+  }
 }

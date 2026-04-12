@@ -8,6 +8,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 
 export default defineConfig(async ({ mode }) => {
   const { VITE_PORT, VITE_OPEN, VITE_BASE_PATH, VITE_OUT_DIR } = loadEnv(mode, process.cwd())
+  const backendTarget = 'http://localhost:3000'
 
   return {
     plugins: [vue(),
@@ -31,10 +32,17 @@ export default defineConfig(async ({ mode }) => {
       open: Boolean(VITE_OPEN),
       proxy: {
         '/api': {
-          target: 'http://localhost:3000/api',
+          target: `${backendTarget}/api`,
           secure: false,
           changeOrigin: true,
           rewrite: (path:string) => path.replace(/^\/api/, ''),
+        },
+        // 本地开发时把 Socket.IO 引擎端点转发到后端，前端即可走同域连接。
+        '/socket.io': {
+          target: backendTarget,
+          secure: false,
+          changeOrigin: true,
+          ws: true,
         },
       },
     },
