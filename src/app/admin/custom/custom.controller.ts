@@ -1,7 +1,7 @@
 import { Controller, Req, Post, Body } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/db/db.service';
-import { AdminSocketService } from '@/websocket/admin-socket.service';
+import { AdminSocketService } from '@/websocket/services/admin-socket.service';
 
 @Controller()
 export class CustomController {

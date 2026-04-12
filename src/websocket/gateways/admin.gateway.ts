@@ -11,10 +11,18 @@ import {
 } from '@nestjs/websockets';
 import { Injectable, Logger } from '@nestjs/common';
 import { Namespace, Socket } from 'socket.io';
-import { AdminSocketService } from './admin-socket.service';
-import { SOCKET_EVENTS, SOCKET_NAMESPACES, buildBizRoom, buildUserRoom } from './socket.constants';
-import type { AuthenticatedSocket, JoinBizRoomPayload } from './socket.types';
-import { WsAuthService } from './ws-auth.service';
+import { AdminSocketService } from '../services/admin-socket.service';
+import {
+  SOCKET_EVENTS,
+  SOCKET_NAMESPACES,
+  buildBizRoom,
+  buildUserRoom,
+} from '../constants/socket.constants';
+import type {
+  AuthenticatedSocket,
+  JoinBizRoomPayload,
+} from '../types/socket.types';
+import { WsAuthService } from '../services/ws-auth.service';
 
 @Injectable()
 @WebSocketGateway({

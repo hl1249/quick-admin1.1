@@ -11,7 +11,7 @@ import {
   AuthenticatedSocket,
   SocketNamespaceKey,
   SocketUserInfo,
-} from './socket.types';
+} from '../types/socket.types';
 
 @Injectable()
 export class WsAuthService {
@@ -21,6 +21,7 @@ export class WsAuthService {
     private readonly appConfig: AppConfigService,
   ) {}
 
+  // 对 socket 握手信息做鉴权，并把安全后的用户信息挂到连接上下文中。
   async authenticate(
     client: Socket,
     namespace: SocketNamespaceKey,
@@ -65,6 +66,7 @@ export class WsAuthService {
     return authClient;
   }
 
+  // 按优先级从握手参数和请求头中提取 token，兼容多种前端传参方式。
   private extractToken(client: Socket): string | null {
     const handshakeAuth = client.handshake.auth as
       | { token?: unknown }
@@ -88,6 +90,7 @@ export class WsAuthService {
     return null;
   }
 
+  // 统一清洗 token 字符串，兼容裸 token 和 Bearer token 两种格式。
   private normalizeToken(source: string): string | null {
     const value = source.trim();
     if (!value) {
