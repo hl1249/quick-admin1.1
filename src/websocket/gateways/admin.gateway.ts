@@ -55,6 +55,7 @@ export class AdminGateway
     try {
       const authClient = await this.wsAuthService.authenticate(client, 'admin');
       authClient.join(buildUserRoom(authClient.data.userInfo._id));
+      this.adminSocketService.registerConnection(authClient);
       this.logger.log(`admin socket connected: ${authClient.id}`);
     } catch (error: any) {
       client.emit('exception', {
@@ -66,6 +67,7 @@ export class AdminGateway
 
   // 后台连接断开时记录日志，便于排查在线状态和连接稳定性问题。
   handleDisconnect(client: Socket) {
+    this.adminSocketService.unregisterConnection(client.id);
     this.logger.log(`admin socket disconnected: ${client.id}`);
   }
 

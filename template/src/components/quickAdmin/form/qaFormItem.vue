@@ -144,7 +144,6 @@ export default defineComponent({
     },
     labelWidth: {
       type: [String, Number],
-      default: '80px',
     },
     width: {
       type: [String, Number],

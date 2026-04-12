@@ -80,6 +80,7 @@ export class SystemMenuController {
       dataJson: {
         menu_id,
         title,
+        name:title,
         parent_id,
         component,
         path,
@@ -134,15 +135,6 @@ export class SystemMenuController {
       throw new BadRequestException('父级不能与本菜单的 menu_id 相同');
     }
 
-    const hasMenu = await this.dbService.findByWhereJson({
-      dbName: 'qa-menus',
-      whereJson: {
-        menu_id,
-      },
-    });
-    if (hasMenu) {
-      throw new BadRequestException('菜单已存在');
-    }
 
     const result = await this.dbService.updateById({
       dbName: 'qa-menus',
