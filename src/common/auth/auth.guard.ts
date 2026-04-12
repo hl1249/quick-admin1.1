@@ -17,6 +17,10 @@ export class AuthGuard implements CanActivate {
     async canActivate(
         context: ExecutionContext,
     ): Promise<boolean> {
+        if (context.getType<'http' | 'ws'>() !== 'http') {
+            return true;
+        }
+
         const handler = context.getHandler();
         const controller = context.getClass();
 

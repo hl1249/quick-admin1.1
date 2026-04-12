@@ -12,6 +12,7 @@ import { LogModule } from '@/common/logger/logger.module';
 import { CacheModule } from '@/common/cache/cache.module';
 import { OssModule } from '@/common/oss/oss.module';
 import { UploadModule } from '@/common/upload/upload.module';
+import { WebsocketModule } from '@/websocket/websocket.module';
 // 动态路由
 @Module({
   imports: [
@@ -30,8 +31,9 @@ import { UploadModule } from '@/common/upload/upload.module';
     CacheModule,
     OssModule,
     UploadModule,
+    WebsocketModule,
   ],
-  exports: [JwtModule, LogModule, CacheModule, OssModule, UploadModule],
+  exports: [JwtModule, LogModule, CacheModule, OssModule, UploadModule, WebsocketModule],
 })
 export class Public implements OnModuleInit, OnModuleDestroy {
   logger: Logger;

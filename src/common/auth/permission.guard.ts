@@ -20,6 +20,10 @@ export class PermissionGuard implements CanActivate {
     async canActivate(
         context: ExecutionContext,
     ): Promise<boolean> {
+      if (context.getType<'http' | 'ws'>() !== 'http') {
+        return true;
+      }
+
       const request = context.switchToHttp().getRequest();
       // 与 main 中 setGlobalPrefix(GLOBAL_PREFIX) 对齐；业务权限路径多为 /app/admin/... 无全局前缀
       const url = this.normalizePathForPermission(request.url);

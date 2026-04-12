@@ -1,11 +1,13 @@
 import { Controller, Req, Post, Body } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/db/db.service';
+import { AdminSocketService } from '@/websocket/admin-socket.service';
 
 @Controller()
 export class CustomController {
   constructor(
     private readonly dbService: DbService,
+    private readonly adminSocketService: AdminSocketService,
   ) {
   }
 
@@ -34,10 +36,10 @@ export class CustomController {
   }
 
   @Post('/update')
-  update(@Req() req, @Body() data): Promise<Document | null> {
+  async update(@Req() req, @Body() data): Promise<any> {
     const { _id, username, password, age, sex, groupId } = data
 
-    return this.dbService.updateById({
+    const result = await this.dbService.updateById({
       id: _id,
       dbName: "custom",
       dataJson: {
@@ -48,6 +50,24 @@ export class CustomController {
         groupId,
       }
     })
+
+    this.adminSocketService.emitNotify({
+      type: 'custom:update',
+      title: '自定义数据已更新',
+      message: `custom 数据 ${username || _id} 已更新`,
+      bizType: 'custom',
+      bizId: _id,
+      operatorId: req?.userInfo?._id?.toHexString?.() || req?.userInfo?._id,
+      data: {
+        _id,
+        username,
+        age,
+        sex,
+        groupId,
+      },
+    })
+
+    return result
   }
 
   @Post('/getList')
