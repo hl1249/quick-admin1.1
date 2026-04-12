@@ -1,6 +1,6 @@
 <template>
   <div class="qa-table-query">
-    <el-form :model="localModel" label-width="auto" class="flex flex-wrap gap-x-1">
+    <el-form :model="localModel" :label-width="labelWidth" class="flex flex-wrap gap-x-8">
       <qa-form-item v-for="item in columns" :key="item.key" v-model="localModel"
         v-bind="getFormItemBind(item)"
         form-type="query"
@@ -46,15 +46,22 @@ const props = withDefaults(
   defineProps<{
     columns: QueryColumns[];
     modelValue: any,
+    labelWidth?: string | number,
   }>(),
   {
+    labelWidth: 'auto',
   }
 )
 
 /** 表单项绑定 props（排除 key，避免与 v-for 的 :key 冲突） */
 function getFormItemBind(item: QueryColumns) {
   const { key: _key, ...rest } = item
-  return { ...rest, itemKey: item.key, label: item.title }
+  return {
+    ...rest,
+    itemKey: item.key,
+    label: item.title,
+    labelWidth: item.labelWidth ?? props.labelWidth,
+  }
 }
 
 // 创建本地响应式数据

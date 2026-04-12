@@ -11,7 +11,6 @@ export class SysSocketPoolController {
   getList(
     @Body()
     data: {
-      topic?: string;
       socketId?: string;
       userId?: string;
       username?: string;

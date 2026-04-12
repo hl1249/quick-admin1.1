@@ -16,7 +16,6 @@ interface AdminSocketConnectionRecord {
 }
 
 export interface AdminSocketConnectionItem {
-  topic: string;
   namespace: string;
   socketId: string;
   userId: string;
@@ -30,7 +29,6 @@ export interface AdminSocketConnectionItem {
 }
 
 export interface AdminSocketConnectionQuery {
-  topic?: string;
   socketId?: string;
   userId?: string;
   username?: string;
@@ -63,7 +61,6 @@ export class AdminSocketService {
 
   getConnectionList(query: AdminSocketConnectionQuery = {}) {
     const {
-      topic = '',
       socketId = '',
       userId = '',
       username = '',
@@ -72,7 +69,6 @@ export class AdminSocketService {
       pageSize = 10,
     } = query;
 
-    const keywordTopic = topic.trim().toLowerCase();
     const keywordSocketId = socketId.trim().toLowerCase();
     const keywordUserId = userId.trim().toLowerCase();
     const keywordUsername = username.trim().toLowerCase();
@@ -81,7 +77,6 @@ export class AdminSocketService {
     const list = Array.from(this.connectionPool.values())
       .map(record => this.toConnectionItem(record))
       .filter(item => {
-        if (keywordTopic && !item.topic.toLowerCase().includes(keywordTopic)) return false;
         if (keywordSocketId && !item.socketId.toLowerCase().includes(keywordSocketId)) return false;
         if (keywordUserId && !item.userId.toLowerCase().includes(keywordUserId)) return false;
         if (keywordUsername && !item.username.toLowerCase().includes(keywordUsername)) return false;
@@ -209,7 +204,6 @@ export class AdminSocketService {
     const userInfo = socket.data?.userInfo || { _id: '' };
 
     return {
-      topic: rooms.join(', ') || socket.nsp.name,
       namespace: socket.nsp.name,
       socketId: socket.id,
       userId: userInfo._id,

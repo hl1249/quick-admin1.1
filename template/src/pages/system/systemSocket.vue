@@ -1,8 +1,6 @@
 <template>
   <div class="flex flex-col h-full">
-    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search" />
-
-    <div class="min-h-0 flex-1 overflow-hidden rounded-[8px] bg-white p-[12px] dark:bg-[var(--el-bg-color-overlay)]">
+    <qa-table-query :columns="queryForm.columns" v-model="queryForm.formData" @search="search"/>
       <qa-table
         ref="qaTableRef"
         :action="table.action"
@@ -13,7 +11,6 @@
         :row-no="true"
         height="100%"
       />
-    </div>
   </div>
 </template>
 
@@ -29,7 +26,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Connection, Refresh } from '@element-plus/icons-vue'
 
 interface SocketRow {
-  topic: string
   namespace: string
   socketId: string
   userId: string
@@ -46,11 +42,6 @@ const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null)
 const queryForm = ref({
   formData: {},
   columns: [
-    {
-      key: 'topic',
-      title: '主题',
-      type: 'text',
-    },
     {
       key: 'socketId',
       title: '连接ID',
@@ -82,22 +73,15 @@ const table = ref<{
   action: '/app/admin/system/sysSocketPool/sysSocketPool/getList',
   columns: [
     {
-      key: 'topic',
-      title: '主题',
-      type: 'text',
-      minWidth: 220,
-    },
-    {
       key: 'namespace',
       title: '命名空间',
       type: 'text',
-      width: 120,
     },
     {
       key: 'socketId',
       title: '连接ID',
       type: 'text',
-      minWidth: 220,
+      width: 260,
     },
     {
       key: 'userId',
@@ -121,7 +105,7 @@ const table = ref<{
       key: 'rooms',
       title: '房间',
       type: 'text',
-      minWidth: 240,
+      minWidth: 260,
       formatter: (value: string[]) => value?.join(', ') || '-',
     },
     {

@@ -253,6 +253,7 @@ export default defineComponent({
                 label,
                 type,
                 width,
+                minWidth,
                 columns,
                 data,
                 formatter,
@@ -268,6 +269,7 @@ export default defineComponent({
                     prop={prop}
                     label={label}
                     width={width}
+                    minWidth={minWidth}
                     sortable={sortable}
                     align={align}
                 >

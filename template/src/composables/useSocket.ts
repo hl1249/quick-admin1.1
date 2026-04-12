@@ -1,5 +1,6 @@
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
+import { ElNotification } from 'element-plus'
 import { io } from 'socket.io-client'
 import type { Socket } from 'socket.io-client'
 import { useAuthStore } from '@/store/modules/authStore'
@@ -154,6 +155,23 @@ const toBearerToken = (token?: string) => {
   return value.startsWith('Bearer ') ? value : `Bearer ${value}`
 }
 
+const getDisconnectMessage = (reason: string) => {
+  switch (reason) {
+    case 'io server disconnect':
+      return 'Socket 连接已被服务端断开'
+    case 'io client disconnect':
+      return 'Socket 连接已主动断开'
+    case 'ping timeout':
+      return 'Socket 心跳超时，连接已断开'
+    case 'transport close':
+      return 'Socket 传输通道已关闭，连接已断开'
+    case 'transport error':
+      return 'Socket 传输异常，连接已断开'
+    default:
+      return reason ? `Socket 连接已断开：${reason}` : 'Socket 连接已断开'
+  }
+}
+
 export function useSocket(options: UseSocketOptions): UseSocketReturn {
   const authStore = useAuthStore()
   const shouldAutoConnect = options.immediate ?? DEFAULT_IMMEDIATE
@@ -174,12 +192,24 @@ export function useSocket(options: UseSocketOptions): UseSocketReturn {
     isConnecting.value = false
     lastError.value = ''
     connectionId.value = socket.value?.id ?? ''
+    if (isSharedInstance) {
+      ElNotification({
+        title: 'Socket 已连接',
+        message: '单例 Socket 连接成功',
+        type: 'success',
+      })
+    }
   }
 
-  const handleDisconnect = () => {
+  const handleDisconnect = (reason: string) => {
     isConnected.value = false
     isConnecting.value = false
     connectionId.value = ''
+    ElNotification({
+      title: 'Socket 断开',
+      message: getDisconnectMessage(reason),
+      type: 'warning',
+    })
   }
 
   const handleConnectError = (error: Error) => {
