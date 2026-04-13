@@ -68,9 +68,12 @@
     },
     {
       key:  "groupId",
-      type:  "text",
+      type:  "html",
       title:  "班级",
-      width:  200
+      width:  200,
+      formatter: (val, row, column, index) => {
+        return val == 'video' ? '视频' : '图片';
+      }
     }
     ]
   })
