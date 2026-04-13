@@ -1,0 +1,68 @@
+<template>
+  <div class="layout-main">
+    <Menu />
+    <div class="right-content ">
+      <NavBar />
+      <div id="view" class="view h-[calc(100%-4rem-40px)] p-[10px]">
+        <div class="h-full border-none bg-[--v-main-content-bg-color] rounded-[4px] p-[10px] shadow">
+          <router-view v-slot="{ Component }">
+            <Transition name="page-fade" mode="out-in" appear>
+              <component :is="Component" />
+            </Transition>
+          </router-view>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import Menu from './components/menu/index.vue'
+import NavBar from './components/navBar/index.vue'
+</script>
+
+<style lang="less" scoped>
+.layout-main {
+  display: flex;
+  height: 100vh;
+  background-color: var(--v-main-bg-color);
+
+  .right-content {
+    width: 0;
+    display: flex;
+    flex: auto;
+    flex-direction: column;
+  }
+
+  .center-content {
+    display: flex;
+    flex: 1;
+  }
+
+  .view {
+    width: 100%;
+    background: var(--el-fill-color);
+    transition: var(--el-transition-duration);
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+  }
+
+}
+
+:global(#nprogress .bar) {
+  background: var(--el-color-primary) !important;
+  height: 2px !important;
+}
+
+.page-fade-enter-active {
+  transition: opacity 0.15s ease;
+}
+.page-fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
+}
+</style>

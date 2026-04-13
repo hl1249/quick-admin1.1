@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@config "./tailwind.config.ts";
+@source not "dist";
+@source not "../src/uni_modules";
