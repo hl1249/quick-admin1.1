@@ -113,7 +113,7 @@ onMounted(() => {
       :placeholder="manualPlaceholder"
       clearable
     />
-    <p class="text-xs text-gray-400">
+    <p class="text-xs text-[var(--el-text-color-secondary)]">
       {{ loading ? '正在加载系统路由...' : '可在树中直接选择接口叶子节点，也支持手动填写。' }}
     </p>
   </div>

@@ -945,7 +945,7 @@ watch(
             >
               <div class="flex items-center justify-between gap-3">
                 <span>{{ item.name }}</span>
-                <span class="text-xs text-gray-400">{{ getSchemaFieldCount(item) }} 个字段</span>
+                <span class="text-xs text-[var(--el-text-color-secondary)]">{{ getSchemaFieldCount(item) }} 个字段</span>
               </div>
             </el-option>
           </el-select>
@@ -987,8 +987,8 @@ watch(
 
     <div v-if="!hasActiveSchema" class="flex-1 flex items-center justify-center p-8">
       <div class="w-full max-w-2xl bg-[var(--el-bg-color)] border border-[var(--el-border-color)] rounded-2xl shadow-sm p-8">
-        <h2 class="text-2xl font-semibold text-gray-800">先新建 Schema，或选择已有 Schema</h2>
-        <p class="text-sm text-gray-500 mt-3 leading-6">
+        <h2 class="text-2xl font-semibold text-[var(--el-text-color-primary)]">先新建 Schema，或选择已有 Schema</h2>
+        <p class="text-sm text-[var(--el-text-color-secondary)] mt-3 leading-6">
           新建后会先在 `qa-schemas` 库里创建一条 schema 记录；选择已有 schema 后，会把已保存的字段属性和每个字段的表单类型加载回来继续编辑。
         </p>
 
@@ -998,7 +998,7 @@ watch(
         </div>
 
         <div class="mt-6">
-          <div class="text-sm text-gray-600 mb-2">选择已有 Schema</div>
+          <div class="text-sm text-[var(--el-text-color-regular)] mb-2">选择已有 Schema</div>
           <el-select
             v-model="schemaSelectModel"
             class="w-full"
@@ -1016,11 +1016,11 @@ watch(
             >
               <div class="flex items-center justify-between gap-3">
                 <span>{{ item.name }}</span>
-                <span class="text-xs text-gray-400">{{ getSchemaFieldCount(item) }} 个字段</span>
+                <span class="text-xs text-[var(--el-text-color-secondary)]">{{ getSchemaFieldCount(item) }} 个字段</span>
               </div>
             </el-option>
           </el-select>
-          <div class="text-xs text-gray-400 mt-2">
+          <div class="text-xs text-[var(--el-text-color-secondary)] mt-2">
             当前共 {{ schemaOptions.length }} 个 Schema。
           </div>
         </div>
@@ -1108,7 +1108,7 @@ watch(
           <el-input v-model="crudForm.tableName" placeholder="数据库集合名" clearable />
         </el-form-item>
       </el-form>
-      <div class="text-xs text-gray-400 mt-2 px-1">
+      <div class="text-xs text-[var(--el-text-color-secondary)] mt-2 px-1">
         下载 ZIP 包含：<code class="bg-[var(--el-fill-color-light)] px-1 rounded">{目录名}/{控制器名}.controller.ts</code> + <code class="bg-[var(--el-fill-color-light)] px-1 rounded">{目录名}/index.vue</code>
       </div>
       <template #footer>
@@ -1118,7 +1118,7 @@ watch(
     </el-dialog>
 
     <el-dialog v-model="showPreview" title="完整 $jsonSchema 预览" width="600" draggable>
-      <div class="text-xs text-gray-500 mb-2">
+      <div class="text-xs text-[var(--el-text-color-secondary)] mb-2">
         该 Schema 将作为 <code class="bg-[var(--el-fill-color-light)] px-1 rounded">validator.$jsonSchema</code> 写入 MongoDB 集合。
       </div>
       <pre class="text-sm bg-[var(--el-fill-color-extra-light)] border border-[var(--el-border-color)] rounded-xl p-4 overflow-auto max-h-96 leading-relaxed text-[var(--el-text-color-regular)]">{{ JSON.stringify(jsonSchemaPreview, null, 2) }}</pre>
@@ -1128,12 +1128,12 @@ watch(
     </el-dialog>
 
     <el-dialog v-model="showFormPreview" title="表单预览" width="1400" top="8vh">
-      <div class="text-xs text-gray-500 mb-3">
+      <div class="text-xs text-[var(--el-text-color-secondary)] mb-3">
         按当前 Schema 的字段属性和表单类型实时渲染，仅用于预览交互效果。
       </div>
       <div class="grid grid-cols-3 gap-4">
         <div class="min-w-0 rounded-xl border border-[var(--el-border-color)] bg-[var(--el-bg-color)] p-4">
-          <div class="mb-3 text-sm font-medium text-gray-700">渲染表单</div>
+          <div class="mb-3 text-sm font-medium text-[var(--el-text-color-primary)]">渲染表单</div>
           <div class="max-h-[65vh] overflow-auto pr-2">
             <qa-form
               v-model="previewFormData"
@@ -1152,13 +1152,13 @@ watch(
         </div>
 
         <div class="min-w-0 rounded-xl border border-[var(--el-border-color)] bg-[var(--el-fill-color-extra-light)] p-4">
-          <div class="mb-3 text-sm font-medium text-gray-700">表单结构</div>
-          <pre class="max-h-[65vh] overflow-auto whitespace-pre-wrap break-all text-xs leading-5 text-gray-700">{{ JSON.stringify(previewFormColumnsState, null, 2) }}</pre>
+          <div class="mb-3 text-sm font-medium text-[var(--el-text-color-primary)]">表单结构</div>
+          <pre class="max-h-[65vh] overflow-auto whitespace-pre-wrap break-all text-xs leading-5 text-[var(--el-text-color-primary)]">{{ JSON.stringify(previewFormColumnsState, null, 2) }}</pre>
         </div>
 
         <div class="min-w-0 rounded-xl border border-[var(--el-border-color)] bg-[var(--el-fill-color-extra-light)] p-4">
-          <div class="mb-3 text-sm font-medium text-gray-700">表单数据</div>
-          <pre class="max-h-[65vh] overflow-auto whitespace-pre-wrap break-all text-xs leading-5 text-gray-700">{{ JSON.stringify(previewFormData, null, 2) }}</pre>
+          <div class="mb-3 text-sm font-medium text-[var(--el-text-color-primary)]">表单数据</div>
+          <pre class="max-h-[65vh] overflow-auto whitespace-pre-wrap break-all text-xs leading-5 text-[var(--el-text-color-primary)]">{{ JSON.stringify(previewFormData, null, 2) }}</pre>
         </div>
       </div>
     </el-dialog>
@@ -1168,5 +1168,6 @@ watch(
 <style scoped>
 .db-designer {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--el-text-color-primary);
 }
 </style>

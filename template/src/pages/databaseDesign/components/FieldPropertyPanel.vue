@@ -222,7 +222,7 @@ defineExpose({ switchToDetail })
     <div class="flex-1 overflow-y-auto">
       <!-- ────── Tab: 字段属性 ────── -->
       <template v-if="rightTab === 'field'">
-        <div v-if="!selectedField" class="flex flex-col items-center justify-center h-full gap-3 text-gray-400 select-none p-6">
+        <div v-if="!selectedField" class="flex flex-col items-center justify-center h-full gap-3 text-[var(--el-text-color-secondary)] select-none p-6">
           <span class="text-5xl opacity-50">🔧</span>
           <p class="text-sm text-center">点击中间字段<br>在此编辑属性</p>
         </div>
@@ -234,15 +234,15 @@ defineExpose({ switchToDetail })
               :style="{ backgroundColor: selectedPrimaryTypeDef?.color || 'var(--el-color-primary)' }"
             >{{ selectedPrimaryTypeDef?.icon }}</span>
             <div>
-              <p class="font-semibold text-gray-700">{{ selectedBsonTypeLabel }}</p>
-              <p class="text-xs text-gray-400">{{ selectedBsonTypeDesc }}</p>
+              <p class="font-semibold text-[var(--el-text-color-primary)]">{{ selectedBsonTypeLabel }}</p>
+              <p class="text-xs text-[var(--el-text-color-secondary)]">{{ selectedBsonTypeDesc }}</p>
             </div>
           </div>
 
           <div class="section">
             <p class="section-title">基础属性</p>
             <div class="field-item">
-              <label class="field-label">字段名 <span class="text-red-500">*</span></label>
+              <label class="field-label">字段名 <span class="text-[var(--el-color-danger)]">*</span></label>
               <el-input v-model="selectedField.key" placeholder="字段名（key）" clearable />
             </div>
             <div class="field-item">
@@ -266,17 +266,17 @@ defineExpose({ switchToDetail })
                 >
                   <div class="flex items-center justify-between gap-2">
                     <span>{{ typeDef.label }}</span>
-                    <span class="text-xs text-gray-400">{{ typeDef.desc }}</span>
+                    <span class="text-xs text-[var(--el-text-color-secondary)]">{{ typeDef.desc }}</span>
                   </div>
                 </el-option>
               </el-select>
-              <p class="text-xs text-gray-400 mt-1">可同时选择多个类型，生成如 <code class="bg-[var(--el-fill-color-light)] px-1 rounded">bsonType: ['string', 'array']</code></p>
+              <p class="text-xs text-[var(--el-text-color-secondary)] mt-1">可同时选择多个类型，生成如 <code class="bg-[var(--el-fill-color-light)] px-1 rounded">bsonType: ['string', 'array']</code></p>
             </div>
             <div class="field-item flex items-center">
               <label class="field-label mb-0">必填</label>
               <div class="flex-1 flex items-center gap-2">
                 <el-switch v-model="selectedField.required" />
-                <span class="text-xs text-gray-400">{{ selectedField.required ? '该字段必须存在' : '该字段可选' }}</span>
+                <span class="text-xs text-[var(--el-text-color-secondary)]">{{ selectedField.required ? '该字段必须存在' : '该字段可选' }}</span>
               </div>
             </div>
           </div>
@@ -295,7 +295,7 @@ defineExpose({ switchToDetail })
               <div class="field-item">
                 <label class="field-label">pattern</label>
                 <el-input v-model="section.rule.pattern" placeholder="正则表达式，如 ^[a-z]+$" />
-                <p class="text-xs text-gray-400 mt-1">值须匹配此正则</p>
+                <p class="text-xs text-[var(--el-text-color-secondary)] mt-1">值须匹配此正则</p>
               </div>
             </div>
             <div v-if="supportsNumericRule(section.type)" class="flex flex-col gap-2">
@@ -308,7 +308,7 @@ defineExpose({ switchToDetail })
                 <el-input-number v-model="section.rule.maximum" class="w-full" placeholder="最大值" controls-position="right" />
               </div>
             </div>
-            <p v-if="getBsonTypeList(selectedField.bsonType).length > 1" class="text-xs text-gray-400">
+            <p v-if="getBsonTypeList(selectedField.bsonType).length > 1" class="text-xs text-[var(--el-text-color-secondary)]">
               多类型字段将生成 <code class="bg-[var(--el-fill-color-light)] px-1 rounded">anyOf</code>，当前规则只作用于 {{ section.def.label }}。
             </p>
           </div>
@@ -322,7 +322,7 @@ defineExpose({ switchToDetail })
 
       <!-- ────── Tab: 表单类型 ────── -->
       <template v-if="rightTab === 'form'">
-        <div v-if="!selectedField" class="flex flex-col items-center justify-center h-full gap-3 text-gray-400 select-none p-6">
+        <div v-if="!selectedField" class="flex flex-col items-center justify-center h-full gap-3 text-[var(--el-text-color-secondary)] select-none p-6">
           <span class="text-5xl opacity-50">📝</span>
           <p class="text-sm text-center">点击中间字段<br>在此设置表单类型</p>
         </div>
@@ -344,20 +344,20 @@ defineExpose({ switchToDetail })
                   v-model="cfgModel[cf.key]"
                   :placeholder="cf.placeholder || '请选择接口地址'"
                 />
-                <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+                <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
               </template>
 
               <template v-else-if="cf.type === 'text'">
                 <label class="field-label">{{ cf.label }}</label>
                 <el-input v-model="cfgModel[cf.key]" :placeholder="cf.placeholder || ''" clearable />
-                <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+                <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
               </template>
 
               <!-- 数字输入 -->
               <template v-else-if="cf.type === 'number'">
                 <label class="field-label">{{ cf.label }}</label>
                 <el-input-number v-model="cfgModel[cf.key]" class="w-full" controls-position="right" />
-                <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+                <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
               </template>
 
               <!-- 开关 -->
@@ -366,7 +366,7 @@ defineExpose({ switchToDetail })
                   <label class="field-label mb-0 flex-shrink-0">{{ cf.label }}</label>
                   <el-switch v-model="cfgModel[cf.key]" />
                 </div>
-                <p v-if="cf.tip" class="text-xs text-gray-400">{{ cf.tip }}</p>
+                <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)]">{{ cf.tip }}</p>
               </template>
 
               <!-- 下拉选择 -->
@@ -375,13 +375,13 @@ defineExpose({ switchToDetail })
                 <el-select v-model="cfgModel[cf.key]" clearable class="w-full">
                   <el-option v-for="opt in cf.options" :key="opt.value" :value="opt.value" :label="opt.label" />
                 </el-select>
-                <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+                <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
               </template>
 
               <!-- 选项列表编辑器 -->
               <template v-else-if="cf.type === 'options-editor'">
                 <label class="field-label">{{ cf.label }}</label>
-                <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
+                <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mb-1">{{ cf.tip }}</p>
                 <div class="flex flex-col gap-1.5">
                   <div v-for="(item, idx) in (cfgModel[cf.key] ?? [])" :key="idx" class="flex items-center gap-1">
                     <el-input
@@ -401,7 +401,7 @@ defineExpose({ switchToDetail })
 
               <template v-else-if="cf.type === 'object-array-editor'">
                 <label class="field-label">{{ cf.label }}</label>
-                <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
+                <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mb-1">{{ cf.tip }}</p>
                 <ConfigObjectArrayEditor
                   :model-value="cfgModel[cf.key] ?? []"
                   :item-fields="cf.itemFields"
@@ -412,7 +412,7 @@ defineExpose({ switchToDetail })
               </template>
             </div>
           </div>
-          <div v-else class="text-center text-gray-400 py-4 text-xs">
+          <div v-else class="text-center text-[var(--el-text-color-secondary)] py-4 text-xs">
             该类型无需配置
           </div>
 
@@ -426,10 +426,10 @@ defineExpose({ switchToDetail })
         <!-- ── 选择视图：类型网格 ── -->
         <div v-else class="p-4 flex flex-col gap-3 text-sm">
           <div class="flex items-center gap-2 p-2 rounded-lg bg-[var(--el-fill-color-light)] border border-[var(--el-border-color-lighter)]">
-            <span class="text-xs text-gray-400">当前字段:</span>
-            <span class="font-medium text-gray-700">{{ selectedField.key || '(未命名)' }}</span>
+            <span class="text-xs text-[var(--el-text-color-secondary)]">当前字段:</span>
+            <span class="font-medium text-[var(--el-text-color-primary)]">{{ selectedField.key || '(未命名)' }}</span>
             <span v-if="selectedField.formType" class="ml-auto px-2 py-0.5 rounded-full text-xs text-white bg-[var(--el-color-primary)]">{{ selectedField.formType }}</span>
-            <span v-else class="ml-auto text-xs text-gray-400">未设置</span>
+            <span v-else class="ml-auto text-xs text-[var(--el-text-color-secondary)]">未设置</span>
           </div>
 
           <div v-for="group in FORM_TYPE_GROUPS" :key="group.name" class="section">

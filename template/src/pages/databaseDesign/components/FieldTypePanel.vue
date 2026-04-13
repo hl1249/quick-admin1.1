@@ -30,8 +30,8 @@ const emit = defineEmits<{
           :style="{ backgroundColor: t.color }"
         >{{ t.icon }}</span>
         <div class="min-w-0">
-          <div class="text-sm font-medium text-gray-700 leading-tight">{{ t.label }}</div>
-          <div class="text-xs text-gray-400 leading-tight truncate">{{ t.desc }}</div>
+          <div class="text-sm font-medium text-[var(--el-text-color-primary)] leading-tight">{{ t.label }}</div>
+          <div class="text-xs text-[var(--el-text-color-secondary)] leading-tight truncate">{{ t.desc }}</div>
         </div>
         <el-button
           type="primary"

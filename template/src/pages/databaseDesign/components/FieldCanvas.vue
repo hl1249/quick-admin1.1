@@ -91,15 +91,15 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
           ]"
           @click="emit('select', field.id)"
         >
-          <span class="text-xs text-gray-400 text-center">{{ index + 1 }}</span>
-          <span class="text-gray-300 cursor-grab active:cursor-grabbing text-center">⠿</span>
+          <span class="text-xs text-[var(--el-text-color-secondary)] text-center">{{ index + 1 }}</span>
+          <span class="text-[var(--el-text-color-placeholder)] cursor-grab active:cursor-grabbing text-center">⠿</span>
 
           <div class="min-w-0" @click.stop>
             <input
               :id="`key-input-${field.id}`"
               v-model="field.key"
               placeholder="字段名（必填）"
-              class="w-full text-sm bg-transparent border-none outline-none text-gray-800 placeholder-gray-300"
+              class="w-full text-sm bg-transparent border-none outline-none text-[var(--el-text-color-primary)] placeholder:text-[var(--el-text-color-placeholder)]"
               @focus="emit('select', field.id)"
             />
           </div>
@@ -122,7 +122,7 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
               class="px-2 py-0.5 rounded-full text-xs font-medium border border-[var(--el-color-primary-light-5)] bg-[var(--el-color-primary-light-9)] text-[var(--el-color-primary)] truncate max-w-full"
               :title="field.formType"
             >{{ field.formType }}</span>
-            <span v-else class="text-xs text-gray-300">—</span>
+            <span v-else class="text-xs text-[var(--el-text-color-placeholder)]">—</span>
           </div>
 
           <div class="flex justify-center" @click.stop>
@@ -131,25 +131,25 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
 
           <div class="flex items-center justify-end gap-1" @click.stop>
             <button
-              class="p-1 text-gray-400 hover:text-blue-500 disabled:opacity-30 transition-colors"
+              class="p-1 text-[var(--el-text-color-secondary)] hover:text-[var(--el-color-primary)] disabled:opacity-30 transition-colors"
               :disabled="index === 0"
               @click="emit('moveUp', index)"
             >
               <el-icon><ArrowUp /></el-icon>
             </button>
             <button
-              class="p-1 text-gray-400 hover:text-blue-500 disabled:opacity-30 transition-colors"
+              class="p-1 text-[var(--el-text-color-secondary)] hover:text-[var(--el-color-primary)] disabled:opacity-30 transition-colors"
               :disabled="index === fields.length - 1"
               @click="emit('moveDown', index)"
             >
               <el-icon><ArrowDown /></el-icon>
             </button>
             <button
-              class="p-1 text-gray-400 hover:text-green-500 transition-colors"
+              class="p-1 text-[var(--el-text-color-secondary)] hover:text-[var(--el-color-success)] transition-colors"
               @click="emit('duplicate', field.id)"
             >⧉</button>
             <button
-              class="p-1 text-gray-400 hover:text-red-500 transition-colors"
+              class="p-1 text-[var(--el-text-color-secondary)] hover:text-[var(--el-color-danger)] transition-colors"
               @click="emit('delete', field.id)"
             >✕</button>
           </div>

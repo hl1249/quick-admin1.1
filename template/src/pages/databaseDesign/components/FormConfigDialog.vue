@@ -154,25 +154,25 @@ defineExpose({ open })
             v-model="tempFormConfig[cf.key]"
             :placeholder="cf.placeholder || '请选择接口地址'"
           />
-          <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+          <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
         </div>
 
         <div v-else-if="cf.type === 'text'" class="config-field">
           <label class="config-label">{{ cf.label }}</label>
           <el-input v-model="tempFormConfig[cf.key]" :placeholder="cf.placeholder || ''" clearable />
-          <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+          <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
         </div>
 
         <div v-else-if="cf.type === 'number'" class="config-field">
           <label class="config-label">{{ cf.label }}</label>
           <el-input-number v-model="tempFormConfig[cf.key]" class="w-full" controls-position="right" />
-          <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+          <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
         </div>
 
         <div v-else-if="cf.type === 'switch'" class="config-field flex-row items-center gap-3">
           <label class="config-label mb-0 flex-shrink-0">{{ cf.label }}</label>
           <el-switch v-model="tempFormConfig[cf.key]" />
-          <p v-if="cf.tip" class="text-xs text-gray-400 ml-2">{{ cf.tip }}</p>
+          <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] ml-2">{{ cf.tip }}</p>
         </div>
 
         <div v-else-if="cf.type === 'select'" class="config-field">
@@ -180,12 +180,12 @@ defineExpose({ open })
           <el-select v-model="tempFormConfig[cf.key]" clearable class="w-full">
             <el-option v-for="opt in cf.options" :key="opt.value" :value="opt.value" :label="opt.label" />
           </el-select>
-          <p v-if="cf.tip" class="text-xs text-gray-400 mt-0.5">{{ cf.tip }}</p>
+          <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mt-0.5">{{ cf.tip }}</p>
         </div>
 
         <div v-else-if="cf.type === 'options-editor'" class="config-field">
           <label class="config-label">{{ cf.label }}</label>
-          <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
+          <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mb-1">{{ cf.tip }}</p>
           <div class="flex flex-col gap-1.5">
             <div v-for="(item, idx) in (tempFormConfig[cf.key] ?? [])" :key="idx" class="flex items-center gap-2">
               <el-input
@@ -205,7 +205,7 @@ defineExpose({ open })
 
         <div v-else-if="cf.type === 'object-array-editor'" class="config-field">
           <label class="config-label">{{ cf.label }}</label>
-          <p v-if="cf.tip" class="text-xs text-gray-400 mb-1">{{ cf.tip }}</p>
+          <p v-if="cf.tip" class="text-xs text-[var(--el-text-color-secondary)] mb-1">{{ cf.tip }}</p>
           <ConfigObjectArrayEditor
             :model-value="tempFormConfig[cf.key] ?? []"
             :item-fields="cf.itemFields"
@@ -216,7 +216,7 @@ defineExpose({ open })
         </template>
       </div>
     </div>
-    <div v-else class="text-center text-gray-400 py-6 text-sm">
+    <div v-else class="text-center text-[var(--el-text-color-secondary)] py-6 text-sm">
       该表单类型无需额外配置
     </div>
     <template #footer>
