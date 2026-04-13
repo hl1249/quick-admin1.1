@@ -237,6 +237,7 @@ const closeForm = () => {
 }
 const addBtn = () => {
   resetForm()
+  form.value.props.action = '/app/admin/system/systemPermission/systemPermission/add';
   form.value.props.formType = 'add';
   form.value.props.title = '添加'
   if(selectItem.value){
