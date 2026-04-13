@@ -1,15 +1,28 @@
 <template>
   <view class="content">
     <image class="logo" src="/static/logo.png" />
+    <button @click="getInfo">获取app信息</button>
     <view class="text-area">
       <text class="title">{{ title }}</text>
+      <view>当前运行环境：{{ currentMode }}</view>
+      <view>当前环境的 VITE_SERVER_BASEURL：{{ currentBaseUrl || '未读取到' }}</view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { getAppInfo } from '@/api/appid'
+
 const title = ref('Hello')
+const currentMode = import.meta.env.MODE
+const currentBaseUrl = import.meta.env.VITE_SERVER_BASEURL as string | undefined
+
+const getInfo = () => {
+  getAppInfo().then(res => {
+    console.log(res)
+  })
+}
 </script>
 
 <style>
@@ -31,6 +44,7 @@ const title = ref('Hello')
 
 .text-area {
   display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 

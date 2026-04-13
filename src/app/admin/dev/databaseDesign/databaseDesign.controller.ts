@@ -176,15 +176,13 @@ function toControllerClassName(value: string): string {
 }
 
 function toControllerFileName(value: string): string {
-  const fileName = value
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replace(/[^a-zA-Z0-9]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .toLowerCase();
+  const fileName = value.trim();
 
   if (!fileName) {
     throw new BadRequestException('集合名无法生成有效文件名');
+  }
+  if (/[\\/:*?"<>|]/.test(fileName)) {
+    throw new BadRequestException('控制器名称包含非法文件名字符');
   }
   return fileName;
 }

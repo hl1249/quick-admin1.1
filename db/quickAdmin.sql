@@ -11,7 +11,7 @@
  Target Server Version : 80205
  File Encoding         : 65001
 
- Date: 09/04/2026 11:19:16
+ Date: 13/04/2026 17:52:51
 */
 
 
@@ -36,12 +36,16 @@ db.createCollection("custom",{
                 sex: {
                     bsonType: "int"
                 },
-                garoupIds: {
-                    bsonType: "array"
+                groupId: {
+                    bsonType: [
+                        "int",
+                        "string"
+                    ]
                 }
             },
             required: [
-                "username"
+                "username",
+                "password"
             ]
         }
     },
@@ -52,6 +56,16 @@ db.createCollection("custom",{
 // ----------------------------
 // Documents of custom
 // ----------------------------
+db.getCollection("custom").insert([ {
+    _id: ObjectId("69db06ba99ec443353ad8768"),
+    username: "1",
+    password: "1234561",
+    age: NumberInt("15"),
+    sex: NumberInt("0"),
+    groupId: "video",
+    "_add_time": 1775961786850,
+    "_add_time_str": "2026-04-12 10:43:06"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-app-config
@@ -64,9 +78,51 @@ db.createCollection("qa-app-config");
 // ----------------------------
 db.getCollection("qa-app-config").insert([ {
     _id: ObjectId("69bcbb2e0c34b64800565ec6"),
-    "oss_provider": "tencent",
-    "_update_time": 1775144887292,
-    "_update_time_str": "2026-04-02 23:48:07"
+    "oss_provider": "local",
+    "_update_time": 1775788034882,
+    "_update_time_str": "2026-04-10 10:27:14"
+} ]);
+
+// ----------------------------
+// Collection structure for qa-appids
+// ----------------------------
+db.getCollection("qa-appids").drop();
+db.createCollection("qa-appids",{
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            properties: {
+                appid: {
+                    bsonType: "string"
+                },
+                secret: {
+                    bsonType: "string"
+                },
+                appname: {
+                    bsonType: "string"
+                }
+            },
+            required: [
+                "appid",
+                "secret",
+                "appname"
+            ]
+        }
+    },
+    validationLevel: "strict",
+    validationAction: "error"
+});
+
+// ----------------------------
+// Documents of qa-appids
+// ----------------------------
+db.getCollection("qa-appids").insert([ {
+    _id: ObjectId("69dcbcb474ed375188bf790c"),
+    appid: "wx65f51726f2c3e73a",
+    secret: "05b6d16e2563d186a3912ee3af6991b0",
+    appname: "呱呱工具箱",
+    "_add_time": 1776073908631,
+    "_add_time_str": "2026-04-13 17:51:48"
 } ]);
 
 // ----------------------------
@@ -340,19 +396,11 @@ db.getCollection("qa-files-categories").insert([ {
     "_add_time_str": "2026-03-30 22:29:33"
 } ]);
 db.getCollection("qa-files-categories").insert([ {
-    _id: ObjectId("69cb3ff1d8001c5aad8be48e"),
-    type: "image",
-    name: "1",
-    url: null,
-    "_add_time": 1774927857089,
-    "_add_time_str": "2026-03-31 11:30:57"
-} ]);
-db.getCollection("qa-files-categories").insert([ {
     _id: ObjectId("69ce0893139664eda4dc2da0"),
     type: "image",
-    name: "芜湖",
+    name: "默认图片组",
     url: null,
-    "_add_time": 1775110291856,
+    "_add_time": NumberLong("1775110291856"),
     "_add_time_str": "2026-04-02 14:11:31"
 } ]);
 
@@ -598,13 +646,6 @@ db.getCollection("qa-logs").insert([ {
         "last_login_date": 1760064273066,
         "last_login_ip": "127.0.0.1"
     }
-} ]);
-db.getCollection("qa-logs").insert([ {
-    _id: ObjectId("68e875d29e15e24eb6a4e5d0"),
-    "user_id": "3214",
-    date1: 1759593600000,
-    "_add_time": 1760064978801,
-    "_add_time_str": "2025-10-10 10:56:18"
 } ]);
 db.getCollection("qa-logs").insert([ {
     _id: ObjectId("68e88420a65dfb1f0206a22d"),
@@ -4631,6 +4672,22 @@ db.getCollection("qa-logs").insert([ {
         code: NumberInt("0")
     }
 } ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69d7b2cee81d8a4acaf006ab"),
+    statusCode: NumberInt("500"),
+    "_add_time": 1775743694602,
+    "_add_time_str": "2026-04-09 22:08:14"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69dcb84301bd3d988525012a"),
+    "_add_time": 1776072771012,
+    "_add_time_str": "2026-04-13 17:32:51"
+} ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69dcb84301bd3d988525012c"),
+    "_add_time": 1776072771753,
+    "_add_time_str": "2026-04-13 17:32:51"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-menus
@@ -4757,6 +4814,36 @@ db.getCollection("qa-menus").insert([ {
     "_add_time_str": "2026-03-31 23:37:06",
     sort: "110"
 } ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("69db3f8580721c7f0e298e66"),
+    "menu_id": "system-setting-socket",
+    title: "ws连接管理",
+    "parent_id": "system-setting",
+    component: "/src/pages/system/systemSocket",
+    path: "system/system-socket",
+    enable: true,
+    comment: "",
+    icon: "TurnOff",
+    sort: "0",
+    "_add_time": NumberLong("1775976325513"),
+    "_add_time_str": "2026-04-12 14:45:25",
+    name: "systemSocket"
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("69dcb98075758f2b09a61601"),
+    "menu_id": "sys-appid",
+    title: "微信小程序管理",
+    name: "微信小程序管理",
+    "parent_id": "system-setting",
+    component: "/src/pages/system/sysAppid",
+    path: null,
+    enable: true,
+    comment: "",
+    icon: "ChatLineRound",
+    sort: "0",
+    "_add_time": 1776073088324,
+    "_add_time_str": "2026-04-13 17:38:08"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-permissions
@@ -4842,7 +4929,8 @@ db.getCollection("qa-permissions").insert([ {
     sort: NumberInt("1"),
     url: [
         "/app/admin/system/systemLog/*"
-    ]
+    ],
+    "match_mode": null
 } ]);
 db.getCollection("qa-permissions").insert([ {
     _id: ObjectId("6745485d91b2ac8efc8bc94e"),
@@ -4854,11 +4942,9 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemUser/systemUser/add",
-        "/app/admin/system/systemUser/systemUser/delete",
-        "/app/admin/system/systemUser/systemUser/update",
         "/app/admin/system/systemUser/systemUser/getList"
-    ]
+    ],
+    "match_mode": null
 } ]);
 db.getCollection("qa-permissions").insert([ {
     _id: ObjectId("674548c891b2ac8efc8bc950"),
@@ -4870,11 +4956,9 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemMenu/systemMenu/add",
-        "/app/admin/system/systemMenu/systemMenu/delete",
-        "/app/admin/system/systemMenu/systemMenu/update",
         "/app/admin/system/systemMenu/systemMenu/getList"
-    ]
+    ],
+    "match_mode": null
 } ]);
 db.getCollection("qa-permissions").insert([ {
     _id: ObjectId("674548ec91b2ac8efc8bc951"),
@@ -4886,11 +4970,9 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemRole/systemRole/add",
-        "/app/admin/system/systemRole/systemRole/delete",
-        "/app/admin/system/systemRole/systemRole/update",
         "/app/admin/system/systemRole/systemRole/getList"
-    ]
+    ],
+    "match_mode": null
 } ]);
 db.getCollection("qa-permissions").insert([ {
     _id: ObjectId("6745490491b2ac8efc8bc952"),
@@ -4902,11 +4984,9 @@ db.getCollection("qa-permissions").insert([ {
     "parent_id": "sys-manage",
     sort: NumberInt("1"),
     url: [
-        "/app/admin/system/systemFile/systemFile/add",
-        "/app/admin/system/systemFile/systemFile/delete",
-        "/app/admin/system/systemFile/systemFile/update",
-        "/app/admin/system/systemFile/systemFile/getList"
-    ]
+        "/app/admin/system/systemFile/systemFile/*"
+    ],
+    "match_mode": null
 } ]);
 db.getCollection("qa-permissions").insert([ {
     _id: ObjectId("6745903f91b2ac8efc8bc9ab"),
@@ -5006,13 +5086,27 @@ db.getCollection("qa-permissions").insert([ {
     "permission_name": "系统-权限管理",
     "parent_id": "sys-manage",
     url: [
-        "/app/admin/system/systemPermission/*"
+        "/app/admin/system/systemPermission/systemPermission/getList"
     ],
     "match_mode": null,
     enable: true,
     comment: null,
     "_add_time": 1768715362864,
     "_add_time_str": "2026-01-18 13:49:22"
+} ]);
+db.getCollection("qa-permissions").insert([ {
+    _id: ObjectId("69dc6817c24f89e5d23356fc"),
+    "permission_id": "sys-manage-socket",
+    "permission_name": "ws连接管理",
+    "parent_id": "sys-manage",
+    url: [
+        "/app/admin/system/sysSocketPool/sysSocketPool/*"
+    ],
+    "match_mode": null,
+    enable: true,
+    comment: null,
+    "_add_time": 1776052247497,
+    "_add_time_str": "2026-04-13 11:50:47"
 } ]);
 
 // ----------------------------
@@ -5049,21 +5143,23 @@ db.getCollection("qa-roles").insert([ {
     comment: "二级管理员-1",
     enable: true,
     permission: [
-        "sys-read",
-        "sys-permission"
+        "sys-manage",
+        "sys-log",
+        "sys-user",
+        "sys-menu",
+        "sys-role",
+        "sys-file",
+        "sys-manage-permission",
+        "sys-manage-socket"
     ],
     "role_id": "agent",
     "role_name": "代理商",
     no: NumberInt("2"),
     menu: [
+        "system-permission",
+        "system-setting-socket",
         "system",
-        "system-uni-uni-id-files",
-        "sys-user-manage",
-        "sys-role-manage",
-        "sys-menus-manage",
-        "enable",
-        "system-log",
-        "system-permission"
+        "system-setting"
     ]
 } ]);
 
@@ -5081,30 +5177,8 @@ db.getCollection("qa-schemas").insert([ {
     name: "test",
     fields: [
         {
-            id: "cg06xvvk77b",
-            key: "ces",
-            bsonType: [
-                "string",
-                "array"
-            ],
-            description: "",
-            required: true,
-            typeRules: {
-                string: { },
-                array: { }
-            },
-            formType: "remote-select",
-            formConfig: {
-                action: "/app/admin/system/systemMenu/systemMenu/getList",
-                propsValue: "menu_id",
-                propsLabel: "title",
-                placeholder: "菜单远程选择",
-                propsList: ""
-            }
-        },
-        {
-            id: "jfpuhfoag7",
-            key: "nickname",
+            id: "8s0lzb8bfag",
+            key: "username",
             bsonType: "string",
             description: "",
             required: true,
@@ -5115,32 +5189,137 @@ db.getCollection("qa-schemas").insert([ {
             formConfig: {
                 placeholder: "用户名"
             }
+        },
+        {
+            id: "nvyngvh57d",
+            key: "password",
+            bsonType: "string",
+            description: "",
+            required: true,
+            typeRules: {
+                string: { }
+            },
+            formType: "password",
+            formConfig: {
+                placeholder: "密码"
+            }
+        },
+        {
+            id: "cqdaa7vrczj",
+            key: "age",
+            bsonType: "int",
+            description: "",
+            required: false,
+            typeRules: {
+                int: { }
+            },
+            formType: "number",
+            formConfig: {
+                step: NumberInt("1"),
+                placeholder: "年龄"
+            }
+        },
+        {
+            id: "secdhpuy66",
+            key: "sex",
+            bsonType: "int",
+            description: "",
+            required: false,
+            typeRules: {
+                int: { }
+            },
+            formType: "select",
+            formConfig: {
+                dataValueType: "number",
+                placeholder: "性别",
+                data: [
+                    {
+                        value: NumberInt("0"),
+                        label: "男"
+                    },
+                    {
+                        value: NumberInt("1"),
+                        label: "女"
+                    }
+                ]
+            }
+        },
+        {
+            id: "yvzet1ekvas",
+            key: "groupId",
+            bsonType: [
+                "int",
+                "string"
+            ],
+            description: "",
+            required: false,
+            typeRules: {
+                int: { },
+                string: { }
+            },
+            formType: "remote-select",
+            formConfig: {
+                placeholder: "班级",
+                action: "/app/admin/system/systemFile/systemCategories/getList",
+                propsValue: "type",
+                propsLabel: "name"
+            }
+        },
+        {
+            id: "tek8r0fcg",
+            key: "radio",
+            bsonType: "string",
+            description: "",
+            required: false,
+            typeRules: {
+                string: { }
+            },
+            formType: "switch",
+            formConfig: {
+                useCustomSwitchValue: true,
+                switchValueType: "string",
+                placeholder: "测试",
+                activeValue: "芜湖",
+                inactiveValue: "大司马"
+            }
         }
     ],
     required: [
-        "ces",
-        "nickname"
+        "username",
+        "password"
     ],
     jsonSchema: {
         bsonType: "object",
         properties: {
-            ces: {
+            username: {
+                bsonType: "string"
+            },
+            password: {
+                bsonType: "string"
+            },
+            age: {
+                bsonType: "int"
+            },
+            sex: {
+                bsonType: "int"
+            },
+            groupId: {
                 bsonType: [
-                    "string",
-                    "array"
+                    "int",
+                    "string"
                 ]
             },
-            nickname: {
+            radio: {
                 bsonType: "string"
             }
         },
         required: [
-            "ces",
-            "nickname"
+            "username",
+            "password"
         ]
     },
-    fieldCount: NumberInt("2"),
-    "_update_time": 1775703642049,
+    fieldCount: NumberInt("6"),
+    "_update_time": 1776065303581,
     "_add_time": 1775616238069,
     "_add_time_str": "2026-04-08 10:43:58"
 } ]);
@@ -5175,10 +5354,110 @@ db.getCollection("qa-schemas").insert([ {
         properties: { }
     },
     fieldCount: NumberInt("0"),
-    "_update_time": 1775701759606,
+    "_update_time": 1775706952628,
     "_add_time": 1775701757072,
     "_add_time_str": "2026-04-09 10:29:17"
 } ]);
+db.getCollection("qa-schemas").insert([ {
+    _id: ObjectId("69d7b1cee81d8a4acaf00693"),
+    name: "黄弱",
+    fields: [ ],
+    required: [ ],
+    jsonSchema: {
+        bsonType: "object",
+        properties: { }
+    },
+    fieldCount: NumberInt("0"),
+    "_update_time": 1775961403383,
+    "_add_time": 1775743438047,
+    "_add_time_str": "2026-04-09 22:03:58"
+} ]);
+db.getCollection("qa-schemas").insert([ {
+    _id: ObjectId("69dcac4d6ddf2d7f59ff6f5f"),
+    name: "qa-appids",
+    fields: [
+        {
+            id: "sdotixsqolc",
+            key: "appid",
+            bsonType: "string",
+            description: "",
+            required: true,
+            typeRules: {
+                string: { }
+            },
+            formType: "text",
+            formConfig: {
+                placeholder: "小程序APPID"
+            }
+        },
+        {
+            id: "8j6j2ml7in9",
+            key: "secret",
+            bsonType: "string",
+            description: "",
+            required: true,
+            typeRules: {
+                string: { }
+            },
+            formType: "text",
+            formConfig: {
+                placeholder: "小程序秘钥"
+            }
+        },
+        {
+            id: "kbx15ocfzxj",
+            key: "appname",
+            bsonType: "string",
+            description: "",
+            required: true,
+            typeRules: {
+                string: { }
+            },
+            formType: "text",
+            formConfig: {
+                placeholder: "小程序名"
+            }
+        }
+    ],
+    required: [
+        "appid",
+        "secret",
+        "appname"
+    ],
+    jsonSchema: {
+        bsonType: "object",
+        properties: {
+            appid: {
+                bsonType: "string"
+            },
+            secret: {
+                bsonType: "string"
+            },
+            appname: {
+                bsonType: "string"
+            }
+        },
+        required: [
+            "appid",
+            "secret",
+            "appname"
+        ]
+    },
+    fieldCount: NumberInt("3"),
+    "_update_time": 1776072958014,
+    "_add_time": 1776069709381,
+    "_add_time_str": "2026-04-13 16:41:49"
+} ]);
+
+// ----------------------------
+// Collection structure for qa-socket-pool
+// ----------------------------
+db.getCollection("qa-socket-pool").drop();
+db.createCollection("qa-socket-pool");
+
+// ----------------------------
+// Documents of qa-socket-pool
+// ----------------------------
 
 // ----------------------------
 // Collection structure for qa-storage-config
@@ -5429,10 +5708,11 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU3MDQ1ODEsImV4cCI6MTc3NjMwOTM4MX0.iJ1yHc1spgm-KiRkek9Kyucir5zmPfIzejakQgoA1X0",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU3MDQ2NzYsImV4cCI6MTc3NjMwOTQ3Nn0.sU7u_4eGwxGgNXzW0-cA-EYGfDFii3KT5TARCU0MqQ0"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzYwNDMwNzcsImV4cCI6MTc3NjY0Nzg3N30.V1sATlbToLSM5CLjfaTZWUG-tRjQ7dbZmALEQz6mSCo",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzYwNDMzMjMsImV4cCI6MTc3NjY0ODEyM30.j1q50tnT9iF-6_YZBiS-DETk3vrRyW1nO-8VcImh8zk",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzYwNjE3NTIsImV4cCI6MTc3NjY2NjU1Mn0.nvXpULjoWkoc82kXmW39aU29EkblXe2lUvAow2IYiLM"
     ],
-    "last_login_date": 1775704676329,
+    "last_login_date": 1776061752400,
     "last_login_ip": "127.0.0.1",
     object: {
         name: "小明",
@@ -5445,7 +5725,7 @@ db.getCollection("qa-users").insert([ {
         nickname: "你猜"
     },
     enable: true,
-    nickname: "yellow12321",
+    nickname: "陈强",
     rate: NumberInt("2"),
     status: NumberInt("0"),
     wdf: null
@@ -5464,11 +5744,11 @@ db.getCollection("qa-users").insert([ {
     avatar: "玩过",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjAsImV4cCI6MTc3NjE4Mzc2MH0.XFDU-Zzig17wO2AMXJojVij3X7nQVqZoBeyL8sC65fw",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjMsImV4cCI6MTc3NjE4Mzc2M30.gkLJLEaFlO5Mo06HSGTt7l3OywvXL-tVeqDLKN_9B2I",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1NzkyNjksImV4cCI6MTc3NjE4NDA2OX0.DmTkaDYwApR4HrcEE0jWA7k7waO4f1V7tzEOgS9MBEQ"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU3MjE4MTAsImV4cCI6MTc3NjMyNjYxMH0.aGaBsM212jOSvgtNOT2QhoaGsDeoUB7KFxk7wLVraI4",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU3MjIzMzMsImV4cCI6MTc3NjMyNzEzM30.z3CsnoEOrG4rqL4pXWs9I0RrAHYapg19bFx6l6XzUXE",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU5NzQwNjAsImV4cCI6MTc3NjU3ODg2MH0.ubn4Mh7L47iXkcdCsCnC5uMSWX3kTBR0o9tMu61_rSc"
     ],
-    "last_login_date": NumberLong("1775579269545"),
+    "last_login_date": 1775974060387,
     "last_login_ip": "未知IP",
     object: {
         name: "小王",
@@ -5485,4 +5765,23 @@ db.getCollection("qa-users").insert([ {
     rate: NumberInt("2"),
     status: NumberInt("0"),
     wdf: null
+} ]);
+db.getCollection("qa-users").insert([ {
+    _id: ObjectId("69d77359a70e45d90689cba4"),
+    username: "admin",
+    nickname: "阿萨姆",
+    password: "123123",
+    "is_login": true,
+    "_add_time": 1775727449950,
+    "_add_time_str": "2026-04-09 17:37:29",
+    avatar: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+    enable: true,
+    rate: NumberInt("0"),
+    image: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+    userInfo: {
+        name: "小明",
+        age: NumberInt("18"),
+        avatar: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+        nickname: "你猜"
+    }
 } ]);

@@ -34,7 +34,7 @@
     action: string,
     columns: Columns[]
   }>({
-    action: '/app/admin/${目录名称}/${控制器名称}/${控制器名称}/getList',
+    action: '/app/admin/system/sysAppid/sysAppid/getList',
     columns: [
       {
         key: "_id",
@@ -42,7 +42,24 @@
         title: "记录ID(唯一ID)",
         width: 240
       },
-      ${传入表格字段}
+          {
+      key:  "appid",
+      type:  "text",
+      title:  "小程序APPID",
+      width:  200
+    },
+    {
+      key:  "secret",
+      type:  "text",
+      title:  "小程序秘钥",
+      width:  200
+    },
+    {
+      key:  "appname",
+      type:  "text",
+      title:  "小程序名",
+      width:  200
+    }
     ]
   })
   const search = () => {
@@ -54,7 +71,27 @@
   const queryForm = ref({
     formData: {},
     columns: [
-      ${传入查询字段}
+          {
+      key:  "appid",
+      type:  "text",
+      title:  "小程序APPID",
+      width:  200,
+      mode:  "="
+    },
+    {
+      key:  "secret",
+      type:  "text",
+      title:  "小程序秘钥",
+      width:  200,
+      mode:  "="
+    },
+    {
+      key:  "appname",
+      type:  "text",
+      title:  "小程序名",
+      width:  200,
+      mode:  "="
+    }
     ]
   })
   
@@ -71,11 +108,35 @@
   const form = ref({
     data: cloneDeep(originalFormData),
     props: {
-      action: '/app/admin/${目录名称}/${控制器名称}/${控制器名称}/add',
+      action: '/app/admin/system/sysAppid/sysAppid/add',
       columns: [
-        ${传入表单字段}
+              {
+        key:  "appid",
+        type:  "text",
+        title:  "小程序APPID"
+      },
+      {
+        key:  "secret",
+        type:  "text",
+        title:  "小程序秘钥"
+      },
+      {
+        key:  "appname",
+        type:  "text",
+        title:  "小程序名"
+      }
       ],
-      rules: {${传入校验规则}},
+      rules: {
+        appid: [
+          { required: true, message: "请输入小程序APPID", trigger: "blur" }
+        ],
+        secret: [
+          { required: true, message: "请输入小程序秘钥", trigger: "blur" }
+        ],
+        appname: [
+          { required: true, message: "请输入小程序名", trigger: "blur" }
+        ]
+      },
       formType: "",
       title: "",
       show: false
@@ -93,14 +154,14 @@
   }
   const addBtn = () => {
     resetForm()
-    form.value.props.action = '/app/admin/${目录名称}/${控制器名称}/${控制器名称}/add';
+    form.value.props.action = '/app/admin/system/sysAppid/sysAppid/add';
     form.value.props.formType = 'add';
     form.value.props.title = '添加'
     form.value.props.show = true
   }
   const updateBtn = (index: number, row: any) => {
     resetForm()
-    form.value.props.action = '/app/admin/${目录名称}/${控制器名称}/${控制器名称}/update';
+    form.value.props.action = '/app/admin/system/sysAppid/sysAppid/update';
     form.value.props.formType = 'edit';
     form.value.props.title = '编辑'
     form.value.props.show = true
@@ -109,7 +170,7 @@
   }
   const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
     btnsDeleteRequest({
-      action: '/app/admin/${目录名称}/${控制器名称}/${控制器名称}/delete',
+      action: '/app/admin/system/sysAppid/sysAppid/delete',
       data: {
         _id: row._id
       }
