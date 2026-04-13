@@ -1,6 +1,5 @@
 <template>
   <view class="content">
-    <view class="text-red-500 text-[4rpx]">我是首页</view>
     <image class="logo" src="/static/logo.png" />
     <view class="text-area">
       <text class="title">{{ title }}</text>
