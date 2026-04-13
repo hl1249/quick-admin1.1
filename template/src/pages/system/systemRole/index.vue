@@ -199,7 +199,7 @@ const form = ref({
     beforeAction: (_formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemRole/systemRole/add',
+    action: '',
     columns: [
       {
         "key": "role_id",
@@ -255,6 +255,7 @@ const closeForm = () => {
 }
 const addBtn = () => {
   resetForm()
+  form.value.props.action = '/app/admin/system/systemRole/systemRole/add';
   form.value.props.formType = 'add';
   form.value.props.title = '添加'
   form.value.props.show = true

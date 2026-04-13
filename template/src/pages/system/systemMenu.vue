@@ -134,7 +134,7 @@ const form = ref({
     beforeAction: (_formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemMenu/systemMenu/add',
+    action: '',
     columns: [
 
       {
@@ -214,6 +214,7 @@ const closeForm = () => {
 }
 const addBtn = () => {
   resetForm()
+  form.value.props.action = '/app/admin/system/systemMenu/systemMenu/add';
   form.value.props.formType = 'add';
   form.value.props.title = '添加'
 

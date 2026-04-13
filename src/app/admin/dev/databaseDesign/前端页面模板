@@ -93,6 +93,7 @@
   }
   const addBtn = () => {
     resetForm()
+    form.value.props.action = '/app/admin/${目录名称}/${控制器名称}/add';
     form.value.props.formType = 'add';
     form.value.props.title = '添加'
     form.value.props.show = true

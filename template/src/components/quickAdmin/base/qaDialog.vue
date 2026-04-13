@@ -8,6 +8,7 @@
     :append-to-body="appendToBody"
     :close-on-click-modal="closeOnClickModal"
     :show-close="false"
+    :top="top"
     @update:model-value="onUpdateVisible"
   >
     <template #header>
@@ -54,6 +55,7 @@ const props = withDefaults(
     width?: string | number
     closeOnClickModal?: boolean
     appendToBody?: boolean
+    top?: string
     /** 头部是否显示关闭按钮（上传中等场景可设为 false） */
     showCloseButton?: boolean
     /** 头部是否显示全屏切换 */

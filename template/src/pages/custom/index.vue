@@ -134,7 +134,7 @@
   const form = ref({
     data: cloneDeep(originalFormData),
     props: {
-      action: '/app/admin/custom/custom/add',
+      action: '',
       columns: [
               {
         key:  "username",
@@ -205,6 +205,7 @@
   }
   const addBtn = () => {
     resetForm()
+    form.value.props.action = '/app/admin/custom/custom/add';
     form.value.props.formType = 'add';
     form.value.props.title = '添加'
     form.value.props.show = true

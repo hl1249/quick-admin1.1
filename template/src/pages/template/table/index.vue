@@ -287,7 +287,7 @@ const form = ref({
     beforeAction: (_formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemUser/systemUser/add',
+    action: '',
     // action:  ({data}:{
     //   data: any
     // })=>{

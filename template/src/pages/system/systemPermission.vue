@@ -159,7 +159,7 @@ const form = ref({
     beforeAction: (_formData: any) => {
       return true
     },
-    action: '/app/admin/system/systemPermission/systemPermission/add',
+    action: '',
     columns: [
       {
         "key": "permission_id",

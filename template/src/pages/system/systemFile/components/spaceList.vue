@@ -243,7 +243,7 @@ const form = ref({
       _formData.provider = props.provider
       return true
     },
-    action: '/app/admin/system/systemFile/systemFile/space/add',
+    action: '',
     columns: [
       {
         "key": "name",
@@ -443,6 +443,7 @@ const resetForm = async () => {
 }
 const addBtn = () => {
   resetForm()
+  form.value.props.action = '/app/admin/system/systemFile/systemFile/space/add';
   form.value.props.formType = 'add';
   form.value.props.title = '添加'
   form.value.props.show = true
