@@ -1,4 +1,4 @@
-import { Controller, Req, Post, Body } from '@nestjs/common';
+import { Controller, Req, Post, Body, SetMetadata } from '@nestjs/common';
 import { Document } from 'mongodb'
 import { DbService } from '@/common/db/db.service';
 
@@ -9,48 +9,16 @@ export class AppidController {
   ) {
   }
 
-  @Post('/add')
-  add(@Req() req, @Body() data): Promise<Document | null> {
+  @SetMetadata('skipAuth', true)
+  @Post('/getAppInfo')
+  getAppInfo(@Req() req, @Body() data): Promise<Document | null> {
     const { appid, secret, appname } = data
 
-    return this.dbService.add({
+    return this.dbService.findByWhereJson({
       dbName: "qa-appids",
-      dataJson: {
-        appid,
-        secret,
-        appname,
+      whereJson: {
+        appid: appid
       }
-    })
-  }
-
-  @Post('/delete')
-  delete(@Body() whereJson): Promise<Document | null> {
-    return this.dbService.del({
-      dbName: "qa-appids",
-      whereJson
-    })
-  }
-
-  @Post('/update')
-  update(@Req() req, @Body() data): Promise<Document | null> {
-    const { _id, appid, secret, appname } = data
-
-    return this.dbService.updateById({
-      id: _id,
-      dbName: "qa-appids",
-      dataJson: {
-        appid,
-        secret,
-        appname,
-      }
-    })
-  }
-
-  @Post('/getList')
-  getList(@Req() req, @Body() data): Promise<Document | null> {
-    return this.dbService.getTableData({
-      dbName: "qa-appids",
-      data
     })
   }
 }

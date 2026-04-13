@@ -19,7 +19,9 @@ const currentMode = import.meta.env.MODE
 const currentBaseUrl = import.meta.env.VITE_SERVER_BASEURL as string | undefined
 
 const getInfo = () => {
-  getAppInfo().then(res => {
+  getAppInfo({
+	  appid:"wx65f51726f2c3e73a"
+  }).then(res => {
     console.log(res)
   })
 }
