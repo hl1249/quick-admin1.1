@@ -132,18 +132,7 @@ export class SystemPermissionController {
     if (hasParent && permission_id === parent_id) {
       throw new BadRequestException('父级不能与本权限的 permission_id 相同');
     }
-
-    const hasPermission = await this.dbService.findByWhereJson({
-      dbName: 'qa-permissions',
-      whereJson: {
-        permission_id,
-      },
-    });
-
-    if (hasPermission) {
-      throw new BadRequestException('权限已存在');
-    }
-
+    
     const result = await this.dbService.updateById({
       dbName: 'qa-permissions',
       id: _id,
