@@ -10,8 +10,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="left-panel w-44 bg-white border-r border-gray-200 flex flex-col overflow-y-auto flex-shrink-0">
-    <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 select-none">
+  <div class="left-panel w-44 bg-[var(--el-bg-color)] border-r border-[var(--el-border-color)] flex flex-col overflow-y-auto flex-shrink-0">
+    <div class="px-3 py-2 text-xs font-semibold text-[var(--el-text-color-secondary)] uppercase tracking-wider border-b border-[var(--el-border-color-lighter)] select-none">
       字段类型
     </div>
     <div class="p-2 flex flex-col gap-1">
@@ -22,7 +22,7 @@ const emit = defineEmits<{
         @dragstart="emit('dragStart', $event, t.bsonType)"
         @dragend="emit('dragEnd')"
         class="type-card flex items-center gap-2 px-2 py-2 rounded-lg cursor-grab
-               border border-transparent hover:border-blue-200 hover:bg-blue-50
+               border border-transparent hover:border-[var(--el-color-primary-light-5)] hover:bg-[var(--el-color-primary-light-9)]
                active:cursor-grabbing select-none transition-all duration-150 group"
       >
         <span
@@ -47,7 +47,7 @@ const emit = defineEmits<{
         />
       </div>
     </div>
-    <div class="mt-auto px-3 py-3 text-xs text-gray-400 border-t border-gray-100">
+    <div class="mt-auto px-3 py-3 text-xs text-[var(--el-text-color-secondary)] border-t border-[var(--el-border-color-lighter)]">
       ← 拖拽到中间添加字段
     </div>
   </div>
@@ -58,7 +58,7 @@ const emit = defineEmits<{
   width: 4px;
 }
 .left-panel::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
+  background: var(--el-fill-color-darker);
   border-radius: 4px;
 }
 
@@ -74,16 +74,16 @@ const emit = defineEmits<{
   height: 24px;
   padding: 0;
   border-radius: 0.375rem;
-  color: #2563eb !important;
-  background: #eff6ff !important;
-  border: 1px solid #bfdbfe !important;
-  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.12);
+  color: var(--el-color-primary) !important;
+  background: var(--el-color-primary-light-9) !important;
+  border: 1px solid var(--el-color-primary-light-5) !important;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--el-color-primary) 12%, transparent);
 }
 
 :deep(.type-add-btn:hover) {
-  color: #1d4ed8 !important;
-  background: #dbeafe !important;
-  border-color: #93c5fd !important;
+  color: var(--el-color-primary-dark-2) !important;
+  background: var(--el-color-primary-light-8) !important;
+  border-color: var(--el-color-primary-light-3) !important;
   transform: scale(1.05);
 }
 </style>

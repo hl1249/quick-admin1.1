@@ -37,7 +37,7 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
     @drop="emit('canvasDrop', $event)"
   >
     <!-- 字段列表头 -->
-    <div v-if="fields.length" class="field-grid px-6 pr-11 py-2 bg-gray-100 border-b border-gray-200 text-xs text-gray-500 font-medium select-none flex-shrink-0">
+    <div v-if="fields.length" class="field-grid px-6 pr-11 py-2 bg-[var(--el-fill-color-light)] border-b border-[var(--el-border-color)] text-xs text-[var(--el-text-color-secondary)] font-medium select-none flex-shrink-0">
       <span class="text-center">#</span>
       <span></span>
       <span>字段名 (key)</span>
@@ -57,10 +57,10 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
       >
         <div
           class="w-64 h-40 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-3 transition-colors duration-200"
-          :class="canvasAddActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-white'"
+          :class="canvasAddActive ? 'border-[var(--el-color-primary)] bg-[var(--el-color-primary-light-9)]' : 'border-[var(--el-border-color)] bg-[var(--el-bg-color)]'"
         >
           <span class="text-4xl">📋</span>
-          <p class="text-sm font-medium" :class="canvasAddActive ? 'text-blue-500' : 'text-gray-400'">
+          <p class="text-sm font-medium" :class="canvasAddActive ? 'text-[var(--el-color-primary)]' : 'text-[var(--el-text-color-secondary)]'">
             {{ canvasAddActive ? '松开鼠标添加字段' : '从左侧拖入字段类型' }}
           </p>
         </div>
@@ -85,8 +85,8 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
           class="field-row field-grid px-3 py-2 rounded-xl border transition-colors duration-150 cursor-pointer select-none"
           :class="[
             selectedId === field.id
-              ? 'border-blue-400 bg-blue-50 shadow-sm'
-              : 'border-gray-200 bg-white hover:border-blue-200 hover:bg-gray-50',
+              ? 'border-[var(--el-color-primary)] bg-[var(--el-color-primary-light-9)] shadow-sm'
+              : 'border-[var(--el-border-color)] bg-[var(--el-bg-color)] hover:border-[var(--el-color-primary-light-5)] hover:bg-[var(--el-fill-color-light)]',
             draggingId === field.id ? 'opacity-40 scale-[0.98]' : ''
           ]"
           @click="emit('select', field.id)"
@@ -119,7 +119,7 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
           <div class="min-w-0 flex justify-center">
             <span
               v-if="field.formType"
-              class="px-2 py-0.5 rounded-full text-xs font-medium border border-blue-200 bg-blue-50 text-blue-600 truncate max-w-full"
+              class="px-2 py-0.5 rounded-full text-xs font-medium border border-[var(--el-color-primary-light-5)] bg-[var(--el-color-primary-light-9)] text-[var(--el-color-primary)] truncate max-w-full"
               :title="field.formType"
             >{{ field.formType }}</span>
             <span v-else class="text-xs text-gray-300">—</span>
@@ -160,9 +160,9 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
       <div
         v-if="fields.length"
         class="mx-3 mb-2 flex items-center justify-center h-12 rounded-xl border-2 border-dashed transition-colors duration-200"
-        :class="canvasAddActive ? 'border-blue-400 bg-blue-50' : 'border-gray-200'"
+        :class="canvasAddActive ? 'border-[var(--el-color-primary)] bg-[var(--el-color-primary-light-9)]' : 'border-[var(--el-border-color)] bg-[var(--el-fill-color-extra-light)]'"
       >
-        <span class="text-xs" :class="canvasAddActive ? 'text-blue-500' : 'text-gray-400'">
+        <span class="text-xs" :class="canvasAddActive ? 'text-[var(--el-color-primary)]' : 'text-[var(--el-text-color-secondary)]'">
           {{ canvasAddActive ? '松开以添加字段' : '拖入新字段' }}
         </span>
       </div>

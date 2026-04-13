@@ -213,7 +213,7 @@ defineExpose({ switchToDetail })
 </script>
 
 <template>
-  <div class="right-panel w-72 bg-white border-l border-gray-200 flex flex-col overflow-hidden flex-shrink-0">
+  <div class="right-panel w-72 bg-[var(--el-bg-color)] border-l border-[var(--el-border-color)] flex flex-col overflow-hidden flex-shrink-0">
     <el-tabs v-model="rightTab" class="right-tabs" stretch>
       <el-tab-pane label="字段属性" name="field" />
       <el-tab-pane label="表单类型" name="form" />
@@ -228,10 +228,10 @@ defineExpose({ switchToDetail })
         </div>
 
         <div v-else class="p-4 flex flex-col gap-4 text-sm">
-          <div class="flex items-center gap-2 p-2 rounded-lg" :style="{ backgroundColor: (selectedPrimaryTypeDef?.color || '#409EFF') + '18' }">
+          <div class="flex items-center gap-2 p-2 rounded-lg bg-[var(--el-color-primary-light-9)]">
             <span
               class="w-8 h-8 rounded-md flex items-center justify-center text-white text-xs font-bold"
-              :style="{ backgroundColor: selectedPrimaryTypeDef?.color || '#409EFF' }"
+              :style="{ backgroundColor: selectedPrimaryTypeDef?.color || 'var(--el-color-primary)' }"
             >{{ selectedPrimaryTypeDef?.icon }}</span>
             <div>
               <p class="font-semibold text-gray-700">{{ selectedBsonTypeLabel }}</p>
@@ -270,7 +270,7 @@ defineExpose({ switchToDetail })
                   </div>
                 </el-option>
               </el-select>
-              <p class="text-xs text-gray-400 mt-1">可同时选择多个类型，生成如 <code class="bg-gray-100 px-1 rounded">bsonType: ['string', 'array']</code></p>
+              <p class="text-xs text-gray-400 mt-1">可同时选择多个类型，生成如 <code class="bg-[var(--el-fill-color-light)] px-1 rounded">bsonType: ['string', 'array']</code></p>
             </div>
             <div class="field-item flex items-center">
               <label class="field-label mb-0">必填</label>
@@ -309,13 +309,13 @@ defineExpose({ switchToDetail })
               </div>
             </div>
             <p v-if="getBsonTypeList(selectedField.bsonType).length > 1" class="text-xs text-gray-400">
-              多类型字段将生成 <code class="bg-gray-100 px-1 rounded">anyOf</code>，当前规则只作用于 {{ section.def.label }}。
+              多类型字段将生成 <code class="bg-[var(--el-fill-color-light)] px-1 rounded">anyOf</code>，当前规则只作用于 {{ section.def.label }}。
             </p>
           </div>
 
           <div class="section">
             <p class="section-title">当前字段 Schema</p>
-            <pre class="text-xs bg-gray-50 border border-gray-100 rounded-lg p-2 overflow-x-auto leading-relaxed text-gray-600">{{ JSON.stringify(fieldSchemaPreview, null, 2) }}</pre>
+            <pre class="text-xs bg-[var(--el-fill-color-extra-light)] border border-[var(--el-border-color-lighter)] rounded-lg p-2 overflow-x-auto leading-relaxed text-[var(--el-text-color-regular)]">{{ JSON.stringify(fieldSchemaPreview, null, 2) }}</pre>
           </div>
         </div>
       </template>
@@ -330,8 +330,8 @@ defineExpose({ switchToDetail })
         <!-- ── 详情视图：已选类型的属性（可编辑） ── -->
         <div v-else-if="formView === 'detail' && selectedField.formType" class="p-4 flex flex-col gap-3 text-sm">
           <div class="flex items-center gap-2">
-            <el-button text :icon="ArrowLeft" @click="backToSelect" class="!px-1 text-gray-400 hover:!text-blue-500">返回</el-button>
-            <span class="px-2 py-0.5 rounded-full text-xs text-white bg-blue-500 font-medium">{{ formTypeLabel }}</span>
+            <el-button text :icon="ArrowLeft" @click="backToSelect" class="!px-1 text-[var(--el-text-color-secondary)] hover:!text-[var(--el-color-primary)]">返回</el-button>
+            <span class="px-2 py-0.5 rounded-full text-xs text-white bg-[var(--el-color-primary)] font-medium">{{ formTypeLabel }}</span>
           </div>
 
           <div v-if="detailConfigFields.length" class="flex flex-col gap-3">
@@ -416,7 +416,7 @@ defineExpose({ switchToDetail })
             该类型无需配置
           </div>
 
-          <div class="pt-3 border-t border-gray-100">
+          <div class="pt-3 border-t border-[var(--el-border-color-lighter)]">
             <el-button type="danger" plain class="w-full" @click="clearFormType">
               清除表单类型
             </el-button>
@@ -425,10 +425,10 @@ defineExpose({ switchToDetail })
 
         <!-- ── 选择视图：类型网格 ── -->
         <div v-else class="p-4 flex flex-col gap-3 text-sm">
-          <div class="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-100">
+          <div class="flex items-center gap-2 p-2 rounded-lg bg-[var(--el-fill-color-light)] border border-[var(--el-border-color-lighter)]">
             <span class="text-xs text-gray-400">当前字段:</span>
             <span class="font-medium text-gray-700">{{ selectedField.key || '(未命名)' }}</span>
-            <span v-if="selectedField.formType" class="ml-auto px-2 py-0.5 rounded-full text-xs text-white bg-blue-500">{{ selectedField.formType }}</span>
+            <span v-if="selectedField.formType" class="ml-auto px-2 py-0.5 rounded-full text-xs text-white bg-[var(--el-color-primary)]">{{ selectedField.formType }}</span>
             <span v-else class="ml-auto text-xs text-gray-400">未设置</span>
           </div>
 
@@ -440,8 +440,8 @@ defineExpose({ switchToDetail })
                 :key="ft.value"
                 class="form-type-card px-2 py-2 rounded-lg border text-center cursor-pointer transition-all duration-150 select-none"
                 :class="selectedField.formType === ft.value
-                  ? 'border-blue-400 bg-blue-50 text-blue-600 shadow-sm'
-                  : 'border-gray-200 bg-white text-gray-600 hover:border-blue-200 hover:bg-blue-50/50'"
+                  ? 'border-[var(--el-color-primary)] bg-[var(--el-color-primary-light-9)] text-[var(--el-color-primary)] shadow-sm'
+                  : 'border-[var(--el-border-color)] bg-[var(--el-bg-color)] text-[var(--el-text-color-regular)] hover:border-[var(--el-color-primary-light-5)] hover:bg-[var(--el-color-primary-light-9)]'"
                 @click="emit('openFormConfig', ft.value, ft.label)"
               >
                 <span class="text-xs font-medium leading-tight">{{ ft.label }}</span>
@@ -459,7 +459,7 @@ defineExpose({ switchToDetail })
   width: 4px;
 }
 .right-panel::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
+  background: var(--el-fill-color-darker);
   border-radius: 4px;
 }
 
@@ -468,7 +468,7 @@ defineExpose({ switchToDetail })
 }
 :deep(.right-tabs .el-tabs__header) {
   margin: 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--el-border-color-lighter);
 }
 :deep(.right-tabs .el-tabs__nav-wrap::after) {
   display: none;
@@ -478,11 +478,11 @@ defineExpose({ switchToDetail })
   height: 36px;
   line-height: 36px;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--el-text-color-secondary);
   letter-spacing: 0.03em;
 }
 :deep(.right-tabs .el-tabs__item.is-active) {
-  color: #2563eb;
+  color: var(--el-color-primary);
 }
 
 .section {
@@ -493,11 +493,11 @@ defineExpose({ switchToDetail })
 .section-title {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--el-text-color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding-bottom: 0.25rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--el-border-color-lighter);
 }
 .field-item {
   display: flex;
@@ -506,7 +506,7 @@ defineExpose({ switchToDetail })
 }
 .field-label {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--el-text-color-regular);
   font-weight: 500;
 }
 

@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { markRaw, ref } from 'vue'
 import qaTable from '@/components/quickAdmin/table/qaTable.vue'
 import type {
   Columns,
@@ -23,7 +23,7 @@ import type {
 } from '@/components/quickAdmin/table/qaTable.vue'
 import http from '@/utils/axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Connection, Refresh } from '@element-plus/icons-vue'
+import { Connection } from '@element-plus/icons-vue'
 
 interface SocketRow {
   namespace: string
@@ -40,7 +40,12 @@ interface SocketRow {
 const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null)
 
 const queryForm = ref({
-  formData: {},
+  formData: {
+    socketId: '',
+    userId: '',
+    username: '',
+    nickname: '',
+  },
   columns: [
     {
       key: 'socketId',
@@ -125,7 +130,7 @@ const table = ref<{
     {
       title: '断开连接',
       type: 'danger',
-      icon: Connection,
+      icon: markRaw(Connection),
       disabled: (row: SocketRow) => !row.socketId,
       onClick: (row: SocketRow) => {
         handleDisconnect(row)

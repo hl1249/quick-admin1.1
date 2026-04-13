@@ -201,6 +201,7 @@ import qaDetail from '../base/qaDetail.vue';
 import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue';
 import http from '@/utils/axios';
 import { ElMessage, ElTable } from 'element-plus';
+import { toRaw } from 'vue';
 import qaTableColumn from '../base/qaTableColumn.vue';
 import { cloneDeep } from '@/utils';
 
@@ -659,13 +660,13 @@ function onToggleSelectAll(checked: boolean | unknown) {
 
 const getTableData = async (): Promise<void> => {
   loading.value = true;
-  console.log("请求参数",props.queryFormParam)
   try {
+    const query = props.queryFormParam ? toRaw(props.queryFormParam) : {};
     const res = await http.request({
       url: props.action,
       method: 'post',
       data: {
-        ...props.queryFormParam,
+        ...query,
         sortRule: sortRule.value,
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
