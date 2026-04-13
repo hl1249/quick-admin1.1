@@ -9,6 +9,7 @@ export const SOCKET_EVENTS = {
   roomJoin: 'room:join',
   roomLeave: 'room:leave',
   notify: 'notify',
+  pondUpdate: 'pond:update',
   orderUpdated: 'order:updated',
   chatSend: 'chat:send',
   chatMessage: 'chat:message',

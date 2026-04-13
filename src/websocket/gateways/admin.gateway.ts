@@ -71,17 +71,17 @@ export class AdminGateway
     this.logger.log(`admin socket disconnected: ${client.id}`);
   }
 
-  @SubscribeMessage(SOCKET_EVENTS.ping)
   // 基础心跳检测接口，前端可用它确认后台命名空间是否已连通。
+  @SubscribeMessage(SOCKET_EVENTS.ping)
   handlePing(@ConnectedSocket() client: AuthenticatedSocket) {
     client.emit(SOCKET_EVENTS.pong, {
       ts: Date.now(),
-      namespace: 'admin',
+      namespace: SOCKET_NAMESPACES.admin,
     });
   }
 
-  @SubscribeMessage(SOCKET_EVENTS.roomJoin)
   // 让后台客户端加入某个业务房间，便于按订单、项目等业务维度接收推送。
+  @SubscribeMessage(SOCKET_EVENTS.roomJoin)
   handleJoinRoom(
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() payload: JoinBizRoomPayload,
@@ -94,8 +94,8 @@ export class AdminGateway
     };
   }
 
-  @SubscribeMessage(SOCKET_EVENTS.roomLeave)
   // 让后台客户端退出某个业务房间，避免继续接收该业务范围内的广播消息。
+  @SubscribeMessage(SOCKET_EVENTS.roomLeave)
   handleLeaveRoom(
     @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() payload: JoinBizRoomPayload,

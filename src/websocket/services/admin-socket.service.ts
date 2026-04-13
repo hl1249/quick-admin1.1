@@ -53,10 +53,15 @@ export class AdminSocketService {
       socket: client,
       connectedAt: Date.now(),
     });
+    this.emitPondUpdate({ reason: 'connect', socketId: client.id });
   }
 
   unregisterConnection(socketId: string) {
+    if (!this.connectionPool.has(socketId)) {
+      return;
+    }
     this.connectionPool.delete(socketId);
+    this.emitPondUpdate({ reason: 'disconnect', socketId });
   }
 
   getConnectionList(query: AdminSocketConnectionQuery = {}) {
@@ -114,13 +119,27 @@ export class AdminSocketService {
       ts: Date.now(),
     });
     record.socket.disconnect(true);
-    this.connectionPool.delete(socketId);
+    this.unregisterConnection(socketId);
 
     return {
       disconnected: true,
       socketId,
       userId: record.socket.data.userInfo._id,
     };
+  }
+
+  // 连接池增删后广播，便于后台「连接池」页面等实时刷新列表。
+  emitPondUpdate(extra: Record<string, any> = {}) {
+    if (!this.namespace) {
+      this.logger.warn('Admin namespace 尚未初始化，忽略连接池变更推送');
+      return;
+    }
+
+    this.namespace.emit(SOCKET_EVENTS.pondUpdate, {
+      ...extra,
+      total: this.connectionPool.size,
+      ts: Date.now(),
+    });
   }
 
   // 向后台命名空间内的所有连接广播通用通知消息。
