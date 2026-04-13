@@ -19,7 +19,6 @@ import { markRaw, onUnmounted, ref } from 'vue'
 import {
   SOCKET_EVENTS,
   useAdminSocket,
-  type SocketNotifyPayload,
 } from '@/composables/useSocket'
 
 import qaTable from '@/components/quickAdmin/table/qaTable.vue'
@@ -28,7 +27,7 @@ import type {
   CustomRightBtn,
 } from '@/components/quickAdmin/table/qaTable.vue'
 import http from '@/utils/axios'
-import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 import { Connection } from '@element-plus/icons-vue'
 
 interface SocketRow {
@@ -44,14 +43,6 @@ interface SocketRow {
 }
 
 const adminSocket = useAdminSocket()
-
-const stopNotifyListener = adminSocket.on<SocketNotifyPayload>(SOCKET_EVENTS.notify, payload => {
-  ElNotification({
-    title: payload.title || '系统通知',
-    message: payload.message || '收到一条新的后台通知',
-    type: payload.type || 'info',
-  })
-})
 
 const qaTableRef = ref<InstanceType<typeof qaTable> | null>(null)
 
@@ -168,7 +159,6 @@ const stopPondListener = adminSocket.on(SOCKET_EVENTS.pondUpdate, () => {
 })
 
 onUnmounted(() => {
-  stopNotifyListener()
   stopPondListener()
 })
 
