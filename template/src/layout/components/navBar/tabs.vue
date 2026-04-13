@@ -63,6 +63,7 @@ import { useStore } from '@/store'
 const { menuStore } = useStore()
 
 const TabClick = (item: any) => {
+  console.log('router.getRoutes()',router.getRoutes(),item)
   const toRouter = router.getRoutes().find(i => i.name === item)
   menuStore.tabsNavTo(toRouter as TabItem)
 }
@@ -73,7 +74,7 @@ const removeTab = (targetName: TabPaneName) => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .demo-tabs {
   :deep(.el-tabs__header) {
     margin: 0;
@@ -81,9 +82,11 @@ const removeTab = (targetName: TabPaneName) => {
   }
 
   :deep(.el-tabs__nav) {
+    padding-top: 1px;
     gap: 5px !important;
     border: none;
     background-color: transparent;
+    border: none !important;
   }
 
   :deep(.el-tabs__item) {

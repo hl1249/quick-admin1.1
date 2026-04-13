@@ -159,16 +159,10 @@ export const useMenuStore = defineStore(
     }
 
     const tabsNavTo = (tabsItem: TabItem) => {
-      if (tabsItem.name === currentTagName.value) {
-        router.replace({
-          name: 'redirect',
-          params: {
-            params: JSON.stringify(tabsItem.params),
-            __name: tabsItem.name as string,
-          },
-          query: tabsItem.query,
-        })
-        currentTagName.value = tabsItem.name
+      const currentName = router.currentRoute.value.name
+      if (tabsItem.name === currentName) {
+        // 已在当前页，强制刷新
+        router.replace({ path: tabsItem.path, query: tabsItem.query, force: true } as any)
       } else {
         router.push({
           ...tabsItem
