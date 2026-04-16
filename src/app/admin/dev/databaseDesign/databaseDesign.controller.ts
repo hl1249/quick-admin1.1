@@ -61,9 +61,11 @@ type CrudField = SchemaField & {
 };
 
 type DownloadControllerBody = {
+  dirName?: string;
+  controllerName?: string;
   tableName?: string;
   collectionName?: string;
-  fields?: SchemaField[];
+  fields?: CrudField[];
 };
 
 type DownloadCrudBody = {
@@ -502,8 +504,9 @@ export class DatabaseDesignController {
   }
 
   /**
-   * 根据控制器模板直接生成并下载 ts 文件
-   * POST body: { collectionName, tableName?, fields? }
+   * 根据控制器模板生成 ZIP
+   * ZIP 结构: {dirName}/{controllerName}/{controllerName}.controller.ts + index.vue
+   * POST body: { dirName?, controllerName?, collectionName, tableName?, fields? }
    */
   @Post('/downloadController')
   async downloadController(
@@ -513,13 +516,19 @@ export class DatabaseDesignController {
     const collectionName = (body.collectionName ?? body.tableName)?.trim();
     assertCollectionName(collectionName);
 
+    const dir = toControllerFileName((body.dirName ?? collectionName).trim());
+    const ctrl = toControllerFileName((body.controllerName ?? collectionName).trim());
+    const fields: CrudField[] = Array.isArray(body.fields)
+      ? body.fields.filter((f) => f?.key?.trim())
+      : [];
+
     const template = readControllerTemplate();
-    const controllerName = toControllerClassName(collectionName);
-    const downloadFileName = `${toControllerFileName(collectionName)}.controller.ts`;
-    const allowedFieldKeys = extractAllowedFieldKeys(body.fields);
+    const controllerName = toControllerClassName(ctrl);
+    const controllerFileName = `${toControllerFileName(ctrl)}.controller.ts`;
+    const allowedFieldKeys = extractAllowedFieldKeys(fields);
     const updateParts = buildUpdateFieldParts(allowedFieldKeys);
     const addParts = buildAddFieldParts(allowedFieldKeys);
-    const content = renderTemplate(template, {
+    const controllerContent = renderTemplate(template, {
       ControllerName: controllerName,
       collectionName: JSON.stringify(collectionName),
       addDestructureCode: addParts.destructureCode,
@@ -528,17 +537,34 @@ export class DatabaseDesignController {
       updateDataJsonCode: updateParts.dataJsonCode,
     });
 
-    res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8');
+    const frontendTemplate = readFrontendTemplate();
+    const frontendContent = renderTemplate(frontendTemplate, {
+      目录名称: dir,
+      控制器名称: ctrl,
+      表名: collectionName,
+      传入表格字段: buildTableColumnsStr(fields),
+      传入查询字段: buildQueryColumnsStr(fields),
+      传入表单字段: buildFormColumnsStr(fields),
+      传入校验规则: buildRulesStr(fields),
+    });
+
+    const zipFileName = `${dir}.zip`;
+    res.setHeader('Content-Type', 'application/zip');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename*=UTF-8''${encodeURIComponent(downloadFileName)}`,
+      `attachment; filename*=UTF-8''${encodeURIComponent(zipFileName)}`,
     );
-    res.send(content);
+
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    archive.pipe(res);
+    archive.append(controllerContent, { name: `${dir}/${ctrl}/${controllerFileName}` });
+    archive.append(frontendContent, { name: 'index.vue' });
+    await archive.finalize();
   }
 
   /**
    * 生成 CRUD 全套代码并以 ZIP 下载
-   * ZIP 结构: {dirName}/{controllerName}.controller.ts + {dirName}/index.vue
+   * ZIP 结构: {dirName}/{controllerName}/{controllerName}.controller.ts + index.vue
    */
   @Post('/downloadCRUD')
   async downloadCRUD(
@@ -595,8 +621,8 @@ export class DatabaseDesignController {
 
     const archive = archiver('zip', { zlib: { level: 9 } });
     archive.pipe(res);
-    archive.append(controllerContent, { name: `${dir}/${controllerFileName}` });
-    archive.append(frontendContent, { name: `${dir}/index.vue` });
+    archive.append(controllerContent, { name: `${dir}/${ctrl}/${controllerFileName}` });
+    archive.append(frontendContent, { name: 'index.vue' });
     await archive.finalize();
   }
 
