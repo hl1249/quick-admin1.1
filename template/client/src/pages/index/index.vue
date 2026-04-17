@@ -2,11 +2,11 @@
   <view class="content">
     <image class="logo" src="/static/logo.png" />
     <button @click="getInfo">获取app信息</button>
-    <view class="text-area">
+ <!--   <view class="text-area">
       <text class="title">{{ title }}</text>
       <view>当前运行环境：{{ currentMode }}</view>
       <view>当前环境的 VITE_SERVER_BASEURL：{{ currentBaseUrl || '未读取到' }}</view>
-    </view>
+    </view> -->
   </view>
 </template>
 

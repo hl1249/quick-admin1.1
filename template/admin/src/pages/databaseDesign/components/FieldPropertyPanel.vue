@@ -242,8 +242,12 @@ defineExpose({ switchToDetail })
           <div class="section">
             <p class="section-title">基础属性</p>
             <div class="field-item">
-              <label class="field-label">字段名 <span class="text-[var(--el-color-danger)]">*</span></label>
-              <el-input v-model="selectedField.key" placeholder="字段名（key）" clearable />
+              <label class="field-label">字段属性 <span class="text-[var(--el-color-danger)]">*</span></label>
+              <el-input v-model="selectedField.key" placeholder="字段属性（key）" clearable />
+            </div>
+            <div class="field-item">
+              <label class="field-label">字段名称</label>
+              <el-input v-model="selectedField.title" placeholder="字段名称（title）" clearable />
             </div>
             <div class="field-item">
               <label class="field-label">描述</label>
@@ -427,7 +431,7 @@ defineExpose({ switchToDetail })
         <div v-else class="p-4 flex flex-col gap-3 text-sm">
           <div class="flex items-center gap-2 p-2 rounded-lg bg-[var(--el-fill-color-light)] border border-[var(--el-border-color-lighter)]">
             <span class="text-xs text-[var(--el-text-color-secondary)]">当前字段:</span>
-            <span class="font-medium text-[var(--el-text-color-primary)]">{{ selectedField.key || '(未命名)' }}</span>
+            <span class="font-medium text-[var(--el-text-color-primary)]">{{ selectedField.title || selectedField.key || '(未命名)' }}</span>
             <span v-if="selectedField.formType" class="ml-auto px-2 py-0.5 rounded-full text-xs text-white bg-[var(--el-color-primary)]">{{ selectedField.formType }}</span>
             <span v-else class="ml-auto text-xs text-[var(--el-text-color-secondary)]">未设置</span>
           </div>

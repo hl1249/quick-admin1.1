@@ -40,7 +40,8 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
     <div v-if="fields.length" class="field-grid px-6 pr-11 py-2 bg-[var(--el-fill-color-light)] border-b border-[var(--el-border-color)] text-xs text-[var(--el-text-color-secondary)] font-medium select-none flex-shrink-0">
       <span class="text-center">#</span>
       <span></span>
-      <span>字段名 (key)</span>
+      <span>字段属性 (key)</span>
+      <span>字段名称 (title)</span>
       <span class="text-center">BSON 类型</span>
       <span class="text-center">表单类型</span>
       <span class="text-center">必填</span>
@@ -98,7 +99,16 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
             <input
               :id="`key-input-${field.id}`"
               v-model="field.key"
-              placeholder="字段名（必填）"
+              placeholder="字段属性（必填）"
+              class="w-full text-sm bg-transparent border-none outline-none text-[var(--el-text-color-primary)] placeholder:text-[var(--el-text-color-placeholder)]"
+              @focus="emit('select', field.id)"
+            />
+          </div>
+
+          <div class="min-w-0" @click.stop>
+            <input
+              v-model="field.title"
+              placeholder="字段名称"
               class="w-full text-sm bg-transparent border-none outline-none text-[var(--el-text-color-primary)] placeholder:text-[var(--el-text-color-placeholder)]"
               @focus="emit('select', field.id)"
             />
@@ -177,7 +187,7 @@ const onAfterLeave = (el: Element) => emit('afterLeave', el)
 
 .field-grid {
   display: grid;
-  grid-template-columns: 1.25rem 1.25rem minmax(0, 1fr) 40rem 6rem 3.5rem 7rem;
+  grid-template-columns: 1.25rem 1.25rem minmax(0, 1fr) minmax(0, 1fr) 30rem 6rem 3.5rem 7rem;
   align-items: center;
   column-gap: 0.5rem;
 }

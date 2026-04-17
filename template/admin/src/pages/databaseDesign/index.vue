@@ -45,6 +45,7 @@ function normalizeField(field: Partial<FieldDef> | null | undefined): FieldDef {
   return {
     id: field?.id || genId(),
     key: field?.key || '',
+    title: field?.title || field?.key || '',
     bsonType: field?.bsonType ?? 'string',
     description: field?.description || '',
     required: !!field?.required,
@@ -86,6 +87,7 @@ function buildFieldList() {
     .map(f => {
       const item: Record<string, unknown> = {
         key: f.key.trim(),
+        title: f.title.trim() || f.key.trim(),
         ...buildFieldSpec(f),
       }
       return item
@@ -160,7 +162,7 @@ function buildPreviewFormColumn(field: FieldDef): PreviewFormColumn {
   const key = field.key.trim()
   const formType = inferPreviewFormType(field)
   const cfg = field.formConfig ? deepClone(field.formConfig) : {}
-  const title = cfg.placeholder || field.description || key
+  const title = field.title.trim() || cfg.placeholder || field.description || key
   const column: PreviewFormColumn = {
     key,
     type: formType,
@@ -587,6 +589,7 @@ function addField(bsonType: BsonType) {
   const newField: FieldDef = {
     id: genId(),
     key: '',
+    title: '',
     bsonType,
     description: '',
     required: false,
@@ -819,7 +822,7 @@ function openCrudDialog() {
   if (!fields.value.length) { ElMessage.warning('请先添加字段'); return }
   const err = validateFields()
   if (err) { ElMessage.warning(err); return }
-  crudForm.value = { dirName: '', controllerName: '', tableName: currentSchemaName.value || '' }
+  crudForm.value = { dirName: 'system', controllerName: '', tableName: currentSchemaName.value || '' }
   showCrudDialog.value = true
 }
 
@@ -858,6 +861,7 @@ async function handleDownloadCRUD() {
           }
           return {
             key: f.key.trim(),
+            title: f.title.trim() || f.key.trim(),
             ...buildFieldSpec(f),
             description: f.description || undefined,
             required: f.required,

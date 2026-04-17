@@ -15,6 +15,7 @@ export interface FieldTypeRule {
 export interface FieldDef {
   id: string
   key: string
+  title: string
   bsonType: BsonTypeValue
   description: string
   required: boolean

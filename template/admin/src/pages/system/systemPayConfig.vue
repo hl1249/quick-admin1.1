@@ -34,7 +34,7 @@
     action: string,
     columns: Columns[]
   }>({
-    action: '/app/admin/system/sysAppid/sysAppid/getList',
+    action: '/app/admin/system/systemPayConfig/systemPayConfig/getList',
     columns: [
       {
         key: "_id",
@@ -43,21 +43,33 @@
         width: 240
       },
           {
-      key:  "appid",
+      key:  "type",
       type:  "text",
-      title:  "小程序APPID",
+      title:  "支付类型",
       width:  200
     },
     {
-      key:  "secret",
+      key:  "mchId",
       type:  "text",
-      title:  "小程序秘钥",
+      title:  "商户ID",
       width:  200
     },
     {
-      key:  "appname",
+      key:  "key",
       type:  "text",
-      title:  "小程序名",
+      title:  "v2证书key",
+      width:  200
+    },
+    {
+      key:  "pfx",
+      type:  "text",
+      title:  "p12转base64",
+      width:  200
+    },
+    {
+      key:  "version",
+      type:  "text",
+      title:  "密钥版本",
       width:  200
     }
     ]
@@ -72,23 +84,37 @@
     formData: {},
     columns: [
           {
-      key:  "appid",
+      key:  "type",
       type:  "text",
-      title:  "小程序APPID",
+      title:  "支付类型",
       width:  200,
       mode:  "="
     },
     {
-      key:  "secret",
+      key:  "mchId",
       type:  "text",
-      title:  "小程序秘钥",
+      title:  "商户ID",
       width:  200,
       mode:  "="
     },
     {
-      key:  "appname",
+      key:  "key",
       type:  "text",
-      title:  "小程序名",
+      title:  "v2证书key",
+      width:  200,
+      mode:  "="
+    },
+    {
+      key:  "pfx",
+      type:  "text",
+      title:  "p12转base64",
+      width:  200,
+      mode:  "="
+    },
+    {
+      key:  "version",
+      type:  "text",
+      title:  "密钥版本",
       width:  200,
       mode:  "="
     }
@@ -108,38 +134,48 @@
   const form = ref({
     data: cloneDeep(originalFormData),
     props: {
-      action: '/app/admin/system/sysAppid/sysAppid/add',
+      action: '/app/admin/system/systemPayConfig/systemPayConfig/add',
       columns: [
               {
-        key:  "appid",
-        type:  "text",
-        title:  "小程序APPID"
+        key:  "type",
+        type:  "select",
+        title:  "支付类型",
+        data:  [
+          {
+            value:  "wx-mini",
+            label:  "微信小程序支付"
+          },
+          {
+            value:  "wx-h5",
+            label:  "微信H5支付"
+          }
+        ],
+        placeholder:  "支付类型"
       },
       {
-        key:  "secret",
+        key:  "mchId",
         type:  "text",
-        title:  "小程序秘钥"
+        title:  "商户ID"
       },
       {
-        key:  "appname",
+        key:  "key",
         type:  "text",
-        title:  "小程序名"
+        title:  "v2证书key"
       },
-        {
-          key:  "pay_config",
-          type:  "text",
-          title:  "小程序秘钥",
-        },
+      {
+        key:  "pfx",
+        type:  "text",
+        title:  "p12转base64"
+      },
+      {
+        key:  "version",
+        type:  "text",
+        title:  "密钥版本"
+      }
       ],
       rules: {
-        appid: [
-          { required: true, message: "请输入小程序APPID", trigger: "blur" }
-        ],
-        secret: [
-          { required: true, message: "请输入小程序秘钥", trigger: "blur" }
-        ],
-        appname: [
-          { required: true, message: "请输入小程序名", trigger: "blur" }
+        type: [
+          { required: true, message: "请输入支付类型", trigger: "blur" }
         ]
       },
       formType: "",
@@ -159,14 +195,14 @@
   }
   const addBtn = () => {
     resetForm()
-    form.value.props.action = '/app/admin/system/sysAppid/sysAppid/add';
+    form.value.props.action = '/app/admin/system/systemPayConfig/systemPayConfig/add';
     form.value.props.formType = 'add';
     form.value.props.title = '添加'
     form.value.props.show = true
   }
   const updateBtn = (index: number, row: any) => {
     resetForm()
-    form.value.props.action = '/app/admin/system/sysAppid/sysAppid/update';
+    form.value.props.action = '/app/admin/system/systemPayConfig/systemPayConfig/update';
     form.value.props.formType = 'edit';
     form.value.props.title = '编辑'
     form.value.props.show = true
@@ -175,7 +211,7 @@
   }
   const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
     btnsDeleteRequest({
-      action: '/app/admin/system/sysAppid/sysAppid/delete',
+      action: '/app/admin/system/systemPayConfig/systemPayConfig/delete',
       data: {
         _id: row._id
       }

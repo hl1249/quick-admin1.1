@@ -54,6 +54,9 @@ export default defineManifestConfig({
     appid: VITE_WX_APPID || "",
     setting: {
       urlCheck: false,
+      "es6": false,  // 关闭ES6转ES5
+      "postcss": true,
+      "minified": true
     },
     usingComponents: true,
   },
