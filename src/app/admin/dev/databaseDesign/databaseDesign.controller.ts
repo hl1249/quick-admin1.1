@@ -55,6 +55,7 @@ export type CreateCollectionBody = {
 };
 
 type CrudField = SchemaField & {
+  title?: string;
   required?: boolean;
   formType?: string;
   formConfig?: Record<string, any>;
@@ -225,20 +226,20 @@ function objToJS(obj: Record<string, any>, baseIndent = 0): string {
 
 function buildTableColumnsStr(fields: CrudField[]): string {
   return fields.map((f) => {
-    const title = f.formConfig?.placeholder || f.description || f.key;
+    const title = f.title;
     return '    ' + objToJS({ key: f.key, type: 'text', title, width: 200 }, 4);
   }).join(',\n');
 }
 
 function buildQueryColumnsStr(fields: CrudField[]): string {
   return fields.map((f) => {
-    const title = f.formConfig?.placeholder || f.description || f.key;
+    const title = f.title;
     return '    ' + objToJS({ key: f.key, type: 'text', title, width: 200, mode: '=' }, 4);
   }).join(',\n');
 }
 
 function buildFormColumnObj(f: CrudField): Record<string, any> {
-  const title = f.formConfig?.placeholder || f.description || f.key;
+  const title = f.title;
   const col: Record<string, any> = { key: f.key, type: f.formType || 'text', title };
   const cfg = f.formConfig || {};
   switch (f.formType) {
