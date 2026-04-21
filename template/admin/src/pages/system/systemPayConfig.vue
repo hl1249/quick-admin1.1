@@ -12,7 +12,7 @@
   
       <qa-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
         <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
-                 :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
+                 :form-type="form.props.formType" :columns='form.props.columns' label-width="120px"
                  @success="()=>{
               form.props.show = false
               refresh()

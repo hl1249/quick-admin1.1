@@ -49,7 +49,6 @@ const props = withDefaults(
     labelWidth?: string | number,
   }>(),
   {
-    labelWidth: 'auto',
   }
 )
 

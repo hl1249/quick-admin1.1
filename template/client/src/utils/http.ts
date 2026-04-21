@@ -13,12 +13,15 @@ export interface HttpRequestOptions extends UniApp.RequestOptions {
 }
 
 export const getUrl = (): string => {
-  const value = import.meta.env.VITE_SERVER_BASEURL as string | undefined;
-  if (!value) return "";
-  if (value === "getCurrentDomain" && typeof window !== "undefined") {
+  // #ifdef H5
+  const h5Value = (import.meta.env.VITE_SERVER_BASEURL_H5 as string | undefined) || "";
+  if (h5Value === "getCurrentDomain" && typeof window !== "undefined") {
     return `${window.location.protocol}//${window.location.host}/api`;
   }
-  return value;
+  return h5Value;
+  // #endif
+
+  return (import.meta.env.VITE_SERVER_BASEURL as string | undefined) || "";
 };
 
 class HttpRequest {

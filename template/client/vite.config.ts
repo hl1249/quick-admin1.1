@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/postcss";
 import UniManifest from "@uni-helper/vite-plugin-uni-manifest";
 import { UnifiedViteWeappTailwindcssPlugin } from "weapp-tailwindcss/vite";
 import { fileURLToPath, URL } from "node:url";
+import { resolve } from "node:path";
 
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
@@ -13,6 +14,11 @@ export default defineConfig(async ({ mode }) => {
 
   return {
     envDir: "env",
+    resolve: {
+      alias: {
+        "@store": resolve(__dirname, "src/store"),
+      },
+    },
     server: {
       port,
       proxy: enableProxy

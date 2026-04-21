@@ -1,30 +1,25 @@
 <template>
   <view class="content">
     <image class="logo" src="/static/logo.png" />
-    <button @click="getInfo">获取app信息</button>
- <!--   <view class="text-area">
+    <view class="text-60">维护中</view>
+    <view class="text-area">
       <text class="title">{{ title }}</text>
       <view>当前运行环境：{{ currentMode }}</view>
-      <view>当前环境的 VITE_SERVER_BASEURL：{{ currentBaseUrl || '未读取到' }}</view>
-    </view> -->
+      <view>当前 baseURL：{{ currentBaseUrl || '未读取到' }}</view>
+      <view>AppInfo：{{ appInfoStore.appInfo }}</view>
+    </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { getAppInfo } from '@/api/appid'
+import { getUrl } from '@/utils/http'
+import { useAppInfoStore } from '@/store/appInfo'
 
 const title = ref('Hello')
 const currentMode = import.meta.env.MODE
-const currentBaseUrl = import.meta.env.VITE_SERVER_BASEURL as string | undefined
-
-const getInfo = () => {
-  getAppInfo({
-	  appid:"wx65f51726f2c3e73a"
-  }).then(res => {
-    console.log(res)
-  })
-}
+const currentBaseUrl = getUrl()
+const appInfoStore = useAppInfoStore()
 </script>
 
 <style>

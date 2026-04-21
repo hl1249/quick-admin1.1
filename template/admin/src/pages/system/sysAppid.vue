@@ -12,7 +12,7 @@
   
       <qa-dialog width="500" v-model="form.props.show" :title="form.props.title" :close-on-click-modal="false">
         <qa-form v-model="form.data" ref="formRefs" :rules="form.props.rules" :action="form.props.action"
-                 :form-type="form.props.formType" :columns='form.props.columns' label-width="80px"
+                 :form-type="form.props.formType" :columns='form.props.columns' label-width="120px"
                  @success="()=>{
               form.props.show = false
               refresh()
@@ -42,6 +42,12 @@
         title: "记录ID(唯一ID)",
         width: 240
       },
+      {
+        key:  "appname",
+        type:  "text",
+        title:  "小程序名",
+        width:  200
+      },
           {
       key:  "appid",
       type:  "text",
@@ -52,13 +58,6 @@
       key:  "secret",
       type:  "text",
       title:  "小程序秘钥",
-      width:  200
-    },
-    {
-      key:  "appname",
-      type:  "text",
-      title:  "小程序名",
-      width:  200
     }
     ]
   })
@@ -113,7 +112,7 @@
               {
         key:  "appid",
         type:  "text",
-        title:  "小程序APPID"
+        title:  "小程序APPID",
       },
       {
         key:  "secret",
@@ -126,9 +125,14 @@
         title:  "小程序名"
       },
         {
+          action: '/app/admin/system/systemPayConfig/systemPayConfig/getList',
           key:  "pay_config",
-          type:  "text",
-          title:  "小程序秘钥",
+          type:  "remote-select",
+          title:  "支付配置",
+          props: {
+            label: 'mchId',
+            value: '_id'
+          }
         },
       ],
       rules: {
