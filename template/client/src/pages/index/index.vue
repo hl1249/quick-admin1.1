@@ -1,8 +1,7 @@
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png" />
-    <view class="text-60">维护中</view>
-    <view class="text-area">
+    <button @click="loginByWeixin">登录</button>
+    <view class="text-area ">
       <text class="title">{{ title }}</text>
       <view>当前运行环境：{{ currentMode }}</view>
       <view>当前 baseURL：{{ currentBaseUrl || '未读取到' }}</view>
@@ -15,11 +14,17 @@
 import { ref } from 'vue'
 import { getUrl } from '@/utils/http'
 import { useAppInfoStore } from '@/store/appInfo'
+import {useUserStore} from '@/store/user'
 
 const title = ref('Hello')
 const currentMode = import.meta.env.MODE
 const currentBaseUrl = getUrl()
 const appInfoStore = useAppInfoStore()
+const userStore = useUserStore()
+const loginByWeixin = async () => {
+  const result = await userStore.loginByWeixin(appInfoStore.appInfo.appid)
+  console.log(result)
+}
 </script>
 
 <style>

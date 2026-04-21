@@ -1,5 +1,5 @@
 const fontSize = Object.fromEntries(
-  Array.from({ length: 50 }, (_, index) => {
+  Array.from({ length: 100 }, (_, index) => {
     const size = index + 1;
     return [size, `${size}rpx`];
   }),

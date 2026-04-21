@@ -1,2 +1,4 @@
 @import "weapp-tailwindcss/index.css";
 @config "./tailwind.config.ts";
+@source "./**/*.{vue,ts,js}";
+@source "../index.html";

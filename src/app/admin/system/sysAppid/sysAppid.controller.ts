@@ -11,16 +11,17 @@ export class SysAppidController {
 
   @Post('/add')
   add(@Req() req, @Body() data): Promise<Document | null> {
-    const { appid, secret, appname } = data
+    const { appid, secret, appname, pay_config } = data;
 
     return this.dbService.add({
-      dbName: "qa-appids",
+      dbName: 'qa-appids',
       dataJson: {
         appid,
         secret,
         appname,
-      }
-    })
+        pay_config,
+      },
+    });
   }
 
   @Post('/delete')
@@ -33,17 +34,18 @@ export class SysAppidController {
 
   @Post('/update')
   update(@Req() req, @Body() data): Promise<Document | null> {
-    const { _id, appid, secret, appname } = data
+    const { _id, appid, secret, appname, pay_config } = data;
 
     return this.dbService.updateById({
       id: _id,
-      dbName: "qa-appids",
+      dbName: 'qa-appids',
       dataJson: {
         appid,
         secret,
         appname,
-      }
-    })
+        pay_config,
+      },
+    });
   }
 
   @Post('/getList')
