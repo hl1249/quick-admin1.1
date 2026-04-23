@@ -8,11 +8,13 @@ import {
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { InjectConnection } from '@nestjs/mongoose';
 import type { Connection } from 'mongoose';
-import type { Db } from 'mongodb';
+import type { Db, InsertOneResult } from 'mongodb';
 import type { Response } from 'express';
-import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
-import { relative, resolve } from 'path';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'fs';
+import { dirname, relative, resolve } from 'path';
 import archiver = require('archiver');
+import { DbService } from '@/common/db/db.service';
+import { AuthService } from '@/app/admin/auth/auth.service';
 
 /** 单字段描述，对应 $jsonSchema properties 里的一项（复杂规则请改用 body.jsonSchema） */
 export type SchemaField = {
@@ -73,7 +75,32 @@ type DownloadCrudBody = {
   dirName: string;
   controllerName: string;
   tableName: string;
+  autoGenerateRoute?: boolean;
+  pageRelativePath?: string;
+  menuConfig?: CrudMenuConfig;
   fields?: CrudField[];
+};
+
+type CrudMenuConfig = {
+  menu_id?: string;
+  title?: string;
+  icon?: string;
+  sort?: number | string;
+  parent_id?: string;
+  enable?: boolean;
+  comment?: string;
+};
+
+type NormalizedCrudMenuConfig = {
+  menu_id: string;
+  title: string;
+  icon?: string;
+  sort: number;
+  parent_id?: string;
+  enable: boolean;
+  comment?: string;
+  path: string;
+  component: string;
 };
 
 type GetAdminRoutesBody = {
@@ -214,6 +241,112 @@ function readFrontendTemplate(): string {
     if (existsSync(p)) return readFileSync(p, 'utf8');
   }
   throw new BadRequestException('未找到前端页面模板文件');
+}
+
+const ADMIN_PAGES_ROUTE_ROOT = '/src/pages';
+
+function assertCrudGeneratorAvailable() {
+  const nodeEnv = `${process.env.NODE_ENV ?? ''}`.trim().toLowerCase();
+  const explicitEnabled = `${process.env.ENABLE_CRUD_GENERATOR ?? ''}`.trim().toLowerCase() === 'true';
+  if (nodeEnv === 'production') {
+    throw new BadRequestException('该功能仅开发环境可用');
+  }
+  if (nodeEnv !== 'development' && !explicitEnabled) {
+    throw new BadRequestException('未开启 CRUD 生成器，请设置 ENABLE_CRUD_GENERATOR=true');
+  }
+}
+
+function normalizeCrudPageRelativePath(pageDir: string): string {
+  const normalized = `${pageDir ?? ''}`
+    .split('/')
+    .map((item) => item.trim())
+    .filter(Boolean);
+  if (!normalized.length) {
+    throw new BadRequestException('页面相对路径不能为空');
+  }
+  if (normalized.some((item) => item === '.' || item === '..')) {
+    throw new BadRequestException('页面相对路径不能包含 . 或 ..');
+  }
+  if (normalized.some((item) => /[\\:*?"<>|]/.test(item))) {
+    throw new BadRequestException('页面相对路径包含非法字符');
+  }
+  return normalized
+    .join('/');
+}
+
+function buildCrudComponentPath(
+  pageDir: string,
+): string {
+  const relativePath = normalizeCrudPageRelativePath(pageDir);
+  return `${ADMIN_PAGES_ROUTE_ROOT}/${relativePath}/index`;
+}
+
+function resolveAdminPagesDir(): string {
+  return resolve(process.cwd(), 'template/admin/src/pages');
+}
+
+function resolveCrudPageFilePath(
+  componentPath: string,
+): string {
+  const normalizedComponentPath = `${componentPath ?? ''}`
+    .trim()
+    .replace(/\\/g, '/')
+    .replace(/\.vue$/i, '');
+
+  if (!normalizedComponentPath.startsWith(`${ADMIN_PAGES_ROUTE_ROOT}/`)) {
+    throw new BadRequestException('页面组件路径不在后台 pages 目录下');
+  }
+
+  const relativeComponentPath = normalizedComponentPath
+    .slice(ADMIN_PAGES_ROUTE_ROOT.length)
+    .replace(/^\/+/, '');
+  if (!relativeComponentPath) {
+    throw new BadRequestException('页面组件路径不能为空');
+  }
+
+  const pagesDir = resolveAdminPagesDir();
+  const filePath = resolve(pagesDir, `${relativeComponentPath}.vue`);
+  const relativeFilePath = relative(pagesDir, filePath).replace(/\\/g, '/');
+
+  if (!relativeFilePath || relativeFilePath.startsWith('..')) {
+    throw new BadRequestException('非法的页面输出路径');
+  }
+
+  return filePath;
+}
+
+function normalizeCrudMenuConfig(
+  menuConfig: CrudMenuConfig | undefined,
+  path: string,
+): NormalizedCrudMenuConfig {
+  const menu_id = menuConfig?.menu_id?.trim();
+  const title = menuConfig?.title?.trim();
+  if (!menu_id) {
+    throw new BadRequestException('菜单标识不能为空');
+  }
+  if (!title) {
+    throw new BadRequestException('菜单名称不能为空');
+  }
+
+  const parent_id = menuConfig?.parent_id?.trim();
+  if (parent_id && parent_id === menu_id) {
+    throw new BadRequestException('父级不能与本菜单的 menu_id 相同');
+  }
+
+  const sortValue = Number(menuConfig?.sort ?? 0);
+  const normalizedPath = normalizeCrudPageRelativePath(path);
+  const normalizedComponent = buildCrudComponentPath(normalizedPath);
+  return {
+    menu_id,
+    title,
+    icon: menuConfig?.icon?.trim() || undefined,
+    sort: Number.isFinite(sortValue) ? sortValue : 0,
+    parent_id: parent_id || undefined,
+    enable: menuConfig?.enable !== false,
+    comment: menuConfig?.comment?.trim() || undefined,
+    path: normalizedPath,
+    component: normalizedComponent,
+  };
 }
 
 function objToJS(obj: Record<string, any>, baseIndent = 0): string {
@@ -447,7 +580,11 @@ function getControllerRoutePrefix(filePath: string, rootDir: string): string {
 
 @Controller()
 export class DatabaseDesignController {
-  constructor(@InjectConnection() private readonly connection: Connection) {}
+  constructor(
+    @InjectConnection() private readonly connection: Connection,
+    private readonly dbService: DbService,
+    private readonly authService: AuthService,
+  ) {}
 
   private getTargetDb(databaseName?: string): Db {
     const db = databaseName?.trim()
@@ -572,7 +709,15 @@ export class DatabaseDesignController {
     @Body() body: DownloadCrudBody,
     @Res() res: Response,
   ) {
-    const { dirName, controllerName: ctrlName, tableName } = body;
+    const {
+      dirName,
+      controllerName: ctrlName,
+      tableName,
+      autoGenerateRoute,
+      pageRelativePath,
+      menuConfig,
+    } = body;
+    assertCrudGeneratorAvailable();
     if (!dirName?.trim()) throw new BadRequestException('目录名称不能为空');
     if (!ctrlName?.trim()) throw new BadRequestException('控制器名称不能为空');
     if (!tableName?.trim()) throw new BadRequestException('表名不能为空');
@@ -611,6 +756,70 @@ export class DatabaseDesignController {
       传入表单字段: buildFormColumnsStr(fields),
       传入校验规则: buildRulesStr(fields),
     });
+
+    if (autoGenerateRoute) {
+      const routePath = normalizeCrudPageRelativePath(
+        pageRelativePath?.trim() || `${dir}/${ctrl}`,
+      );
+      const normalizedMenu = normalizeCrudMenuConfig(
+        menuConfig,
+        routePath,
+      );
+      const pageFilePath = resolveCrudPageFilePath(normalizedMenu.component);
+
+      if (existsSync(pageFilePath)) {
+        throw new BadRequestException(`页面已存在: ${pageFilePath}`);
+      }
+
+      const existingMenu = await this.dbService.findByWhereJson({
+        dbName: 'qa-menus',
+        whereJson: { menu_id: normalizedMenu.menu_id },
+      });
+      if (existingMenu) {
+        throw new BadRequestException(`菜单已存在: ${normalizedMenu.menu_id}`);
+      }
+
+      let menuInsertResult: InsertOneResult | null = null;
+      let fileWritten = false;
+      try {
+        mkdirSync(dirname(pageFilePath), { recursive: true });
+        writeFileSync(pageFilePath, frontendContent, 'utf8');
+        fileWritten = true;
+
+        menuInsertResult = await this.dbService.add({
+          dbName: 'qa-menus',
+          dataJson: {
+            menu_id: normalizedMenu.menu_id,
+            title: normalizedMenu.title,
+            name: normalizedMenu.title,
+            parent_id: normalizedMenu.parent_id,
+            component: normalizedMenu.component,
+            path: normalizedMenu.path,
+            enable: normalizedMenu.enable,
+            comment: normalizedMenu.comment,
+            icon: normalizedMenu.icon,
+            sort: normalizedMenu.sort,
+          },
+        });
+        await this.authService.updateAuthVersion();
+      } catch (error) {
+        if (menuInsertResult?.insertedId) {
+          try {
+            await this.dbService.deleteById({
+              dbName: 'qa-menus',
+              id: `${menuInsertResult.insertedId}`,
+            });
+            await this.authService.updateAuthVersion();
+          } catch {}
+        }
+        if (fileWritten && existsSync(pageFilePath)) {
+          try {
+            rmSync(pageFilePath, { force: true });
+          } catch {}
+        }
+        throw error;
+      }
+    }
 
     // 3) 打包 ZIP
     const zipFileName = `${dir}.zip`;
