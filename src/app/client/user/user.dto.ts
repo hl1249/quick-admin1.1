@@ -11,3 +11,13 @@ export class UserDto {
   @Length(6, 20, { message: '密码长度必须在6到15之间' })
   password: string;
 }
+
+export class LoginByWeixinDto {
+  @IsString()
+  @IsNotEmpty({ message: 'appid 不能为空' })
+  appid: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'code 不能为空' })
+  code: string;
+}
