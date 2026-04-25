@@ -35,7 +35,7 @@ export const getAppInfo = (data?: GetAppInfoParams) => {
 
 export const loginByWeixin = (data: LoginByWeixinParams) => {
   return http.request<LoginByWeixinResult>({
-    url: '/app/client/appid/appid/loginByWeixin',
+    url: '/app/client/user/user/loginByWeixin',
     method: 'POST',
     data,
   });

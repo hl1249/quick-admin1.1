@@ -35,10 +35,64 @@ interface PreviewFormColumn {
   [key: string]: any
 }
 
+interface CrudMenuForm {
+  pageDir: string
+  menu_id: string
+  title: string
+  icon: string
+  sort: number
+  parent_id: string
+  enable: boolean
+}
+
+interface CrudFormData {
+  dirName: string
+  controllerName: string
+  tableName: string
+  autoGenerateRoute: boolean
+  menu: CrudMenuForm
+}
+
 const genId = () => Math.random().toString(36).slice(2)
+const crudGeneratorEnabled = import.meta.env.DEV
 
 function deepClone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
+}
+
+function normalizePathSegments(value: string) {
+  return value
+    .split('/')
+    .map(item => item.trim())
+    .filter(Boolean)
+}
+
+function buildCrudPageRelativePath(pageDir: string) {
+  return normalizePathSegments(pageDir).join('/')
+}
+
+function buildCrudComponentPath(pageDir: string) {
+  const normalizedRoot = '/src/pages'
+  const relativePath = buildCrudPageRelativePath(pageDir)
+  return relativePath ? `${normalizedRoot}/${relativePath}/index` : normalizedRoot
+}
+
+function createCrudForm(tableName = ''): CrudFormData {
+  return {
+    dirName: 'system',
+    controllerName: '',
+    tableName,
+    autoGenerateRoute: false,
+    menu: {
+      pageDir: '',
+      menu_id: '',
+      title: '',
+      icon: '',
+      sort: 0,
+      parent_id: '',
+      enable: true,
+    },
+  }
 }
 
 function normalizeField(field: Partial<FieldDef> | null | undefined): FieldDef {
@@ -296,7 +350,7 @@ const showCreateDialog = ref(false)
 const createForm = ref({ dbName: '', collectionName: '' })
 
 const showCrudDialog = ref(false)
-const crudForm = ref({ dirName: '', controllerName: '', tableName: '' })
+const crudForm = ref<CrudFormData>(createCrudForm())
 
 const showSchemaCreateDialog = ref(false)
 const schemaCreateForm = ref({ name: '' })
@@ -340,6 +394,75 @@ const previewFormColumns = computed(() =>
     .filter(field => field.key.trim())
     .map(field => buildPreviewFormColumn(field)),
 )
+
+const crudGeneratedRoutePath = computed(() =>
+  buildCrudPageRelativePath(crudForm.value.menu.pageDir),
+)
+
+const crudGeneratedComponentPath = computed(() =>
+  buildCrudComponentPath(crudForm.value.menu.pageDir),
+)
+
+const crudMenuColumns = computed(() => [
+  {
+    key: 'pageDir',
+    title: '组件目录',
+    type: 'text',
+    placeholder: '如 system/user',
+  },
+  {
+    key: 'menu_id',
+    title: '菜单标识',
+    type: 'text',
+  },
+  {
+    key: 'title',
+    title: '菜单名称',
+    type: 'text',
+  },
+  {
+    key: 'icon',
+    title: '图标',
+    type: 'icon',
+  },
+  {
+    key: 'component',
+    title: 'URL',
+    type: 'text',
+    disabled: true,
+  },
+  {
+    key: 'sort',
+    title: '排序',
+    type: 'number',
+  },
+  {
+    key: 'parent_id',
+    title: '父级菜单',
+    type: 'tree-select',
+    width: 500,
+    action: 'app/admin/system/systemMenu/systemMenu/getList',
+    props: { list: 'rows', value: 'menu_id', label: 'title', children: 'children' },
+  },
+])
+
+const crudMenuFormData = computed({
+  get: () => ({
+    ...crudForm.value.menu,
+    component: crudGeneratedComponentPath.value,
+  }),
+  set: (value) => {
+    crudForm.value.menu = {
+      pageDir: value.pageDir ?? '',
+      menu_id: value.menu_id ?? '',
+      title: value.title ?? '',
+      icon: value.icon ?? '',
+      sort: value.sort ?? 0,
+      parent_id: value.parent_id ?? '',
+      enable: value.enable ?? true,
+    }
+  },
+})
 
 const hasActiveSchema = computed(() => !!currentSchemaId.value)
 
@@ -815,6 +938,10 @@ async function handleCreateCollection() {
 
 // ──────────────────────────── 生成 CRUD ────────────────────────────
 function openCrudDialog() {
+  if (!crudGeneratorEnabled) {
+    ElMessage.warning('该功能仅开发环境可用')
+    return
+  }
   if (!hasActiveSchema.value) {
     ElMessage.warning('请先新建或选择 Schema')
     return
@@ -822,15 +949,22 @@ function openCrudDialog() {
   if (!fields.value.length) { ElMessage.warning('请先添加字段'); return }
   const err = validateFields()
   if (err) { ElMessage.warning(err); return }
-  crudForm.value = { dirName: 'system', controllerName: '', tableName: currentSchemaName.value || '' }
+  crudForm.value = createCrudForm(currentSchemaName.value || '')
   showCrudDialog.value = true
 }
 
 async function handleDownloadCRUD() {
-  const { dirName, controllerName, tableName } = crudForm.value
+  const { dirName, controllerName, tableName, autoGenerateRoute, menu } = crudForm.value
   if (!dirName.trim()) { ElMessage.warning('请填写目录名称'); return }
   if (!controllerName.trim()) { ElMessage.warning('请填写控制器名称'); return }
   if (!tableName.trim()) { ElMessage.warning('请填写表名'); return }
+  if (!crudGeneratorEnabled) { ElMessage.warning('该功能仅开发环境可用'); return }
+  if (autoGenerateRoute) {
+    if (!menu.pageDir.trim()) { ElMessage.warning('请填写存放目录'); return }
+    if (!menu.menu_id.trim()) { ElMessage.warning('请填写菜单标识'); return }
+    if (!menu.title.trim()) { ElMessage.warning('请填写菜单名称'); return }
+    if (!crudGeneratedRoutePath.value) { ElMessage.warning('请填写有效的存放目录'); return }
+  }
 
   submitting.value = true
   try {
@@ -842,6 +976,18 @@ async function handleDownloadCRUD() {
         dirName: dirName.trim(),
         controllerName: controllerName.trim(),
         tableName: tableName.trim(),
+        autoGenerateRoute,
+        pageRelativePath: crudGeneratedRoutePath.value,
+        menuConfig: autoGenerateRoute
+          ? {
+              menu_id: menu.menu_id.trim(),
+              title: menu.title.trim(),
+              icon: menu.icon.trim() || undefined,
+              sort: Number(menu.sort || 0),
+              parent_id: menu.parent_id || undefined,
+              enable: menu.enable,
+            }
+          : undefined,
         fields: fields.value.filter(f => f.key.trim()).map((f) => {
           const formConfig = f.formConfig
             ? (deepClone(f.formConfig) as Record<string, unknown>)
@@ -879,7 +1025,7 @@ async function handleDownloadCRUD() {
       : new Blob([response.data], { type: 'application/zip' })
 
     triggerBrowserDownload(blob, fileName)
-    ElMessage.success('CRUD 代码包下载成功')
+    ElMessage.success(autoGenerateRoute ? 'CRUD 代码包下载成功，路由页面和菜单已自动生成' : 'CRUD 代码包下载成功')
     showCrudDialog.value = false
   } catch {
   } finally {
@@ -985,7 +1131,7 @@ watch(
         <el-button @click="openFormPreview" :disabled="!hasActiveSchema || !previewFormColumns.length">预览表单</el-button>
         <el-button type="danger" plain @click="handleReset" :disabled="!hasActiveSchema || !fields.length">清空</el-button>
         <el-button :disabled="!hasActiveSchema || !fields.length" @click="openCreateDialog">创建集合</el-button>
-        <el-button type="primary" :disabled="!hasActiveSchema || !fields.length" @click="openCrudDialog">生成 CRUD</el-button>
+        <el-button type="primary" :disabled="!crudGeneratorEnabled || !hasActiveSchema || !fields.length" @click="openCrudDialog">生成 CRUD</el-button>
       </div>
     </div>
 
@@ -1100,8 +1246,8 @@ watch(
       </template>
     </el-dialog>
 
-    <el-dialog v-model="showCrudDialog" title="生成 CRUD 代码包" width="500" draggable :close-on-click-modal="false">
-      <el-form label-width="90px" @submit.prevent="handleDownloadCRUD">
+    <el-dialog v-model="showCrudDialog" title="生成 CRUD 代码包" width="640" draggable :close-on-click-modal="false">
+      <el-form label-width="98px" @submit.prevent="handleDownloadCRUD">
         <el-form-item label="目录名称" required>
           <el-input v-model="crudForm.dirName" placeholder="如 system" clearable />
         </el-form-item>
@@ -1111,6 +1257,26 @@ watch(
         <el-form-item label="表名" required>
           <el-input v-model="crudForm.tableName" placeholder="数据库集合名" clearable />
         </el-form-item>
+        <el-form-item label="自动生成路由">
+          <div class="w-full">
+            <el-switch v-model="crudForm.autoGenerateRoute" />
+            <div class="text-xs text-[var(--el-text-color-secondary)] mt-1">
+              开启后会在后台 `pages` 目录自动创建页面，并写入系统菜单。
+            </div>
+          </div>
+        </el-form-item>
+
+        <template v-if="crudForm.autoGenerateRoute">
+          <el-divider content-position="left">菜单配置</el-divider>
+          <qa-form
+            v-model="crudMenuFormData"
+            :action="async () => true"
+            :columns="crudMenuColumns"
+            label-width="98px"
+          >
+            <template #footer />
+          </qa-form>
+        </template>
       </el-form>
       <div class="text-xs text-[var(--el-text-color-secondary)] mt-2 px-1">
         下载 ZIP 包含：<code class="bg-[var(--el-fill-color-light)] px-1 rounded">{目录名}/{控制器名}.controller.ts</code> + <code class="bg-[var(--el-fill-color-light)] px-1 rounded">{目录名}/index.vue</code>

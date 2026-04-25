@@ -85,15 +85,5 @@ export default [
         "sort": 999,
         "path": "databaseDesign",
         component: "/src/pages/databaseDesign/index",
-    },
-    {
-        "_id": "custom",
-        "menu_id": "custom",
-        "icon": "DocumentCopy",
-        "title": "测试",
-        "name":"custom",
-        "sort": 999,
-        "path": "custom",
-        component: "/src/pages/custom/index",
     }
 ]
