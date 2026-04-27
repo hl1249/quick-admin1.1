@@ -11,7 +11,7 @@
  Target Server Version : 80205
  File Encoding         : 65001
 
- Date: 13/04/2026 17:52:51
+ Date: 25/04/2026 13:39:56
 */
 
 
@@ -78,9 +78,9 @@ db.createCollection("qa-app-config");
 // ----------------------------
 db.getCollection("qa-app-config").insert([ {
     _id: ObjectId("69bcbb2e0c34b64800565ec6"),
-    "oss_provider": "local",
-    "_update_time": 1775788034882,
-    "_update_time_str": "2026-04-10 10:27:14"
+    "oss_provider": "tencent",
+    "_update_time": 1776736244925,
+    "_update_time_str": "2026-04-21 09:50:44"
 } ]);
 
 // ----------------------------
@@ -122,7 +122,8 @@ db.getCollection("qa-appids").insert([ {
     secret: "05b6d16e2563d186a3912ee3af6991b0",
     appname: "呱呱工具箱",
     "_add_time": 1776073908631,
-    "_add_time_str": "2026-04-13 17:51:48"
+    "_add_time_str": "2026-04-13 17:51:48",
+    "pay_config": "69e6db05e2352f74ec8d3fc4"
 } ]);
 
 // ----------------------------
@@ -377,6 +378,24 @@ db.getCollection("qa-files").insert([ {
     "category_id": null,
     "_add_time": 1775579667535,
     "_add_time_str": "2026-04-08 00:34:27"
+} ]);
+db.getCollection("qa-files").insert([ {
+    _id: ObjectId("69e6d7fae2352f74ec8d3f86"),
+    "user_id": "672b901c0fcabce5e29faef5",
+    sort: NumberInt("0"),
+    status: NumberInt("0"),
+    type: "image",
+    url: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1776736250523-1b33696a29d945eabb96487019354e3d.jpg",
+    "display_name": "1776736250523-1b33696a29d945eabb96487019354e3d.jpg",
+    "original_name": "2QkSWzRYu0W.jpg",
+    size: NumberInt("202472"),
+    "file_id": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1776736250523-1b33696a29d945eabb96487019354e3d.jpg",
+    provider: "tencent",
+    width: NumberInt("1216"),
+    height: NumberInt("2640"),
+    "category_id": null,
+    "_add_time": 1776736250902,
+    "_add_time_str": "2026-04-21 09:50:50"
 } ]);
 
 // ----------------------------
@@ -4688,6 +4707,29 @@ db.getCollection("qa-logs").insert([ {
     "_add_time": 1776072771753,
     "_add_time_str": "2026-04-13 17:32:51"
 } ]);
+db.getCollection("qa-logs").insert([ {
+    _id: ObjectId("69e26d552140395234b65f77"),
+    url: "/api",
+    method: "GET",
+    statusCode: NumberInt("200"),
+    headers: {
+        host: "43.139.63.227:3000",
+        "user-agent": "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "accept-encoding": "gzip, deflate",
+        "accept-language": "zh-CN,zh;q=0.9",
+        "cache-control": "max-age=0",
+        "upgrade-insecure-requests": "1"
+    },
+    body: null,
+    requestId: "ff9b3191-604d-47f4-8c86-e987b5019316",
+    "_add_time": 1776446805299,
+    "_add_time_str": "2026-04-18 01:26:45",
+    response: {
+        acknowledged: true,
+        deletedCount: NumberInt("0")
+    }
+} ]);
 
 // ----------------------------
 // Collection structure for qa-menus
@@ -4832,7 +4874,7 @@ db.getCollection("qa-menus").insert([ {
 db.getCollection("qa-menus").insert([ {
     _id: ObjectId("69dcb98075758f2b09a61601"),
     "menu_id": "sys-appid",
-    title: "微信小程序管理",
+    title: "小程序管理",
     name: "微信小程序管理",
     "parent_id": "system-setting",
     component: "/src/pages/system/sysAppid",
@@ -4843,6 +4885,69 @@ db.getCollection("qa-menus").insert([ {
     sort: "0",
     "_add_time": 1776073088324,
     "_add_time_str": "2026-04-13 17:38:08"
+} ]);
+db.getCollection("qa-menus").insert([ {
+    _id: ObjectId("69e04c963b56c132251aef68"),
+    "menu_id": "system-setting-pay-config",
+    title: "支付配置",
+    name: "支付配置",
+    "parent_id": "system-setting",
+    component: "/src/pages/system/systemPayConfig",
+    path: null,
+    enable: true,
+    comment: "",
+    icon: "Money",
+    sort: "0",
+    "_add_time": 1776307350480,
+    "_add_time_str": "2026-04-16 10:42:30"
+} ]);
+
+// ----------------------------
+// Collection structure for qa-pay-config
+// ----------------------------
+db.getCollection("qa-pay-config").drop();
+db.createCollection("qa-pay-config",{
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            properties: {
+                type: {
+                    bsonType: "string"
+                },
+                mchId: {
+                    bsonType: "string"
+                },
+                key: {
+                    bsonType: "string"
+                },
+                pfx: {
+                    bsonType: "string"
+                },
+                version: {
+                    bsonType: "string"
+                }
+            },
+            required: [
+                "type"
+            ]
+        }
+    },
+    validationLevel: "strict",
+    validationAction: "error"
+});
+
+// ----------------------------
+// Documents of qa-pay-config
+// ----------------------------
+db.getCollection("qa-pay-config").insert([ {
+    _id: ObjectId("69e6db05e2352f74ec8d3fc4"),
+    type: "wx-mini",
+    mchId: "商户ID",
+    key: "成",
+    pfx: "成",
+    version: "成",
+    "_add_time": 1776737029792,
+    "_add_time_str": "2026-04-21 10:03:49"
 } ]);
 
 // ----------------------------
@@ -5448,6 +5553,113 @@ db.getCollection("qa-schemas").insert([ {
     "_add_time": 1776069709381,
     "_add_time_str": "2026-04-13 16:41:49"
 } ]);
+db.getCollection("qa-schemas").insert([ {
+    _id: ObjectId("69e0475ba775d25f9dd1b49d"),
+    name: "qa-pay-config",
+    fields: [
+        {
+            id: "r5dwau7qwn",
+            key: "type",
+            title: "支付类型",
+            bsonType: "string",
+            description: "",
+            required: true,
+            typeRules: {
+                string: { }
+            },
+            formType: "select",
+            formConfig: {
+                dataValueType: "string",
+                multiple: false,
+                data: [
+                    {
+                        value: "wx-mini",
+                        label: "微信小程序支付"
+                    },
+                    {
+                        value: "wx-h5",
+                        label: "微信H5支付"
+                    }
+                ],
+                placeholder: "支付类型"
+            }
+        },
+        {
+            id: "4irxv72kkbo",
+            key: "mchId",
+            title: "商户ID",
+            bsonType: "string",
+            description: "",
+            required: false,
+            typeRules: {
+                string: { }
+            }
+        },
+        {
+            id: "je6ewr1l8wg",
+            key: "key",
+            title: "v2证书key",
+            bsonType: "string",
+            description: "",
+            required: false,
+            typeRules: {
+                string: { }
+            }
+        },
+        {
+            id: "y4foez8ljim",
+            key: "pfx",
+            title: "p12转base64",
+            bsonType: "string",
+            description: "",
+            required: false,
+            typeRules: {
+                string: { }
+            }
+        },
+        {
+            id: "s2my9a9esgl",
+            key: "version",
+            title: "密钥版本",
+            bsonType: "string",
+            description: "",
+            required: false,
+            typeRules: {
+                string: { }
+            }
+        }
+    ],
+    required: [
+        "type"
+    ],
+    jsonSchema: {
+        bsonType: "object",
+        properties: {
+            type: {
+                bsonType: "string"
+            },
+            mchId: {
+                bsonType: "string"
+            },
+            key: {
+                bsonType: "string"
+            },
+            pfx: {
+                bsonType: "string"
+            },
+            version: {
+                bsonType: "string"
+            }
+        },
+        required: [
+            "type"
+        ]
+    },
+    fieldCount: NumberInt("5"),
+    "_update_time": 1776921337475,
+    "_add_time": 1776306011157,
+    "_add_time_str": "2026-04-16 10:20:11"
+} ]);
 
 // ----------------------------
 // Collection structure for qa-socket-pool
@@ -5708,12 +5920,12 @@ db.getCollection("qa-users").insert([ {
     avatar: "https://avatars.githubusercontent.com/u/53579755?v=4",
     lastLogin: ISODate("2025-09-04T20:32:41.523Z"),
     token: [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzYwNDMwNzcsImV4cCI6MTc3NjY0Nzg3N30.V1sATlbToLSM5CLjfaTZWUG-tRjQ7dbZmALEQz6mSCo",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzYwNDMzMjMsImV4cCI6MTc3NjY0ODEyM30.j1q50tnT9iF-6_YZBiS-DETk3vrRyW1nO-8VcImh8zk",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzYwNjE3NTIsImV4cCI6MTc3NjY2NjU1Mn0.nvXpULjoWkoc82kXmW39aU29EkblXe2lUvAow2IYiLM"
+        null,
+        null,
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzY5MjEyMTksImV4cCI6MTc3NzUyNjAxOX0.rLc0qpbmLK9o2M7lx0yKk67XEATGdtX9qV_9ymls5U8"
     ],
-    "last_login_date": 1776061752400,
-    "last_login_ip": "127.0.0.1",
+    "last_login_date": 1776921219462,
+    "last_login_ip": "未知IP",
     object: {
         name: "小明",
         age: NumberInt("18")
@@ -5784,4 +5996,23 @@ db.getCollection("qa-users").insert([ {
         avatar: "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
         nickname: "你猜"
     }
+} ]);
+db.getCollection("qa-users").insert([ {
+    _id: ObjectId("69e6eb3d9fa307657847c812"),
+    appid: "wx65f51726f2c3e73a",
+    appname: "呱呱工具箱",
+    openid: "oMc8F5Cm4Utv6AhNfX7f14ZZDOdM",
+    unionid: null,
+    nickname: "XG5E28",
+    role: [ ],
+    token: [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2ZWIzZDlmYTMwNzY1Nzg0N2M4MTIiLCJpYXQiOjE3NzY3NDExODEsImV4cCI6MTc3NzM0NTk4MX0.OIuPNxwFw9f_0YMGUoYCahfzwXY87gzCoU5M3eKf6jo",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2ZWIzZDlmYTMwNzY1Nzg0N2M4MTIiLCJpYXQiOjE3NzY3NDEyMTUsImV4cCI6MTc3NzM0NjAxNX0.WsCiOUZ13RsaSFyEUApECh-mv4WcMXiuigKbzUzgLuQ",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2ZWIzZDlmYTMwNzY1Nzg0N2M4MTIiLCJpYXQiOjE3NzY5MTA5ODUsImV4cCI6MTc3NzUxNTc4NX0.NREk0dAgQYB63KfR8OKazA7I6BpmQOI7EJ4ClFiLoBI"
+    ],
+    enable: true,
+    "_add_time": 1776741181939,
+    "_add_time_str": "2026-04-21 11:13:01",
+    "last_login_date": 1776910985911,
+    "last_login_ip": "未知IP"
 } ]);
