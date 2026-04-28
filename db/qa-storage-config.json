@@ -1,0 +1,21 @@
+[
+  {
+    "_id": "69bcba3b0c34b64800565ea7",
+    "provider": "tencent",
+    "accessKey": "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
+    "secretKey": "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
+    "appId": "1319368598"
+  },
+  {
+    "_id": "69c0b5edd5ae2d553e65b11a",
+    "accessKey": "LTAI5tDN2aw1RKondrswFT3w",
+    "provider": "aliyun",
+    "secretKey": "iKCzvV1wkhtbiVZuJmzjCDtXNNQcoX"
+  },
+  {
+    "_id": "69c0b852dff8fe39b542d462",
+    "accessKey": "3xu7T5Z6A5f35D08xdVg8G6bTqus9ALP6kcaCEjP",
+    "provider": "qiniu",
+    "secretKey": "RMXwJd_s5EP308CSr5mcY8mfAXRwaK80XcDUcmUq"
+  }
+]

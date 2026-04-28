@@ -1,0 +1,192 @@
+[
+  {
+    "_id": "672b201418a1950fd5ed1701",
+    "_add_time": 1596416400000,
+    "comment": "",
+    "enable": true,
+    "permission_id": "sys-log",
+    "permission_name": "系统-请求日志",
+    "parent_id": "sys-manage",
+    "sort": 1,
+    "url": [
+      "/app/admin/system/systemLog/*"
+    ],
+    "match_mode": null
+  },
+  {
+    "_id": "6745485d91b2ac8efc8bc94e",
+    "_add_time": 1596416400000,
+    "comment": "",
+    "enable": true,
+    "permission_id": "sys-user",
+    "permission_name": "系统-用户管理",
+    "parent_id": "sys-manage",
+    "sort": 1,
+    "url": [
+      "/app/admin/system/systemUser/systemUser/getList"
+    ],
+    "match_mode": null
+  },
+  {
+    "_id": "674548c891b2ac8efc8bc950",
+    "_add_time": 1596416400000,
+    "comment": "",
+    "enable": true,
+    "permission_id": "sys-menu",
+    "permission_name": "系统-菜单管理",
+    "parent_id": "sys-manage",
+    "sort": 1,
+    "url": [
+      "/app/admin/system/systemMenu/systemMenu/getList"
+    ],
+    "match_mode": null
+  },
+  {
+    "_id": "674548ec91b2ac8efc8bc951",
+    "_add_time": 1596416400000,
+    "comment": "",
+    "enable": true,
+    "permission_id": "sys-role",
+    "permission_name": "系统-角色管理",
+    "parent_id": "sys-manage",
+    "sort": 1,
+    "url": [
+      "/app/admin/system/systemRole/systemRole/getList"
+    ],
+    "match_mode": null
+  },
+  {
+    "_id": "6745490491b2ac8efc8bc952",
+    "_add_time": 1596416400000,
+    "comment": "",
+    "enable": true,
+    "permission_id": "sys-file",
+    "permission_name": "系统-素材管理",
+    "parent_id": "sys-manage",
+    "sort": 1,
+    "url": [
+      "/app/admin/system/systemFile/systemFile/*"
+    ],
+    "match_mode": null
+  },
+  {
+    "_id": "6745903f91b2ac8efc8bc9ab",
+    "_add_time": 1596416400000,
+    "comment": "CRUD权限",
+    "enable": true,
+    "permission_id": "sys-permission",
+    "permission_name": "系统内置权限",
+    "sort": 0,
+    "url": [],
+    "match_mode": null
+  },
+  {
+    "_id": "6745907091b2ac8efc8bc9ad",
+    "_add_time": 1596416400000,
+    "comment": "所有路由以add结尾路由",
+    "enable": true,
+    "permission_id": "sys-add",
+    "parent_id": "sys-permission",
+    "permission_name": "系统内置 - 增",
+    "sort": 0,
+    "url": [
+      "*/add"
+    ]
+  },
+  {
+    "_id": "6745911391b2ac8efc8bc9ae",
+    "_add_time": 1596416400000,
+    "comment": "所有路由以delete结尾路由",
+    "enable": true,
+    "permission_id": "sys-delete",
+    "parent_id": "sys-permission",
+    "permission_name": "系统内置 - 删",
+    "sort": 0,
+    "url": [
+      "*/delete"
+    ]
+  },
+  {
+    "_id": "6745917291b2ac8efc8bc9b0",
+    "_add_time": 1596416400000,
+    "comment": "所有路由以update结尾路由",
+    "enable": true,
+    "permission_id": "sys-update",
+    "parent_id": "sys-permission",
+    "permission_name": "系统内置 - 改",
+    "sort": 0,
+    "url": [
+      "*/update",
+      "*/updateBase"
+    ],
+    "match_mode": null
+  },
+  {
+    "_id": "6745919991b2ac8efc8bc9b1",
+    "_add_time": 1596416400000,
+    "comment": "所有查询",
+    "enable": true,
+    "permission_id": "sys-read",
+    "parent_id": "sys-permission",
+    "permission_name": "系统内置 - 查",
+    "sort": 0,
+    "url": [
+      "*/getList",
+      "*/select",
+      "*/getAll",
+      "*/getDynamicMenu",
+      "*/get"
+    ],
+    "match_mode": null
+  },
+  {
+    "_id": "68f346d5a144c9f3f337272d",
+    "_add_time": 1596416400000,
+    "comment": "菜单权限",
+    "enable": true,
+    "permission_id": "sys-manage",
+    "permission_name": "系统菜单权限",
+    "sort": 0,
+    "url": []
+  },
+  {
+    "_id": "6958a44b8e9017a5cf7f3819",
+    "permission_id": null,
+    "permission_name": null,
+    "parent_id": "sys-user-manage",
+    "url": [],
+    "match_mode": null,
+    "enable": true,
+    "comment": "",
+    "_add_time": 1767416907201,
+    "_add_time_str": "2026-01-03 13:08:27"
+  },
+  {
+    "_id": "696c7462bd8ea0992bb94af9",
+    "permission_id": "sys-manage-permission",
+    "permission_name": "系统-权限管理",
+    "parent_id": "sys-manage",
+    "url": [
+      "/app/admin/system/systemPermission/systemPermission/getList"
+    ],
+    "match_mode": null,
+    "enable": true,
+    "comment": null,
+    "_add_time": 1768715362864,
+    "_add_time_str": "2026-01-18 13:49:22"
+  },
+  {
+    "_id": "69dc6817c24f89e5d23356fc",
+    "permission_id": "sys-manage-socket",
+    "permission_name": "ws连接管理",
+    "parent_id": "sys-manage",
+    "url": [
+      "/app/admin/system/sysSocketPool/sysSocketPool/*"
+    ],
+    "match_mode": null,
+    "enable": true,
+    "comment": null,
+    "_add_time": 1776052247497,
+    "_add_time_str": "2026-04-13 11:50:47"
+  }
+]

@@ -1,0 +1,4300 @@
+[
+  {
+    "_id": "68e778e0c635e46a2c8c4b94",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "2ca65838-5773-4a6c-b1c7-d6935d09599a",
+    "_add_time": 1760000224540,
+    "_add_time_str": "2025-10-09 16:57:04",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDMzMDksImV4cCI6MTc2MDE0ODEwOX0.P4jx_yBBs8E4aRlIMAwWu5JCIUsHAqJcbfDcNmtJ08Q",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk1NDM0NzUsImV4cCI6MTc2MDE0ODI3NX0.kesy8Nx4rOrCKlXvNct587VuDAxwVOq8YnSejRdOf6g",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc"
+      ],
+      "last_login_date": 1759982578168,
+      "last_login_ip": "127.0.0.1"
+    }
+  },
+  {
+    "_id": "68e8731e9e15e24eb6a4e578",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "d970f994-41db-467b-9f84-b98469105595",
+    "_add_time": 1760064286977,
+    "_add_time_str": "2025-10-10 10:44:46",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+      ],
+      "last_login_date": 1760064273066,
+      "last_login_ip": "127.0.0.1"
+    }
+  },
+  {
+    "_id": "68e873209e15e24eb6a4e57e",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "e5253d85-1124-4aa8-af9c-9fba3de06c00",
+    "_add_time": 1760064288135,
+    "_add_time_str": "2025-10-10 10:44:48",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+      ],
+      "last_login_date": 1760064273066,
+      "last_login_ip": "127.0.0.1"
+    }
+  },
+  {
+    "_id": "68e873209e15e24eb6a4e584",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "3f84a383-9587-4e5f-84f3-44c29a9ab714",
+    "_add_time": 1760064288901,
+    "_add_time_str": "2025-10-10 10:44:48",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+      ],
+      "last_login_date": 1760064273066,
+      "last_login_ip": "127.0.0.1"
+    }
+  },
+  {
+    "_id": "68e873219e15e24eb6a4e58a",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "538b5488-cb1a-4d61-8e82-18db9739cb5c",
+    "_add_time": 1760064289680,
+    "_add_time_str": "2025-10-10 10:44:49",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+      ],
+      "last_login_date": 1760064273066,
+      "last_login_ip": "127.0.0.1"
+    }
+  },
+  {
+    "_id": "68e873229e15e24eb6a4e590",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "e96f0626-a89a-402c-bae2-70bdf692254b",
+    "_add_time": 1760064290409,
+    "_add_time_str": "2025-10-10 10:44:50",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTk5ODI1NzgsImV4cCI6MTc2MDU4NzM3OH0.elDfErLnQL4JOemk8M5TWw9EEGjAP4GlCevvcOktSHc",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A"
+      ],
+      "last_login_date": 1760064273066,
+      "last_login_ip": "127.0.0.1"
+    }
+  },
+  {
+    "_id": "68e88420a65dfb1f0206a22d",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "bceb0427-c9a7-49ef-a35f-bfabc28c706b",
+    "_add_time": 1760068640129,
+    "_add_time_str": "2025-10-10 11:57:20",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88421a65dfb1f0206a233",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "82b07aa7-77c8-49e9-bbdd-13abb31dbfaa",
+    "_add_time": 1760068641007,
+    "_add_time_str": "2025-10-10 11:57:21",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88421a65dfb1f0206a239",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "4eb5f07c-8846-4697-ac37-55326e3f1a3e",
+    "_add_time": 1760068641672,
+    "_add_time_str": "2025-10-10 11:57:21",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88422a65dfb1f0206a23f",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "17a9e157-639b-4297-9f73-4b44dfee84b7",
+    "_add_time": 1760068642486,
+    "_add_time_str": "2025-10-10 11:57:22",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88423a65dfb1f0206a245",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "919a0c21-02ea-4cd1-b5bd-85de2f46f981",
+    "_add_time": 1760068643174,
+    "_add_time_str": "2025-10-10 11:57:23",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88423a65dfb1f0206a24b",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "d8dc0577-e27d-4d4e-9753-d4e12516543b",
+    "_add_time": 1760068643801,
+    "_add_time_str": "2025-10-10 11:57:23",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88424a65dfb1f0206a251",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "705430b3-24c1-490c-894a-eb1e16c81499",
+    "_add_time": 1760068644514,
+    "_add_time_str": "2025-10-10 11:57:24",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88425a65dfb1f0206a257",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "4f630eb0-0269-4ce1-b039-b20422b47643",
+    "_add_time": 1760068645153,
+    "_add_time_str": "2025-10-10 11:57:25",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88425a65dfb1f0206a25d",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "9266ff5c-001e-4f51-80b5-21e2b6414b74",
+    "_add_time": 1760068645751,
+    "_add_time_str": "2025-10-10 11:57:25",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88427a65dfb1f0206a269",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "29898e05-e57e-41f6-bbe2-3c3fab8d49c9",
+    "_add_time": 1760068647005,
+    "_add_time_str": "2025-10-10 11:57:27",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88427a65dfb1f0206a26f",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "6ff897fe-a1e1-43be-8ebc-b6b2dff83a60",
+    "_add_time": 1760068647597,
+    "_add_time_str": "2025-10-10 11:57:27",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "68e88428a65dfb1f0206a275",
+    "url": "/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "afb6207f-7ef2-468a-b87e-81e2e0e2f6e1",
+    "_add_time": 1760068648288,
+    "_add_time_str": "2025-10-10 11:57:28",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNTksImV4cCI6MTc2MDY2OTA1OX0.YrzYg4jS-Ziztzhii9dbmObvHRCPjMBMU_VztEVfJAU",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQyNzMsImV4cCI6MTc2MDY2OTA3M30.tfq28X9aLJFl3TablwgdXdVsK2w85_LNElOeQE8Zg5A",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NjAwNjQ2NTYsImV4cCI6MTc2MDY2OTQ1Nn0.v4KRslMfta7KNJZ_1mAQRyG7sXsaezwMOH10n_RWYeM"
+      ],
+      "last_login_date": 1760064656254,
+      "last_login_ip": "未知IP"
+    }
+  },
+  {
+    "_id": "696c4d1179eea4cf6bacb985",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "146e1d28-2227-44a8-9871-6fb5d6a5021c",
+    "_add_time": 1768705297910,
+    "_add_time_str": "2026-01-18 11:01:37",
+    "response": 1
+  },
+  {
+    "_id": "696c4d60fe3d61ccb78dccb3",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "2ff00e16-2850-4c85-a197-27fafb6a0434",
+    "_add_time": 1768705376544,
+    "_add_time_str": "2026-01-18 11:02:56",
+    "response": 1
+  },
+  {
+    "_id": "696c4d64fe3d61ccb78dccb7",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "dc7a0d54-6c04-4f4e-9444-605ffe52f642",
+    "_add_time": 1768705380869,
+    "_add_time_str": "2026-01-18 11:03:00",
+    "response": 2
+  },
+  {
+    "_id": "696c4d68fe3d61ccb78dccbb",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "69c15161-1265-45e2-ae03-4b0c25ea1822",
+    "_add_time": 1768705384733,
+    "_add_time_str": "2026-01-18 11:03:04",
+    "response": 3
+  },
+  {
+    "_id": "696c4d69fe3d61ccb78dccbf",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "2c401788-268d-4e3c-8cd8-d4807e90b51e",
+    "_add_time": 1768705385616,
+    "_add_time_str": "2026-01-18 11:03:05",
+    "response": 4
+  },
+  {
+    "_id": "696c4d6afe3d61ccb78dccc3",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "77f94973-b64d-419a-9ae6-0afd4b6777eb",
+    "_add_time": 1768705386341,
+    "_add_time_str": "2026-01-18 11:03:06",
+    "response": 5
+  },
+  {
+    "_id": "696c4decea62c400a0505418",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "e63a231d-aa69-4ba2-bb51-6e0123e6b691",
+    "_add_time": 1768705516059,
+    "_add_time_str": "2026-01-18 11:05:16",
+    "response": 1
+  },
+  {
+    "_id": "696c4df8ea62c400a050541c",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "23ed9539-c286-48f9-a27d-8e127a5d9d1c",
+    "_add_time": 1768705528221,
+    "_add_time_str": "2026-01-18 11:05:28",
+    "response": 2
+  },
+  {
+    "_id": "696c4fd2b6903c9b4b6a6e6d",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "fa2671b9-b99c-406f-ac0c-7f75da89af7e",
+    "_add_time": 1768706002392,
+    "_add_time_str": "2026-01-18 11:13:22",
+    "response": 1
+  },
+  {
+    "_id": "696c4fd3b6903c9b4b6a6e71",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "945b744c-4bee-49fd-bd45-07f0b3017a84",
+    "_add_time": 1768706003454,
+    "_add_time_str": "2026-01-18 11:13:23",
+    "response": 2
+  },
+  {
+    "_id": "696c4fd4b6903c9b4b6a6e75",
+    "url": "/incr",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3001",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "aadbfbee-cff5-46d0-8c71-22ed6ce87863",
+    "_add_time": 1768706004348,
+    "_add_time_str": "2026-01-18 11:13:24",
+    "response": 3
+  },
+  {
+    "_id": "699dba76387555c28ce2e2d6",
+    "url": "/api/select",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "1623346c-8729-44fa-9a04-4d3c7ffcec50",
+    "_add_time": 1771944566543,
+    "_add_time_str": "2026-02-24 22:49:26",
+    "response": {
+      "rows": [],
+      "hasMore": false,
+      "total": 0,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 2
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "699dbaa632149c67c2c6e02c",
+    "url": "/api/select",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "7054d963-ea56-4775-9109-08e5b354c7d1",
+    "_add_time": 1771944614895,
+    "_add_time_str": "2026-02-24 22:50:14",
+    "response": {
+      "rows": [],
+      "hasMore": false,
+      "total": 0,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 2
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "699dbabf32149c67c2c6e032",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "d851a40c-1741-4995-9bc3-6e342464f88e",
+    "_add_time": 1771944639221,
+    "_add_time_str": "2026-02-24 22:50:39",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "admin"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njg3MDcxMzMsImV4cCI6MTc2OTMxMTkzM30.dWmarZTbndPNMISzJBVZPnzxjWZAwka0RhO-K0bx9sY",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njg3MDcxMzgsImV4cCI6MTc2OTMxMTkzOH0.N90Zk4y09Zx7tMo3-ea-EmoYRoVspxLYMQNPPy3b0SM",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njg3MDcxNDcsImV4cCI6MTc2OTMxMTk0N30.1vQl0DeE8r6MgKrj1hYo9TLDkxrYsfzEC_SDYRoVvsM"
+          ],
+          "last_login_date": 1768707147381,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": [
+                "sys-menus-manage",
+                "system"
+              ]
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3Njg3MTQ3MDAsImV4cCI6MTc2OTMxOTUwMH0.JkWgfDzlUrSJ-mv_4QrV3tOFTy6cqpyEsDLXyor6Osg"
+          ],
+          "last_login_date": 1768714700550,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-manage",
+                "sys-log",
+                "sys-user",
+                "sys-menu",
+                "sys-role",
+                "sys-file",
+                "sys-manage-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        }
+      ],
+      "hasMore": false,
+      "total": 2,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "699f1222884ca14d6d81becb",
+    "url": "/api",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "host": "43.139.63.227:3000",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-encoding": "gzip, deflate",
+      "accept-language": "zh-CN,zh;q=0.9",
+      "cookie": "34332e3133392e36332e3232375f3030343334=c78eeae4be2e958284ceeceb99706e7c",
+      "upgrade-insecure-requests": "1"
+    },
+    "body": null,
+    "requestId": "b23df560-c92b-495c-b3e5-7d5bf2a24b06",
+    "_add_time": 1772032546412,
+    "_add_time_str": "2026-02-25 23:15:46",
+    "response": {
+      "acknowledged": true,
+      "deletedCount": 0
+    }
+  },
+  {
+    "_id": "699f12c1884ca14d6d81bed0",
+    "url": "/api",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "host": "admin.xxsb.games",
+      "x-real-ip": "120.228.125.217",
+      "x-forwarded-for": "120.228.125.217",
+      "connection": "upgrade",
+      "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "sec-fetch-site": "none",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-user": "?1",
+      "sec-fetch-dest": "document",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-CN,zh;q=0.9"
+    },
+    "body": null,
+    "requestId": "e881576c-6833-455c-b9a8-14b5a77448e8",
+    "_add_time": 1772032705169,
+    "_add_time_str": "2026-02-25 23:18:25",
+    "response": {
+      "acknowledged": true,
+      "deletedCount": 0
+    }
+  },
+  {
+    "_id": "699f1317884ca14d6d81befb",
+    "url": "/api",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "host": "admin.xxsb.games",
+      "x-real-ip": "120.228.125.217",
+      "x-forwarded-for": "120.228.125.217",
+      "connection": "upgrade",
+      "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "sec-fetch-site": "none",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-user": "?1",
+      "sec-fetch-dest": "document",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-CN,zh;q=0.9",
+      "if-none-match": "\"699f100a-21f\"",
+      "if-modified-since": "Wed, 25 Feb 2026 15:06:50 GMT"
+    },
+    "body": null,
+    "requestId": "97d663c5-8af6-4795-a10f-c5dfed5cb15e",
+    "_add_time": 1772032791767,
+    "_add_time_str": "2026-02-25 23:19:51",
+    "response": {
+      "acknowledged": true,
+      "deletedCount": 0
+    }
+  },
+  {
+    "_id": "699f131a884ca14d6d81bf00",
+    "url": "/api",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "host": "admin.xxsb.games",
+      "x-real-ip": "120.228.125.217",
+      "x-forwarded-for": "120.228.125.217",
+      "connection": "upgrade",
+      "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "sec-fetch-site": "none",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-user": "?1",
+      "sec-fetch-dest": "document",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-CN,zh;q=0.9",
+      "if-none-match": "W/\"7f-nPFwFQeGUpr/TQjMVgPgUIAfIGc\""
+    },
+    "body": null,
+    "requestId": "ae5e7ce4-d94b-4c31-95ce-3cb78075d96a",
+    "_add_time": 1772032794673,
+    "_add_time_str": "2026-02-25 23:19:54",
+    "response": {
+      "acknowledged": true,
+      "deletedCount": 0
+    }
+  },
+  {
+    "_id": "699f1337884ca14d6d81bf05",
+    "url": "/api",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "host": "admin.xxsb.games",
+      "x-real-ip": "120.228.125.217",
+      "x-forwarded-for": "120.228.125.217",
+      "connection": "upgrade",
+      "cache-control": "max-age=0",
+      "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "sec-fetch-site": "none",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-user": "?1",
+      "sec-fetch-dest": "document",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-CN,zh;q=0.9",
+      "if-none-match": "W/\"7f-dS04+tKU/rxjxkH/ixcXdimjaA4\""
+    },
+    "body": null,
+    "requestId": "273e50c9-54b1-4c24-a703-5727c22efa9e",
+    "_add_time": 1772032823355,
+    "_add_time_str": "2026-02-25 23:20:23",
+    "response": {
+      "acknowledged": true,
+      "deletedCount": 0
+    }
+  },
+  {
+    "_id": "69bf5ce0e1693723e3000dc5",
+    "url": "/api/adds",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "1944fbd8-e5c5-4063-bc57-453d03ff1004",
+    "_add_time": 1774148832168,
+    "_add_time_str": "2026-03-22 11:07:12",
+    "response": {
+      "acknowledged": true,
+      "insertedCount": 22,
+      "insertedIds": {
+        "0": "69bf5ce0e1693723e3000dc7",
+        "1": "69bf5ce0e1693723e3000dc8",
+        "2": "69bf5ce0e1693723e3000dc9",
+        "3": "69bf5ce0e1693723e3000dca",
+        "4": "69bf5ce0e1693723e3000dcb",
+        "5": "69bf5ce0e1693723e3000dcc",
+        "6": "69bf5ce0e1693723e3000dcd",
+        "7": "69bf5ce0e1693723e3000dce",
+        "8": "69bf5ce0e1693723e3000dcf",
+        "9": "69bf5ce0e1693723e3000dd0",
+        "10": "69bf5ce0e1693723e3000dd1",
+        "11": "69bf5ce0e1693723e3000dd2",
+        "12": "69bf5ce0e1693723e3000dd3",
+        "13": "69bf5ce0e1693723e3000dd4",
+        "14": "69bf5ce0e1693723e3000dd5",
+        "15": "69bf5ce0e1693723e3000dd6",
+        "16": "69bf5ce0e1693723e3000dd7",
+        "17": "69bf5ce0e1693723e3000dd8",
+        "18": "69bf5ce0e1693723e3000dd9",
+        "19": "69bf5ce0e1693723e3000dda",
+        "20": "69bf5ce0e1693723e3000ddb",
+        "21": "69bf5ce0e1693723e3000ddc"
+      }
+    }
+  },
+  {
+    "_id": "69bf8d2d3bf89b8156fcc5ad",
+    "url": "/api/updateById",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "8511ae54-cb94-4587-b496-3aa5ad7123d6",
+    "_add_time": 1774161197801,
+    "_add_time_str": "2026-03-22 14:33:17",
+    "response": {
+      "acknowledged": true,
+      "modifiedCount": 0,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 0
+    }
+  },
+  {
+    "_id": "69bf8d573bf89b8156fcc5b2",
+    "url": "/api/updateById",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "4a98abb0-38be-4b7f-b507-023ba5f61a02",
+    "_add_time": 1774161239634,
+    "_add_time_str": "2026-03-22 14:33:59",
+    "response": {
+      "acknowledged": true,
+      "modifiedCount": 0,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 0
+    }
+  },
+  {
+    "_id": "69bf8d81494ff9a1968674f7",
+    "url": "/api/updateById",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "3713943d-7b7d-4419-bd1a-5a141bb4399d",
+    "_add_time": 1774161281317,
+    "_add_time_str": "2026-03-22 14:34:41",
+    "response": {
+      "acknowledged": true,
+      "modifiedCount": 0,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 0
+    }
+  },
+  {
+    "_id": "69bf8db64c7975b4b7068d84",
+    "url": "/api/updateById",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "2cce7269-5d90-4586-ae83-b7514c0dc7fd",
+    "_add_time": 1774161334464,
+    "_add_time_str": "2026-03-22 14:35:34",
+    "response": {
+      "acknowledged": true,
+      "modifiedCount": 0,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 0
+    }
+  },
+  {
+    "_id": "69bf8dc64c7975b4b7068d89",
+    "url": "/api/update",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTY5Nzk4NjUsImV4cCI6MTc1NzU4NDY2NX0.efwqy3d0y3Rq_nxnMnTusT5MxIN31bsaomACTqdKOso",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "753049e5-b5a5-4d5c-9199-e176f5f6548c",
+    "_add_time": 1774161350407,
+    "_add_time_str": "2026-03-22 14:35:50",
+    "response": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "69bf8ddbd779b3fa35893d03",
+    "url": "/api/update",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NTY5Nzk4NjUsImV4cCI6MTc1NzU4NDY2NX0.efwqy3d0y3Rq_nxnMnTusT5MxIN31bsaomACTqdKOso",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "03e1cadf-8a87-423d-970c-21b1f82832c3",
+    "_add_time": 1774161371645,
+    "_add_time_str": "2026-03-22 14:36:11",
+    "response": {
+      "acknowledged": true,
+      "modifiedCount": 21,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 22
+    }
+  },
+  {
+    "_id": "69c015fca338e0970ffdd1b2",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "4a3a5e6a-fff6-4a78-a26d-c24d06eb175f",
+    "_add_time": 1774196220780,
+    "_add_time_str": "2026-03-23 00:17:00",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "status": 1
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016159d43363471b4a388",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "d9fe8bf0-a277-4141-a81c-c0ec521b163c",
+    "_add_time": 1774196245188,
+    "_add_time_str": "2026-03-23 00:17:25",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c0164c9d43363471b4a38d",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "71f35d14-b1dc-4ffb-a4af-f16fe71f614b",
+    "_add_time": 1774196300810,
+    "_add_time_str": "2026-03-23 00:18:20",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016569d43363471b4a392",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "296218ef-640c-4f82-ad76-1824966f3f7a",
+    "_add_time": 1774196310402,
+    "_add_time_str": "2026-03-23 00:18:30",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c0166c9d43363471b4a397",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "9204a4e2-d915-4ae1-9e67-e1bdaec885a9",
+    "_add_time": 1774196332040,
+    "_add_time_str": "2026-03-23 00:18:52",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016a49d43363471b4a39c",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "babb474f-8497-427b-81be-162ef116a9e8",
+    "_add_time": 1774196388338,
+    "_add_time_str": "2026-03-23 00:19:48",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016c69d43363471b4a3a2",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "ac53ddfa-170e-4a50-9977-181e0f6843bb",
+    "_add_time": 1774196422904,
+    "_add_time_str": "2026-03-23 00:20:22",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016d29d43363471b4a3a8",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "0e27e715-aa2e-4082-a947-df5840aa0dad",
+    "_add_time": 1774196434075,
+    "_add_time_str": "2026-03-23 00:20:34",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016e79d43363471b4a3ae",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "05b480d8-70da-4c5a-9f0a-0ba879487d8b",
+    "_add_time": 1774196455211,
+    "_add_time_str": "2026-03-23 00:20:55",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016eb9d43363471b4a3b4",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "4f534d8f-2be8-4fa2-b1fd-579f39b134dd",
+    "_add_time": 1774196459826,
+    "_add_time_str": "2026-03-23 00:20:59",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c016f69d43363471b4a3b9",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "b970c907-99d2-4131-8c5a-9e00f35ed15c",
+    "_add_time": 1774196470730,
+    "_add_time_str": "2026-03-23 00:21:10",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c017009d43363471b4a3be",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "bf172d8b-333e-4f85-a0f1-dc8274e4b637",
+    "_add_time": 1774196480631,
+    "_add_time_str": "2026-03-23 00:21:20",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c017189d43363471b4a3c4",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "273b251c-bfc1-4422-8973-9071b67f1a40",
+    "_add_time": 1774196504460,
+    "_add_time_str": "2026-03-23 00:21:44",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c0171b9d43363471b4a3ca",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "abf53da1-7852-4985-ab06-99f489b73776",
+    "_add_time": 1774196507587,
+    "_add_time_str": "2026-03-23 00:21:47",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c0173e9d43363471b4a3cf",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "917c645a-8cd8-44b4-9345-6cf58d3e3138",
+    "_add_time": 1774196542037,
+    "_add_time_str": "2026-03-23 00:22:22",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            },
+            {
+              "_id": "69c01733ef4ce60bc51d572f",
+              "name": "xxsbs-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c0174e9d43363471b4a3d4",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "e9d870d9-8f34-4ce0-9d21-00c0a117b389",
+    "_add_time": 1774196558121,
+    "_add_time_str": "2026-03-23 00:22:38",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            },
+            {
+              "_id": "69c01733ef4ce60bc51d572f",
+              "name": "xxsbs-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c018759d43363471b4a3d9",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "bbb84a4f-89d5-4431-bda9-79f0c82e7d99",
+    "_add_time": 1774196853938,
+    "_add_time_str": "2026-03-23 00:27:33",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            },
+            {
+              "_id": "69c01733ef4ce60bc51d572f",
+              "name": "xxsbs-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c0189d9d43363471b4a3de",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "8fce0136-20b7-44fa-bea3-2099e37e7928",
+    "_add_time": 1774196893015,
+    "_add_time_str": "2026-03-23 00:28:13",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            },
+            {
+              "_id": "69c01733ef4ce60bc51d572f",
+              "name": "xxsbs-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c018c89d43363471b4a3e3",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "12373f3a-7d08-4d9e-86b5-79eeca678cd1",
+    "_add_time": 1774196936471,
+    "_add_time_str": "2026-03-23 00:28:56",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c019109d43363471b4a3e9",
+    "url": "/api/selects",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "600a314d-6079-4c9c-8c5c-b9471edd50e0",
+    "_add_time": 1774197008729,
+    "_add_time_str": "2026-03-23 00:30:08",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$q5gojq/nkjynRaLuZouM8uP35LrSOWFMmbrbRgjpl0.Mi0fT6DmIy",
+          "role": [
+            "admin",
+            "agent",
+            "test"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c"
+          ],
+          "last_login_date": 1774194249867,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed56ff",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "系统角色-请勿删除",
+              "enable": true,
+              "permission": [
+                "sys-permission",
+                "sys-add",
+                "sys-delete",
+                "sys-update",
+                "sys-read"
+              ],
+              "role_id": "admin",
+              "role_name": "超级管理员",
+              "no": 1,
+              "menu": []
+            }
+          ],
+          "role_name": [
+            "admin"
+          ],
+          "comment": [
+            "系统角色-请勿删除"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3MzYsImV4cCI6MTc3NDcwMzUzNn0.aX500m-bsCFWwH1QKTxRAhgpeliBmjUIgw16JAayGMI",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg3NTQsImV4cCI6MTc3NDcwMzU1NH0.yVtNh6HZBV-LCnpZt-b5l5MNejks7iK0ZjDHmx5eIis",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzQwOTg5OTIsImV4cCI6MTc3NDcwMzc5Mn0.mRkBFJY_wxDvt-NiGYJzHlTTp3GvTxG4n6_ENQ5-uvY"
+          ],
+          "last_login_date": 1774098992205,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "roles": [
+            {
+              "_id": "672b1fc518a1950fd5ed565f",
+              "_add_time": 1760595008000,
+              "_add_time_str": "2025-10-16 14:10:08",
+              "comment": "二级管理员-1",
+              "enable": true,
+              "permission": [
+                "sys-read",
+                "sys-permission"
+              ],
+              "role_id": "agent",
+              "role_name": "代理商",
+              "no": 2,
+              "menu": [
+                "system",
+                "system-uni-uni-id-files",
+                "sys-user-manage",
+                "sys-role-manage",
+                "sys-menus-manage",
+                "enable",
+                "system-log",
+                "system-permission"
+              ]
+            }
+          ],
+          "role_name": [
+            "agent"
+          ],
+          "comment": [
+            "二级管理员-1"
+          ],
+          "andSex": true
+        },
+        {
+          "_id": "69b771e8138f8761a51680dc",
+          "rate": 4,
+          "username": "test",
+          "nickname": "哈哈哈萨达阿萨德",
+          "password": "$2b$10$mFWkdpnUcsKK.mupwyBcH.DNiwxynvs5EnERuNsemfWFG9foSjc/K",
+          "avatar": "1123",
+          "_add_time": 1773629928986,
+          "_add_time_str": "2026-03-16 10:58:48",
+          "enable": true,
+          "token": [],
+          "status": 0,
+          "role": [],
+          "roles": [],
+          "role_name": [],
+          "comment": [],
+          "andSex": false
+        }
+      ],
+      "hasMore": false,
+      "total": 3,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c019189d43363471b4a3ef",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "5caeed96-4900-48ec-9330-9fffbdadcfc1",
+    "_add_time": 1774197016263,
+    "_add_time_str": "2026-03-23 00:30:16",
+    "response": {
+      "rows": [
+        {
+          "_id": "69bcbb2e0c34b64800565ec6",
+          "oss_provider": "tencent",
+          "space": [
+            {
+              "_id": "69bd7047fdc08e554a55374a",
+              "name": "xxsb-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            },
+            {
+              "_id": "69c01733ef4ce60bc51d572f",
+              "name": "xxsbs-1319368598",
+              "region": "ap-guangzhou",
+              "status": 1,
+              "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+              "_add_time_str": "2026-03-21 00:08:28",
+              "_add_time": 1774022908000,
+              "_update_time_str": "2026-03-21 00:08:28",
+              "_update_time": 1774022908000,
+              "provider": "tencent"
+            }
+          ]
+        }
+      ],
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 10
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c019a96269070732cd850e",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "9b999c99-b180-4c42-b7d0-5b48464f896a",
+    "_add_time": 1774197161284,
+    "_add_time_str": "2026-03-23 00:32:41",
+    "response": {
+      "rows": {
+        "_id": "69bcbb2e0c34b64800565ec6",
+        "oss_provider": "tencent",
+        "space": {
+          "_id": "69bd7047fdc08e554a55374a",
+          "name": "xxsb-1319368598",
+          "region": "ap-guangzhou",
+          "status": 1,
+          "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+          "_add_time_str": "2026-03-21 00:08:28",
+          "_add_time": 1774022908000,
+          "_update_time_str": "2026-03-21 00:08:28",
+          "_update_time": 1774022908000,
+          "provider": "tencent"
+        }
+      },
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 1
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c019c912c656bc5c76f4a3",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "f0ac16a0-504d-4e4e-b323-6368e808dfbd",
+    "_add_time": 1774197193010,
+    "_add_time_str": "2026-03-23 00:33:13",
+    "response": {
+      "rows": {
+        "_id": "69bcbb2e0c34b64800565ec6",
+        "oss_provider": "tencent",
+        "space": {
+          "_id": "69bd7047fdc08e554a55374a",
+          "name": "xxsb-1319368598",
+          "region": "ap-guangzhou",
+          "status": 1,
+          "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+          "_add_time_str": "2026-03-21 00:08:28",
+          "_add_time": 1774022908000,
+          "_update_time_str": "2026-03-21 00:08:28",
+          "_update_time": 1774022908000,
+          "provider": "tencent"
+        }
+      },
+      "hasMore": false,
+      "total": 1,
+      "getCount": false,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 1
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69c01a2435e854c73269db92",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "8172306a-49db-4642-989c-c18483637947",
+    "_add_time": 1774197284503,
+    "_add_time_str": "2026-03-23 00:34:44",
+    "response": [
+      {
+        "_id": "69bcbb2e0c34b64800565ec6",
+        "oss_provider": "tencent",
+        "space": {
+          "_id": "69bd7047fdc08e554a55374a",
+          "name": "xxsb-1319368598",
+          "region": "ap-guangzhou",
+          "status": 1,
+          "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+          "_add_time_str": "2026-03-21 00:08:28",
+          "_add_time": 1774022908000,
+          "_update_time_str": "2026-03-21 00:08:28",
+          "_update_time": 1774022908000,
+          "provider": "tencent"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "69d12704f0c26718ed752583",
+    "user_id": "32412",
+    "_add_time": 1775314692958,
+    "_add_time_str": "2026-04-04 22:58:12"
+  },
+  {
+    "_id": "69d12710f0c26718ed752589",
+    "user_id": "黄弱啊",
+    "_add_time": 1775314704707,
+    "_add_time_str": "2026-04-04 22:58:24"
+  },
+  {
+    "_id": "69d12714f0c26718ed75258f",
+    "user_id": "亮猛啊",
+    "_add_time": 1775314708856,
+    "_add_time_str": "2026-04-04 22:58:28"
+  },
+  {
+    "_id": "69d1c4bb9111338ca2a67b2d",
+    "url": "/api/ossProvider",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "d9ab26c0-9607-4e0c-8678-aef2187337a9",
+    "_add_time": 1775355067034,
+    "_add_time_str": "2026-04-05 10:11:07",
+    "response": [
+      {
+        "_id": "69bcbb2e0c34b64800565ec6",
+        "oss_provider": "tencent",
+        "_update_time": 1775144887292,
+        "_update_time_str": "2026-04-02 23:48:07",
+        "space": {
+          "_id": "69c7393fed1c1af21a3f1dcf",
+          "name": "xxsb-1319368598",
+          "region": "ap-guangzhou",
+          "domain": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com",
+          "provider": "tencent",
+          "accessKey": "AKIDkhS1MTN3ZszuhH6i6HF0Xv65qNhoiPuH",
+          "secretKey": "DCyXt286rPn8ezCKN2c7RYSAh3FG8qRs",
+          "acl": "public-read",
+          "creationDate": "2026-03-19T15:14:38Z",
+          "_update_time": 1774876713603,
+          "_update_time_str": "2026-03-30 21:18:33",
+          "enable": true,
+          "_add_time": 1774663999193,
+          "_add_time_str": "2026-03-28 10:13:19"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "69d1c5efc99b6367abd23b05",
+    "url": "/api/dbList",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzQxOTQyNDksImV4cCI6MTc3NDc5OTA0OX0.xoO-Gh5x2yGGOFyoQ8mUjQS1sVClAa544H-qtxZvH2c",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "b9e069fd-5fec-48ea-8821-e2b0eb58b43d",
+    "_add_time": 1775355375586,
+    "_add_time_str": "2026-04-05 10:16:15",
+    "response": [
+      {
+        "name": "qa-permissions",
+        "type": "collection",
+        "options": {
+          "validator": {
+            "$jsonSchema": {
+              "bsonType": "object",
+              "required": [
+                "_id",
+                "_add_time",
+                "comment",
+                "enable",
+                "permission_id",
+                "permission_name",
+                "url"
+              ],
+              "properties": {
+                "_id": {
+                  "bsonType": "objectId"
+                },
+                "_add_time": {
+                  "bsonType": [
+                    "long",
+                    "double"
+                  ]
+                },
+                "_add_time_str": {
+                  "bsonType": "string"
+                },
+                "comment": {
+                  "bsonType": "string"
+                },
+                "enable": {
+                  "bsonType": "bool"
+                },
+                "match_mode": {
+                  "bsonType": "null"
+                },
+                "parent_id": {
+                  "bsonType": "string"
+                },
+                "permission_id": {
+                  "bsonType": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "permission_name": {
+                  "bsonType": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "sort": {
+                  "bsonType": "int"
+                },
+                "url": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                }
+              }
+            }
+          },
+          "validationLevel": "off",
+          "validationAction": "error"
+        },
+        "info": {
+          "readOnly": false,
+          "uuid": "0f5a74a0-e141-4cd2-94e2-f6909bb9c31d"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-roles",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "414873f7-1c98-4a2f-9f1f-b5a18e911e3a"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-storage-space",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "4da4d1aa-6f0d-4c75-b14c-c6a3aa861d53"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-test",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "654f61af-061c-4f6c-989e-eb0d94221315"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-files-categories",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "97329a0b-0a89-4f5a-962a-af2a32a10a52"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-storage-config",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "9a44c589-78a1-453f-99eb-f2a3200d5cf4"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-files",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "b2e4dea0-f406-4dfb-9ef7-3cee0c89f21b"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-users",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "cba37cb6-f028-4b89-8a49-bd6197059064"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-app-config",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "d7b90e9d-ac85-4f32-984c-48f0cdeb0304"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-menus",
+        "type": "collection",
+        "options": {
+          "validationLevel": "off",
+          "validationAction": "error"
+        },
+        "info": {
+          "readOnly": false,
+          "uuid": "ef057bda-c864-47d1-a5c8-2689dd8ca919"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      },
+      {
+        "name": "qa-logs",
+        "type": "collection",
+        "options": {},
+        "info": {
+          "readOnly": false,
+          "uuid": "f64f5672-7d6a-4ada-aca4-b32d8f24d2a6"
+        },
+        "idIndex": {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "69d29650bcdf29b83b2e34f1",
+    "url": "/api",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "host": "43.139.63.227",
+      "x-real-ip": "185.150.191.165",
+      "x-forwarded-for": "185.150.191.165",
+      "connection": "upgrade",
+      "user-agent": "Umai-Scanner/1.0 (+https://umai.entelijan.com/methodology)",
+      "accept": "text/html, application/json, */*",
+      "accept-language": "*",
+      "sec-fetch-mode": "cors",
+      "accept-encoding": "br, gzip, deflate"
+    },
+    "body": null,
+    "requestId": "0dab4cde-6598-4ea8-ab75-a5e046b9df2c",
+    "_add_time": 1775408720737,
+    "_add_time_str": "2026-04-06 01:05:20",
+    "response": {
+      "acknowledged": true,
+      "deletedCount": 0
+    }
+  },
+  {
+    "_id": "69d5b77415d653328440943d",
+    "code": 500,
+    "_add_time": 1775613812631,
+    "_add_time_str": "2026-04-08 10:03:32"
+  },
+  {
+    "_id": "69d5b7a115d653328440944c",
+    "statusCode": 500,
+    "_add_time": 1775613857608,
+    "_add_time_str": "2026-04-08 10:04:17"
+  },
+  {
+    "_id": "69d5b7ac15d653328440945e",
+    "statusCode": 200,
+    "_add_time": 1775613868752,
+    "_add_time_str": "2026-04-08 10:04:28"
+  },
+  {
+    "_id": "69d70c92f9cd4e085884b0d0",
+    "url": "/api/findByWhereJson",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njg3OTU2MDEsImV4cCI6MTc2OTQwMDQwMX0.plua9EAL0R-MmEwFOYBteQ1YJIxgqhTtVpxwcI4YxAk",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "78ba5576-8d9a-449a-b9ad-af24e7c5592a",
+    "_add_time": 1775701138616,
+    "_add_time_str": "2026-04-09 10:18:58",
+    "response": {
+      "_id": "672b901c0fcabce5e29faef5",
+      "username": "admin",
+      "password": "$2b$10$MRvFGZuSJqfCWKBhBbirPePjC17AqOF5SJiJwG0WInmvo..NYYAbi",
+      "role": [
+        "admin"
+      ],
+      "_add_time": 1730908188567,
+      "_add_time_str": "2024-11-06 23:49:48",
+      "no": 2,
+      "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "lastLogin": "2025-09-04T20:32:41.523Z",
+      "token": [
+        null,
+        null,
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU2OTcxODYsImV4cCI6MTc3NjMwMTk4Nn0.Eqd62utWi-UZzFiMrkILiRb1h_Kqa65wrRd_RkSoW18"
+      ],
+      "last_login_date": 1775697186412,
+      "last_login_ip": "未知IP",
+      "object": {
+        "name": "小明",
+        "age": 18
+      },
+      "userInfo": {
+        "name": "小明",
+        "age": 18,
+        "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+        "nickname": "你猜"
+      },
+      "enable": true,
+      "nickname": "yellow12321",
+      "rate": 2,
+      "status": 0,
+      "wdf": null
+    }
+  },
+  {
+    "_id": "69d70cb0320307a618e1f58f",
+    "url": "/api/select",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "authorization": "",
+      "user-agent": "Apifox/1.0.0 (https://apifox.com)",
+      "accept": "*/*",
+      "host": "127.0.0.1:3000",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive"
+    },
+    "body": null,
+    "requestId": "30de3cc7-0f94-4399-9e9f-b00afb934df8",
+    "_add_time": 1775701168359,
+    "_add_time_str": "2026-04-09 10:19:28",
+    "response": {
+      "rows": [
+        {
+          "_id": "672b901c0fcabce5e29faef5",
+          "username": "admin",
+          "password": "$2b$10$MRvFGZuSJqfCWKBhBbirPePjC17AqOF5SJiJwG0WInmvo..NYYAbi",
+          "role": [
+            "admin"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            null,
+            null,
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzU2OTcxODYsImV4cCI6MTc3NjMwMTk4Nn0.Eqd62utWi-UZzFiMrkILiRb1h_Kqa65wrRd_RkSoW18"
+          ],
+          "last_login_date": 1775697186412,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小明",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "yellow12321",
+          "rate": 2,
+          "status": 0,
+          "wdf": null
+        },
+        {
+          "_id": "68bb20b94f8c40661556f27c",
+          "username": "agent",
+          "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+          "role": [
+            "agent"
+          ],
+          "_add_time": 1730908188567,
+          "_add_time_str": "2024-11-06 23:49:48",
+          "no": 2,
+          "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+          "avatar": "玩过",
+          "lastLogin": "2025-09-04T20:32:41.523Z",
+          "token": [
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjAsImV4cCI6MTc3NjE4Mzc2MH0.XFDU-Zzig17wO2AMXJojVij3X7nQVqZoBeyL8sC65fw",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1Nzg5NjMsImV4cCI6MTc3NjE4Mzc2M30.gkLJLEaFlO5Mo06HSGTt7l3OywvXL-tVeqDLKN_9B2I",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU1NzkyNjksImV4cCI6MTc3NjE4NDA2OX0.DmTkaDYwApR4HrcEE0jWA7k7waO4f1V7tzEOgS9MBEQ"
+          ],
+          "last_login_date": 1775579269545,
+          "last_login_ip": "未知IP",
+          "object": {
+            "name": "小王",
+            "age": 18
+          },
+          "userInfo": {
+            "name": "小明",
+            "age": 18,
+            "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+            "nickname": "你猜"
+          },
+          "enable": true,
+          "nickname": "1",
+          "rate": 2,
+          "status": 0,
+          "wdf": null
+        }
+      ],
+      "hasMore": false,
+      "total": 2,
+      "getCount": true,
+      "pagination": {
+        "pageIndex": 1,
+        "pageSize": 2
+      },
+      "msg": "查询成功",
+      "code": 0
+    }
+  },
+  {
+    "_id": "69d7b2cee81d8a4acaf006ab",
+    "statusCode": 500,
+    "_add_time": 1775743694602,
+    "_add_time_str": "2026-04-09 22:08:14"
+  },
+  {
+    "_id": "69dcb84301bd3d988525012a",
+    "_add_time": 1776072771012,
+    "_add_time_str": "2026-04-13 17:32:51"
+  },
+  {
+    "_id": "69dcb84301bd3d988525012c",
+    "_add_time": 1776072771753,
+    "_add_time_str": "2026-04-13 17:32:51"
+  },
+  {
+    "_id": "69e26d552140395234b65f77",
+    "url": "/api",
+    "method": "GET",
+    "statusCode": 200,
+    "headers": {
+      "host": "43.139.63.227:3000",
+      "user-agent": "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+      "accept-encoding": "gzip, deflate",
+      "accept-language": "zh-CN,zh;q=0.9",
+      "cache-control": "max-age=0",
+      "upgrade-insecure-requests": "1"
+    },
+    "body": null,
+    "requestId": "ff9b3191-604d-47f4-8c86-e987b5019316",
+    "_add_time": 1776446805299,
+    "_add_time_str": "2026-04-18 01:26:45",
+    "response": {
+      "acknowledged": true,
+      "deletedCount": 0
+    }
+  }
+]

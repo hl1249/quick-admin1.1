@@ -1,0 +1,64 @@
+[
+  {
+    "_id": "695b229e33afcb692b6232de",
+    "username": "admin",
+    "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+    "role": [
+      "admin"
+    ],
+    "_add_time": 1730908188567,
+    "_add_time_str": "2024-11-06 23:49:48",
+    "no": 2,
+    "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+    "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+    "lastLogin": "2025-09-04T20:32:41.523Z",
+    "token": [
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njc0MjE2MjAsImV4cCI6MTc2ODAyNjQyMH0.x7uk2PpygR0yp_xdA4haxpO1OIjYAJvtE9GBfCn-Ics",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njc0MjU0OTMsImV4cCI6MTc2ODAzMDI5M30.MgCbA6J4QqonJMauP1_5h9RjEIDRxSYBLszX-n8QEvg",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3Njc0MjU5MTAsImV4cCI6MTc2ODAzMDcxMH0.T-4yri37SkjNT6kmtxMzM0TVTk6_owcKlV0O8w4DUgM"
+    ],
+    "last_login_date": 1767425910908,
+    "last_login_ip": "未知IP",
+    "object": {
+      "name": "小明",
+      "age": 18
+    },
+    "userInfo": {
+      "name": "小明",
+      "age": 18,
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "nickname": "你猜"
+    }
+  },
+  {
+    "_id": "695b22b933afcb692b6232e2",
+    "username": "agent",
+    "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+    "role": [
+      "agent"
+    ],
+    "_add_time": 1730908188567,
+    "_add_time_str": "2024-11-06 23:49:48",
+    "no": 2,
+    "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+    "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+    "lastLogin": "2025-09-04T20:32:41.523Z",
+    "token": [
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NjA3NzQxNDMsImV4cCI6MTc2MTM3ODk0M30.C6KsNTmm3Pp4aM4P20ozpTP7irTscNn-qrfBOIfqHzo",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NjA3NzQ3NTQsImV4cCI6MTc2MTM3OTU1NH0.HaNh7ywd5VxDfL9fbQ8GOU1ClzhI95mgOpfatO9OrIs",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NjA4MzYzNTEsImV4cCI6MTc2MTQ0MTE1MX0.RMhyi1UR0spfHL7waT00op8UF7bIKBWvD8V0EKArTEA"
+    ],
+    "last_login_date": 1760836351787,
+    "last_login_ip": "未知IP",
+    "object": {
+      "name": "小王",
+      "age": 18
+    },
+    "userInfo": {
+      "name": "小明",
+      "age": 18,
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "nickname": "你猜"
+    }
+  }
+]

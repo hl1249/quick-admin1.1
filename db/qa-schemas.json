@@ -1,0 +1,385 @@
+[
+  {
+    "_id": "69d5c0ee0cb30e56b1f6c6fa",
+    "name": "test",
+    "fields": [
+      {
+        "id": "8s0lzb8bfag",
+        "key": "username",
+        "bsonType": "string",
+        "description": "",
+        "required": true,
+        "typeRules": {
+          "string": {}
+        },
+        "formType": "text",
+        "formConfig": {
+          "placeholder": "用户名"
+        }
+      },
+      {
+        "id": "nvyngvh57d",
+        "key": "password",
+        "bsonType": "string",
+        "description": "",
+        "required": true,
+        "typeRules": {
+          "string": {}
+        },
+        "formType": "password",
+        "formConfig": {
+          "placeholder": "密码"
+        }
+      },
+      {
+        "id": "cqdaa7vrczj",
+        "key": "age",
+        "bsonType": "int",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "int": {}
+        },
+        "formType": "number",
+        "formConfig": {
+          "step": 1,
+          "placeholder": "年龄"
+        }
+      },
+      {
+        "id": "secdhpuy66",
+        "key": "sex",
+        "bsonType": "int",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "int": {}
+        },
+        "formType": "select",
+        "formConfig": {
+          "dataValueType": "number",
+          "placeholder": "性别",
+          "data": [
+            {
+              "value": 0,
+              "label": "男"
+            },
+            {
+              "value": 1,
+              "label": "女"
+            }
+          ]
+        }
+      },
+      {
+        "id": "yvzet1ekvas",
+        "key": "groupId",
+        "bsonType": [
+          "int",
+          "string"
+        ],
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "int": {},
+          "string": {}
+        },
+        "formType": "remote-select",
+        "formConfig": {
+          "placeholder": "班级",
+          "action": "/app/admin/system/systemFile/systemCategories/getList",
+          "propsValue": "type",
+          "propsLabel": "name"
+        }
+      },
+      {
+        "id": "tek8r0fcg",
+        "key": "radio",
+        "bsonType": "string",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "string": {}
+        },
+        "formType": "switch",
+        "formConfig": {
+          "useCustomSwitchValue": true,
+          "switchValueType": "string",
+          "placeholder": "测试",
+          "activeValue": "芜湖",
+          "inactiveValue": "大司马"
+        }
+      }
+    ],
+    "required": [
+      "username",
+      "password"
+    ],
+    "jsonSchema": {
+      "bsonType": "object",
+      "properties": {
+        "username": {
+          "bsonType": "string"
+        },
+        "password": {
+          "bsonType": "string"
+        },
+        "age": {
+          "bsonType": "int"
+        },
+        "sex": {
+          "bsonType": "int"
+        },
+        "groupId": {
+          "bsonType": [
+            "int",
+            "string"
+          ]
+        },
+        "radio": {
+          "bsonType": "string"
+        }
+      },
+      "required": [
+        "username",
+        "password"
+      ]
+    },
+    "fieldCount": 6,
+    "_update_time": 1776065303581,
+    "_add_time": 1775616238069,
+    "_add_time_str": "2026-04-08 10:43:58"
+  },
+  {
+    "_id": "69d70efd09b2dcfd66540985",
+    "name": "fuck",
+    "fields": [
+      {
+        "id": "o5l8xcpckp",
+        "key": "",
+        "bsonType": "string",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "string": {}
+        }
+      },
+      {
+        "id": "np2tqpks8je",
+        "key": "",
+        "bsonType": "string",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "string": {}
+        }
+      }
+    ],
+    "required": [],
+    "jsonSchema": {
+      "bsonType": "object",
+      "properties": {}
+    },
+    "fieldCount": 0,
+    "_update_time": 1775706952628,
+    "_add_time": 1775701757072,
+    "_add_time_str": "2026-04-09 10:29:17"
+  },
+  {
+    "_id": "69d7b1cee81d8a4acaf00693",
+    "name": "黄弱",
+    "fields": [],
+    "required": [],
+    "jsonSchema": {
+      "bsonType": "object",
+      "properties": {}
+    },
+    "fieldCount": 0,
+    "_update_time": 1775961403383,
+    "_add_time": 1775743438047,
+    "_add_time_str": "2026-04-09 22:03:58"
+  },
+  {
+    "_id": "69dcac4d6ddf2d7f59ff6f5f",
+    "name": "qa-appids",
+    "fields": [
+      {
+        "id": "sdotixsqolc",
+        "key": "appid",
+        "bsonType": "string",
+        "description": "",
+        "required": true,
+        "typeRules": {
+          "string": {}
+        },
+        "formType": "text",
+        "formConfig": {
+          "placeholder": "小程序APPID"
+        }
+      },
+      {
+        "id": "8j6j2ml7in9",
+        "key": "secret",
+        "bsonType": "string",
+        "description": "",
+        "required": true,
+        "typeRules": {
+          "string": {}
+        },
+        "formType": "text",
+        "formConfig": {
+          "placeholder": "小程序秘钥"
+        }
+      },
+      {
+        "id": "kbx15ocfzxj",
+        "key": "appname",
+        "bsonType": "string",
+        "description": "",
+        "required": true,
+        "typeRules": {
+          "string": {}
+        },
+        "formType": "text",
+        "formConfig": {
+          "placeholder": "小程序名"
+        }
+      }
+    ],
+    "required": [
+      "appid",
+      "secret",
+      "appname"
+    ],
+    "jsonSchema": {
+      "bsonType": "object",
+      "properties": {
+        "appid": {
+          "bsonType": "string"
+        },
+        "secret": {
+          "bsonType": "string"
+        },
+        "appname": {
+          "bsonType": "string"
+        }
+      },
+      "required": [
+        "appid",
+        "secret",
+        "appname"
+      ]
+    },
+    "fieldCount": 3,
+    "_update_time": 1776072958014,
+    "_add_time": 1776069709381,
+    "_add_time_str": "2026-04-13 16:41:49"
+  },
+  {
+    "_id": "69e0475ba775d25f9dd1b49d",
+    "name": "qa-pay-config",
+    "fields": [
+      {
+        "id": "r5dwau7qwn",
+        "key": "type",
+        "title": "支付类型",
+        "bsonType": "string",
+        "description": "",
+        "required": true,
+        "typeRules": {
+          "string": {}
+        },
+        "formType": "select",
+        "formConfig": {
+          "dataValueType": "string",
+          "multiple": false,
+          "data": [
+            {
+              "value": "wx-mini",
+              "label": "微信小程序支付"
+            },
+            {
+              "value": "wx-h5",
+              "label": "微信H5支付"
+            }
+          ],
+          "placeholder": "支付类型"
+        }
+      },
+      {
+        "id": "4irxv72kkbo",
+        "key": "mchId",
+        "title": "商户ID",
+        "bsonType": "string",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "string": {}
+        }
+      },
+      {
+        "id": "je6ewr1l8wg",
+        "key": "key",
+        "title": "v2证书key",
+        "bsonType": "string",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "string": {}
+        }
+      },
+      {
+        "id": "y4foez8ljim",
+        "key": "pfx",
+        "title": "p12转base64",
+        "bsonType": "string",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "string": {}
+        }
+      },
+      {
+        "id": "s2my9a9esgl",
+        "key": "version",
+        "title": "密钥版本",
+        "bsonType": "string",
+        "description": "",
+        "required": false,
+        "typeRules": {
+          "string": {}
+        }
+      }
+    ],
+    "required": [
+      "type"
+    ],
+    "jsonSchema": {
+      "bsonType": "object",
+      "properties": {
+        "type": {
+          "bsonType": "string"
+        },
+        "mchId": {
+          "bsonType": "string"
+        },
+        "key": {
+          "bsonType": "string"
+        },
+        "pfx": {
+          "bsonType": "string"
+        },
+        "version": {
+          "bsonType": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "fieldCount": 5,
+    "_update_time": 1776921337475,
+    "_add_time": 1776306011157,
+    "_add_time_str": "2026-04-16 10:20:11"
+  }
+]

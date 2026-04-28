@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "672b1fc518a1950fd5ed56ff",
+    "_add_time": 1760595008000,
+    "_add_time_str": "2025-10-16 14:10:08",
+    "comment": "系统角色-请勿删除",
+    "enable": true,
+    "permission": [
+      "sys-permission",
+      "sys-add",
+      "sys-delete",
+      "sys-update",
+      "sys-read"
+    ],
+    "role_id": "admin",
+    "role_name": "超级管理员",
+    "no": 1,
+    "menu": []
+  },
+  {
+    "_id": "672b1fc518a1950fd5ed565f",
+    "_add_time": 1760595008000,
+    "_add_time_str": "2025-10-16 14:10:08",
+    "comment": "二级管理员-1",
+    "enable": true,
+    "permission": [
+      "sys-manage",
+      "sys-log",
+      "sys-user",
+      "sys-menu",
+      "sys-role",
+      "sys-file",
+      "sys-manage-permission",
+      "sys-manage-socket"
+    ],
+    "role_id": "agent",
+    "role_name": "代理商",
+    "no": 2,
+    "menu": [
+      "system-permission",
+      "system-setting-socket",
+      "system",
+      "system-setting"
+    ]
+  }
+]

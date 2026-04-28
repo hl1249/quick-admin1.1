@@ -1,0 +1,112 @@
+[
+  {
+    "_id": "672b901c0fcabce5e29faef5",
+    "username": "admin",
+    "password": "$2b$10$KygUBQF9cCA.Xj8aopjW.ObWnEWe7seNtjcUKr4czluBMOV8jhWKG",
+    "role": [
+      "admin"
+    ],
+    "_add_time": 1730908188567,
+    "_add_time_str": "2024-11-06 23:49:48",
+    "no": 2,
+    "image": "https://avatars.githubusercontent.com/u/53579755?v=4",
+    "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+    "lastLogin": "2025-09-04T20:32:41.523Z",
+    "token": [
+      null,
+      null,
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiOTAxYzBmY2FiY2U1ZTI5ZmFlZjUiLCJpYXQiOjE3NzY5MjEyMTksImV4cCI6MTc3NzUyNjAxOX0.rLc0qpbmLK9o2M7lx0yKk67XEATGdtX9qV_9ymls5U8"
+    ],
+    "last_login_date": 1776921219462,
+    "last_login_ip": "未知IP",
+    "object": {
+      "name": "小明",
+      "age": 18
+    },
+    "userInfo": {
+      "name": "小明",
+      "age": 18,
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "nickname": "你猜"
+    },
+    "enable": true,
+    "nickname": "陈强",
+    "rate": 2,
+    "status": 0,
+    "wdf": null
+  },
+  {
+    "_id": "68bb20b94f8c40661556f27c",
+    "username": "agent",
+    "password": "$2a$10$1AROJQqbbxDa1fmw1IwvreW2M8K.TnnCisTdFi96yHbxWbW5vEPly",
+    "role": [
+      "agent"
+    ],
+    "_add_time": 1730908188567,
+    "_add_time_str": "2024-11-06 23:49:48",
+    "no": 2,
+    "image": "https://imgfiles.pages.dev/file/4f1519414f324c4623dcc.jpg",
+    "avatar": "玩过",
+    "lastLogin": "2025-09-04T20:32:41.523Z",
+    "token": [
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU3MjE4MTAsImV4cCI6MTc3NjMyNjYxMH0.aGaBsM212jOSvgtNOT2QhoaGsDeoUB7KFxk7wLVraI4",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU3MjIzMzMsImV4cCI6MTc3NjMyNzEzM30.z3CsnoEOrG4rqL4pXWs9I0RrAHYapg19bFx6l6XzUXE",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGJiMjBiOTRmOGM0MDY2MTU1NmYyN2MiLCJpYXQiOjE3NzU5NzQwNjAsImV4cCI6MTc3NjU3ODg2MH0.ubn4Mh7L47iXkcdCsCnC5uMSWX3kTBR0o9tMu61_rSc"
+    ],
+    "last_login_date": 1775974060387,
+    "last_login_ip": "未知IP",
+    "object": {
+      "name": "小王",
+      "age": 18
+    },
+    "userInfo": {
+      "name": "小明",
+      "age": 18,
+      "avatar": "https://avatars.githubusercontent.com/u/53579755?v=4",
+      "nickname": "你猜"
+    },
+    "enable": true,
+    "nickname": "1",
+    "rate": 2,
+    "status": 0,
+    "wdf": null
+  },
+  {
+    "_id": "69d77359a70e45d90689cba4",
+    "username": "admin",
+    "nickname": "阿萨姆",
+    "password": "123123",
+    "is_login": true,
+    "_add_time": 1775727449950,
+    "_add_time_str": "2026-04-09 17:37:29",
+    "avatar": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+    "enable": true,
+    "rate": 0,
+    "image": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+    "userInfo": {
+      "name": "小明",
+      "age": 18,
+      "avatar": "https://xxsb-1319368598.cos.ap-guangzhou.myqcloud.com/attach/2026/04/1775579667244-441c7e5fe8be49faa5446d28ada1a3a2.png",
+      "nickname": "你猜"
+    }
+  },
+  {
+    "_id": "69e6eb3d9fa307657847c812",
+    "appid": "wx65f51726f2c3e73a",
+    "appname": "呱呱工具箱",
+    "openid": "oMc8F5Cm4Utv6AhNfX7f14ZZDOdM",
+    "unionid": null,
+    "nickname": "XG5E28",
+    "role": [],
+    "token": [
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2ZWIzZDlmYTMwNzY1Nzg0N2M4MTIiLCJpYXQiOjE3NzY3NDEyMTUsImV4cCI6MTc3NzM0NjAxNX0.WsCiOUZ13RsaSFyEUApECh-mv4WcMXiuigKbzUzgLuQ",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2ZWIzZDlmYTMwNzY1Nzg0N2M4MTIiLCJpYXQiOjE3NzY5MTA5ODUsImV4cCI6MTc3NzUxNTc4NX0.NREk0dAgQYB63KfR8OKazA7I6BpmQOI7EJ4ClFiLoBI",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2ZWIzZDlmYTMwNzY1Nzg0N2M4MTIiLCJpYXQiOjE3NzcxOTY5NjMsImV4cCI6MTc3NzgwMTc2M30.sbRlwTVFElHiKfHQJb1txVZoAyrRXRaoTlSexxcyLHo"
+    ],
+    "enable": true,
+    "_add_time": 1776741181939,
+    "_add_time_str": "2026-04-21 11:13:01",
+    "last_login_date": 1777196963936,
+    "last_login_ip": "未知IP"
+  }
+]
