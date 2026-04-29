@@ -32,6 +32,20 @@ for (const file of filesToCopy) {
   console.log(`[build] copied: ${file}`);
 }
 
+const dirsToCopy = ['db', 'setup'];
+for (const dir of dirsToCopy) {
+  const source = join(rootDir, dir);
+  const target = join(deployDir, dir);
+
+  if (!existsSync(source)) {
+    console.warn(`[build] skip missing directory: ${dir}`);
+    continue;
+  }
+
+  cpSync(source, target, { recursive: true });
+  console.log(`[build] copied: ${dir}`);
+}
+
 const startScriptSource = join(rootDir, 'scripts', 'start.js');
 const startScriptTarget = join(deployDir, 'start.js');
 

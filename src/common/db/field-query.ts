@@ -6,11 +6,26 @@ const LOGICAL_OPERATORS = ['and', 'or', 'not'] as const;
 
 export class FieldQueryTemp {
   private ops: Record<string, any> = {};
+  private logic?: {
+    operator: '$or';
+    items: FieldQueryTemp[];
+  };
 
   constructor(op?: string, value?: any) {
     if (op) {
-      this.ops[op] = value;
+      this.addOp(op, value);
     }
+  }
+
+  static logic(operator: '$or', items: FieldQueryTemp[]) {
+    const query = new FieldQueryTemp();
+    query.logic = { operator, items };
+    return query;
+  }
+
+  private addOp(op: string, value: any) {
+    this.ops[op] = value;
+    return this;
   }
 
   // Helper method to get the first operator and its value
@@ -31,15 +46,55 @@ export class FieldQueryTemp {
     return this;
   }
 
+  eq(val: any) {
+    return this.addOp('$eq', val);
+  }
+
+  neq(val: any) {
+    return this.addOp('$ne', val);
+  }
+
+  gt(val: any) {
+    return this.addOp('$gt', val);
+  }
+
+  gte(val: any) {
+    return this.addOp('$gte', val);
+  }
+
+  lt(val: any) {
+    return this.addOp('$lt', val);
+  }
+
+  lte(val: any) {
+    return this.addOp('$lte', val);
+  }
+
+  in(vals: any[]) {
+    return this.addOp('$in', vals);
+  }
+
+  nin(vals: any[]) {
+    return this.addOp('$nin', vals);
+  }
+
+  exists(val: boolean) {
+    return this.addOp('$exists', val);
+  }
+
   or(...args: FieldQueryTemp[]) {
-    // or 不能合并，必须构造数组形式
-    return LogicQuery.or([this, ...args]);
+    return FieldQueryTemp.logic('$or', [this, ...args]);
   }
   getOps() {
     return this.ops;
   }
 
   buildWithField(field: string) {
+    if (this.logic) {
+      return {
+        [this.logic.operator]: this.logic.items.map(item => item.buildWithField(field))
+      };
+    }
   
     if ('$expr' in this.ops) {
       return { $expr: this.ops['$expr'] };
@@ -103,6 +158,12 @@ export class FieldQueryTemp {
 
   // 对于selects里Foreign层里面WhereJson转换
   buildForeignWhereJsonWithField(field: string) {
+    if (this.logic) {
+      return {
+        [this.logic.operator]: this.logic.items.map(item => item.buildForeignWhereJsonWithField(field))
+      };
+    }
+
     if ('$expr' in this.ops) {
       return { $expr: this.ops['$expr'] };
     }
@@ -128,11 +189,11 @@ class LogicQuery {
       };
     }
 
-    const mergedOps: Record<string, any> = {};
-    for (const item of arr) {
-      Object.assign(mergedOps, item.getOps());
+    if (operator === '$or') {
+      return FieldQueryTemp.logic('$or', arr);
     }
-    return mergedOps;
+
+    return new FieldQueryTemp().and(...arr);
   }
 
   static and(...args: any[]) {

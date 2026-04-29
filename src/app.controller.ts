@@ -8,6 +8,7 @@ import { Log } from '@/common/logger/logger.decorator';
 import { CacheService } from '@/common/cache/cache.service'
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
+import { SetupService } from '@/app/setup/setup.service';
 @Log()
 @Controller()
 @SetMetadata('skipAuth', true) // 设置该路由不需要验证token
@@ -17,8 +18,19 @@ export class AppController {
     private readonly dbService: DbService,
     private readonly jwtService: JwtService,
     private readonly cache: CacheService,
+    private readonly setupService: SetupService,
     @InjectConnection() private readonly connection: Connection,
   ) {}
+
+  @Get('/setup/status')
+  setupStatus() {
+    return this.setupService.getStatus();
+  }
+
+  @Post('/setup/install')
+  installDatabase() {
+    return this.setupService.installDatabase();
+  }
 
   @Get('/dbList')
   async dbList(): Promise<Pick<CollectionInfo, 'name' | 'type'>[]> {

@@ -11,6 +11,9 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const appConfig = app.get(AppConfigService);
   app.useWebSocketAdapter(new IoAdapter(app));
+  app.useStaticAssets(resolve(process.cwd(), 'setup'), {
+    prefix: '/setup',
+  });
   app.useStaticAssets(resolve(process.cwd(), appConfig.localUploadsDirName), {
     prefix: appConfig.localUploadsRoutePrefix,
   });
