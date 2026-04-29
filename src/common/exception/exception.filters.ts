@@ -31,9 +31,6 @@ export class ExceptionsFilter implements ExceptionFilter {
     let message = 'Internal server error';
     let errors: string[] = [];
 
-    // 打印错误日志
-    this.logger.error('错误拦截', exception);
-
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const res = exception.getResponse() as HttpExceptionResponse;
@@ -54,6 +51,12 @@ export class ExceptionsFilter implements ExceptionFilter {
 
     // 为了安全，保证 exception 是 Error 类型
     const err = exception instanceof Error ? exception : null;
+
+    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+      this.logger.error('错误拦截', exception);
+    } else if (status !== HttpStatus.NOT_FOUND) {
+      this.logger.warn('请求异常', exception);
+    }
 
     const responseData = {
       code: 1,

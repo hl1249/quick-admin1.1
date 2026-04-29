@@ -23,11 +23,13 @@ export class AppController {
   ) {}
 
   @Get('/setup/status')
+  @SetMetadata('skipLog', true)
   setupStatus() {
     return this.setupService.getStatus();
   }
 
   @Post('/setup/install')
+  @SetMetadata('skipLog', true)
   installDatabase() {
     return this.setupService.installDatabase();
   }

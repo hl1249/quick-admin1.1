@@ -1,4 +1,5 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Observable, from } from 'rxjs';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { AsyncStorageService } from './asyncStorage.service';
@@ -13,9 +14,18 @@ export class LogInterceptor implements NestInterceptor {
         private readonly asyncStorageService: AsyncStorageService,
         private readonly dbService: DbService,
         private readonly appConfig: AppConfigService,
+        private readonly reflector: Reflector,
     ) { }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+        const skipLog = this.reflector.getAllAndOverride<boolean>('skipLog', [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        if (skipLog) {
+            return next.handle();
+        }
+
         const req = context.switchToHttp().getRequest();
         const res = context.switchToHttp().getResponse();
         const headers = req.headers;

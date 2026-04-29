@@ -97,6 +97,7 @@
 
       pre {
         min-height: 160px;
+        max-height: 320px;
         margin: 24px 0 0;
         padding: 16px;
         overflow: auto;
@@ -118,7 +119,7 @@
 
       <div class="warning">
         页面会自动检测当前 MongoDB 是否已经存在 <code>quickAdmin</code>
-        数据库；不存在时会自动执行首次安装。
+        数据库；不存在时请确认后手动点击安装。
       </div>
 
       <div id="statusText" class="status-card">正在检测数据库状态...</div>
@@ -149,7 +150,7 @@
       });
 
       statusButton.addEventListener("click", async () => {
-        await checkAndInstall();
+        await checkStatus();
       });
 
       installButton.addEventListener("click", async () => {
@@ -160,9 +161,9 @@
         await installDatabase();
       });
 
-      checkAndInstall();
+      checkStatus();
 
-      async function checkAndInstall() {
+      async function checkStatus() {
         setStatus("正在检测数据库状态...");
         const status = await request("/api/setup/status", { method: "GET" });
         if (!status) return;
@@ -174,8 +175,8 @@
           return;
         }
 
-        setStatus(`${status.database} 数据库不存在，正在自动安装...`);
-        await installDatabase();
+        setStatus(`${status.database} 数据库不存在，请确认后手动安装。`);
+        installButton.disabled = !confirmInput.checked;
       }
 
       async function installDatabase() {
