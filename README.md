@@ -91,13 +91,9 @@ template/
 
 ## 🚀 快速开始
 
-### 第一步：初始化数据库
+### 第一步：安装 MongoDB
 
-1. 下载并安装 [MongoDB 8.0](https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-8.0.3-signed.msi)
-2. 推荐使用 **Navicat** 导入 `db/quickAdmin.sql` 文件
-3. 若无 Navicat，可使用 **MongoDB Compass**：
-   - 打开 Compass → 连接主机 → `Create Database`（名称：`quickAdmin`）
-   - 进入 `Open MongoDB Shell` → 粘贴并执行 `quickAdmin.sql` 内容
+下载并安装 [MongoDB 8.0](https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-8.0.3-signed.msi)，确保 MongoDB 服务已启动。
 
 ### 第二步：启动服务端
 
@@ -115,7 +111,11 @@ npm run start:dev
 npm run start:prod
 ```
 
-### 第三步：启动前台
+### 第三步：初始化数据库
+
+服务端启动后，浏览器访问 [http://localhost:3000/setup/index.html](http://localhost:3000/setup/index.html)，按页面提示完成数据库初始化。
+
+### 第四步：启动前台
 
 ```bash
 # 安装依赖
