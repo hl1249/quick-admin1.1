@@ -132,7 +132,32 @@ export class AppConfigService {
   }
 
   get mongoUri(): string {
-    return `${this.dbUrl}:${this.dbPort}/${this.dbName}`;
+    const raw = this.dbUrl.trim();
+    const dbName = this.dbName.trim();
+
+    // 兼容历史配置：DB_URL=主机或 mongodb://主机，端口/库名分开配置
+    if (!/^mongodb(\+srv)?:\/\//i.test(raw)) {
+      const host = raw || '127.0.0.1';
+      return `mongodb://${host}:${this.dbPort}/${dbName}`;
+    }
+
+    // DB_URL 已是 Mongo URI：有库名路径就直接使用；没有则补库名。
+    const uriMatch = raw.match(/^mongodb(\+srv)?:\/\/([^/?]+)(\/[^?]*)?(\?.*)?$/i);
+    if (!uriMatch) {
+      return raw;
+    }
+
+    const scheme = `mongodb${uriMatch[1] ?? ''}://`;
+    const authority = uriMatch[2];
+    const path = uriMatch[3] ?? '';
+    const query = uriMatch[4] ?? '';
+    const normalizedPath = path.replace(/\/+$/, '');
+
+    if (normalizedPath !== '' || dbName === '') {
+      return raw;
+    }
+
+    return `${scheme}${authority}/${dbName}${query}`;
   }
 
   get localUploadsDirName(): string {
