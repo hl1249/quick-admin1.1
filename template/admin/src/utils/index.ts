@@ -28,7 +28,7 @@ export const buildAsyncMenus = (menus: any) => {
                     title: menu.title,
                     icon: menu.icon,
                 },
-                component: pagesModule[menu.component + '.vue'],
+                component: menu.component.includes('.vue') ?  pagesModule[menu.component] : pagesModule[menu.component + '.vue'] ,
             }
         }
     })

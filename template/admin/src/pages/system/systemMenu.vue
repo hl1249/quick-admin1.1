@@ -121,6 +121,8 @@ const originalFormData = {
   parent_id: '',
   comment: '',
   sort: 0,
+  path: '',
+  component: '',
   cascader_static: null,
   cascader_fn: null,
   cascader_remote: null,
@@ -136,7 +138,6 @@ const form = ref({
     },
     action: '',
     columns: [
-
       {
         "key": "menu_id",
         "title": "菜单标识",
@@ -155,7 +156,21 @@ const form = ref({
       },
       {
         "key": "component",
-        "title": "URL",
+        "title": "页面路径",
+        "type": "text",
+        "tips":"相对根目录 /src/pages/**",
+        watch: (res: unknown) => {
+          if(form.value.props.formType === 'add'){
+            if (res == null || typeof res !== 'string') return
+            const parts = res.split('/src/pages/')
+            if (parts.length < 2 || !parts[1]) return
+            form.value.data.path = parts[1]
+          }
+        },
+      },
+      {
+        "key": "path",
+        "title": "路由路径",
         "type": "text",
       },
       {
@@ -183,9 +198,14 @@ const form = ref({
       },
     ],
     rules: {
-      user_id: [
-        // { min: 3, max: 5, message: '长度3-5', trigger: 'blur', required: true, },
+      menu_id:[
+        {message: '请输入菜单标识', trigger: 'blur', required: true, },],
+      path: [
+        { message: '请输入页面路径', trigger: 'blur', required: true, },
       ],
+      component:[
+          {message: '请输入组件路径', trigger: 'blur', required: true, },
+      ]
     },
     formType: "",
     title: "",
@@ -232,7 +252,14 @@ const updateBtn = (index: number, row: any) => {
   form.value.props.action = '/app/admin/system/systemMenu/systemMenu/update';
   form.value.props.formType = 'edit';
   form.value.props.title = '编辑'
-  form.value.data = row;
+  const sortNum =
+    row.sort == null || row.sort === ''
+      ? 0
+      : Number(row.sort)
+  form.value.data = {
+    ...row,
+    sort: Number.isFinite(sortNum) ? sortNum : 0,
+  }
   form.value.props.show = true
 }
 const deleteBtn = (row: any, btnsDeleteRequest: DeleteRequest) => {
