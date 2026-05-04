@@ -127,7 +127,7 @@ export class SystemMenuController {
 
   @Post('/update')
   async update(@Body() data: UpdateMenuDto): Promise<Document | null> {
-    let { _id, menu_id, title, enable = true, comment, parent_id, component, sort, icon } = data;
+    let { _id, menu_id, title, enable = true, comment, parent_id, component, path, sort, icon } = data;
 
     const hasParent =
       parent_id !== undefined && parent_id !== null && parent_id !== '';
@@ -143,6 +143,7 @@ export class SystemMenuController {
         menu_id,
         title,
         component,
+        path,
         sort,
         icon,
         enable,
