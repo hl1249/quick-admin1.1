@@ -1,10 +1,115 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
+		},
+		{
+			"path": "pages/router-anchor/router-anchor",
+			"style": {
+				"navigationBarTitleText": "路由占位",
+				"navigationStyle": "default"
+			}
+		}
+	],
+	"subPackages": [
+		{
+			"root": "pages_template",
+			"name": "pages_template",
+			"pages": [
+				{
+					"path": "auth/index/index",
+					"style": {
+						"navigationBarTitleText": "认证模板入口"
+					}
+				},
+				{
+					"path": "auth/password/password",
+					"style": {
+						"navigationBarTitleText": "用户名和密码"
+					}
+				},
+				{
+					"path": "auth/mobile/mobile",
+					"style": {
+						"navigationBarTitleText": "手机号和验证码"
+					}
+				},
+				{
+					"path": "auth/email/email",
+					"style": {
+						"navigationBarTitleText": "邮箱与验证码"
+					}
+				},
+				{
+					"path": "auth/weixin/weixin",
+					"style": {
+						"navigationBarTitleText": "微信登录"
+					}
+				},
+				{
+					"path": "auth/weixin/h5-weixin",
+					"style": {
+						"navigationBarTitleText": "微信公众号API"
+					}
+				},
+				{
+					"path": "auth/alipay/alipay",
+					"style": {
+						"navigationBarTitleText": "支付宝登录"
+					}
+				},
+				{
+					"path": "auth/qq/qq",
+					"style": {
+						"navigationBarTitleText": "QQ登录"
+					}
+				},
+				{
+					"path": "db/db",
+					"style": {
+						"navigationBarTitleText": "数据库API"
+					}
+				},
+				{
+					"path": "auth/util/util",
+					"style": {
+						"navigationBarTitleText": "通用方法"
+					}
+				},
+				{
+					"path": "auth/closeAccount/closeAccount",
+					"style": {
+						"navigationBarTitleText": "账号注销与恢复"
+					}
+				},
+				{
+					"path": "auth/univerify/univerify",
+					"style": {
+						"navigationBarTitleText": "本机号码一键登录"
+					}
+				},
+				{
+					"path": "auth/login/index/index",
+					"style": {
+						"navigationBarTitleText": "登录注册找回密码"
+					}
+				},
+				{
+					"path": "plugs/lucky-draw/lucky-draw",
+					"style": {
+						"navigationBarTitleText": "抽奖活动小助手"
+					}
+				},
+				{
+					"path": "openapi/baidu/baidu",
+					"style": {
+						"navigationBarTitleText": "百度开放平台API"
+					}
+				}
+			]
 		}
 	],
 	"globalStyle": {

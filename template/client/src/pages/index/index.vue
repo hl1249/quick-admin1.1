@@ -1,6 +1,7 @@
 <template>
   <view class="content">
     <button @click="loginByWeixin">登录</button>
+    <button @click="go">跳转</button>
     <view class="text-area ">
       <text class="title">{{ title }}</text>
       <view>当前运行环境：{{ currentMode }}</view>
@@ -11,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getUrl } from '@/utils/http'
 import { useAppInfoStore } from '@/store/appInfo'
 import {useUserStore} from '@/store/user'
@@ -24,6 +25,12 @@ const userStore = useUserStore()
 const loginByWeixin = async () => {
   const result = await userStore.loginByWeixin(appInfoStore.appInfo.appid)
   console.log(result)
+}
+
+const go = () => {
+  uni.reLaunch({
+    url: '/pages_template/auth/index/index'
+  })
 }
 </script>
 
