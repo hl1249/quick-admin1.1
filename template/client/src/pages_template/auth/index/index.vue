@@ -47,6 +47,9 @@
       },
       methods: {
         pageTo(url) {
+          uni.navigateTo({
+            url
+          })
         },
         openWeb(url) {
         },

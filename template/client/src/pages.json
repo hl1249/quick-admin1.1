@@ -98,6 +98,12 @@
 					}
 				},
 				{
+					"path": "vuex/vuex",
+					"style": {
+						"navigationBarTitleText": "vuex模板"
+					}
+				},
+				{
 					"path": "plugs/lucky-draw/lucky-draw",
 					"style": {
 						"navigationBarTitleText": "抽奖活动小助手"
