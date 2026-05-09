@@ -11,7 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
+
+const request = useQaRequest()
 
 interface CascaderProps {
   value?: string
@@ -93,8 +95,7 @@ const lazyLoad = (node: any, resolve: (data: any[]) => void) => {
     return
   }
 
-  http
-    .request({
+  request({
       method: 'POST',
       url: props.action!,
       data: {
@@ -106,7 +107,7 @@ const lazyLoad = (node: any, resolve: (data: any[]) => void) => {
         },
       },
     })
-    .then((res) => {
+    .then((res: any) => {
       const listKey = props.props?.list
       const options = listKey
         ? res.data?.data?.[listKey] ?? []
@@ -139,7 +140,7 @@ const loadOptions = async () => {
   // 远程加载
   loading.value = true
   try {
-    const res = await http.request({
+    const res = await request({
       method: 'POST',
       url: props.action,
       data: resolveActionData(),

@@ -11,6 +11,7 @@ import router from '@/router'
 
 // 全局注册 quickAdmin 组件
 import quickAdmin from '@/components/quickAdmin'
+import http from '@/utils/axios'
 
 const app = createApp(App)
 
@@ -24,7 +25,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-app.use(quickAdmin)
+app.use(quickAdmin, {
+  request: http.request.bind(http),
+})
 
 
 // ✅ 最终挂载

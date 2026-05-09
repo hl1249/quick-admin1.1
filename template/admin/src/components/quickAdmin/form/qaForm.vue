@@ -38,8 +38,9 @@ import { ElMessage, type FormInstance } from 'element-plus'
 import { useVModel } from "@vueuse/core"
 import { cloneDeep } from '@/utils'
 import qaFormItem from './qaFormItem.vue';
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
 const emit = defineEmits(["update:modelValue", "success","closeForm"])
+const request = useQaRequest()
 
 interface QaFormColumns {
     key: string
@@ -124,7 +125,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 }
 
                 try {
-                     await http.request({
+                     await request({
                         url: props.action as string,
                         method: 'post',
                         data: postData,

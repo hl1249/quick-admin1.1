@@ -21,7 +21,9 @@
 
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue'
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
+
+const request = useQaRequest()
 
 interface FieldProps {
   value?: string
@@ -91,7 +93,7 @@ const loadOptions = async (searchValue?: string) => {
         ? { searchValue, ...base }
         : base
 
-    const res = await http.request({
+    const res = await request({
       method: 'POST',
       url: props.action,
       data,

@@ -199,13 +199,14 @@
 <script lang="ts" setup>
 import qaDetail from '../base/qaDetail.vue';
 import { Delete, Edit, ArrowDown, Document } from '@element-plus/icons-vue';
-import http from '@/utils/axios';
 import { ElMessage, ElTable } from 'element-plus';
 import { toRaw } from 'vue';
 import qaTableColumn from '../base/qaTableColumn.vue';
 import { cloneDeep } from '@/utils';
+import { useQaRequest } from '../request';
 
 type RightBtn = 'detail_auto' | 'update' | 'delete' | 'more';
+const request = useQaRequest();
 export type CustomRightBtn = {
   title: string;
   onClick: (row: any) => void;
@@ -662,7 +663,7 @@ const getTableData = async (): Promise<void> => {
   loading.value = true;
   try {
     const query = props.queryFormParam ? toRaw(props.queryFormParam) : {};
-    const res = await http.request({
+    const res = await request({
       url: props.action,
       method: 'post',
       data: {
@@ -721,7 +722,7 @@ const btnsDeleteRequest = async ({
 }): Promise<void> => {
   console.log('请求删除接口', action, data);
   try {
-    await http.request({
+    await request({
       url: action,
       method: 'post',
       data,

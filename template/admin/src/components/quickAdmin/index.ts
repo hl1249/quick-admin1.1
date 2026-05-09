@@ -1,4 +1,6 @@
 import type { App } from 'vue'
+import type { QaRequest } from './request'
+import { provideQaRequest } from './request'
 
 import qaTable from './table/qaTable.vue'
 import qaForm from './form/qaForm.vue'
@@ -22,8 +24,14 @@ import qaTag from './base/qaTag.vue'
 import qaMapPicker from './base/qaMapPicker.vue'
 import qaDialog from './base/qaDialog.vue'
 
+export interface QuickAdminOptions {
+  request?: QaRequest
+}
+
 export default {
-  install(app: App) {
+  install(app: App, options: QuickAdminOptions = {}) {
+    provideQaRequest(app, options.request)
+
     app.component('qaTable', qaTable)
     app.component('qaForm', qaForm)
     app.component('qaTableQuery', qaTableQuery)

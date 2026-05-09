@@ -59,9 +59,11 @@
 
 <script setup lang="ts">
 import { RemoveFilled } from '@element-plus/icons-vue'
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
 import type { QueryColumns } from '../table/qaTableQuery.vue'
 import type { Columns } from '../table/qaTable.vue'
+
+const request = useQaRequest()
 
 const props = withDefaults(
   defineProps<{
@@ -194,7 +196,7 @@ watch(
     loaded.value = true
     initialLoading.value = true
     try {
-      const res = await http.request({
+      const res = await request({
         method: 'POST',
         url: props.action,
         data: { pageIndex: 1, pageSize: ids.length, formData: { [idKey.value]: val },  columns: props.queryColumns },

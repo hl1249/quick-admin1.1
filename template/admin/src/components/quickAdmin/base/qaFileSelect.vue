@@ -197,7 +197,9 @@
 <script setup lang="ts">
 import { CircleClose, Plus, Document } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
+
+const request = useQaRequest()
 
 interface FileItem {
   _id: string
@@ -300,7 +302,7 @@ const syncPreviewFiles = async (val: string | string[] | null | undefined) => {
 
   if (missingIds.length) {
     try {
-      const res = await http.request({
+      const res = await request({
         url: '/app/admin/system/systemFile/systemFile/files/getList',
         method: 'post',
         data: {
@@ -360,7 +362,7 @@ const getCategoryFilter = () => {
 const loadCategories = async () => {
   categoryLoading.value = true
   try {
-    const res = await http.request({
+    const res = await request({
       url: '/app/admin/system/systemFile/systemCategories/getList',
       method: 'post',
       data: { type: props.fileType },
@@ -382,7 +384,7 @@ const handleAddCategory = async () => {
   }
   addCategoryLoading.value = true
   try {
-    await http.request({
+    await request({
       url: '/app/admin/system/systemFile/systemCategories/add',
       method: 'post',
       data: { name: categoryInputName.value.trim(), type: props.fileType },
@@ -418,7 +420,7 @@ const loadFileList = async () => {
     }
     if (props.fileType !== 'other') formData.type = props.fileType
 
-    const res = await http.request({
+    const res = await request({
       url: '/app/admin/system/systemFile/systemFile/files/getList',
       method: 'post',
       data: {
@@ -492,7 +494,7 @@ const uploadSingleFile = (file: File, taskId: string) => {
   formData.append('file', file)
   const cat = getCategoryFilter()
   if (cat !== undefined) formData.append('category_id', cat === null ? 'null' : cat)
-  return http.request({
+  return request({
     url: '/app/admin/system/systemFile/systemFile/upload',
     method: 'post',
     data: formData,

@@ -3,7 +3,9 @@ import '@wangeditor-next/editor/dist/css/style.css'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { Editor, Toolbar } from '@wangeditor-next/editor-for-vue'
 import type { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor-next/editor'
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
+
+const request = useQaRequest()
 
 interface Props {
   modelValue?: string
@@ -30,7 +32,7 @@ const editorRef = shallowRef<IDomEditor | null>(null)
 async function uploadFile(file: File): Promise<string> {
   const formData = new FormData()
   formData.append('file', file)
-  const res = await http.request({
+  const res = await request({
     url: '/app/admin/system/systemFile/systemFile/upload',
     method: 'post',
     data: formData,

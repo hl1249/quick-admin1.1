@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, type Ref } from 'vue'
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
+
+const request = useQaRequest()
 
 const props = withDefaults(defineProps<{
   modelValue?: string | string[] | null
@@ -121,7 +123,7 @@ const handleUpload = async (options: any) => {
   if (props.categoryId) formData.append('category_id', props.categoryId)
   if (props.needSave === false) formData.append('needSave', 'false')
   try {
-    const res = await http.request({
+    const res = await request({
       url: '/app/admin/system/systemFile/systemFile/upload',
       method: 'post',
       data: formData,

@@ -1,7 +1,9 @@
 <script lang="tsx" setup>
 import { ref, watch } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
+
+const request = useQaRequest()
 
 type SizeUnit = 'KB' | 'MB' | 'GB'
 
@@ -133,7 +135,7 @@ const handleUpload = async (options: any) => {
   if (props.categoryId) formData.append('category_id', props.categoryId)
   if (props.needSave === false) formData.append('needSave', 'false')
   try {
-    const res = await http.request({
+    const res = await request({
       url: '/app/admin/system/systemFile/systemFile/upload',
       method: 'post',
       data: formData,

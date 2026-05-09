@@ -39,8 +39,9 @@
 
 <script setup lang="ts">
 import { CircleClose } from '@element-plus/icons-vue'
-import http from '@/utils/axios'
+import { useQaRequest } from '../request'
 const emit = defineEmits(['treeSelectConfirm', 'update:modelValue'])
+const request = useQaRequest()
 
 const props = withDefaults(
   defineProps<{
@@ -105,7 +106,7 @@ const getData = async () => {
   if (!props.action) return
   loading.value = true
   try {
-    const res = await http.request({
+    const res = await request({
       url: props.action,
       method: 'post',
     })
