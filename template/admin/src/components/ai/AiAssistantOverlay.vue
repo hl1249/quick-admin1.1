@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <Transition name="qa-ai-fade">
-      <div v-if="visible" class="qa-ai-mask" @click.self="close">
+      <div v-if="visible && canUseAi" class="qa-ai-mask" @click.self="close">
         <section class="qa-ai-panel">
           <header class="qa-ai-header">
             <div>
@@ -111,7 +111,7 @@ const chatLoading = ref(false)
 const toolStatus = ref('')
 const messageBoxRef = ref<HTMLElement>()
 const currentRoute = useRoute()
-const { menuStore } = useStore()
+const { menuStore, authStore } = useStore()
 const CONTEXT_TOKEN_LIMIT = 64000
 
 const messages = ref<AiChatMessage[]>([
@@ -135,6 +135,10 @@ const currentComponentPath = computed(() => {
   }
   if (currentRoute.path === '/home') return '/src/pages/home/index.vue'
   return `/src/pages${currentRoute.path}/index.vue`
+})
+
+const canUseAi = computed(() => {
+  return import.meta.env.DEV && Boolean(authStore.token) && authStore.expired > Date.now()
 })
 
 const contextUsage = computed(() => {
@@ -166,6 +170,7 @@ function findMenuByPath(list: any[], routePath: string): any | null {
 }
 
 function open() {
+  if (!canUseAi.value) return
   visible.value = true
   nextTick(scrollToBottom)
 }
@@ -181,6 +186,10 @@ function toggle() {
 function handleKeydown(event: KeyboardEvent) {
   if (event.altKey && event.key.toLowerCase() === 'r') {
     event.preventDefault()
+    if (!canUseAi.value) {
+      close()
+      return
+    }
     toggle()
   }
 }
@@ -238,7 +247,7 @@ function formatTokenCount(value: number) {
 
 async function send() {
   const content = draft.value.trim()
-  if (!content || chatLoading.value) return
+  if (!content || chatLoading.value || !canUseAi.value) return
 
   const history = messages.value.filter(item => item.role === 'user' || item.role === 'assistant')
   messages.value.push({ role: 'user', content })

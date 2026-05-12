@@ -7,6 +7,7 @@ import {
   Get,
   Query,
   Res,
+  ForbiddenException,
 } from '@nestjs/common';
 import { McpService, ChatMessage } from './mcp.service';
 import { FileService } from './tools/file.service';
@@ -37,6 +38,7 @@ export class McpController {
   @Post('chat')
   @HttpCode(HttpStatus.OK)
   async chat(@Body() chatDto: ChatDto) {
+    this.assertDevelopmentOnly();
     const { message, system, history } = chatDto;
 
     const reply = await this.mcpService.chat({
@@ -59,6 +61,7 @@ export class McpController {
   @Post('chat/smart')
   @HttpCode(HttpStatus.OK)
   async smartChat(@Body() chatDto: ChatDto) {
+    this.assertDevelopmentOnly();
     const { message, system, history } = chatDto;
 
     const tools = this.getFileOperationTools();
@@ -91,6 +94,7 @@ export class McpController {
   @Post('chat/smart/stream')
   @HttpCode(HttpStatus.OK)
   async smartChatStream(@Body() chatDto: ChatDto, @Res() res: Response) {
+    this.assertDevelopmentOnly();
     const { message, system, history } = chatDto;
 
     res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
@@ -137,6 +141,7 @@ export class McpController {
    */
   @Get('files')
   async findFiles(@Query() query: FindFilesDto) {
+    this.assertDevelopmentOnly();
     const result = await this.fileService.findFiles(
       {
         folder: query.folder,
@@ -158,6 +163,7 @@ export class McpController {
    */
   @Get('file')
   async readFile(@Query() query: ReadFileDto) {
+    this.assertDevelopmentOnly();
     const result = await this.fileService.readFile(
       {
         path: query.path,
@@ -178,6 +184,7 @@ export class McpController {
   @Post('file')
   @HttpCode(HttpStatus.OK)
   async writeFile(@Body() body: WriteFileDto) {
+    this.assertDevelopmentOnly();
     const result = await this.fileService.writeFile(
       {
         path: body.path,
@@ -198,6 +205,7 @@ export class McpController {
   @Post('file/edit')
   @HttpCode(HttpStatus.OK)
   async editFile(@Body() body: EditFileDto) {
+    this.assertDevelopmentOnly();
     const result = await this.fileService.editFile(
       {
         path: body.path,
@@ -223,14 +231,14 @@ export class McpController {
         function: {
           name: 'find_files',
           description:
-            'Find files under a local folder. Use this for questions about local files, desktop files, or image files.',
+            'Find files under the current QuickAdmin project sandbox only.',
           parameters: {
             type: 'object',
             properties: {
               folder: {
                 type: 'string',
                 description:
-                  'Folder to scan. Use "desktop" for the user desktop. Absolute paths are used directly.',
+                  'Folder to scan inside the QuickAdmin project. Use "." or omit for project root. Paths outside the project are rejected.',
               },
               extensions: {
                 type: 'array',
@@ -256,13 +264,13 @@ export class McpController {
         function: {
           name: 'read_file',
           description:
-            'Read the text content of a local file. Use this when the user asks to view or inspect a file.',
+            'Read the text content of a file inside the current QuickAdmin project sandbox.',
           parameters: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'File path to read.',
+                description: 'Project-relative file path to read. Paths outside the project are rejected.',
               },
               maxBytes: {
                 type: 'number',
@@ -278,13 +286,13 @@ export class McpController {
         function: {
           name: 'write_file',
           description:
-            'Create or overwrite a local text file. Parent folders are created automatically.',
+            'Create or overwrite a text file inside the current QuickAdmin project sandbox.',
           parameters: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'File path to create or overwrite.',
+                description: 'Project-relative file path to create or overwrite. Paths outside the project are rejected.',
               },
               content: {
                 type: 'string',
@@ -300,13 +308,13 @@ export class McpController {
         function: {
           name: 'edit_file',
           description:
-            'Modify a local text file by replacing one exact text block with another.',
+            'Modify a text file inside the current QuickAdmin project sandbox by replacing one exact text block with another.',
           parameters: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'File path to edit.',
+                description: 'Project-relative file path to edit. Paths outside the project are rejected.',
               },
               oldText: {
                 type: 'string',
@@ -330,6 +338,7 @@ export class McpController {
   @Post('generate')
   @HttpCode(HttpStatus.OK)
   async generateCode(@Body() generateDto: GenerateCodeDto) {
+    this.assertDevelopmentOnly();
     let files;
 
     switch (generateDto.type) {
@@ -385,6 +394,7 @@ export class McpController {
    */
   @Get('analyze')
   async analyzeCode(@Query() query: AnalyzeCodeDto) {
+    this.assertDevelopmentOnly();
     const analysis = await this.codeGenerator.analyzeCode(query.path);
 
     return {
@@ -399,6 +409,7 @@ export class McpController {
   @Post('module')
   @HttpCode(HttpStatus.OK)
   async createModule(@Body() moduleDto: CreateModuleDto) {
+    this.assertDevelopmentOnly();
     const allFiles: any[] = [];
 
     // 生成后端代码
@@ -464,6 +475,13 @@ export class McpController {
 
       default:
         throw new Error(`Unknown tool: ${toolName}`);
+    }
+  }
+
+  private assertDevelopmentOnly(): void {
+    const env = (process.env.ENV || process.env.NODE_ENV || '').trim().toLowerCase();
+    if (env !== 'development') {
+      throw new ForbiddenException('MCP AI is only available in development environment.');
     }
   }
 }

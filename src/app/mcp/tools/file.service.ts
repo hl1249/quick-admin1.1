@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
-import { basename, dirname, extname, join, relative, resolve } from 'node:path';
+import { basename, dirname, extname, isAbsolute, join, relative, resolve } from 'node:path';
 
 export interface FileInfo {
   name: string;
@@ -47,13 +47,28 @@ export class FileService {
    * 解析本地路径
    */
   private resolveLocalPath(folder: string = 'desktop', basePath: string): string {
+    const root = resolve(basePath);
     const normalizedFolder = String(folder || 'desktop').trim();
     const target =
       normalizedFolder.toLowerCase() === 'desktop' || normalizedFolder === '桌面'
-        ? basePath
-        : resolve(basePath, normalizedFolder);
+        ? root
+        : resolve(root, normalizedFolder);
 
-    return resolve(target);
+    const resolvedTarget = resolve(target);
+    this.assertInsideBasePath(resolvedTarget, root);
+
+    return resolvedTarget;
+  }
+
+  private assertInsideBasePath(targetPath: string, basePath: string): void {
+    const relativePath = relative(basePath, targetPath);
+    const isInside =
+      relativePath === '' ||
+      (!relativePath.startsWith('..') && !isAbsolute(relativePath));
+
+    if (!isInside) {
+      throw new Error(`Path is outside the QuickAdmin project sandbox: ${targetPath}`);
+    }
   }
 
   /**
