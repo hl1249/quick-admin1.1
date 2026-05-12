@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Get,
   Query,
+  Res,
 } from '@nestjs/common';
 import { McpService, ChatMessage } from './mcp.service';
 import { FileService } from './tools/file.service';
@@ -18,6 +19,7 @@ import {
   EditFileDto,
 } from './dto/chat.dto';
 import { GenerateCodeDto, AnalyzeCodeDto, CreateModuleDto } from './dto/generate.dto';
+import type { Response } from 'express';
 
 @Controller('mcp')
 export class McpController {
@@ -84,6 +86,50 @@ export class McpController {
         reply,
       },
     };
+  }
+
+  @Post('chat/smart/stream')
+  @HttpCode(HttpStatus.OK)
+  async smartChatStream(@Body() chatDto: ChatDto, @Res() res: Response) {
+    const { message, system, history } = chatDto;
+
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders?.();
+
+    const sendEvent = (event: Record<string, any>) => {
+      res.write(`data: ${JSON.stringify(event)}\n\n`);
+    };
+
+    try {
+      const tools = this.getFileOperationTools();
+      const systemPrompt = system || [
+        this.mcpService.getSystemPrompt(this.basePath),
+        '项目说明文档入口: docs/ai-context/README.md。',
+        '处理 QuickAdmin 项目代码任务时，先读取该索引文档，再按需读取真实源码。',
+      ].join('\n');
+
+      await this.mcpService.chatWithToolsStream(
+        {
+          message,
+          system: systemPrompt,
+          history: history as ChatMessage[],
+        },
+        tools,
+        async (toolCall) => {
+          return this.executeToolCall(toolCall);
+        },
+        sendEvent,
+      );
+    } catch (error) {
+      sendEvent({
+        type: 'error',
+        message: error.message || 'MCP stream failed',
+      });
+    } finally {
+      res.end();
+    }
   }
 
   /**

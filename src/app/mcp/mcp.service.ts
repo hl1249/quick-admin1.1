@@ -22,6 +22,12 @@ export interface ToolCall {
   };
 }
 
+export type McpStreamEvent =
+  | { type: 'delta'; content: string }
+  | { type: 'progress'; message: string }
+  | { type: 'error'; message: string }
+  | { type: 'done' };
+
 @Injectable()
 export class McpService {
   private readonly apiUrl: string;
@@ -161,6 +167,194 @@ export class McpService {
     }
 
     return `工具调用次数已达到 ${this.maxToolSteps} 轮。请把要修改的页面、文件路径或目标描述得更具体一些，我可以继续处理。`;
+  }
+
+  async chatWithToolsStream(
+    options: ChatOptions,
+    tools: any[],
+    toolExecutor: (toolCall: ToolCall) => Promise<any>,
+    onEvent: (event: McpStreamEvent) => void,
+  ): Promise<void> {
+    const { message, system, history = [] } = options;
+
+    if (!this.apiKey) {
+      throw new Error('Missing DEEPSEEK_API_KEY environment variable.');
+    }
+
+    const messages: any[] = [
+      ...(system ? [{ role: 'system', content: system }] : []),
+      ...history,
+      { role: 'user', content: message },
+    ];
+
+    for (let step = 0; step < this.maxToolSteps; step++) {
+      const responseMessage = await this.streamCompletion(messages, tools, onEvent);
+      const toolCalls = responseMessage.tool_calls ?? [];
+
+      if (!toolCalls.length) {
+        onEvent({ type: 'done' });
+        return;
+      }
+
+      messages.push(responseMessage);
+
+      for (const toolCall of toolCalls) {
+        onEvent({
+          type: 'progress',
+          message: this.getToolProgressMessage(toolCall),
+        });
+
+        try {
+          const toolResult = await toolExecutor(toolCall);
+          messages.push({
+            role: 'tool',
+            tool_call_id: toolCall.id,
+            content: JSON.stringify(toolResult),
+          });
+        } catch (error) {
+          messages.push({
+            role: 'tool',
+            tool_call_id: toolCall.id,
+            content: JSON.stringify({ error: error.message }),
+          });
+        }
+      }
+    }
+
+    onEvent({
+      type: 'delta',
+      content: `\n\n工具调用次数已达到 ${this.maxToolSteps} 轮。请把要修改的页面、文件路径或目标描述得更具体一些，我可以继续处理。`,
+    });
+    onEvent({ type: 'done' });
+  }
+
+  private async streamCompletion(
+    messages: any[],
+    tools: any[],
+    onEvent: (event: McpStreamEvent) => void,
+  ): Promise<any> {
+    try {
+      const response = await axios.post(
+        this.apiUrl,
+        {
+          model: this.model,
+          messages,
+          tools,
+          tool_choice: 'auto',
+          stream: true,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          responseType: 'stream',
+          timeout: 120000,
+        },
+      );
+
+      return await new Promise<any>((resolve, reject) => {
+        let buffer = '';
+        const assistantMessage: any = {
+          role: 'assistant',
+          content: '',
+        };
+        const toolCallMap = new Map<number, any>();
+
+        response.data.on('data', (chunk: Buffer) => {
+          buffer += chunk.toString('utf8');
+          const parts = buffer.split('\n\n');
+          buffer = parts.pop() ?? '';
+
+          for (const part of parts) {
+            const lines = part
+              .split('\n')
+              .map(line => line.trim())
+              .filter(line => line.startsWith('data:'));
+
+            for (const line of lines) {
+              const raw = line.replace(/^data:\s*/, '');
+              if (!raw || raw === '[DONE]') continue;
+
+              try {
+                const payload = JSON.parse(raw);
+                const delta = payload?.choices?.[0]?.delta;
+                if (!delta) continue;
+
+                if (delta.content) {
+                  assistantMessage.content += delta.content;
+                  onEvent({ type: 'delta', content: delta.content });
+                }
+
+                if (Array.isArray(delta.tool_calls)) {
+                  for (const toolDelta of delta.tool_calls) {
+                    const index = Number(toolDelta.index ?? 0);
+                    const current = toolCallMap.get(index) ?? {
+                      id: '',
+                      type: 'function',
+                      function: {
+                        name: '',
+                        arguments: '',
+                      },
+                    };
+
+                    if (toolDelta.id) current.id = toolDelta.id;
+                    if (toolDelta.type) current.type = toolDelta.type;
+                    if (toolDelta.function?.name) {
+                      current.function.name += toolDelta.function.name;
+                    }
+                    if (toolDelta.function?.arguments) {
+                      current.function.arguments += toolDelta.function.arguments;
+                    }
+
+                    toolCallMap.set(index, current);
+                  }
+                }
+              } catch (error) {
+                reject(error);
+              }
+            }
+          }
+        });
+
+        response.data.on('end', () => {
+          const toolCalls = Array.from(toolCallMap.values());
+          if (toolCalls.length) {
+            assistantMessage.tool_calls = toolCalls;
+          }
+          resolve(assistantMessage);
+        });
+
+        response.data.on('error', reject);
+      });
+    } catch (error) {
+      const detail = error.response?.data
+        ? JSON.stringify(error.response.data)
+        : error.message;
+      throw new Error(`DeepSeek stream request failed: ${detail}`);
+    }
+  }
+
+  private getToolProgressMessage(toolCall: ToolCall): string {
+    const toolName = toolCall.function?.name;
+    const rawArguments = toolCall.function?.arguments || '{}';
+    let args: Record<string, any> = {};
+
+    try {
+      args = JSON.parse(rawArguments);
+    } catch {
+      args = {};
+    }
+
+    const target = args.path || args.folder || '项目文件';
+    const actionMap: Record<string, string> = {
+      find_files: '正在查找文件',
+      read_file: '正在读取文件',
+      write_file: '正在写入文件',
+      edit_file: '正在修改文件',
+    };
+
+    return `${actionMap[toolName] || '正在操作文件'}：${target}`;
   }
 
   /**
