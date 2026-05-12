@@ -2,6 +2,7 @@
     
   <el-config-provider :locale="locale" :size="size">
     <router-view />
+    <AiAssistantOverlay />
   </el-config-provider>
 </template>
 
@@ -11,6 +12,7 @@ import { RouterView } from 'vue-router'
 import { useDark, useLocalStorage } from '@vueuse/core'
 import { ElConfigProvider, ElNotification } from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import AiAssistantOverlay from '@/components/ai/AiAssistantOverlay.vue'
 import {
   SOCKET_EVENTS,
   useAdminSocket,

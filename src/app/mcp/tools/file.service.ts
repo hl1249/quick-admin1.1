@@ -171,7 +171,7 @@ export class FileService {
     basePath: string,
     onProgress?: (msg: string) => void,
   ): Promise<ReadFileResult> {
-    const { path: filePath, maxBytes = 20000 } = options;
+    const { path: filePath, maxBytes = 80000 } = options;
 
     if (!filePath) {
       throw new Error('Missing required parameter: path');
@@ -191,7 +191,7 @@ export class FileService {
       throw new Error(`Path is not a file: ${resolvedPath}`);
     }
 
-    const limit = Math.max(1, Math.min(Number(maxBytes) || 20000, 100000));
+    const limit = Math.max(1, Math.min(Number(maxBytes) || 80000, 200000));
     const content = await readFile(resolvedPath, 'utf8');
     const truncated = Buffer.byteLength(content, 'utf8') > limit;
     const slicedContent = Buffer.from(content, 'utf8')

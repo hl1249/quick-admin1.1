@@ -21,7 +21,7 @@ import { GenerateCodeDto, AnalyzeCodeDto, CreateModuleDto } from './dto/generate
 
 @Controller('mcp')
 export class McpController {
-  private readonly basePath = 'E:\\360MoveData\\Users\\Administrator\\Desktop';
+  private readonly basePath = process.cwd();
 
   constructor(
     private readonly mcpService: McpService,
@@ -60,7 +60,11 @@ export class McpController {
     const { message, system, history } = chatDto;
 
     const tools = this.getFileOperationTools();
-    const systemPrompt = system || this.mcpService.getSystemPrompt(this.basePath);
+    const systemPrompt = system || [
+      this.mcpService.getSystemPrompt(this.basePath),
+      '项目说明文档入口: docs/ai-context/README.md。',
+      '处理 QuickAdmin 项目代码任务时，先读取该索引文档，再按需读取真实源码。',
+    ].join('\n');
 
     const reply = await this.mcpService.chatWithTools(
       {
@@ -216,7 +220,7 @@ export class McpController {
               },
               maxBytes: {
                 type: 'number',
-                description: 'Maximum bytes to read. Default is 20000.',
+                description: 'Maximum bytes to read. Default is 80000, maximum is 200000.',
               },
             },
             required: ['path'],

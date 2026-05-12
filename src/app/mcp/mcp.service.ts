@@ -27,6 +27,7 @@ export class McpService {
   private readonly apiUrl: string;
   private readonly model: string;
   private readonly apiKey: string;
+  private readonly maxToolSteps = 12;
 
   constructor(private configService: ConfigService) {
     this.apiUrl = this.configService.get<string>(
@@ -103,7 +104,7 @@ export class McpService {
       { role: 'user', content: message },
     ];
 
-    for (let step = 0; step < 5; step++) {
+    for (let step = 0; step < this.maxToolSteps; step++) {
       try {
         const response = await axios.post(
           this.apiUrl,
@@ -159,7 +160,7 @@ export class McpService {
       }
     }
 
-    return '工具调用次数过多，已停止。请把问题问得更具体一些。';
+    return `工具调用次数已达到 ${this.maxToolSteps} 轮。请把要修改的页面、文件路径或目标描述得更具体一些，我可以继续处理。`;
   }
 
   /**

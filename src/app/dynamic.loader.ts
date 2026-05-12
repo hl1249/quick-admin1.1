@@ -50,7 +50,11 @@ export function loadControllers(
           .filter(p => p !== 'controller' && p !== 'controllers')
           .join('/');
 
-        const routePrefix = `/${relativePath}`;
+        const declaredPath = Reflect.getMetadata(PATH_METADATA, controllerClass);
+        const routePrefix =
+          declaredPath && declaredPath !== '/'
+            ? declaredPath
+            : `/${relativePath}`;
         Reflect.defineMetadata(PATH_METADATA, routePrefix, controllerClass);
         controllers.push(controllerClass);
 
